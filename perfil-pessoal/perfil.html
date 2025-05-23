@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfil - BeachSpot</title>
+  <link rel="stylesheet" href="/assets/css/perfil.css"/>
+</head>
+<body>
+
+    <header>
+    <div class="logo">
+      <a href="inicio.html">
+        <img src="/assets/img/Logo.png" alt="Logo 'BeachSpot'" />
+      </a>
+    </div>
+
+    <div class="barra-nav">
+      <nav class="nav">
+        <a href="inicio.html">Inicío</a>
+        <a href="perfil.html">Perfil</a>
+        <a href="#Biblioteca">Biblioteca</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="config.html">Configurações</a>
+      </nav>
+    </div>
+
+    <div class="barra-pesquisa" id="barraPesquisa">
+      <img src="/assets/icons/Lupa.png" alt="Ícone de lupa" class="icon-pesquisa" />
+      <input type="text" id="buscar" class="pesquisa" placeholder="Buscar..." />
+    </div>
+  </header>
+
+  <div class="main-container">
+  <div class="account-card">
+    <div class="account-info">
+      <div class="profile-header">
+        <div class="profile-pic">
+  <img id="avatar" src="/assets/img/Azullll.png" alt="Avatar do usuário" style="width: 100%; border-radius: 50%;" />
+  <input type="file" id="foto-perfil" accept="image/*" style="display: none;" />
+</div>
+        <p class="arroba">@usuario123</p>
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="nome" value="João" disabled />
+      </div>
+
+      <div class="form-group">
+        <input type="email" id="email" value="joao@gmail.com" disabled />
+      </div>
+
+      <div class="form-group">
+        <input type="password" id="senha" value="12345678" disabled />
+      </div>
+
+      <div class="action-buttons">
+        <button id="editar-conta" class="btn">Editar conta</button>
+      </div>
+    </div>
+
+    <img class="seahorse" src="/assets/img/Logotipo nome minimalista em branco e preto (3).png" alt="Imagem decorativa" />
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-top-line"></div>
+  
+  <div class="footer-content">
+    <div class="footer-domain">WWW.BEACHSPOT.COM.BR</div>
+    
+    <div class="footer-links">
+      <div class="footer-link">PRIVACY POLICY</div>
+      <div class="footer-anchor">
+        <img src="/assets/img/ancora.png" alt="Anchor" width="30">
+      </div>
+      <div class="footer-link">TERMS OF SERVICE</div>
+    </div>
+  </div>
+  
+  <div class="footer-bottom-line"></div>
+</footer>
+
+
+  <script src="/assets/js/perfil.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url("/assets/img/PA BEACHSPOT.png") no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.secao-cadastro {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-left: 60px;
+  z-index: 1;
+}
+
+.secao-cadastro h1 {
+  font-size: 100px;
+  margin: 0;
+}
+
+.logo img {
+  width: 700px; 
+  max-width: 100%;
+  height: auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  gap: 25px;
+}
+
+.btn {
+  background-color: white;
+  font-weight: 645;
+  width: 150px;
+  padding: 15px 30px;
+  text-align: center;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  text-decoration: none;
+  color: black;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+#btn-criar {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: black;
+}

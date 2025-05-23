@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/criar-conta.css">
+    <title>BeachSpot</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Criar Conta</h2>
+        <p class="subtitle">Dê o primeiro passo para seu verão ideal</p>
+        
+        <form id="signup-form">
+            <div class="form-group">
+                <input type="text" id="nome" placeholder="Nome" required>
+                <div class="error-message" id="nome-error">Por favor, insira seu nome</div>
+            </div>
+            
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Email" required>
+                <div class="error-message" id="email-error">Por favor, insira um e-mail válido</div>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="senha" placeholder="Senha" required>
+                <div class="error-message" id="senha-error">A senha deve ter pelo menos 6 caracteres</div>
+            </div>
+            
+            <div class="profile-type">
+                <div class="profile-option selected" data-type="pessoal">
+                    Pessoal
+                </div>
+                <div class="profile-option" data-type="empresarial">
+                    Empresarial
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button type="submit">Criar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Alerta temporário -->
+    <div class="alert-message" id="alert-message">
+        <div class="alert-icon">✓</div>
+        <div class="alert-text" id="alert-text"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signup-form');
+            const profileOptions = document.querySelectorAll('.profile-option');
+            let selectedProfile = 'pessoal';
+            const alertMessage = document.getElementById('alert-message');
+            const alertText = document.getElementById('alert-text');
+            
+            // Seleção do tipo de perfil
+            profileOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    profileOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedProfile = this.dataset.type;
+                });
+            });
+            
+            // Função para mostrar alerta temporário
+            function showAlert(message, duration = 3000) {
+                alertText.textContent = message;
+                alertMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    alertMessage.classList.remove('show');
+                }, duration);
+            }
+            
+            // Validação do formulário
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let isValid = true;
+                
+                // Validação do nome
+                const nome = document.getElementById('nome');
+                const nomeError = document.getElementById('nome-error');
+                if (nome.value.trim() === '') {
+                    nome.classList.add('error');
+                    nomeError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    nome.classList.remove('error');
+                    nomeError.style.display = 'none';
+                }
+                
+                // Validação do email
+                const email = document.getElementById('email');
+                const emailError = document.getElementById('email-error');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    email.classList.add('error');
+                    emailError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    email.classList.remove('error');
+                    emailError.style.display = 'none';
+                }
+                
+                // Validação da senha
+                const senha = document.getElementById('senha');
+                const senhaError = document.getElementById('senha-error');
+                if (senha.value.length < 6) {
+                    senha.classList.add('error');
+                    senhaError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    senha.classList.remove('error');
+                    senhaError.style.display = 'none';
+                }
+                
+                if (isValid) {
+                    const formData = {
+                        nome: nome.value,
+                        email: email.value,
+                        senha: senha.value,
+                        tipoPerfil: selectedProfile
+                    };
+                    console.log('Dados do formulário:', formData);
+                    
+                    // Mostrar alerta temporário
+                    showAlert(`Conta criada com sucesso! (Perfil ${selectedProfile === 'pessoal' ? 'Pessoal' : 'Empresarial'})`);
+
+                    setTimeout(() => {
+    window.location.href = "perfil-pessoal/inicio.html";
+}, 2000);
+
+                    
+                    // Limpar formulário após sucesso (opcional)
+                    form.reset();
+                    profileOptions[0].classList.add('selected');
+                    profileOptions[1].classList.remove('selected');
+                    selectedProfile = 'pessoal';
+                }
+            });
+            
+            // Remove os erros quando o usuário começa a digitar
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', function() {
+                    this.classList.remove('error');
+                    const errorElement = document.getElementById(this.id + '-error');
+                    if (errorElement) errorElement.style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

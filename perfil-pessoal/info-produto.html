@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barraca Paraíso Azul - Reservas</title>
+    <link rel="stylesheet" href="/assets/css/info-produto.css">
+</head>
+<body>
+    <div class="container">
+        <div class="profile-grid">
+            <div class="header">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=300&fit=crop&crop=center" alt="Barraca Paraíso Azul" class="tent-photo">
+                <div class="tent-info">
+                    <h1>Barraca Paraíso Azul</h1>
+                    <div class="rating">
+                        <div class="stars">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star empty"></div>
+                        </div>
+                        <span class="rating-text">4.2 (156 avaliações)</span>
+                    </div>
+                    <button class="location-btn" onclick="openLocation()">
+                        <span>📍</span> Ver Localização
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>Sobre a Barraca</h2>
+                <p>Uma das barracas mais tradicionais da Praia de Copacabana, oferecendo serviços de primeira qualidade há mais de 15 anos. Ambiente familiar com vista privilegiada para o mar.</p>
+                <p>Especializada em frutos do mar frescos, caipirinha gelada e atendimento personalizado. Estrutura completa com cadeiras, guarda-sóis e WiFi gratuito.</p>
+            </div>
+
+            <div class="nearby-section">
+                <h3>Estabelecimentos Próximos</h3>
+                <ul class="nearby-list">
+                    <li>
+                        <span>Restaurante Garota de Ipanema</span>
+                        <span class="distance">200m</span>
+                    </li>
+                    <li>
+                        <span>Hotel Copacabana Palace</span>
+                        <span class="distance">150m</span>
+                    </li>
+                    <li>
+                        <span>Posto de Saúde da Praia</span>
+                        <span class="distance">300m</span>
+                    </li>
+                    <li>
+                        <span>Estação de Metrô</span>
+                        <span class="distance">500m</span>
+                    </li>
+                    <li>
+                        <span>Farmácia 24h</span>
+                        <span class="distance">180m</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="gallery">
+                <h3>Galeria de Fotos</h3>
+                <div class="photo-grid">
+                    <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop" alt="Vista da barraca" class="gallery-photo" onclick="openPhoto(this)">
+                    <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=300&h=200&fit=crop" alt="Área de mesas" class="gallery-photo" onclick="openPhoto(this)">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop" alt="Pratos servidos" class="gallery-photo" onclick="openPhoto(this)">
+                    <img src="https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=300&h=200&fit=crop" alt="Vista do mar" class="gallery-photo" onclick="openPhoto(this)">
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" onclick="checkPrices()">Conferir Preços</button>
+                <button class="btn btn-secondary" onclick="viewProducts()">Ver Produtos</button>
+            </div>
+
+            <div class="chat-section">
+                <h3>Fale Conosco</h3>
+                <p>Tire suas dúvidas ou faça sua reserva diretamente com nossa equipe!</p>
+                <button class="chat-btn" onclick="openChat()">Iniciar Conversa</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

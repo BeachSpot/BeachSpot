@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeachSpot - Configurações</title>
+    <link rel="stylesheet" href="/assets/css/config.css">
+</head>
+<body>
+      <header>
+    <!--LOGO-->
+    <div class="logo">
+      <a href="inicio.html">
+        <img src="/assets/img/Logo.png" alt="Logo 'BeachSpot'" />
+      </a>
+    </div>
+    <!--BARRA DE NAVEGAÇÃO-->
+    <div class="barra-nav">
+      <nav class="nav">
+        <a href="inicio.html">Inicío</a>
+        <a href="perfil.html">Perfil</a>
+        <a href="#Biblioteca">Biblioteca</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="config.html">Configurações</a>
+      </nav>
+    </div>
+    <!--BARRA DE PESQUISA-->
+    <div class="barra-pesquisa" id="barraPesquisa">
+      <img src="/assets/icons/Lupa.png" alt="Ícone de lupa" class="icon-pesquisa" />
+      <input type="text" id="buscar" class="pesquisa" placeholder="Buscar..." />
+    </div>
+  </header>
+
+    <div class="container">
+
+        <div class="settings-container">
+            <h1 class="settings-title">Configurações</h1>
+
+            <div class="settings-section">
+                <h2 class="section-title">Preferências Gerais</h2>
+                
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Idioma do Site</div>
+                        <div class="setting-description">Escolha o idioma de exibição</div>
+                    </div>
+                    <select id="language" onchange="changeLanguage()">
+                        <option value="pt">Português</option>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Tema</div>
+                        <div class="setting-description">Alternar entre tema claro e escuro</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">Notificações</h2>
+                
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Promoções e Cupons</div>
+                        <div class="setting-description">Receber notificações sobre ofertas especiais</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="promo-notifications" checked onchange="togglePromoNotifications()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Lembrete de Reserva</div>
+                        <div class="setting-description">Notificações sobre suas reservas próximas</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="booking-reminders" checked onchange="toggleBookingReminders()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="section-title">Dispositivos Conectados</h2>
+                <div class="devices-list">
+                    <div class="device-item">
+                        <div class="device-info">
+                            <div class="device-name">Chrome - Windows</div>
+                            <div class="device-details">
+                                Último acesso: Hoje às 14:30
+                                <span class="current-device"> • Dispositivo atual</span>
+                            </div>
+                        </div>
+                        <div class="device-status">Ativo</div>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <div class="device-name">Safari - iPhone</div>
+                            <div class="device-details">Último acesso: Ontem às 09:15</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="disconnectDevice('iPhone')">Desconectar</button>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <div class="device-name">Chrome - Android</div>
+                            <div class="device-details">Último acesso: 3 dias atrás</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="disconnectDevice('Android')">Desconectar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="danger-zone">
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Excluir Conta</div>
+                        <div class="setting-description">Esta ação não pode ser desfeita. Todos os seus dados serão permanentemente removidos.</div>
+                    </div>
+                </div>
+                <button class="btn btn-danger" onclick="deleteAccount()">Excluir Conta Permanentemente</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+const barra = document.getElementById('barraPesquisa');
+    const input = document.getElementById('buscar');
+    let isExpanded = false;
+
+    barra.addEventListener('mouseenter', () => {
+      if (!isExpanded) barra.classList.add('expanded');
+    });
+
+    barra.addEventListener('mouseleave', () => {
+      if (!isExpanded) barra.classList.remove('expanded');
+    });
+
+    barra.addEventListener('click', () => {
+      isExpanded = true;
+      barra.classList.add('expanded');
+      input.focus();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        isExpanded = false;
+        barra.classList.remove('expanded');
+        input.blur();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!barra.contains(e.target)) {
+        isExpanded = false;
+        barra.classList.remove('expanded');
+      }
+    });
+
+        // Tema
+        function toggleTheme() {
+            const body = document.body;
+            const toggle = document.getElementById('theme-toggle');
+            
+            if (toggle.checked) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+            }
+        }
+
+        // Idioma
+        function changeLanguage() {
+            const language = document.getElementById('language').value;
+            alert(`Idioma alterado para: ${language === 'pt' ? 'Português' : language === 'en' ? 'English' : language === 'es' ? 'Español' : 'Français'}`);
+        }
+
+        // Notificações
+        function togglePromoNotifications() {
+            const isEnabled = document.getElementById('promo-notifications').checked;
+            alert(`Notificações de promoções ${isEnabled ? 'ativadas' : 'desativadas'}`);
+        }
+
+        function toggleBookingReminders() {
+            const isEnabled = document.getElementById('booking-reminders').checked;
+            alert(`Lembretes de reserva ${isEnabled ? 'ativados' : 'desativados'}`);
+        }
+
+        // Dispositivos
+        function disconnectDevice(deviceName) {
+            if (confirm(`Deseja desconectar o dispositivo ${deviceName}?`)) {
+                alert(`Dispositivo ${deviceName} desconectado com sucesso!`);
+                // Aqui você removeria o dispositivo da lista
+            }
+        }
+
+        // Excluir conta
+        function deleteAccount() {
+            const confirmation = confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.');
+            if (confirmation) {
+                const finalConfirmation = confirm('ATENÇÃO: Todos os seus dados serão perdidos permanentemente. Digite "EXCLUIR" para confirmar.');
+                if (finalConfirmation) {
+                    alert('Conta excluída com sucesso. Você será redirecionado para a página inicial.');
+                    // Aqui você faria a exclusão da conta
+                }
+            }
+        }
+
+        // Voltar
+        function goBack() {
+            alert('Voltando para a página inicial...');
+        }
+
+        // Inicializar tema padrão
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('dark-theme');
+        });
+    </script>
+</body>
+</html>
