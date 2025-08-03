@@ -11,7 +11,7 @@ body{
 /*HEADER*/
 header{
   display: flex;
-  padding: 5px 10px;
+  padding: 5px 230px;
   align-items: center;
   justify-content: space-between;
   position: fixed;
@@ -125,6 +125,16 @@ header{
 }
 
 /*CONTEÚDO PRINCIPAL*/
+
+.container {
+    max-width: 1200px;
+    margin: 140px auto;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+
 .settings-container {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -322,16 +332,19 @@ body.dark-theme {
 }
 
 /* Tema Claro */
-body.light-theme {
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe, #93c5fd);
-    color: black;
-}
+.light-theme {
+    /* Fundo gradiente azul */
+    background: linear-gradient(135deg, #0138b4, #4a90e2, #73bff6);
+    min-height: 100vh;
+  }
 
-body.light-theme .settings-container {
-    background: rgba(255, 255, 255, 0.8);
-    color: black;
-}
-
+  .light-theme .settings-container {
+    background: white;
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 body.light-theme select {
     background: rgba(0, 0, 0, 0.1);
     color: black;
@@ -346,6 +359,8 @@ body.light-theme .search-bar {
     background: rgba(0, 0, 0, 0.1);
     color: black;
 }
+
+
 
 body.light-theme .search-bar::placeholder {
     color: rgba(0, 0, 0, 0.5);
@@ -386,7 +401,7 @@ body.light-theme .btn-primary:hover {
 }
 
 body.light-theme .section-title {
-    color: black;
+    color: #1985d4;
 }
 
 body.light-theme .setting-description {
@@ -397,6 +412,59 @@ body.light-theme .danger-zone {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
+
+/*RODAPÉ*/
+.site-footer {
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    margin-top: 50px;
+  }
+  
+  .footer-top-line, .footer-bottom-line {
+    height: 3px;
+    background-color: white;
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+  .footer-bottom-line {
+    margin-top: 20px;
+  }
+  
+  .footer-domain {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    margin: 15px 0;
+    text-align: center;
+  }
+  
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 10px;
+  }
+  
+  .footer-link {
+    font-size: 14px;
+    color: white;
+    text-transform: uppercase;
+  }
+  
+  .footer-anchor img {
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+  
+  .footer-anchor:hover img {
+    filter: grayscale(0%);
+    opacity: 1;
+  }
 
 /* Responsividade */
 @media (max-width: 768px) {

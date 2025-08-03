@@ -3,16 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barraca Paraíso Azul - Reservas</title>
+    <title>BeachSpot</title>
     <link rel="stylesheet" href="/assets/css/info-produto.css">
 </head>
 <body>
+     <header>
+    <!--LOGO-->
+    <div class="logo">
+      <a href="inicio.html">
+        <img src="/assets/img/Logo.png" alt="Logo 'BeachSpot'" />
+      </a>
+    </div>
+    <!--BARRA DE NAVEGAÇÃO-->
+    <div class="barra-nav">
+      <nav class="nav">
+        <a href="inicio.html">Inicío</a>
+        <a href="perfil.html">Perfil</a>
+        <a href="biblioteca.html">Biblioteca</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="config.html">Configurações</a>
+      </nav>
+    </div>
+    <!--BARRA DE PESQUISA-->
+    <div class="barra-pesquisa" id="barraPesquisa">
+      <img src="/assets/icons/Lupa.png" alt="Ícone de lupa" class="icon-pesquisa" />
+      <input type="text" id="buscar" class="pesquisa" placeholder="Buscar..." />
+    </div>
+  </header>
+
     <div class="container">
         <div class="profile-grid">
             <div class="header">
-                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=300&fit=crop&crop=center" alt="Barraca Paraíso Azul" class="tent-photo">
+                <img src="/assets/img/Oassis.jpg" alt="Barraca Oassis do Oceano" class="tent-photo">
                 <div class="tent-info">
-                    <h1>Barraca Paraíso Azul</h1>
+                    <h1>Oassis do Oceano</h1>
                     <div class="rating">
                         <div class="stars">
                             <div class="star"></div>
@@ -24,7 +48,7 @@
                         <span class="rating-text">4.2 (156 avaliações)</span>
                     </div>
                     <button class="location-btn" onclick="openLocation()">
-                        <span>📍</span> Ver Localização
+                        Ver Localização
                     </button>
                 </div>
             </div>
@@ -64,10 +88,10 @@
             <div class="gallery">
                 <h3>Galeria de Fotos</h3>
                 <div class="photo-grid">
-                    <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop" alt="Vista da barraca" class="gallery-photo" onclick="openPhoto(this)">
-                    <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=300&h=200&fit=crop" alt="Área de mesas" class="gallery-photo" onclick="openPhoto(this)">
-                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop" alt="Pratos servidos" class="gallery-photo" onclick="openPhoto(this)">
-                    <img src="https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=300&h=200&fit=crop" alt="Vista do mar" class="gallery-photo" onclick="openPhoto(this)">
+                    <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" alt="Vista da barraca" class="gallery-photo" onclick="openPhoto(this)">
+                    <img src="https://simonde.com.br/wp-content/uploads/2017/12/uxua-quadrado-trancoso-bahia-hoteis-de-luxo-critica-review-1100-36-1024x682.jpg.webp" alt="Área de mesas" class="gallery-photo" onclick="openPhoto(this)">
+                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" alt="Pratos servidos" class="gallery-photo" onclick="openPhoto(this)">
+                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/04/32/53/44/barraca-marguerita.jpg" alt="Vista do mar" class="gallery-photo" onclick="openPhoto(this)">
                 </div>
             </div>
 
@@ -84,6 +108,64 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- FOOTER -->
+        <footer class="site-footer">
+          <div class="footer-top-line"></div>
+
+          <div class="footer-content">
+            <div class="footer-domain">WWW.BEACHSPOT.COM.BR</div>
+
+            <div class="footer-links">
+              <div class="footer-link">PRIVACY POLICY</div>
+              <div class="footer-anchor">
+                <img src="/assets/img/ancora.png" alt="Anchor" width="30" />
+              </div>
+              <div class="footer-link">TERMS OF SERVICE</div>
+            </div>
+          </div>
+
+          <div class="footer-bottom-line"></div>
+        </footer>
+
+    <script>
+  function viewProducts() {
+    window.location.href = "Cardapio.html";
+  }
+</script>
+
+  <script>
+    const barra = document.getElementById('barraPesquisa');
+    const input = document.getElementById('buscar');
+    let isExpanded = false;
+
+    barra.addEventListener('mouseenter', () => {
+      if (!isExpanded) barra.classList.add('expanded');
+    });
+
+    barra.addEventListener('mouseleave', () => {
+      if (!isExpanded) barra.classList.remove('expanded');
+    });
+
+    barra.addEventListener('click', () => {
+      isExpanded = true;
+      barra.classList.add('expanded');
+      input.focus();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        isExpanded = false;
+        barra.classList.remove('expanded');
+        input.blur();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!barra.contains(e.target)) {
+        isExpanded = false;
+        barra.classList.remove('expanded');
+      }
+    });
+  </script>
 </body>
 </html>

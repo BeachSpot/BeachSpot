@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/assets/css/inicio.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <title>BeachSpot</title>
-</head>
-<body>
-
-  <header>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>BeachSpot</title>
+    <link rel="stylesheet" href="/assets/css/inicio.css"/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  </head>
+  <body>
+    <div class="container">
+            <header>
     <!--LOGO-->
     <div class="logo">
       <a href="inicio.html">
@@ -21,7 +23,7 @@
       <nav class="nav">
         <a href="inicio.html">Inicío</a>
         <a href="perfil.html">Perfil</a>
-        <a href="#Biblioteca">Biblioteca</a>
+        <a href="biblioteca.html">Biblioteca</a>
         <a href="sobre.html">Sobre</a>
         <a href="config.html">Configurações</a>
       </nav>
@@ -33,177 +35,230 @@
     </div>
   </header>
 
-  <main>
-    <!--SEÇÃO HERO-->
-    <section class="hero">
-      <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Philip House background" />
-      <div class="hero-text">
-        <h2>Seu Refugio à<br/>Beira-Mar</h2>
-        <p>
-          Já em onde passar as férias? Reserve sua barraca de praia e desfrute de momentos inesquecíveis com vista para o mar. Conforto, exlusividade
-        </p>
-      </div>
-    </section>
-    <!--BARRACAS EXCLUSIVAS-->
-    <section class="barracas-exclusivas">
-  <div class="conteudo">
-    <div class="texto-esquerda">
-      <h1>PRAIA DOS SONHOS,<br />BARRACAS EXCLUSIVAS</h1>
-      <ul>
-        <li>
-          <i class="fas fa-medal"></i> <strong>Inaugurado em 2024</strong><br />
-          <strong class="destaque-m">Barracas de praia totalmente<br />equipadas e exclusivas</strong>
-        </li>
-        <li>
-          <i class="fas fa-medal"></i> <strong>6 barracas à beira-mar</strong><br />
-          <strong class="destaque-m">Conforto e privacidade em<br />um cenário paradisíaco</strong>
-        </li>
-        <li>
-          <i class="fas fa-medal"></i> <strong>Interiores personalizados</strong><br />
-          <strong class="destaque-m">para proporcionar o máximo<br />de relaxamento</strong>
-        </li>
-      </ul>
-    </div>
+      <main>
+        <!-- SEÇÃO HERO -->
+<div class="secao-destaque">
+  <div class="filtro"></div>
+  <div class="corte"></div>
 
-    <div class="texto-direita">
-      <p class="citaçao">
-        <img src="/assets/img/icons8-aspas-direitas-50.png" alt="Aspas esquerda" class="aspas-esquerda" />
-        Mais do que um refúgio,<br />
-        sua barraca de praia é <br />onde o luxo encontra a<br />
-        simplicidade do mar.
-        <img src="/assets/img/icons8-aspas-direitas-50.png" alt="Aspas direita" class="aspas-direita" />
-      </p>
-    </div>
-  </div>
-</section>
-
-
-    <!--PROMO-->
-    <div class="container">
-  <div class="banner">
-    <div class="texto-banner">
-      Encontre as melhores datas para reservar a sua próxima barraca
-    </div>
-  </div>
-
-  <div class="card-datas">
-    <div class="item">
-      <span>Outubro</span>
-      <span>R$ 140 – R$ 160</span>
-    </div>
-    <div class="item destaque">
-      <span>Novembro</span>
-      <span>R$ 135 – R$ 150</span>
-    </div>
-    <div class="item">
-      <span>Dezembro</span>
-      <span>R$ 150 – R$ 170</span>
-    </div>
-    <div class="item">
-      <span>Janeiro</span>
-      <span>R$ 145 – R$ 170</span>
-    </div>
+  <div class="conteudo-destaque">
+    <h1 class="titulo-destaque">
+      Seu <span class="destaque-titulo">refúgio</span> à <br />beira-mar
+    </h1>
+    <div class="linha"></div>
+    <p class="descricao-destaque">
+      Já sabe onde passar as férias? Reserve sua barraca de praia e
+      desfrute de momentos inesquecíveis com vista para o mar. Conforto e
+      exclusividade.
+    </p>
   </div>
 </div>
 
-<!--BARRACAS-->
-<section class="barracas-avaliadas">
-  <div class="container">
-    <h2 class="titulo-secao">Relaxe nessas barracas com as melhores avaliações</h2>
-    
-    <div class="cards-container">
-      <!-- Primeira linha com 3 cards -->
-      <div class="card-barraca">
-        <div class="card-imagem" style="background-image: url('/assets/img/Oassis.jpg');"></div>
-        <div class="card-info">
-          <h3>Oásis do Oceano</h3>
-          <div class="avaliacao">9.3 - Excelente (2408)</div>
-          <div class="localizacao">Salvador (BA)</div>
-          <div class="categoria">Piscina</div>
-          <a href="info-produto.html" class="btn-mais-info">Mais informações</a>
-        </div>
-      </div>
-      
-      <div class="card-barraca">
-        <div class="card-imagem" style="background-image: url('/assets/img/Brisa\ do\ Mar.jpg');"></div>
-        <div class="card-info">
-          <h3>Brisa do Mar</h3>
-          <div class="avaliacao">8.4 - Excelente (2956)</div>
-          <div class="localizacao">Salvador (BA)</div>
-          <div class="categoria">Acesso direto à praia</div>
-          <a href="info-produto.html" class="btn-mais-info">Mais informações</a>
-        </div>
-      </div>
-      
-      <div class="card-barraca">
-        <div class="card-imagem" style="background-image: url('/assets/img/Refugio\ areia.jpg');"></div>
-        <div class="card-info">
-          <h3>Refúgio da Areia</h3>
-          <div class="avaliacao">9.3 - Excelente (2408)</div>
-          <div class="localizacao">Salvador (BA)</div>
-          <div class="categoria">Acesso direto à praia</div>
-          <a href="info-produto.html" class="btn-mais-info">Mais informações</a>
-        </div>
-      </div>
-      
-      <!-- Segunda linha com 3 cards -->
-      <div class="card-barraca">
-        <div class="card-imagem" style="background-image: url('/assets/img/Beira\ do\ Mar.jpg');"></div>
-        <div class="card-info">
-          <h3>Paraíso à Beira-Mar</h3>
-          <div class="avaliacao">8.8 - Excelente (2642)</div>
-          <div class="localizacao">Salvador (BA)</div>
-          <div class="categoria">Aceita animais</div>
-          <a href="info-produto.html" class="btn-mais-info">Mais informações</a>
-        </div>
-      </div>
-      
-      <div class="card-barraca">
-        <div class="card-imagem" style="background-image: url('/assets/img/Sombra\ e\ Mar.jpg');"></div>
-        <div class="card-info">
-          <h3>Sombra & Mar</h3>
-          <div class="avaliacao">9.5 - Excelente (1955)</div>
-          <div class="localizacao">Salvador (BA)</div>
-          <div class="categoria">Piscina</div>
-          <a href="info-produto.html" class="btn-mais-info">Mais informações</a>
-        </div>
-      </div>
-      
-      <div class="card-barraca">
-        <div class="card-imagem" style="background-image: url('/assets/img/Sol\ e\ Serenidade.jpg');"></div>
-        <div class="card-info">
-          <h3>Sol & Serenidade</h3>
-          <div class="avaliacao">9.5 - Excelente (1955)</div>
-          <div class="localizacao">Salvador (BA)</div>
-          <div class="categoria">Aceita animais</div>
-          <a href="info-produto.html" class="btn-mais-info">Mais informações</a>
-        </div>
-      </div>
+
+        <!-- SEÇÃO SABER MAIS -->
+        <section class="barracas-exclusivas">
+          <div class="citacao-container">
+            <div class="citacao-text">
+              "Mais do que um refúgio,<br />
+              sua barraca de praia é onde o luxo<br />
+              encontra a simplicidade do mar."
+            </div>
+          </div>
+
+          <h1 class="titulo-principal">
+            PRAIA DOS SONHOS,<br />BARRACAS EXCLUSIVAS
+          </h1>
+
+          <div class="circulos-container">
+            <div class="circulo">
+              <i class="fas fa-medal"></i>
+              <div class="circulo-titulo">Inaugurado em 2024</div>
+              <div class="circulo-descricao">
+                Barracas de praia totalmente equipadas e exclusivas
+              </div>
+            </div>
+
+            <div class="circulo">
+              <i class="fas fa-medal"></i>
+              <div class="circulo-titulo">6 barracas à beira-mar</div>
+              <div class="circulo-descricao">
+                Conforto e privacidade em um cenário paradisíaco
+              </div>
+            </div>
+
+            <div class="circulo">
+              <i class="fas fa-medal"></i>
+              <div class="circulo-titulo">Interiores personalizados</div>
+              <div class="circulo-descricao">
+                Para proporcionar o máximo de relaxamento
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO PROMOÇÃO -->
+        <section class="promo-section">
+          <div class="container-promo">
+            <div class="praia-banner">
+              <div class="praia-overlay"></div>
+              <div class="texto-promo">
+                Encontre as melhores datas para reservar a sua próxima barraca
+              </div>
+            </div>
+            <div class="card-datas">
+              <div class="item">
+                <span>Outubro</span>
+                <span>R$ 140 – R$ 160</span>
+              </div>
+              <div class="item destaque">
+                <span>Novembro</span>
+                <span>R$ 135 – R$ 150</span>
+              </div>
+              <div class="item">
+                <span>Dezembro</span>
+                <span>R$ 150 – R$ 170</span>
+              </div>
+              <div class="item">
+                <span>Janeiro</span>
+                <span>R$ 145 – R$ 170</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BARRACAS AVALIADAS -->
+        <section class="barracas-avaliadas">
+          <div class="container-barraca">
+            <h2 class="titulo-secao">
+              Relaxe nessas barracas com as melhores avaliações
+            </h2>
+
+            <div class="cards-container">
+              <!-- Linha 1 -->
+              <div class="card-barraca">
+                <div
+                  class="card-imagem"
+                  style="background-image: url('/assets/img/Oassis.jpg');"
+                ></div>
+                <div class="card-info">
+                  <h3>Oásis do Oceano</h3>
+                  <div class="avaliacao">9.3 - Excelente (2408)</div>
+                  <div class="localizacao">Salvador (BA)</div>
+                  <div class="categoria">Piscina</div>
+                  <a href="info-produto.html" class="btn-mais-info"
+                    >Mais informações</a
+                  >
+                </div>
+              </div>
+
+              <div class="card-barraca">
+                <div
+                  class="card-imagem"
+                  style="background-image: url('/assets/img/Brisa do Mar.jpg');"
+                ></div>
+                <div class="card-info">
+                  <h3>Brisa do Mar</h3>
+                  <div class="avaliacao">8.4 - Excelente (2956)</div>
+                  <div class="localizacao">Salvador (BA)</div>
+                  <div class="categoria">Acesso direto à praia</div>
+                  <a href="info-produto.html" class="btn-mais-info"
+                    >Mais informações</a
+                  >
+                </div>
+              </div>
+
+              <div class="card-barraca">
+                <div
+                  class="card-imagem"
+                  style="background-image: url('/assets/img/Refugio areia.jpg');"
+                ></div>
+                <div class="card-info">
+                  <h3>Refúgio da Areia</h3>
+                  <div class="avaliacao">9.3 - Excelente (2408)</div>
+                  <div class="localizacao">Salvador (BA)</div>
+                  <div class="categoria">Acesso direto à praia</div>
+                  <a href="info-produto.html" class="btn-mais-info"
+                    >Mais informações</a
+                  >
+                </div>
+              </div>
+
+              <!-- Linha 2 -->
+              <div class="card-barraca">
+                <div
+                  class="card-imagem"
+                  style="background-image: url('/assets/img/Beira do Mar.jpg');"
+                ></div>
+                <div class="card-info">
+                  <h3>Paraíso à Beira-Mar</h3>
+                  <div class="avaliacao">8.8 - Excelente (2642)</div>
+                  <div class="localizacao">Salvador (BA)</div>
+                  <div class="categoria">Aceita animais</div>
+                  <a href="info-produto.html" class="btn-mais-info"
+                    >Mais informações</a
+                  >
+                </div>
+              </div>
+
+              <div class="card-barraca">
+                <div
+                  class="card-imagem"
+                  style="background-image: url('/assets/img/Sombra e Mar.jpg');"
+                ></div>
+                <div class="card-info">
+                  <h3>Sombra & Mar</h3>
+                  <div class="avaliacao">9.5 - Excelente (1955)</div>
+                  <div class="localizacao">Salvador (BA)</div>
+                  <div class="categoria">Piscina</div>
+                  <a href="info-produto.html" class="btn-mais-info"
+                    >Mais informações</a
+                  >
+                </div>
+              </div>
+
+              <div class="card-barraca">
+                <div
+                  class="card-imagem"
+                  style="background-image: url('/assets/img/Sol e Serenidade.jpg');"
+                ></div>
+                <div class="card-info">
+                  <h3>Sol & Serenidade</h3>
+                  <div class="avaliacao">9.5 - Excelente (1955)</div>
+                  <div class="localizacao">Salvador (BA)</div>
+                  <div class="categoria">Aceita animais</div>
+                  <a href="info-produto.html" class="btn-mais-info"
+                    >Mais informações</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+          <div class="footer-top-line"></div>
+
+          <div class="footer-content">
+            <div class="footer-domain">WWW.BEACHSPOT.COM.BR</div>
+
+            <div class="footer-links">
+              <div class="footer-link">PRIVACY POLICY</div>
+              <div class="footer-anchor">
+                <img src="/assets/img/ancora.png" alt="Anchor" width="30" />
+              </div>
+              <div class="footer-link">TERMS OF SERVICE</div>
+            </div>
+          </div>
+
+          <div class="footer-bottom-line"></div>
+        </footer>
+      </main>
     </div>
-  </div>
-</section>
 
-  </main>
+    <script src="script.js"></script>
 
-  <footer class="site-footer">
-  <div class="footer-top-line"></div>
-  
-  <div class="footer-content">
-    <div class="footer-domain">WWW.BEACHSPOT.COM.BR</div>
-    
-    <div class="footer-links">
-      <div class="footer-link">PRIVACY POLICY</div>
-      <div class="footer-anchor">
-        <img src="/assets/img/ancora.png" alt="Anchor" width="30">
-      </div>
-      <div class="footer-link">TERMS OF SERVICE</div>
-    </div>
-  </div>
-  
-  <div class="footer-bottom-line"></div>
-</footer>
-
-  <script>
+      <script>
     const barra = document.getElementById('barraPesquisa');
     const input = document.getElementById('buscar');
     let isExpanded = false;
@@ -237,5 +292,5 @@
       }
     });
   </script>
-</body>
+  </body>
 </html>

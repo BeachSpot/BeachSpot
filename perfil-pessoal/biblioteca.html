@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeachSpot</title>
+    <link rel="stylesheet" href="/assets/css/biblioteca.css">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container">
+            SUAS RESERVAS
+        </div>
+    </div>
+
+                <header>
+    <!--LOGO-->
+    <div class="logo">
+      <a href="inicio.html">
+        <img src="/assets/img/Logo.png" alt="Logo 'BeachSpot'" />
+      </a>
+    </div>
+    <!--BARRA DE NAVEGAÇÃO-->
+    <div class="barra-nav">
+      <nav class="nav">
+        <a href="inicio.html">Inicío</a>
+        <a href="perfil.html">Perfil</a>
+        <a href="biblioteca.html">Biblioteca</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="config.html">Configurações</a>
+      </nav>
+    </div>
+    <!--BARRA DE PESQUISA-->
+    <div class="barra-pesquisa" id="barraPesquisa">
+      <img src="/assets/icons/Lupa.png" alt="Ícone de lupa" class="icon-pesquisa" />
+      <input type="text" id="buscar" class="pesquisa" placeholder="Buscar..." />
+    </div>
+  </header>
+
+    <div class="container">
+        <div class="reservas-grid">
+            <div class="reserva-card">
+                <div class="reserva-image oasis"></div>
+                <div class="reserva-info">
+                    <h3 class="reserva-title">Oásis do Oceano</h3>
+                    <div class="reserva-location">Salvador (BA)</div>
+                    <div class="reserva-date">05/11/2024</div>
+                    <div class="reserva-time">14:30</div>
+                    <button class="btn-cancelar">Cancelar Reserva</button>
+                </div>
+            </div>
+
+            <div class="reserva-card">
+                <div class="reserva-image sombra"></div>
+                <div class="reserva-info">
+                    <h3 class="reserva-title">Sombra & Mar</h3>
+                    <div class="reserva-location">Salvador (BA)</div>
+                    <div class="reserva-date">16/12/2024</div>
+                    <div class="reserva-time">11:45</div>
+                    <button class="btn-cancelar">Cancelar Reserva</button>
+                </div>
+            </div>
+
+            <div class="empty-card">
+                <div class="empty-icon"></div>
+                <div class="empty-text">
+                    Faça uma nova reserva<br>
+                    e aproveite a praia!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal-content">
+            <div class="modal-title"> Cancelar Reserva</div>
+            <div class="modal-message" id="modalMessage">
+                Tem certeza que quer cancelar esta reserva?
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-yes" id="btnYes">Sim</button>
+                <button class="modal-btn modal-btn-no" id="btnNo">Não</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentReservationCard = null;
+
+        // Função para abrir o modal
+        function openCancelModal(card, title) {
+            currentReservationCard = card;
+            const modal = document.getElementById('cancelModal');
+            const message = document.getElementById('modalMessage');
+            
+            message.innerHTML = `Tem certeza que quer cancelar a reserva em <strong>${title}</strong>?`;
+            modal.classList.add('show');
+        }
+
+        // Função para fechar o modal
+        function closeCancelModal() {
+            const modal = document.getElementById('cancelModal');
+            modal.classList.remove('show');
+            currentReservationCard = null;
+        }
+
+        // Função para cancelar a reserva
+        function cancelReservation() {
+            if (currentReservationCard) {
+                const title = currentReservationCard.querySelector('.reserva-title').textContent;
+                const btn = currentReservationCard.querySelector('.btn-cancelar');
+                
+                // Animação de cancelamento
+                currentReservationCard.style.opacity = '0.5';
+                currentReservationCard.style.transform = 'scale(0.95)';
+                btn.textContent = 'Cancelada';
+                btn.style.background = '#e74c3c';
+                btn.disabled = true;
+                
+                // Remove o card após 2 segundos
+                setTimeout(() => {
+                    currentReservationCard.remove();
+                    
+                    // Adiciona uma mensagem de sucesso
+                    showSuccessMessage(`Reserva em ${title} cancelada com sucesso!`);
+                }, 2000);
+            }
+            closeCancelModal();
+        }
+
+        // Função para mostrar mensagem de sucesso
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #27ae60;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                z-index: 2000;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            successDiv.textContent = message;
+            document.body.appendChild(successDiv);
+            
+            // Animação de entrada
+            setTimeout(() => {
+                successDiv.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove após 3 segundos
+            setTimeout(() => {
+                successDiv.style.transform = 'translateX(100%)';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 3000);
+        }
+
+        // Event listeners para os botões de cancelar reserva
+        document.querySelectorAll('.btn-cancelar').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.reserva-card');
+                const title = card.querySelector('.reserva-title').textContent;
+                openCancelModal(card, title);
+            });
+        });
+
+        // Event listeners para os botões do modal
+        document.getElementById('btnYes').addEventListener('click', cancelReservation);
+        document.getElementById('btnNo').addEventListener('click', closeCancelModal);
+
+        // Fechar modal ao clicar fora dele
+        document.getElementById('cancelModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCancelModal();
+            }
+        });
+
+        // Fechar modal com a tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCancelModal();
+            }
+        });
+
+        // Funcionalidade da busca
+        const searchInput = document.querySelector('.search-box input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.reserva-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.reserva-title').textContent.toLowerCase();
+                const location = card.querySelector('.reserva-location').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || location.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+      <script>
+    const barra = document.getElementById('barraPesquisa');
+    const input = document.getElementById('buscar');
+    let isExpanded = false;
+
+    barra.addEventListener('mouseenter', () => {
+      if (!isExpanded) barra.classList.add('expanded');
+    });
+
+    barra.addEventListener('mouseleave', () => {
+      if (!isExpanded) barra.classList.remove('expanded');
+    });
+
+    barra.addEventListener('click', () => {
+      isExpanded = true;
+      barra.classList.add('expanded');
+      input.focus();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        isExpanded = false;
+        barra.classList.remove('expanded');
+        input.blur();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!barra.contains(e.target)) {
+        isExpanded = false;
+        barra.classList.remove('expanded');
+      }
+    });
+  </script>
+</body>
+</html>
