@@ -505,7 +505,7 @@
             <div id="registration-form-card" class="selection-card">
                 <h2 class="form-title">Crie sua conta</h2>
                 <p class="form-subtitle">
-                    Já tem uma conta? <a href="#">Entrar</a>
+                    Já tem uma conta? <a href="entrar.html">Entrar</a>
                 </p>
 
                 <form id="registration-form">
@@ -671,6 +671,9 @@
                         showAlert('Sucesso!', 'Usuário registrado com sucesso!', 'success');
                         registrationForm.reset();
                         console.log('Sucesso:', result);
+                        setTimeout(() => {
+                            window.location.href = '/perfil-pessoal/inicio.html';
+                        }, 1500);
                     } else {
                         showAlert('Erro', `Erro: ${result.error || 'Ocorreu um erro desconhecido.'}`, 'error');
                         console.error('Erro:', result);

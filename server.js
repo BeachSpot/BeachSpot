@@ -1,3 +1,4 @@
+// Importa as bibliotecas necessárias.
 import express from 'express';
 import cors from 'cors';
 import pg from 'pg';
@@ -8,6 +9,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Configura o pool de conexões com o PostgreSQL.
 const pool = new pg.Pool({
     connectionString: 'postgresql://postgres.ncabatizzzpxctqsbxpd:Be@chSp0t680@aws-1-sa-east-1.pooler.supabase.com:6543/postgres'
 });
@@ -32,13 +34,12 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: 'Tipo de conta inválido. Use "cliente" ou "gestor".' });
     }
 
-    // Inicia uma transação para garantir que ambas as inserções aconteçam com sucesso.
     const client = await pool.connect();
 
     try {
         await client.query('BEGIN'); // Inicia a transação.
 
-        // 1. Insere na tabela 'usuarios'.
+        // 1. Insere na tabela 'usuarios', usando a senha em texto simples.
         const usuarioResult = await client.query(
             'INSERT INTO usuarios (email, senha, tipo_conta) VALUES ($1, $2, $3) RETURNING id_usuario',
             [email, senha, tipo_conta]
@@ -69,6 +70,56 @@ app.post('/api/register', async (req, res) => {
         client.release(); // Libera a conexão.
     }
 });
+
+// ---
+// Rota de login de usuário.
+app.post('/api/login', async (req, res) => {
+    const { email, senha } = req.body;
+
+    const client = await pool.connect();
+    
+    try {
+        // Busca o usuário pelo e-mail.
+        const result = await client.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+        const usuario = result.rows[0];
+
+        // Se o usuário não for encontrado.
+        if (!usuario) {
+            return res.status(401).json({ error: 'Email ou senha incorretos.' });
+        }
+
+        // Compara a senha digitada com a senha em texto simples do banco de dados.
+        if (senha !== usuario.senha) {
+            return res.status(401).json({ error: 'Email ou senha incorretos.' });
+        }
+
+        // Se a senha estiver correta, busca informações adicionais (nome)
+        // do cliente ou gestor.
+        let nomeUsuario = null;
+        if (usuario.tipo_conta === 'cliente') {
+            const clienteResult = await client.query('SELECT nome FROM cliente WHERE id_cliente = $1', [usuario.id_usuario]);
+            nomeUsuario = clienteResult.rows[0]?.nome;
+        } else if (usuario.tipo_conta === 'gestor') {
+            const gestorResult = await client.query('SELECT nome FROM gestor WHERE id_gestor = $1', [usuario.id_usuario]);
+            nomeUsuario = gestorResult.rows[0]?.nome;
+        }
+
+        res.status(200).json({ 
+            message: 'Login bem-sucedido!',
+            id_usuario: usuario.id_usuario,
+            email: usuario.email,
+            nome: nomeUsuario,
+            tipo_conta: usuario.tipo_conta
+        });
+
+    } catch (error) {
+        console.error('Erro ao tentar fazer login:', error);
+        res.status(500).json({ error: 'Erro no servidor.', details: error.message });
+    } finally {
+        client.release(); // Libera a conexão.
+    }
+});
+
 
 // Inicia o servidor.
 app.listen(PORT, () => {
