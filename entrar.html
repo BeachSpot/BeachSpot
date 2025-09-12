@@ -3,96 +3,492 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/criar-conta.css">
-    <title>BeachSpot</title>
+    <title>BeachSpot - Entrar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            padding: 20px;
+        }
+
+        /* Main container for the two-column layout */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            min-height: 650px;
+        }
+
+        /* Left Section */
+        .left-section {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-title {
+            color: #FFFFFF;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            line-height: 1.2;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #1F2937;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .feature-title {
+            color: #1F2937;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .feature-description {
+            color: #6B7280;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .logo {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo img {
+            width: 180px;
+            height: auto;
+        }
+
+        /* Right Section */
+        .right-section {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .form-title {
+            color: #1985d4;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .form-subtitle {
+            color: #6B7280;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .form-subtitle a {
+            color: #1976D2;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-subtitle a:hover {
+            color: #0D47A1;
+            text-decoration: underline;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            color: #1F2937;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1976D2;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #6B7280;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #1F2937;
+        }
+
+        .password-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-bottom: 24px;
+            font-size: 12px;
+        }
+
+        .forgot-password a {
+            color: #1976D2;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #0D47A1;
+            text-decoration: underline;
+        }
+
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #0288D1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #0277BD;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #E5E7EB;
+        }
+
+        .divider span {
+            color: #6B7280;
+            font-size: 12px;
+            padding: 0 16px;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-social {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1F2937;
+            cursor: pointer;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .btn-social:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .btn-social svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 968px) {
+            .container {
+                flex-direction: column;
+                max-width: 500px;
+                background: rgba(255,255,255,0.9);
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            }
+
+            .left-section {
+                padding: 40px;
+                min-height: auto;
+                color: #1F2937;
+            }
+            .left-section::before, .left-section::after {
+                display: none;
+            }
+            .main-title {
+                color: #1E3A8A;
+            }
+
+            .right-section {
+                padding: 40px;
+            }
+            
+            .form-card {
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+
+
+        @media (max-width: 480px) {
+            .left-section, .right-section {
+                padding: 30px 20px;
+            }
+
+            .main-title {
+                font-size: 32px;
+            }
+
+            .form-title {
+                font-size: 24px;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h2>Entrar</h2>
-        <p class="subtitle">A brisa do mar sentiu sua falta!</p>
-        
-        <form id="signup-form">
-            
-            <div class="form-group">
-                <input type="email" id="email" placeholder="Email" required>
-                <div class="error-message" id="email-error">Por favor, insira um e-mail válido</div>
+        <!-- Lado Esquerdo -->
+        <div class="left-section">
+            <div class="left-content">
+                <h1 class="main-title">Boas-vindas de volta<br>ao seu lugar ao sol.</h1>
+                
+                <button type="button" class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Perfil Cliente</h3>
+                    </div>
+                    <p class="feature-description">
+                        Acesse suas reservas, veja seus locais favoritos e planeje seu próximo dia de praia com facilidade.
+                    </p>
+                </button>
+
+                <button type="button" class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">
+                           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Perfil Gestor</h3>
+                    </div>
+                    <p class="feature-description">
+                        Acesse seu painel para gerenciar a ocupação, visualizar o histórico de reservas e otimizar suas operações.
+                    </p>
+                </button>
             </div>
             
-            <div class="form-group">
-                <input type="password" id="senha" placeholder="Senha" required>
-                <div class="error-message" id="senha-error">A senha deve ter pelo menos 6 caracteres</div>
+            <div class="logo">
+                <img src="https://placehold.co/180x40/transparent/FFFFFF?text=BeachSpot&font=inter" alt="BeachSpot Logo">
             </div>
-            
-            <div class="btn-container">
-                <button type="submit">Entrar</button>
+        </div>
+        <!-- Lado Direito -->
+        <div class="right-section">
+            <div class="form-card">
+                <h2 class="form-title">Entre na sua conta</h2>
+                <p class="form-subtitle">
+                    Não tem uma conta? <a href="index.html">Cadastre-se</a>
+                </p>
+
+                <form>
+                    <div class="form-group">
+                        <label class="form-label" for="email">E-mail</label>
+                        <input type="email" id="email" class="form-input" placeholder="Digite seu e-mail">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Senha</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" class="form-input" placeholder="Digite sua senha">
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg id="eye-off-icon" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="forgot-password">
+                        <a href="#">Esqueceu sua senha?</a>
+                    </p>
+
+                    <button type="submit" class="btn-primary">Entrar</button>
+                </form>
+
+                <div class="divider">
+                    <span>ou entre com</span>
+                </div>
+
+                <div class="social-buttons">
+                    <button class="btn-social">
+                        <svg viewBox="0 0 24 24" fill="#1877F2">
+                           <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                        Facebook
+                    </button>
+                    <button class="btn-social">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Google
+                    </button>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('signup-form');
-            const profileOptions = document.querySelectorAll('.profile-option');
-            let selectedProfile = 'pessoal';
-            const alertMessage = document.getElementById('alert-message');
-            const alertText = document.getElementById('alert-text');
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+            const eyeOffIcon = document.getElementById('eye-off-icon');
             
-            // Validação do formulário
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                let isValid = true;
-                
-                // Validação do email
-                const email = document.getElementById('email');
-                const emailError = document.getElementById('email-error');
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email.value)) {
-                    email.classList.add('error');
-                    emailError.style.display = 'block';
-                    isValid = false;
-                } else {
-                    email.classList.remove('error');
-                    emailError.style.display = 'none';
-                }
-                
-                // Validação da senha
-                const senha = document.getElementById('senha');
-                const senhaError = document.getElementById('senha-error');
-                if (senha.value.length < 6) {
-                    senha.classList.add('error');
-                    senhaError.style.display = 'block';
-                    isValid = false;
-                } else {
-                    senha.classList.remove('error');
-                    senhaError.style.display = 'none';
-                }
-                
-                if (isValid) {
-                    const formData = {
-                        email: email.value,
-                        senha: senha.value,
-                        tipoPerfil: selectedProfile
-                    };
-                    console.log('Dados do formulário:', formData);
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.style.display = 'none';
+                eyeOffIcon.style.display = 'block';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.style.display = 'block';
+                eyeOffIcon.style.display = 'none';
+            }
+        }
 
-                    window.location.href = "perfil-pessoal/inicio.html";
-                    
-                    // Limpar formulário após sucesso (opcional)
-                    form.reset();
-                    profileOptions[0].classList.add('selected');
-                    profileOptions[1].classList.remove('selected');
-                    selectedProfile = 'pessoal';
-                }
-            });
-            
-            // Remove os erros quando o usuário começa a digitar
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('input', function() {
-                    this.classList.remove('error');
-                    const errorElement = document.getElementById(this.id + '-error');
-                    if (errorElement) errorElement.style.display = 'none';
-                });
-            });
+        // Prevenir envio do formulário para demonstração
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Em uma aplicação real, você faria a validação e o envio dos dados aqui.
+            alert('Login realizado com sucesso! Bem-vindo(a) de volta! 🏖️');
         });
     </script>
 </body>
