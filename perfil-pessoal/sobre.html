@@ -1,95 +1,222 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/assets/css/sobre.css">
-  <title>BeachSpot</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeachSpot</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Estilos base e fundo */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex-grow: 1;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(1, 56, 180, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
 </head>
-<body>
-   <header>
-    <div class="logo">
-      <a href="inicio.html">
-        <img src="/assets/img/Logo.png" alt="Logo 'BeachSpot'" />
-      </a>
-    </div>
+<body class="text-white">
 
-    <div class="barra-nav">
-      <nav class="nav">
-        <a href="inicio.html">Inicío</a>
-        <a href="perfil.html">Perfil</a>
-        <a href="biblioteca.html">Biblioteca</a>
-        <a href="sobre.html">Sobre</a>
-        <a href="config.html">Configurações</a>
-      </nav>
-    </div>
+    <!-- Header Fixo Branco -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="inicio.html" class="flex items-center space-x-3">
+                <i data-lucide="anchor"></i>
+                <span class="text-xl font-bold">beachspot</span>
+            </a>
+            <ul class="hidden md:flex items-center space-x-6">
+                <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                <li><a href="biblioteca.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                <li><a href="perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                <li><a href="sobre.html" class="text-blue-600 font-semibold transition-colors">Sobre</a></li>
+                <li><a href="config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+            </ul>
+            <button class="md:hidden" id="mobile-menu-button">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white text-gray-800">
+            <a href="inicio.html" class="block py-2 px-6 hover:bg-gray-100">Início</a>
+            <a href="perfil.html" class="block py-2 px-6 hover:bg-gray-100">Perfil</a>
+            <a href="biblioteca.html" class="block py-2 px-6 hover:bg-gray-100">Biblioteca</a>
+            <a href="sobre.html" class="block py-2 px-6 hover:bg-gray-100 bg-gray-100 font-semibold">Sobre</a>
+            <a href="config.html" class="block py-2 px-6 hover:bg-gray-100">Configurações</a>
+        </div>
+    </header>
 
-    <div class="barra-pesquisa" id="barraPesquisa">
-      <img src="/assets/icons/Lupa.png" alt="Ícone de lupa" class="icon-pesquisa" />
-      <input type="text" id="buscar" class="pesquisa" placeholder="Buscar..." />
-    </div>
-  </header>  
+    <!-- Conteúdo principal -->
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section class="relative h-80 flex items-center justify-center text-center">
+            <div class="absolute inset-0 bg-black opacity-40"></div>
+            <img src="https://placehold.co/1200x400/73BFF6/FFFFFF?text=BeachSpot" alt="Imagem de uma praia relaxante" class="w-full h-full object-cover">
+            <div class="relative z-10 p-6">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">Sobre o BeachSpot</h1>
+                <p class="text-lg text-gray-200 mt-2">Sua tranquilidade na praia começa aqui.</p>
+            </div>
+        </section>
 
-  <div class="container">
-    <section class="sobre">
-    <h2>Sobre o BeachSpot</h2>
-    <p>O BeachSpot nasceu com um propósito simples: facilitar e melhorar a<br> experiência de quem deseja aproveitar o melhor da praia, sem se<br> preocupar com a correria de encontrar a barraca ideal. Somos uma<br> plataforma dedicada à reserva de barracas de praia, criada para<br> aqueles que amam o mar, o sol e a tranquilidade de uma boa sombra,<br> mas preferem evitar o estresse da improvisação.</p>
-    <h2>O que oferecemos</h2>
-    <p>No BeachSpot, trabalhamos com uma seleção de barracas em diversas <br>praias, garantindo que você sempre tenha um lugar reservado à sua <br>espera. Além disso, nossa plataforma oferece descrições detalhadas, <br>fotos e avaliações, para que você saiba exatamente o que esperar.</p>
-  </section>
-  </div>
+        <!-- Seção: Nossa Missão -->
+        <div class="bg-gray-50 text-gray-800 py-16 md:py-20">
+            <div class="container mx-auto max-w-4xl px-6">
+                <section>
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Nossa Missão</h2>
+                    <p class="text-lg text-gray-600 leading-relaxed text-center">
+                        O BeachSpot nasceu com um propósito simples: facilitar e melhorar a experiência de quem deseja aproveitar o melhor da praia, sem se preocupar com a correria de encontrar a barraca ideal. Somos uma plataforma dedicada à reserva de barracas de praia, criada para aqueles que amam o mar, o sol e a tranquilidade de uma boa sombra, mas preferem evitar o estresse da improvisação.
+                    </p>
+                </section>
+            </div>
+        </div>
+        
+        <!-- Seção: O que oferecemos -->
+        <div class="py-16 md:py-20">
+             <div class="container mx-auto max-w-5xl px-6">
+                 <section>
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">O que Oferecemos</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                        <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                            <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                                <i data-lucide="search" class="w-10 h-10"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Seleção Cuidadosa</h3>
+                            <p class="text-gray-200">Trabalhamos com uma seleção de barracas em diversas praias, garantindo que você sempre tenha um lugar de qualidade à sua espera.</p>
+                        </div>
+                        <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                            <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                                <i data-lucide="camera" class="w-10 h-10"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Informações Detalhadas</h3>
+                            <p class="text-gray-200">Nossa plataforma oferece descrições, fotos e avaliações, para que você saiba exatamente o que esperar de cada local.</p>
+                        </div>
+                        <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                            <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                                <i data-lucide="calendar-check" class="w-10 h-10"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Reserva Fácil</h3>
+                            <p class="text-gray-200">Com poucos cliques, você garante seu lugar ao sol, de forma rápida, segura e sem complicações.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-  <footer class="site-footer">
-  <div class="footer-top-line"></div>
-  
-  <div class="footer-content">
-    <div class="footer-domain">WWW.BEACHSPOT.COM.BR</div>
-    
-    <div class="footer-links">
-      <div class="footer-link">PRIVACY POLICY</div>
-      <div class="footer-anchor">
-        <img src="/assets/img/ancora.png" alt="Anchor" width="30">
-      </div>
-      <div class="footer-link">TERMS OF SERVICE</div>
-    </div>
-  </div>
-  
-  <div class="footer-bottom-line"></div>
-</footer>
+        <!-- Seção: Nossa Equipe -->
+        <div class="bg-white text-gray-800 py-16 md:py-20">
+            <div class="container mx-auto max-w-4xl px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Nossa Equipe</h2>
+                <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Apaixonados por praia, dedicados a criar a melhor experiência para você.</p>
+                <div class="flex flex-wrap justify-center gap-8">
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=CEO" alt="Foto do CEO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">João Silva</h3>
+                        <p class="text-gray-500">Fundador & CEO</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=CTO" alt="Foto do CTO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Maria Oliveira</h3>
+                        <p class="text-gray-500">CTO</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=COO" alt="Foto do COO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Carlos Pereira</h3>
+                        <p class="text-gray-500">Chefe de Operações</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <script>
-    const barra = document.getElementById('barraPesquisa');
-    const input = document.getElementById('buscar');
-    let isExpanded = false;
+        <!-- Seção: CTA -->
+        <div class="py-16 md:py-20">
+            <div class="container mx-auto max-w-4xl px-6 text-center">
+                 <h2 class="text-3xl md:text-4xl font-bold mb-4">Pronto para relaxar?</h2>
+                 <p class="text-lg text-gray-200 mb-8">Encontre a barraca perfeita e garanta seu lugar ao sol agora mesmo.</p>
+                 <a href="inicio.html" class="bg-white text-blue-600 font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-200 transition-all transform hover:scale-105 inline-block">
+                    Buscar Barracas
+                 </a>
+            </div>
+        </div>
 
-    barra.addEventListener('mouseenter', () => {
-      if (!isExpanded) barra.classList.add('expanded');
-    });
+    </main>
 
-    barra.addEventListener('mouseleave', () => {
-      if (!isExpanded) barra.classList.remove('expanded');
-    });
+    <!-- Footer Branco -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <!-- Coluna 1: Logo -->
+                <div class="w-full md:w-1/3 mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="anchor"></i>
+                        <span class="text-xl font-bold">beachspot</span>
+                    </div>
+                </div>
+                <!-- Coluna 2: Navegação -->
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold mb-3">Navegação</h3>
+                    <ul class="space-y-2">
+                        <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                        <li><a href="biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
+                    </ul>
+                </div>
+                <!-- Coluna 3: Social -->
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold mb-3">Redes Sociais</h3>
+                     <div class="flex space-x-4">
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="facebook"></i></a>
+                     </div>
+                </div>
+            </div>
+            <div class="text-center mt-12 border-t border-gray-200 pt-6">
+                 <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
-    barra.addEventListener('click', () => {
-      isExpanded = true;
-      barra.classList.add('expanded');
-      input.focus();
-    });
+    <script>
+        // --- Ativação de Ícones e Menu Mobile ---
+        lucide.createIcons();
 
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        isExpanded = false;
-        barra.classList.remove('expanded');
-        input.blur();
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!barra.contains(e.target)) {
-        isExpanded = false;
-        barra.classList.remove('expanded');
-      }
-    });
-  </script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>
+

@@ -1,87 +1,240 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BeachSpot</title>
-  <link rel="stylesheet" href="/assets/css/perfil.css"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeachSpot</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Estilos base e fundo */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(1, 56, 180, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
 </head>
-<body>
+<body class="text-white">
 
-    <header>
-    <div class="logo">
-      <a href="inicio.html">
-        <img src="/assets/img/Logo.png" alt="Logo 'BeachSpot'" />
-      </a>
-    </div>
+    <!-- Header Fixo Branco -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="inicio.html" class="flex items-center space-x-3">
+                <i data-lucide="anchor"></i>
+                <span class="text-xl font-bold">beachspot</span>
+            </a>
+            <ul class="hidden md:flex items-center space-x-6">
+                <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                <li><a href="biblioteca.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                <li><a href="perfil.html" class="text-blue-600 font-semibold transition-colors">Perfil</a></li>
+                <li><a href="sobre.html" class="hover:text-blue-600 transition-colors">Sobre</a></li>
+                <li><a href="config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+            </ul>
+             <button class="md:hidden" id="mobile-menu-button">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white text-gray-800">
+            <a href="inicio.html" class="block py-2 px-6 hover:bg-gray-100">Início</a>
+            <a href="perfil.html" class="block py-2 px-6 hover:bg-gray-100 bg-gray-100 font-semibold">Perfil</a>
+            <a href="biblioteca.html" class="block py-2 px-6 hover:bg-gray-100">Biblioteca</a>
+            <a href="sobre.html" class="block py-2 px-6 hover:bg-gray-100">Sobre</a>
+            <a href="config.html" class="block py-2 px-6 hover:bg-gray-100">Configurações</a>
+        </div>
+    </header>
 
-    <div class="barra-nav">
-      <nav class="nav">
-        <a href="inicio.html">Inicío</a>
-        <a href="perfil.html">Perfil</a>
-        <a href="biblioteca.html">Biblioteca</a>
-        <a href="sobre.html">Sobre</a>
-        <a href="config.html">Configurações</a>
-      </nav>
-    </div>
+    <!-- Conteúdo principal -->
+    <main class="pt-28 md:pt-32 container mx-auto max-w-6xl px-6">
+        
+        <div class="bg-white text-gray-700 rounded-2xl p-6 md:p-10 shadow-lg max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:-rotate-1">
+            
+            <!-- Lado Esquerdo: Formulário -->
+            <div class="flex flex-col space-y-6">
+                <div class="text-center">
+                    <label for="foto-perfil" class="cursor-pointer group relative mx-auto w-32 h-32">
+                        <img id="avatar" src="https://placehold.co/128x128/FFFFFF/0138b4?text=User" alt="Avatar do usuário" class="w-32 h-32 rounded-full border-4 border-cyan-400 object-cover transition-opacity group-hover:opacity-70" />
+                        <div class="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="bg-black/60 p-3 rounded-full">
+                                <i data-lucide="camera" class="w-8 h-8 text-white"></i>
+                            </div>
+                        </div>
+                    </label>
+                    <input type="file" id="foto-perfil" accept="image/*" class="hidden" />
+                </div>
 
-    <div class="barra-pesquisa" id="barraPesquisa">
-      <img src="/assets/icons/Lupa.png" alt="Ícone de lupa" class="icon-pesquisa" />
-      <input type="text" id="buscar" class="pesquisa" placeholder="Buscar..." />
-    </div>
-  </header>
+                <form class="space-y-4">
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-500 mb-1">Nome</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="nome" value="João da Silva" disabled class="w-full p-3 pl-10 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:opacity-70" />
+                        </div>
+                    </div>
 
-  <div class="main-container">
-  <div class="account-card">
-    <div class="account-info">
-      <div class="profile-header">
-        <div class="profile-pic">
-  <img id="avatar" src="/assets/img/Azullll.png" alt="Avatar do usuário" style="width: 100%; border-radius: 50%;" />
-  <input type="file" id="foto-perfil" accept="image/*" style="display: none;" />
-</div>
-        <p class="arroba">@usuario123</p>
-      </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-500 mb-1">Email</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="email" id="email" value="joao@gmail.com" disabled class="w-full p-3 pl-10 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:opacity-70" />
+                        </div>
+                    </div>
 
-      <div class="form-group">
-        <input type="text" id="nome" value="João" disabled />
-      </div>
+                    <div>
+                        <label for="senha" class="block text-sm font-medium text-gray-500 mb-1">Senha</label>
+                        <div class="relative">
+                             <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="senha" value="12345678" disabled class="w-full p-3 pl-10 rounded-lg bg-gray-100 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:opacity-70" />
+                        </div>
+                    </div>
+                </form>
 
-      <div class="form-group">
-        <input type="email" id="email" value="joao@gmail.com" disabled />
-      </div>
+                <div class="pt-4">
+                    <button id="editar-conta" class="w-full py-3 px-6 bg-[#1985d4] hover:bg-blue-700 text-white font-bold rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+                        Editar Conta
+                    </button>
+                </div>
+            </div>
 
-      <div class="form-group">
-        <input type="password" id="senha" value="12345678" disabled />
-      </div>
+            <!-- Lado Direito: Imagem Decorativa -->
+            <div class="hidden md:flex justify-center items-center">
+                 <i data-lucide="waves" class="w-64 h-64 text-gray-200"></i>
+            </div>
 
-      <div class="action-buttons">
-        <button id="editar-conta" class="btn">Editar conta</button>
-      </div>
-    </div>
+        </div>
+    </main>
 
-    <img class="seahorse" src="/assets/img/Logotipo nome minimalista em branco e preto (3).png" alt="Imagem decorativa" />
-  </div>
-</div>
+    <!-- Footer Branco -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
 
-<footer class="site-footer">
-  <div class="footer-top-line"></div>
-  
-  <div class="footer-content">
-    <div class="footer-domain">WWW.BEACHSPOT.COM.BR</div>
-    
-    <div class="footer-links">
-      <div class="footer-link">PRIVACY POLICY</div>
-      <div class="footer-anchor">
-        <img src="/assets/img/ancora.png" alt="Anchor" width="30">
-      </div>
-      <div class="footer-link">TERMS OF SERVICE</div>
-    </div>
-  </div>
-  
-  <div class="footer-bottom-line"></div>
-</footer>
+                <!-- Coluna 1: Logo -->
+                <div class="w-full md:w-1/3 mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="anchor"></i>
+                        <span class="text-xl font-bold">beachspot</span>
+                    </div>
+                </div>
+
+                <!-- Coluna 2: Navegação -->
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold mb-3">Navegação</h3>
+                    <ul class="space-y-2">
+                        <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
+                        <li><a href="sobre.html" class="hover:text-blue-600 transition-colors">Sobre</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3: Social -->
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold mb-3">Redes Sociais</h3>
+                     <div class="flex space-x-4">
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="facebook"></i></a>
+                     </div>
+                </div>
+
+            </div>
+            <div class="text-center mt-12 border-t border-gray-200 pt-6">
+                 <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
 
-  <script src="/assets/js/perfil.js"></script>
+    <script>
+        // Ativa os ícones do Lucide
+        lucide.createIcons();
+
+        // Lógica para o menu mobile
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Lógica para editar o formulário
+        const editButton = document.getElementById('editar-conta');
+        const nameInput = document.getElementById('nome');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('senha');
+        const avatarInput = document.getElementById('foto-perfil');
+        const avatarImage = document.getElementById('avatar');
+
+        let isEditing = false;
+        const inputs = [nameInput, emailInput, passwordInput];
+
+        editButton.addEventListener('click', () => {
+            isEditing = !isEditing;
+
+            inputs.forEach(input => {
+                input.disabled = !isEditing;
+            });
+
+            if (isEditing) {
+                editButton.textContent = 'Salvar Alterações';
+                editButton.classList.remove('bg-[#1985d4]', 'hover:bg-blue-700');
+                editButton.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                inputs[0].focus();
+            } else {
+                editButton.textContent = 'Editar Conta';
+                editButton.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                editButton.classList.add('bg-[#1985d4]', 'hover:bg-blue-700');
+                // Aqui você adicionaria a lógica para salvar os dados no backend
+                console.log('Dados salvos (simulação):', {
+                    nome: nameInput.value,
+                    email: emailInput.value
+                });
+            }
+        });
+        
+        // Lógica para preview da foto de perfil
+        avatarInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    avatarImage.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+    </script>
 </body>
 </html>
+
+
+
+
+
