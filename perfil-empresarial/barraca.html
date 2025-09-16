@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento - Oassis do Oceano</title>
+    <link rel="stylesheet" href="/assets/css/barraca.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo"></div>
+                <div class="header-info">
+                    <h1>Oassis do Oceano</h1>
+                    <span class="status-badge">Online - Funcionando</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">1000</div>
+                    <div class="stat-label">Barracas Total</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="ocupadas-count">350</div>
+                    <div class="stat-label">Ocupadas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="disponiveis-count">650</div>
+                    <div class="stat-label">Disponíveis</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="taxa-ocupacao">35%</div>
+                    <div class="stat-label">Taxa Ocupação</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Reservas -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Reservas do Dia</h2>
+                    <span class="card-badge">2 Confirmadas</span>
+                </div>
+                <div class="reserva-item">
+                    <div class="reserva-info">
+                        <div>
+                            <div class="cliente-name">Maria Santos</div>
+                            <div class="horario">Barraca 15 - 10:00 às 16:00</div>
+                        </div>
+                        <span class="btn btn-success" style="opacity: 0.7; cursor: default;">Confirmada</span>
+                    </div>
+                </div>
+                <div class="reserva-item">
+                    <div class="reserva-info">
+                        <div>
+                            <div class="cliente-name">João Silva</div>
+                            <div class="horario">Barraca 08 - 14:00 às 18:00</div>
+                        </div>
+                        <span class="btn btn-success" style="opacity: 0.7; cursor: default;">Confirmada</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cardápio -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Cardápio</h2>
+                    <span class="card-badge available" id="cardapio-count">32 Itens</span>
+                </div>
+                <div id="cardapio-container">
+                    <div class="menu-item">
+                        <span class="menu-name">Caipirinha Tradicional</span>
+                        <span class="menu-price">R$ 15,00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-name">Porção de Camarão</span>
+                        <span class="menu-price">R$ 45,00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-name">Água de Coco</span>
+                        <span class="menu-price">R$ 8,00</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-name">Peixe Grelhado</span>
+                        <span class="menu-price">R$ 35,00</span>
+                    </div>
+                </div>
+                <button class="btn" onclick="openModal('cardapioModal')" style="width: 100%; margin-top: 15px;">
+                    Gerenciar Cardápio
+                </button>
+            </div>
+
+            <!-- Promoções -->
+            <div class="card promocoes">
+                <div class="card-header">
+                    <h2 class="card-title">Promoções Ativas</h2>
+                </div>
+                <div id="promocoes-container">
+                    <div class="promocao-item">
+                        <button class="promocao-remove" onclick="removerPromocao(this)">×</button>
+                        <strong>Happy Hour</strong><br>
+                        Todas as bebidas com 20% OFF<br>
+                        <em>15:00 às 17:00</em>
+                    </div>
+                    <div class="promocao-item">
+                        <button class="promocao-remove" onclick="removerPromocao(this)">×</button>
+                        <strong>Combo Família</strong><br>
+                        Peixe + Camarão + 4 Bebidas<br>
+                        <em>De R$ 120,00 por R$ 95,00</em>
+                    </div>
+                </div>
+                <button class="btn" onclick="openModal('promocaoModal')" style="width: 100%; margin-top: 15px; background: rgba(255,255,255,0.3);">
+                    + Nova Promoção
+                </button>
+            </div>
+
+            <!-- Horário de Funcionamento -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Horário de Funcionamento</h2>
+                </div>
+                <div class="horario-funcionamento" id="horarios-display">
+                    <div class="horario-item">
+                        <div class="day">Segunda-feira</div>
+                        <div class="time">08:00 - 18:00</div>
+                    </div>
+                    <div class="horario-item">
+                        <div class="day">Terça-feira</div>
+                        <div class="time">08:00 - 18:00</div>
+                    </div>
+                    <div class="horario-item">
+                        <div class="day">Quarta-feira</div>
+                        <div class="time">08:00 - 18:00</div>
+                    </div>
+                    <div class="horario-item">
+                        <div class="day">Quinta-feira</div>
+                        <div class="time">08:00 - 18:00</div>
+                    </div>
+                    <div class="horario-item">
+                        <div class="day">Sexta-feira</div>
+                        <div class="time">08:00 - 18:00</div>
+                    </div>
+                    <div class="horario-item">
+                        <div class="day">Sábado</div>
+                        <div class="time">07:00 - 19:00</div>
+                    </div>
+                    <div class="horario-item">
+                        <div class="day">Domingo</div>
+                        <div class="time">07:00 - 19:00</div>
+                    </div>
+                    <div class="horario-item">
+                        <div class="day">Feriados</div>
+                        <div class="time">07:00 - 20:00</div>
+                    </div>
+                </div>
+                <button class="btn" onclick="openModal('horarioModal')" style="width: 100%; margin-top: 15px;">
+                    Alterar Horários
+                </button>
+            </div>
+
+            <!-- Ocupação das Barracas -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Ocupação das Barracas</h2>
+                    <span class="card-badge">1000 Barracas</span>
+                </div>
+                <div class="ocupacao-grid" id="barracas-grid">
+                    <!-- Barracas serão geradas dinamicamente -->
+                </div>
+                <p style="margin-top: 15px; text-align: center; color: #666;">
+                    <span style="color: #4CAF50;">●</span> Livre 
+                    <span style="color: #FF6B6B; margin-left: 15px;">●</span> Ocupada
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Modal Cardápio -->
+    <div id="cardapioModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('cardapioModal')">&times;</span>
+            <h2 style="color: #2C5AA0; margin-bottom: 20px;">Gerenciar Cardápio</h2>
+            <div class="form-group">
+                <label>Nome do Item:</label>
+                <input type="text" id="item-nome" placeholder="Ex: Caipirinha de Limão">
+            </div>
+            <div class="form-group">
+                <label>Preço:</label>
+                <input type="number" id="item-preco" step="0.01" placeholder="15.00">
+            </div>
+            <div class="form-group">
+                <label>Descrição:</label>
+                <textarea id="item-descricao" rows="3" placeholder="Descrição do item do cardápio"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Categoria:</label>
+                <select id="item-categoria">
+                    <option>Bebidas</option>
+                    <option>Petiscos</option>
+                    <option>Pratos Principais</option>
+                    <option>Sobremesas</option>
+                </select>
+            </div>
+            <button class="btn btn-success" onclick="adicionarItemCardapio()" style="width: 100%;">Adicionar Item</button>
+        </div>
+    </div>
+
+    <!-- Modal Promoção -->
+    <div id="promocaoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('promocaoModal')">&times;</span>
+            <h2 style="color: #2C5AA0; margin-bottom: 20px;">Nova Promoção</h2>
+            <div class="form-group">
+                <label>Nome da Promoção:</label>
+                <input type="text" id="promo-nome" placeholder="Ex: Happy Hour">
+            </div>
+            <div class="form-group">
+                <label>Descrição:</label>
+                <textarea id="promo-descricao" rows="3" placeholder="Descreva a promoção"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Desconto:</label>
+                <select id="promo-tipo" onchange="alternarTipoDesconto()">
+                    <option value="percentual">Percentual (%)</option>
+                    <option value="valor-fixo">Preço Promocional</option>
+                </select>
+            </div>
+            <div class="form-group" id="desconto-percentual">
+                <label>Desconto (%):</label>
+                <input type="number" id="promo-desconto" max="100" placeholder="20">
+            </div>
+            <div class="form-group" id="preco-original" style="display: none;">
+                <label>Preço Original (R$):</label>
+                <input type="number" id="promo-original" step="0.01" placeholder="120.00">
+            </div>
+            <div class="form-group" id="preco-promocional" style="display: none;">
+                <label>Preço Promocional (R$):</label>
+                <input type="number" id="promo-promocional" step="0.01" placeholder="95.00">
+            </div>
+            <div class="form-group">
+                <label>Horário de Início:</label>
+                <input type="time" id="promo-inicio" value="15:00">
+            </div>
+            <div class="form-group">
+                <label>Horário de Fim:</label>
+                <input type="time" id="promo-fim" value="17:00">
+            </div>
+            <button class="btn btn-success" onclick="criarNovaPromocao()" style="width: 100%;">Criar Promoção</button>
+        </div>
+    </div>
+
+    <!-- Modal Horário -->
+    <div id="horarioModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('horarioModal')">&times;</span>
+            <h2 style="color: #2C5AA0; margin-bottom: 20px;">Configurar Horários</h2>
+            
+            <div id="horarios-config">
+                <div class="horario-row">
+                    <div class="day-toggle">
+                        <input type="checkbox" id="segunda" checked>
+                        <label for="segunda">Segunda-feira</label>
+                    </div>
+                    <div class="time-config">
+                        <input type="time" id="segunda-inicio" value="08:00">
+                        <input type="time" id="segunda-fim" value="18:00">
+                    </div>
+                </div>
+                
+                <div class="horario-row">
+                    <div class="day-toggle">
+                        <input type="checkbox" id="terca" checked>
+                        <label for="terca">Terça-feira</label>
+                    </div>
+                    <div class="time-config">
+                        <input type="time" id="terca-inicio" value="08:00">
+                        <input type="time" id="terca-fim" value="18:00">
+                    </div>
+                </div>
+                
+                <div class="horario-row">
+                    <div class="day-toggle">
+                        <input type="checkbox" id="quarta" checked>
+                        <label for="quarta">Quarta-feira</label>
+                    </div>
+                    <div class="time-config">
+                        <input type="time" id="quarta-inicio" value="08:00">
+                        <input type="time" id="quarta-fim" value="18:00">
+                    </div>
+                </div>
+                
+                <div class="horario-row">
+                    <div class="day-toggle">
+                        <input type="checkbox" id="quinta" checked>
+                        <label for="quinta">Quinta-feira</label>
+                    </div>
+                    <div class="time-config">
+                        <input type="time" id="quinta-inicio" value="08:00">
+                        <input type="time" id="quinta-fim" value="18:00">
+                    </div>
+                </div>
+                
+                <div class="horario-row">
+                    <div class="day-toggle">
+                        <input type="checkbox" id="sexta" checked>
+                        <label for="sexta">Sexta-feira</label>
+                    </div>
+                    <div class="time-config">
+                        <input type="time" id="sexta-inicio" value="08:00">
+                        <input type="time" id="sexta-fim" value="18:00">
+                    </div>
+                </div>
+                
+                <div class="horario-row">
+                    <div class="day-toggle">
+                        <input type="checkbox" id="sabado" checked>
+                        <label for="sabado">Sábado</label>
+                    </div>
+                    <div class="time-config">
+                        <input type="time" id="sabado-inicio" value="07:00">
+                        <input type="time" id="sabado-fim" value="19:00">
+                    </div>
+                </div>
+                
+                <div class="horario-row">
+                    <div class="day-toggle">
+                        <input type="checkbox" id="domingo" checked>
+                        <label for="domingo">Domingo</label>
+                    </div>
+                    <div class="time-config">
+                        <input type="time" id="domingo-inicio" value="07:00">
+                        <input type="time" id="domingo-fim" value="19:00">
+                    </div>
+                </div>
+                
+                <div class="horario-row">
+                    <div class="day-toggle">
+                        <input type="checkbox" id="feriados" checked>
+                        <label for="feriados">Feriados</label>
+                    </div>
+                    <div class="time-config">
+                        <input type="time" id="feriados-inicio" value="07:00">
+                        <input type="time" id="feriados-fim" value="20:00">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-success" onclick="salvarHorarios()" style="width: 100%; margin-top: 20px;">Salvar Horários</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

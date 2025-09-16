@@ -1,469 +1,323 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeachSpot</title>
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeachSpot - Sua Vaga na Areia, Garantida.</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        /* CSS Variables for easy theme management */
-        :root {
-            --primary-color: #1976D2;
-            --background-start: #0138b4;
-            --background-end: #73bff6;
-            --card-bg-color: rgba(255, 255, 255, 0.25);
-            --text-light: #f0f0f0;
-            --text-dark: #333;
-        }
-
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        /* Estilos base e fundo */
         body {
-            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
             background-attachment: fixed;
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        /* Header & Navigation */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1.5rem 0;
-            z-index: 1000;
-            background: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: padding 0.3s ease;
-        }
-        
-        header.scrolled {
-            padding: 1rem 0;
-        }
-
-        .navbar {
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
         }
 
-        .logo {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
+        main {
+            flex-grow: 1;
         }
 
-        .logo i {
-            color: var(--primary-color);
+        /* Animações de Rotação */
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 30s linear infinite;
         }
 
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
+        @keyframes spin-slow-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        .animate-spin-slow-reverse {
+            animation: spin-slow-reverse 40s linear infinite;
         }
 
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 2.5rem;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 500;
-            position: relative;
-            transition: color 0.3s ease;
+        ::-webkit-scrollbar-track {
+            background: rgba(1, 56, 180, 0.1);
         }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background: var(--primary-color);
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            padding-top: 80px; /* Offset for fixed header */
-        }
-        
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .hero-content p {
-            font-size: 1.25rem;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            font-weight: 300;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2.5rem;
-            background: white;
-            color: var(--primary-color);
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .btn:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        }
-
-        .btn-nav {
-            padding: 0.5rem 1.5rem;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-nav:hover {
-            background-color: #1565C0;
-            transform: translateY(-2px);
-        }
-
-        /* General Section Styling */
-        section {
-            padding: 6rem 0;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 3rem;
-            color: white;
-        }
-
-        /* Solid White Card */
-        .glass-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 2.5rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-        }
-        
-        .glass-card h3 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        /* Sobre Nós Section */
-        #sobre-nos .glass-card {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* Como Funciona Section */
-        .how-it-works-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-        }
-
-        .how-it-works-card .step {
-            display: flex;
-            align-items: flex-start;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .how-it-works-card .step i {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-top: 5px;
-            width: 30px; /* Align icons */
-        }
-        
-        .step-content h4 {
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-            color: #111;
-        }
-        
-        .step-content p {
-            font-size: 0.95rem;
-        }
-
-        /* Contato Section */
-        #contato .glass-card {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .contact-form .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .contact-form label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .contact-form input,
-        .contact-form textarea {
-            width: 100%;
-            padding: 0.8rem;
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 10px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.7);
-            font-size: 1rem;
         }
-
-        .contact-form textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .contact-form .btn {
-            width: 100%;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem 0;
-            color: var(--text-dark);
-            background: #ffffff;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            nav {
-                display: none; /* Simplistic approach for this example */
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-content p {
-                font-size: 1rem;
-            }
-
-            section {
-                padding: 4rem 0;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .how-it-works-grid {
-                grid-template-columns: 1fr;
-            }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
-<body>
+<body class="text-white">
 
-    <!-- Header -->
-    <header id="main-header">
-        <div class="container navbar">
-            <a href="#" class="logo"><i class="fa-solid fa-umbrella-beach"></i> BeachSpot</a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#sobre-nos">Sobre Nós</a></li>
-                    <li><a href="#como-funciona">Como Funciona</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                </ul>
-                <a href="#" class="btn-nav">Cadastrar</a>
-            </nav>
+    <!-- Header Fixo Branco -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="#inicio" class="flex items-center space-x-3">
+                <i data-lucide="anchor"></i>
+                <span class="text-xl font-bold">beachspot</span>
+            </a>
+            <ul class="hidden md:flex items-center space-x-6">
+                <li><a href="#inicio" class="hover:text-blue-600 transition-colors">Início</a></li>
+                <li><a href="#sobre" class="hover:text-blue-600 transition-colors">Sobre</a></li>
+                <li><a href="#como-funciona" class="hover:text-blue-600 transition-colors">Como Funciona</a></li>
+                <li><a href="#contato" class="hover:text-blue-600 transition-colors">Contato</a></li>
+            </ul>
+            <button class="md:hidden" id="mobile-menu-button">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white text-gray-800">
+            <a href="#inicio" class="block py-2 px-6 hover:bg-gray-100">Início</a>
+            <a href="#sobre" class="block py-2 px-6 hover:bg-gray-100">Sobre</a>
+            <a href="#como-funciona" class="block py-2 px-6 hover:bg-gray-100">Como Funciona</a>
+            <a href="#contato" class="block py-2 px-6 hover:bg-gray-100">Contato</a>
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Conteúdo principal -->
     <main>
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h1>Seu lugar ao sol, garantido.</h1>
-                    <p>Reserve sua barraca de praia de forma simples e rápida. Chega de se preocupar em encontrar um bom lugar na areia.</p>
-                    <a href="#como-funciona" class="btn">Veja Como Funciona</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Sobre Nós Section -->
-        <section id="sobre-nos">
-            <div class="container">
-                <h2 class="section-title">Quem Somos</h2>
-                <div class="glass-card">
-                    <h3>Conectando você à praia perfeita</h3>
-                    <p>A BeachSpot nasceu da paixão pelo mar e pela conveniência. Nossa missão é transformar o seu dia na praia, eliminando o estresse de encontrar e garantir um bom lugar. Conectamos os melhores gestores de barracas com clientes que buscam conforto e praticidade, tudo na palma da sua mão.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Como Funciona Section -->
-        <section id="como-funciona">
-            <div class="container">
-                <h2 class="section-title">Como Funciona</h2>
-                <div class="how-it-works-grid">
-                    <!-- Card para Clientes -->
-                    <div class="glass-card how-it-works-card">
-                        <h3><i class="fa-solid fa-person-swimming"></i> Para Clientes</h3>
-                        <div class="step">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <div class="step-content">
-                                <h4>1. Busque e Encontre</h4>
-                                <p>Informe a praia e a data. Explore as barracas disponíveis perto de você.</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <i class="fa-solid fa-chair"></i>
-                            <div class="step-content">
-                                <h4>2. Escolha e Reserve</h4>
-                                <p>Selecione a barraca ideal, veja as comodidades e confirme sua reserva em segundos.</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <i class="fa-solid fa-sun"></i>
-                            <div class="step-content">
-                                <h4>3. Relaxe e Curta</h4>
-                                <p>Chegue na praia com seu lugar garantido. É só sentar, relaxar e aproveitar o dia!</p>
-                            </div>
+        <!-- Hero Section -->
+        <section id="inicio" class="min-h-screen flex items-center justify-center pt-20">
+            <div class="container mx-auto max-w-6xl px-6">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-16">
+                    <!-- Lado Esquerdo: Logo com Círculos -->
+                    <div class="w-full md:w-1/2 flex justify-center items-center">
+                        <div class="relative w-96 h-96 flex items-center justify-center">
+                            <!-- Círculo Interno (Clientes) -->
+                            <svg class="absolute w-full h-full animate-spin-slow" viewBox="0 0 100 100">
+                                <defs>
+                                    <path id="circlePathInner" d="M 50, 50 m -45, 0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0"></path>
+                                </defs>
+                                <text>
+                                    <textPath xlink:href="#circlePathInner" class="fill-current text-white tracking-widest uppercase" style="font-size: 7px;">
+                                        Sol • Verão • Férias • Areia • Ondas • Mar • Descanso •
+                                    </textPath>
+                                </text>
+                            </svg>
+                            
+                            <!-- Ícone Central -->
+                            <i data-lucide="sun" class="w-48 h-48 text-white z-10"></i>
                         </div>
                     </div>
-                    <!-- Card para Gestores -->
-                    <div class="glass-card how-it-works-card">
-                        <h3><i class="fa-solid fa-store"></i> Para Gestores</h3>
-                         <div class="step">
-                            <i class="fa-solid fa-clipboard-list"></i>
-                            <div class="step-content">
-                                <h4>1. Cadastre sua Barraca</h4>
-                                <p>Crie seu perfil, adicione fotos, comodidades e defina os preços das suas barracas.</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            <div class="step-content">
-                                <h4>2. Gerencie sua Agenda</h4>
-                                <p>Controle a disponibilidade em tempo real e nunca mais se preocupe com overbooking.</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <i class="fa-solid fa-sack-dollar"></i>
-                            <div class="step-content">
-                                <h4>3. Otimize seus Lucros</h4>
-                                <p>Receba reservas antecipadas, atraia mais clientes e aumente sua receita com facilidade.</p>
-                            </div>
+
+                    <!-- Lado Direito: Texto e CTA -->
+                    <div class="w-full md:w-1/2 text-center md:text-left">
+                        <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-4">Sua Vaga na Areia, Garantida.</h1>
+                        <p class="text-lg text-gray-200 mb-8 max-w-md mx-auto md:mx-0">
+                            Reserve sua barraca de praia com antecedência e relaxe de verdade. Cadastre-se para receber as melhores ofertas.
+                        </p>
+                        <div class="flex flex-col items-center md:items-start space-y-4">
+                             <a href="#" class="bg-white text-blue-600 font-bold py-3 px-10 rounded-full text-lg hover:bg-gray-200 transition-all transform hover:scale-105 inline-block">
+                                Cadastrar
+                            </a>
+                            <a href="#" class="text-gray-200 hover:text-white transition-colors">Já tem uma conta? Entrar</a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contato Section -->
-        <section id="contato">
-            <div class="container">
-                <h2 class="section-title">Fale Conosco</h2>
-                <div class="glass-card">
-                    <h3>Tem alguma dúvida ou sugestão?</h3>
-                    <p style="text-align:center; margin-bottom: 2rem;">Preencha o formulário abaixo e nossa equipe entrará em contato em breve.</p>
-                    <form class="contact-form" action="#" method="POST">
-                        <div class="form-group">
-                            <label for="name">Nome</label>
-                            <input type="text" id="name" name="name" required>
+        <!-- Seção: Nossa Missão -->
+        <div id="sobre" class="bg-gray-50 text-gray-800 py-16 md:py-20 scroll-mt-20">
+            <div class="container mx-auto max-w-4xl px-6">
+                <section>
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Nossa Missão</h2>
+                    <p class="text-lg text-gray-600 leading-relaxed text-center">
+                        O BeachSpot nasceu com um propósito simples: facilitar e melhorar a experiência de quem deseja aproveitar o melhor da praia, sem se preocupar com a correria de encontrar a barraca ideal. Somos uma plataforma dedicada à reserva de barracas de praia, criada para aqueles que amam o mar, o sol e a tranquilidade de uma boa sombra, mas preferem evitar o estresse da improvisação.
+                    </p>
+                </section>
+            </div>
+        </div>
+        
+        <!-- Seção: O que oferecemos -->
+        <div class="py-16 md:py-20">
+             <div class="container mx-auto max-w-5xl px-6">
+                 <section>
+                     <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">O que Oferecemos</h2>
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                         <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                             <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                                 <i data-lucide="search" class="w-10 h-10"></i>
+                             </div>
+                             <h3 class="text-xl font-bold mb-2">Seleção Cuidadosa</h3>
+                             <p class="text-gray-200">Trabalhamos com uma seleção de barracas em diversas praias, garantindo que você sempre tenha um lugar de qualidade à sua espera.</p>
+                         </div>
+                         <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                             <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                                 <i data-lucide="camera" class="w-10 h-10"></i>
+                             </div>
+                             <h3 class="text-xl font-bold mb-2">Informações Detalhadas</h3>
+                             <p class="text-gray-200">Nossa plataforma oferece descrições, fotos e avaliações, para que você saiba exatamente o que esperar de cada local.</p>
+                         </div>
+                         <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                             <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                                 <i data-lucide="calendar-check" class="w-10 h-10"></i>
+                             </div>
+                             <h3 class="text-xl font-bold mb-2">Reserva Fácil</h3>
+                             <p class="text-gray-200">Com poucos cliques, você garante seu lugar ao sol, de forma rápida, segura e sem complicações.</p>
+                         </div>
+                     </div>
+                 </section>
+             </div>
+        </div>
+
+        <!-- Seção: Nossa Equipe -->
+        <div class="bg-white text-gray-800 py-16 md:py-20">
+            <div class="container mx-auto max-w-4xl px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Nossa Equipe</h2>
+                <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Apaixonados por praia, dedicados a criar a melhor experiência para você.</p>
+                <div class="flex flex-wrap justify-center gap-8">
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=CEO" alt="Foto do CEO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">João Silva</h3>
+                        <p class="text-gray-500">Fundador & CEO</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=CTO" alt="Foto do CTO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Maria Oliveira</h3>
+                        <p class="text-gray-500">CTO</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=COO" alt="Foto do COO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Carlos Pereira</h3>
+                        <p class="text-gray-500">Chefe de Operações</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seção: Como Funciona -->
+        <section id="como-funciona" class="py-16 md:py-20 scroll-mt-20">
+            <div class="container mx-auto max-w-5xl px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Como Funciona</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                    <!-- Passo 1 -->
+                    <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                        <div class="bg-white/20 text-white rounded-full p-5 mb-4 relative">
+                            <i data-lucide="map-pin" class="w-10 h-10"></i>
+                            <span class="absolute -top-2 -right-2 bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">1</span>
                         </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
+                        <h3 class="text-xl font-bold mb-2">Escolha a Praia</h3>
+                        <p class="text-gray-200">Navegue pelas praias disponíveis e encontre o seu destino perfeito.</p>
+                    </div>
+                    <!-- Passo 2 -->
+                    <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                        <div class="bg-white/20 text-white rounded-full p-5 mb-4 relative">
+                            <i data-lucide="sun" class="w-10 h-10"></i>
+                             <span class="absolute -top-2 -right-2 bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">2</span>
                         </div>
-                        <div class="form-group">
-                            <label for="message">Mensagem</label>
-                            <textarea id="message" name="message" required></textarea>
+                        <h3 class="text-xl font-bold mb-2">Reserve sua Barraca</h3>
+                        <p class="text-gray-200">Selecione a barraca, a data e confirme sua reserva em poucos cliques.</p>
+                    </div>
+                    <!-- Passo 3 -->
+                    <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                        <div class="bg-white/20 text-white rounded-full p-5 mb-4 relative">
+                           <i data-lucide="smile" class="w-10 h-10"></i>
+                            <span class="absolute -top-2 -right-2 bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">3</span>
                         </div>
-                        <button type="submit" class="btn">Enviar Mensagem</button>
-                    </form>
+                        <h3 class="text-xl font-bold mb-2">Aproveite o Dia</h3>
+                        <p class="text-gray-200">Chegue na praia, encontre seu lugar reservado e simplesmente relaxe.</p>
+                    </div>
                 </div>
             </div>
         </section>
+
+        <!-- Seção de Contato -->
+        <section id="contato" class="bg-gray-50 text-gray-800 py-16 md:py-20 scroll-mt-20">
+            <div class="container mx-auto max-w-4xl px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Entre em Contato</h2>
+                <p class="text-center text-gray-600 mb-12">Tem alguma dúvida ou sugestão? Adoraríamos ouvir você!</p>
+                <form class="max-w-xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <input type="text" placeholder="Seu Nome" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="email" placeholder="Seu E-mail" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-6">
+                        <input type="text" placeholder="Assunto" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-6">
+                        <textarea placeholder="Sua Mensagem" rows="5" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-blue-600 text-white font-bold py-3 px-10 rounded-full text-lg hover:bg-blue-700 transition-all transform hover:scale-105">
+                            Enviar Mensagem
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 BeachSpot. Todos os direitos reservados.</p>
+    <!-- Footer Branco -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <!-- Coluna 1: Logo -->
+                <div class="w-full md:w-1/3 mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="anchor"></i>
+                        <span class="text-xl font-bold">beachspot</span>
+                    </div>
+                </div>
+                <!-- Coluna 2: Navegação -->
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold mb-3">Navegação</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#inicio" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="#sobre" class="hover:text-blue-600 transition-colors">Sobre</a></li>
+                        <li><a href="#como-funciona" class="hover:text-blue-600 transition-colors">Como Funciona</a></li>
+                        <li><a href="#contato" class="hover:text-blue-600 transition-colors">Contato</a></li>
+                    </ul>
+                </div>
+                <!-- Coluna 3: Social -->
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold mb-3">Redes Sociais</h3>
+                     <div class="flex space-x-4">
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                         <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="facebook"></i></a>
+                     </div>
+                </div>
+            </div>
+            <div class="text-center mt-12 border-t border-gray-200 pt-6">
+                 <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Simple script to shrink header on scroll
-        const header = document.getElementById('main-header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
+        // --- Ativação de Ícones e Menu Mobile ---
+        lucide.createIcons();
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
     </script>
-
 </body>
 </html>
+
+
+
+
+
