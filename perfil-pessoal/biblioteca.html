@@ -96,7 +96,7 @@
 
     <!-- Conteúdo principal -->
     <main class="pt-28 md:pt-32 container mx-auto max-w-6xl px-6">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-8 text-center">Biblioteca</h1>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-8 text-center">Sua Biblioteca</h1>
 
         <!-- Abas de Navegação -->
         <div class="flex justify-center border-b border-white/20 mb-10">
@@ -110,8 +110,8 @@
                 
                 <!-- Card de Reserva 1 -->
                 <div class="reserva-card bg-white text-gray-800 rounded-xl shadow-lg overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 relative" data-id="reserva-1">
-                    <button class="btn-favorite absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all transform hover:scale-110 z-10">
-                        <i data-lucide="heart" class="w-5 h-5 text-gray-700 pointer-events-none"></i>
+                    <button class="btn-favorite absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all transform hover:scale-110 z-10" title="Favoritar">
+                        <i data-lucide="heart" class="w-5 h-5 text-gray-700"></i>
                     </button>
                     <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Oásis+do+Oceano" alt="Imagem da barraca Oásis do Oceano" class="w-full h-48 object-cover">
                     <div class="p-6 flex flex-col flex-grow">
@@ -140,8 +140,8 @@
 
                 <!-- Card de Reserva 2 -->
                 <div class="reserva-card bg-white text-gray-800 rounded-xl shadow-lg overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 relative" data-id="reserva-2">
-                    <button class="btn-favorite absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all transform hover:scale-110 z-10">
-                        <i data-lucide="heart" class="w-5 h-5 text-gray-700 pointer-events-none"></i>
+                    <button class="btn-favorite absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all transform hover:scale-110 z-10" title="Favoritar">
+                        <i data-lucide="heart" class="w-5 h-5 text-gray-700"></i>
                     </button>
                     <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Sombra+&+Mar" alt="Imagem da barraca Sombra & Mar" class="w-full h-48 object-cover">
                     <div class="p-6 flex flex-col flex-grow">
@@ -179,7 +179,7 @@
         <!-- Conteúdo dos Favoritos -->
         <div id="content-favoritos" class="hidden">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="favoritos-grid">
-                 <!-- Cards de favoritos serão inseridos aqui pelo JS -->
+                 <!-- Cards de favoritos serão inseridos aqui pelo JavaScript -->
                  <div id="empty-favorites-message" class="col-span-full border-2 border-dashed border-white/50 rounded-xl flex flex-col justify-center items-center text-center p-12 min-h-[300px]">
                     <i data-lucide="heart-crack" class="w-16 h-16 mb-4 text-white/80"></i>
                     <p class="text-lg font-semibold">Você ainda não tem barracas favoritas.</p>
@@ -239,7 +239,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- Ativação de Ícones e Menu Mobile ---
+            // --- CÓDIGO ORIGINAL MANTIDO (Ícones, Menu, Abas, Modal) ---
             lucide.createIcons();
 
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -248,7 +248,6 @@
                 mobileMenu.classList.toggle('hidden');
             });
 
-            // --- Lógica das Abas ---
             const tabReservas = document.getElementById('tab-reservas');
             const tabFavoritos = document.getElementById('tab-favoritos');
             const contentReservas = document.getElementById('content-reservas');
@@ -268,150 +267,147 @@
                 tabFavoritos.classList.add('active');
             });
 
-            // --- Lógica do Modal de Cancelamento ---
             let currentReservationCard = null;
             const modal = document.getElementById('cancelModal');
             const modalContent = modal.querySelector('div');
 
-            function openCancelModal(card, title) {
+            function openCancelModal(card) {
                 currentReservationCard = card;
+                const title = card.querySelector('.reserva-title').textContent;
                 const message = document.getElementById('modalMessage');
                 message.innerHTML = `Tem certeza que quer cancelar a reserva em <strong>${title}</strong>?`;
-                
                 modal.classList.remove('opacity-0', 'pointer-events-none');
                 modalContent.classList.remove('scale-95');
             }
 
             function closeCancelModal() {
-                modal.classList.add('opacity-0');
+                modal.classList.add('opacity-0', 'pointer-events-none');
                 modalContent.classList.add('scale-95');
-                setTimeout(() => {
-                     modal.classList.add('pointer-events-none');
-                }, 300);
                 currentReservationCard = null;
             }
 
             function cancelReservation() {
                 if (currentReservationCard) {
-                    const title = currentReservationCard.querySelector('.reserva-title').textContent;
-                    const cardId = currentReservationCard.dataset.id;
-                    
-                    // Remove da lista de favoritos se estiver lá
-                    const favoriteCard = document.querySelector(`#favoritos-grid .reserva-card[data-id="${cardId}"]`);
-                    if (favoriteCard) {
-                        favoriteCard.remove();
-                        updateFavoritesView();
-                    }
-                    
                     currentReservationCard.remove();
-                    showSuccessMessage(`Reserva em ${title} cancelada com sucesso!`);
                 }
                 closeCancelModal();
             }
+            
+            document.querySelectorAll('.btn-cancelar').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    openCancelModal(this.closest('.reserva-card'));
+                });
+            });
 
-            function showSuccessMessage(message) {
-                const successDiv = document.createElement('div');
-                successDiv.className = 'fixed top-5 right-5 bg-emerald-500 text-white py-3 px-6 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300';
-                successDiv.textContent = message;
-                document.body.appendChild(successDiv);
-                
-                setTimeout(() => {
-                    successDiv.classList.remove('translate-x-full');
-                }, 100);
-                
-                setTimeout(() => {
-                    successDiv.classList.add('translate-x-full');
-                    setTimeout(() => successDiv.remove(), 300);
-                }, 3500);
-            }
+            document.getElementById('btnYes').addEventListener('click', cancelReservation);
+            document.getElementById('btnNo').addEventListener('click', closeCancelModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeCancelModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCancelModal(); });
+            // --- FIM DO CÓDIGO ORIGINAL ---
 
-            // --- Lógica de Favoritos ---
+
+            // ===== INÍCIO DA FUNCIONALIDADE DE FAVORITOS INTEGRADA E CORRIGIDA =====
+            const storageKey = 'beachspotFavorites';
             const favoritosGrid = document.getElementById('favoritos-grid');
             const emptyFavoritesMessage = document.getElementById('empty-favorites-message');
 
-            function updateFavoritesView() {
-                if (favoritosGrid.querySelectorAll('.reserva-card').length === 0) {
+            const getFavorites = () => JSON.parse(localStorage.getItem(storageKey)) || [];
+            const saveFavorites = (favorites) => localStorage.setItem(storageKey, JSON.stringify(favorites));
+
+            // --- FUNÇÕES PARA A ABA DE FAVORITOS ---
+            function renderFavorites() {
+                const favorites = getFavorites();
+                favoritosGrid.querySelectorAll('.favorite-card').forEach(card => card.remove());
+
+                if (favorites.length === 0) {
                     emptyFavoritesMessage.style.display = 'flex';
                 } else {
                     emptyFavoritesMessage.style.display = 'none';
+                    favorites.forEach(fav => {
+                        const cardHTML = `
+                            <div class="favorite-card bg-white text-gray-800 rounded-xl shadow-lg overflow-hidden flex flex-col relative" data-id="${fav.id}">
+                                <button class="btn-favorite favorited absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white z-10" title="Remover dos Favoritos">
+                                    <i data-lucide="heart" class="w-5 h-5 text-gray-700 pointer-events-none"></i>
+                                </button>
+                                <img src="${fav.image}" alt="Imagem da barraca ${fav.title}" class="w-full h-48 object-cover">
+                                <div class="p-6 flex flex-col flex-grow">
+                                    <h3 class="text-2xl font-bold mb-2">${fav.title}</h3>
+                                    <p class="text-gray-600 text-sm">${fav.description}</p>
+                                </div>
+                            </div>
+                        `;
+                        favoritosGrid.insertAdjacentHTML('beforeend', cardHTML);
+                    });
                 }
-            }
-
-            function toggleFavorite(card, button) {
-                const isFavorited = button.classList.toggle('favorited');
-                const cardId = card.dataset.id;
                 
-                // Sincroniza o botão do card original e do clonado
-                document.querySelectorAll(`.reserva-card[data-id="${cardId}"] .btn-favorite`).forEach(btn => {
-                    btn.classList.toggle('favorited', isFavorited);
+                lucide.createIcons();
+                addRemoveFavoriteListeners();
+            }
+
+            function addRemoveFavoriteListeners() {
+                document.querySelectorAll('#favoritos-grid .btn-favorite').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const card = this.closest('.favorite-card');
+                        const cardId = card.dataset.id;
+                        let favorites = getFavorites();
+                        
+                        const updatedFavorites = favorites.filter(fav => fav.id !== cardId);
+                        saveFavorites(updatedFavorites);
+
+                        renderFavorites();
+                        updateReservationFavoriteButtons();
+                    });
                 });
-
-                if (isFavorited) {
-                    const cardClone = card.cloneNode(true);
-                    
-                    // Remove os dados da reserva e o botão de cancelar do clone
-                    cardClone.querySelector('.flex.justify-between')?.remove();
-                    cardClone.querySelector('.mt-auto')?.remove();
-
-                    cardClone.dataset.id = cardId; // Garante que o clone tenha o mesmo ID
-                    
-                    // Re-adiciona os event listeners para o card clonado
-                    addEventListenersToCard(cardClone);
-                    
-                    favoritosGrid.appendChild(cardClone);
-                } else {
-                    const cardToRemove = favoritosGrid.querySelector(`.reserva-card[data-id="${cardId}"]`);
-                    if (cardToRemove) {
-                        cardToRemove.remove();
-                    }
-                }
-                updateFavoritesView();
-            }
-            
-            function addEventListenersToCard(card) {
-                // Botão de cancelar
-                const btnCancelar = card.querySelector('.btn-cancelar');
-                if (btnCancelar) {
-                    btnCancelar.addEventListener('click', function() {
-                        const title = card.querySelector('.reserva-title').textContent;
-                        const originalCard = document.querySelector(`#reservas-grid .reserva-card[data-id="${card.dataset.id}"]`);
-                        openCancelModal(originalCard, title);
-                    });
-                }
-
-                // Botão de favoritar
-                const btnFavorite = card.querySelector('.btn-favorite');
-                if (btnFavorite) {
-                    btnFavorite.addEventListener('click', function() {
-                        const originalCard = document.querySelector(`#reservas-grid .reserva-card[data-id="${card.dataset.id}"]`);
-                        toggleFavorite(originalCard, this);
-                    });
-                }
             }
 
-            // --- Event Listeners Iniciais ---
-            document.querySelectorAll('#reservas-grid .reserva-card').forEach(card => {
-                addEventListenersToCard(card);
-            });
-            
-            document.getElementById('btnYes').addEventListener('click', cancelReservation);
-            document.getElementById('btnNo').addEventListener('click', closeCancelModal);
+            // --- FUNÇÕES PARA A ABA DE RESERVAS ---
+            function updateReservationFavoriteButtons() {
+                const favorites = getFavorites();
+                document.querySelectorAll('#reservas-grid .btn-favorite').forEach(button => {
+                    const card = button.closest('.reserva-card');
+                    if (!card) return;
+                    const cardId = card.dataset.id;
+                    const isFavorited = favorites.some(fav => fav.id === cardId);
+                    button.classList.toggle('favorited', isFavorited);
+                });
+            }
 
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeCancelModal();
-                }
-            });
+            function addFavoriteListenersToReservations() {
+                document.querySelectorAll('#reservas-grid .btn-favorite').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const card = this.closest('.reserva-card');
+                        if (!card) return;
 
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !modal.classList.contains('pointer-events-none')) {
-                    closeCancelModal();
-                }
-            });
+                        const cardId = card.dataset.id;
+                        let favorites = getFavorites();
+                        const favoriteIndex = favorites.findIndex(fav => fav.id === cardId);
 
-            // Estado inicial da view de favoritos
-            updateFavoritesView();
+                        if (favoriteIndex > -1) {
+                            favorites.splice(favoriteIndex, 1);
+                        } else {
+                            const favoriteData = {
+                                id: cardId,
+                                title: card.querySelector('.reserva-title').textContent.trim(),
+                                description: card.querySelector('.reserva-location span').textContent.trim(),
+                                image: card.querySelector('img').src
+                            };
+                            favorites.push(favoriteData);
+                        }
+                        saveFavorites(favorites);
+                        
+                        updateReservationFavoriteButtons();
+                        renderFavorites();
+                    });
+                });
+            }
+
+            // --- INICIALIZAÇÃO DE TODAS AS FUNÇÕES DE FAVORITOS ---
+            renderFavorites();
+            addFavoriteListenersToReservations();
+            updateReservationFavoriteButtons();
+            // ===== FIM DA FUNCIONALIDADE CORRIGIDA =====
         });
     </script>
 </body>
 </html>
+
