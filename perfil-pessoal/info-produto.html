@@ -1,171 +1,300 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeachSpot</title>
-    <link rel="stylesheet" href="/assets/css/info-produto.css">
-</head>
-<body>
-     <header>
-    <!--LOGO-->
-    <div class="logo">
-      <a href="inicio.html">
-        <img src="/assets/img/Logo.png" alt="Logo 'BeachSpot'" />
-      </a>
-    </div>
-    <!--BARRA DE NAVEGAÇÃO-->
-    <div class="barra-nav">
-      <nav class="nav">
-        <a href="inicio.html">Inicío</a>
-        <a href="perfil.html">Perfil</a>
-        <a href="biblioteca.html">Biblioteca</a>
-        <a href="sobre.html">Sobre</a>
-        <a href="config.html">Configurações</a>
-      </nav>
-    </div>
-    <!--BARRA DE PESQUISA-->
-    <div class="barra-pesquisa" id="barraPesquisa">
-      <img src="/assets/icons/Lupa.png" alt="Ícone de lupa" class="icon-pesquisa" />
-      <input type="text" id="buscar" class="pesquisa" placeholder="Buscar..." />
-    </div>
-  </header>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oassis do Oceano - BeachSpot</title>
 
-    <div class="container">
-        <div class="profile-grid">
-            <div class="header">
-                <img src="/assets/img/Oassis.jpg" alt="Barraca Oassis do Oceano" class="tent-photo">
-                <div class="tent-info">
-                    <h1>Oassis do Oceano</h1>
-                    <div class="rating">
-                        <div class="stars">
-                            <div class="star"></div>
-                            <div class="star"></div>
-                            <div class="star"></div>
-                            <div class="star"></div>
-                            <div class="star empty"></div>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Estilos base e fundo */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            background-attachment: fixed;
+            min-height: 100vh;
+            /* Flexbox para empurrar o footer para baixo */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Faz o conteúdo principal crescer */
+        main {
+            flex-grow: 1;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(1, 56, 180, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- Header Fixo Branco -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="inicio.html" class="flex items-center space-x-3">
+                <i data-lucide="anchor"></i>
+                <span class="text-xl font-bold">beachspot</span>
+            </a>
+            <ul class="hidden md:flex items-center space-x-6">
+                <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                <li><a href="perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                <li><a href="biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
+                <li><a href="sobre.html" class="hover:text-blue-600 transition-colors">Sobre</a></li>
+                <li><a href="config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+            </ul>
+            <button class="md:hidden" id="mobile-menu-button">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white text-gray-800">
+            <a href="inicio.html" class="block py-2 px-6 hover:bg-gray-100">Início</a>
+            <a href="perfil.html" class="block py-2 px-6 hover:bg-gray-100">Perfil</a>
+            <a href="biblioteca.html" class="block py-2 px-6 hover:bg-gray-100">Biblioteca</a>
+            <a href="sobre.html" class="block py-2 px-6 hover:bg-gray-100">Sobre</a>
+            <a href="config.html" class="block py-2 px-6 hover:bg-gray-100">Configurações</a>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="pt-28 md:pt-32 container mx-auto max-w-5xl px-6">
+        
+        <!-- Card Principal -->
+        <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
+            
+            <!-- Seção Header da Barraca -->
+            <section class="flex flex-col md:flex-row items-center gap-8 border-b border-gray-200 pb-8">
+                <img src="https://placehold.co/400x300/0138b4/FFFFFF?text=Oassis" alt="Barraca Oassis do Oceano" class="w-full md:w-1/3 h-auto rounded-xl object-cover shadow-md">
+                <div class="flex-1 text-center md:text-left w-full">
+                    <div class="flex items-start justify-between">
+                         <div>
+                            <h1 class="text-4xl font-bold text-gray-900">Oassis do Oceano</h1>
+                            <div class="flex items-center justify-center md:justify-start my-2">
+                                <div class="flex text-yellow-500">
+                                    <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5"></i>
+                                </div>
+                                <span class="ml-2 text-gray-600">4.2 (156 avaliações)</span>
+                            </div>
+                       </div>
+                        <div class="flex items-center gap-2">
+                             <button class="text-gray-400 hover:text-green-500 transition-colors p-2">
+                                <i data-lucide="message-circle" class="w-7 h-7"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-red-500 transition-colors p-2">
+                                <i data-lucide="heart" class="w-7 h-7"></i>
+                            </button>
                         </div>
-                        <span class="rating-text">4.2 (156 avaliações)</span>
                     </div>
-                    <button class="location-btn" onclick="openLocation()">
+                    
+                    <button class="mt-2 inline-flex items-center gap-2 bg-blue-50 text-blue-700 font-semibold py-2 px-4 rounded-full hover:bg-blue-100 transition-colors">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i>
                         Ver Localização
                     </button>
+
+                    <!-- Seção de Clima Movida para cá -->
+                    <section class="bg-gray-50 p-3 rounded-lg text-left mt-3 max-w-xs mx-auto md:mx-0">
+                        <div class="flex items-center justify-between">
+                             <div class="flex items-center gap-3">
+                                <i data-lucide="sun" class="w-8 h-8 text-yellow-500"></i>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-lg">29°C</p>
+                                    <p class="text-gray-600 text-sm">Ensolarado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-            </div>
+            </section>
 
-            <div class="info-section">
-                <h2>Sobre a Barraca</h2>
-                <p>Uma das barracas mais tradicionais da Praia de Copacabana, oferecendo serviços de primeira qualidade há mais de 15 anos. Ambiente familiar com vista privilegiada para o mar.</p>
-                <p>Especializada em frutos do mar frescos, caipirinha gelada e atendimento personalizado. Estrutura completa com cadeiras, guarda-sóis e WiFi gratuito.</p>
-            </div>
+            <!-- Grid de Informações -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+                
+                <!-- Coluna Principal (Sobre, Galeria e Ações) -->
+                <div class="lg:col-span-2 space-y-8">
+                    <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
+                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Sobre a Barraca</h2>
+                        <div class="space-y-4 text-gray-600 leading-relaxed">
+                            <p>Uma das barracas mais tradicionais da Praia de Copacabana, oferecendo serviços de primeira qualidade há mais de 15 anos. Ambiente familiar com vista privilegiada para o mar.</p>
+                        </div>
+                    </section>
 
-            <div class="nearby-section">
-                <h3>Estabelecimentos Próximos</h3>
-                <ul class="nearby-list">
-                    <li>
-                        <span>Restaurante Garota de Ipanema</span>
-                        <span class="distance">200m</span>
-                    </li>
-                    <li>
-                        <span>Hotel Copacabana Palace</span>
-                        <span class="distance">150m</span>
-                    </li>
-                    <li>
-                        <span>Posto de Saúde da Praia</span>
-                        <span class="distance">300m</span>
-                    </li>
-                    <li>
-                        <span>Estação de Metrô</span>
-                        <span class="distance">500m</span>
-                    </li>
-                    <li>
-                        <span>Farmácia 24h</span>
-                        <span class="distance">180m</span>
-                    </li>
-                </ul>
-            </div>
+                    <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
+                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Galeria de Fotos</h2>
+                        <div id="image-carousel" class="relative w-full h-64 md:h-80 rounded-lg overflow-hidden shadow-md">
+                            <!-- Images -->
+                            <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" alt="Vista da barraca" class="carousel-image absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out">
+                            <img src="https://simonde.com.br/wp-content/uploads/2017/12/uxua-quadrado-trancoso-bahia-hoteis-de-luxo-critica-review-1100-36-1024x682.jpg.webp" alt="Área de mesas" class="carousel-image absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-0">
+                            <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" alt="Pratos servidos" class="carousel-image absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-0">
+                            <img src="https://media-cdn.tripadvisor.com/media/photo-s/04/32/53/44/barraca-marguerita.jpg" alt="Vista do mar" class="carousel-image absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-0">
+                            
+                            <!-- Controls -->
+                            <button id="prev-btn" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white p-2 rounded-full hover:bg-opacity-60 focus:outline-none z-10">
+                                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                            </button>
+                            <button id="next-btn" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white p-2 rounded-full hover:bg-opacity-60 focus:outline-none z-10">
+                                <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                    </section>
 
-            <div class="gallery">
-                <h3>Galeria de Fotos</h3>
-                <div class="photo-grid">
-                    <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" alt="Vista da barraca" class="gallery-photo" onclick="openPhoto(this)">
-                    <img src="https://simonde.com.br/wp-content/uploads/2017/12/uxua-quadrado-trancoso-bahia-hoteis-de-luxo-critica-review-1100-36-1024x682.jpg.webp" alt="Área de mesas" class="gallery-photo" onclick="openPhoto(this)">
-                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" alt="Pratos servidos" class="gallery-photo" onclick="openPhoto(this)">
-                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/04/32/53/44/barraca-marguerita.jpg" alt="Vista do mar" class="gallery-photo" onclick="openPhoto(this)">
+                    <!-- Ações Principais -->
+                     <section>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="flex-1 bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg">Reservar</button>
+                            <button onclick="viewProducts()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 px-8 rounded-full hover:bg-gray-300 transition-all transform hover:scale-105">Cardápio</button>
+                        </div>
+                    </section>
                 </div>
-            </div>
 
-            <div class="actions">
-                <button class="btn btn-primary" onclick="checkPrices()">Conferir Preços</button>
-                <button class="btn btn-secondary" onclick="viewProducts()">Ver Produtos</button>
-            </div>
-
-            <div class="chat-section">
-                <h3>Fale Conosco</h3>
-                <p>Tire suas dúvidas ou faça sua reserva diretamente com nossa equipe!</p>
-                <button class="chat-btn" onclick="openChat()">Iniciar Conversa</button>
+                <!-- Coluna Lateral (Apenas Avaliação) -->
+                <aside class="space-y-8 lg:pl-8">
+                    <!-- Seção de Avaliação -->
+                    <section class="relative border border-gray-200 rounded-xl p-6 pt-8 h-full flex flex-col">
+                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Deixe sua Avaliação</h2>
+                        <div class="flex items-center justify-center mb-4">
+                            <span class="mr-4 text-gray-700 font-semibold">Sua nota:</span>
+                            <div class="flex text-gray-300 space-x-1">
+                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                            </div>
+                        </div>
+                        <textarea placeholder="Escreva seu comentário aqui..." rows="4" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition flex-grow"></textarea>
+                        <button class="mt-4 w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-colors shadow-lg">Enviar Avaliação</button>
+                    </section>
+                </aside>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- FOOTER -->
-        <footer class="site-footer">
-          <div class="footer-top-line"></div>
-
-          <div class="footer-content">
-            <div class="footer-domain">WWW.BEACHSPOT.COM.BR</div>
-
-            <div class="footer-links">
-              <div class="footer-link">PRIVACY POLICY</div>
-              <div class="footer-anchor">
-                <img src="/assets/img/ancora.png" alt="Anchor" width="30" />
-              </div>
-              <div class="footer-link">TERMS OF SERVICE</div>
+    <!-- Footer Branco -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <!-- Coluna 1: Logo e Cadastro -->
+                <div class="w-full md:w-1/3 mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="anchor"></i>
+                        <span class="text-xl font-bold">beachspot</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Gerencie suas barracas favoritas e reservas em um só lugar.</p>
+                    <button class="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition-colors shadow-md">
+                        Cadastre-se Gratuitamente
+                    </button>
+                </div>
+                <!-- Coluna 2: Navegação -->
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold mb-3">Navegação</h3>
+                    <ul class="space-y-2">
+                        <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="/perfil-pessoal/biblioteca.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                        <li><a href="/perfil-pessoal/perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                        <li><a href="/perfil-pessoal/config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                    </ul>
+                </div>
+                <!-- Coluna 3: Social -->
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold mb-3">Redes Sociais</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="facebook"></i></a>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <div class="footer-bottom-line"></div>
-        </footer>
+            <div class="text-center mt-12 border-t border-gray-200 pt-6">
+                <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
-  function viewProducts() {
-    window.location.href = "Cardapio.html";
-  }
-</script>
+        // This function is defined globally so the onclick attribute can find it.
+        function viewProducts() {
+            // Use a custom modal instead of alert
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full text-center">
+                    <p class="text-gray-800 text-lg mb-4">Redirecionando para a página de cardápio...</p>
+                    <button onclick="this.parentElement.parentElement.remove()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition-colors">OK</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            // window.location.href = "Cardapio.html";
+        }
 
-  <script>
-    const barra = document.getElementById('barraPesquisa');
-    const input = document.getElementById('buscar');
-    let isExpanded = false;
+        // Wait for the DOM to be fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica para o menu mobile
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
 
-    barra.addEventListener('mouseenter', () => {
-      if (!isExpanded) barra.classList.add('expanded');
-    });
+            // Lógica para o carrossel da galeria
+            const carousel = document.getElementById('image-carousel');
+            if (carousel) {
+                const images = carousel.querySelectorAll('.carousel-image');
+                const prevBtn = document.getElementById('prev-btn');
+                const nextBtn = document.getElementById('next-btn');
+                let currentIndex = 0;
 
-    barra.addEventListener('mouseleave', () => {
-      if (!isExpanded) barra.classList.remove('expanded');
-    });
+                function showImage(index) {
+                    images.forEach((img, i) => {
+                        img.classList.toggle('opacity-0', i !== index);
+                    });
+                }
+                
+                if (images.length > 0) {
+                    nextBtn.addEventListener('click', () => {
+                        currentIndex = (currentIndex + 1) % images.length;
+                        showImage(currentIndex);
+                    });
 
-    barra.addEventListener('click', () => {
-      isExpanded = true;
-      barra.classList.add('expanded');
-      input.focus();
-    });
+                    prevBtn.addEventListener('click', () => {
+                        currentIndex = (currentIndex - 1 + images.length) % images.length;
+                        showImage(currentIndex);
+                    });
+                }
+            }
 
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        isExpanded = false;
-        barra.classList.remove('expanded');
-        input.blur();
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!barra.contains(e.target)) {
-        isExpanded = false;
-        barra.classList.remove('expanded');
-      }
-    });
-  </script>
+            // Ativa os ícones do Lucide em toda a página.
+            lucide.createIcons();
+        });
+    </script>
 </body>
 </html>
+
