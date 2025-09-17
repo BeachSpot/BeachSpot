@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BeachSpot - Sua Vaga na Areia, Garantida.</title>
+    <title>BeachSpot</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -108,13 +108,13 @@
                                 </defs>
                                 <text>
                                     <textPath xlink:href="#circlePathInner" class="fill-current text-white tracking-widest uppercase" style="font-size: 7px;">
-                                        Sol • Verão • Férias • Areia • Ondas • Mar • Descanso •
+                                        Sol • Praia • Barraca • Férias • Ondas • Mar • Maresias • Verão • Sol • Praia • Barraca •
                                     </textPath>
                                 </text>
                             </svg>
                             
-                            <!-- Ícone Central -->
-                            <i data-lucide="sun" class="w-48 h-48 text-white z-10"></i>
+                            <!-- Imagem Central -->
+                            <img src="assets/img/Logo Guarda-Sol.png" alt="Logo BeachSpot" class="w-64 h-64 z-10 rounded-full object-cover">
                         </div>
                     </div>
 
@@ -125,10 +125,10 @@
                             Reserve sua barraca de praia com antecedência e relaxe de verdade. Cadastre-se para receber as melhores ofertas.
                         </p>
                         <div class="flex flex-col items-center md:items-start space-y-4">
-                             <a href="#" class="bg-white text-blue-600 font-bold py-3 px-10 rounded-full text-lg hover:bg-gray-200 transition-all transform hover:scale-105 inline-block">
-                                Cadastrar
-                            </a>
-                            <a href="#" class="text-gray-200 hover:text-white transition-colors">Já tem uma conta? Entrar</a>
+                              <a href="cadastro.html" class="bg-white text-blue-600 font-bold py-3 px-10 rounded-full text-lg hover:bg-gray-200 transition-all transform hover:scale-105 inline-block">
+                                  Cadastrar
+                              </a>
+                              <a href="entrar.html" class="text-gray-200 hover:text-white transition-colors">Já tem uma conta? Entrar</a>
                         </div>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
                 <section>
                     <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Nossa Missão</h2>
                     <p class="text-lg text-gray-600 leading-relaxed text-center">
-                        O BeachSpot nasceu com um propósito simples: facilitar e melhorar a experiência de quem deseja aproveitar o melhor da praia, sem se preocupar com a correria de encontrar a barraca ideal. Somos uma plataforma dedicada à reserva de barracas de praia, criada para aqueles que amam o mar, o sol e a tranquilidade de uma boa sombra, mas preferem evitar o estresse da improvisação.
+                        O projeto busca otimizar a organização dos serviços oferecidos, como aluguel de cadeiras e guarda-sóis, e facilitar o acesso a informações como cardápios e promoções, oferecendo uma solução prática tanto para os proprietários quanto para os clientes. A iniciativa surge da necessidade de centralizar a comunicação e a gestão, que atualmente é realizada de forma descentralizada e ineficiente por meio de redes sociais e mensagens diretas, resultando em dificuldades operacionais e atrasos no atendimento.
                     </p>
                 </section>
             </div>
@@ -155,24 +155,24 @@
                      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
                          <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
                              <div class="bg-white/20 text-white rounded-full p-5 mb-4">
-                                 <i data-lucide="search" class="w-10 h-10"></i>
+                                 <i data-lucide="clipboard-list" class="w-10 h-10"></i>
                              </div>
-                             <h3 class="text-xl font-bold mb-2">Seleção Cuidadosa</h3>
-                             <p class="text-gray-200">Trabalhamos com uma seleção de barracas em diversas praias, garantindo que você sempre tenha um lugar de qualidade à sua espera.</p>
-                         </div>
-                         <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
-                             <div class="bg-white/20 text-white rounded-full p-5 mb-4">
-                                 <i data-lucide="camera" class="w-10 h-10"></i>
-                             </div>
-                             <h3 class="text-xl font-bold mb-2">Informações Detalhadas</h3>
-                             <p class="text-gray-200">Nossa plataforma oferece descrições, fotos e avaliações, para que você saiba exatamente o que esperar de cada local.</p>
+                             <h3 class="text-xl font-bold mb-2">Gestão Simplificada</h3>
+                             <p class="text-gray-200">Uma plataforma para gerenciar reservas, cardápios e promoções, otimizando suas operações diárias.</p>
                          </div>
                          <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
                              <div class="bg-white/20 text-white rounded-full p-5 mb-4">
                                  <i data-lucide="calendar-check" class="w-10 h-10"></i>
                              </div>
-                             <h3 class="text-xl font-bold mb-2">Reserva Fácil</h3>
-                             <p class="text-gray-200">Com poucos cliques, você garante seu lugar ao sol, de forma rápida, segura e sem complicações.</p>
+                             <h3 class="text-xl font-bold mb-2">Reservas Fáceis</h3>
+                             <p class="text-gray-200">Clientes encontram e reservam um lugar na areia, com acesso a cardápios e avaliações.</p>
+                         </div>
+                         <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                             <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                                 <i data-lucide="message-square" class="w-10 h-10"></i>
+                             </div>
+                             <h3 class="text-xl font-bold mb-2">Comunicação Direta</h3>
+                             <p class="text-gray-200">Facilitamos o contato entre clientes e gestores para uma experiência transparente.</p>
                          </div>
                      </div>
                  </section>
@@ -181,24 +181,39 @@
 
         <!-- Seção: Nossa Equipe -->
         <div class="bg-white text-gray-800 py-16 md:py-20">
-            <div class="container mx-auto max-w-4xl px-6 text-center">
+            <div class="container mx-auto max-w-5xl px-6 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4">Nossa Equipe</h2>
                 <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Apaixonados por praia, dedicados a criar a melhor experiência para você.</p>
-                <div class="flex flex-wrap justify-center gap-8">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
                     <div class="text-center">
-                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=CEO" alt="Foto do CEO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">João Silva</h3>
-                        <p class="text-gray-500">Fundador & CEO</p>
+                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=AC" alt="Foto de Ana Carolina" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Ana Carolina</h3>
+                        <p class="text-gray-500">Fundadora & CEO</p>
                     </div>
                     <div class="text-center">
-                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=CTO" alt="Foto do CTO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">Maria Oliveira</h3>
+                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=IM" alt="Foto de Ivanilson Maia" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Ivanilson Maia</h3>
                         <p class="text-gray-500">CTO</p>
                     </div>
                     <div class="text-center">
-                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=COO" alt="Foto do COO" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">Carlos Pereira</h3>
+                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=JP" alt="Foto de João Pedro" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">João Pedro</h3>
                         <p class="text-gray-500">Chefe de Operações</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=JS" alt="Foto de Júlia Simões" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Júlia Simões</h3>
+                        <p class="text-gray-500">Designer UI/UX</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=NS" alt="Foto de Nicole Sales" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Nicole Sales</h3>
+                        <p class="text-gray-500">Gerente de Marketing</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=SS" alt="Foto de Samuel Santos" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Samuel Santos</h3>
+                        <p class="text-gray-500">Desenvolvedor Full-Stack</p>
                     </div>
                 </div>
             </div>
@@ -207,8 +222,19 @@
         <!-- Seção: Como Funciona -->
         <section id="como-funciona" class="py-16 md:py-20 scroll-mt-20">
             <div class="container mx-auto max-w-5xl px-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Como Funciona</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Como Funciona</h2>
+                <p class="text-center text-lg text-gray-200 mb-12 max-w-3xl mx-auto">
+                    Nossa plataforma foi pensada para facilitar a vida de todos. Escolha seu perfil e veja como é simples aproveitar o melhor da praia.
+                </p>
+
+                <!-- Abas para Cliente e Gestor -->
+                <div class="flex justify-center mb-10">
+                    <button id="cliente-btn" class="bg-white text-blue-600 font-bold py-2 px-8 rounded-l-full transition-colors duration-300">Para Clientes</button>
+                    <button id="gestor-btn" class="bg-white/20 text-white font-bold py-2 px-8 rounded-r-full transition-colors duration-300">Para Gestores</button>
+                </div>
+
+                <!-- Passos para Clientes -->
+                <div id="cliente-steps" class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
                     <!-- Passo 1 -->
                     <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
                         <div class="bg-white/20 text-white rounded-full p-5 mb-4 relative">
@@ -237,31 +263,64 @@
                         <p class="text-gray-200">Chegue na praia, encontre seu lugar reservado e simplesmente relaxe.</p>
                     </div>
                 </div>
+
+                <!-- Passos para Gestores (Oculto por padrão) -->
+                <div id="gestor-steps" class="hidden grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                    <!-- Passo 1 -->
+                    <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                        <div class="bg-white/20 text-white rounded-full p-5 mb-4 relative">
+                            <i data-lucide="edit-3" class="w-10 h-10"></i>
+                            <span class="absolute -top-2 -right-2 bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">1</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Cadastre sua Barraca</h3>
+                        <p class="text-gray-200">Crie seu perfil, adicione fotos, cardápio e os serviços que você oferece.</p>
+                    </div>
+                    <!-- Passo 2 -->
+                    <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                        <div class="bg-white/20 text-white rounded-full p-5 mb-4 relative">
+                            <i data-lucide="settings" class="w-10 h-10"></i>
+                             <span class="absolute -top-2 -right-2 bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">2</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Gerencie Reservas</h3>
+                        <p class="text-gray-200">Receba e administre as reservas de seus clientes de forma organizada e centralizada.</p>
+                    </div>
+                    <!-- Passo 3 -->
+                    <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
+                        <div class="bg-white/20 text-white rounded-full p-5 mb-4 relative">
+                           <i data-lucide="bar-chart-2" class="w-10 h-10"></i>
+                            <span class="absolute -top-2 -right-2 bg-white text-blue-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg">3</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Otimize seu Negócio</h3>
+                        <p class="text-gray-200">Aumente sua visibilidade, atraia mais clientes e simplifique sua operação diária.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Seção de Contato -->
-        <section id="contato" class="bg-gray-50 text-gray-800 py-16 md:py-20 scroll-mt-20">
-            <div class="container mx-auto max-w-4xl px-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Entre em Contato</h2>
-                <p class="text-center text-gray-600 mb-12">Tem alguma dúvida ou sugestão? Adoraríamos ouvir você!</p>
-                <form class="max-w-xl mx-auto">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <input type="text" placeholder="Seu Nome" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <input type="email" placeholder="Seu E-mail" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div class="mb-6">
-                        <input type="text" placeholder="Assunto" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div class="mb-6">
-                        <textarea placeholder="Sua Mensagem" rows="5" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="bg-blue-600 text-white font-bold py-3 px-10 rounded-full text-lg hover:bg-blue-700 transition-all transform hover:scale-105">
-                            Enviar Mensagem
-                        </button>
-                    </div>
-                </form>
+        <section id="contato" class="scroll-mt-20">
+            <div class="bg-white/10 backdrop-blur-md border-t border-b border-white/20 shadow-lg py-16 md:py-20">
+                <div class="container mx-auto max-w-4xl px-6 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Entre em Contato</h2>
+                    <p class="text-center text-gray-200 mb-12 max-w-2xl mx-auto">Tem alguma dúvida ou sugestão? Adoraríamos ouvir você!</p>
+                    <form class="max-w-xl mx-auto text-left">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <input type="text" placeholder="Seu Nome" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white placeholder-gray-300 text-white">
+                            <input type="email" placeholder="Seu E-mail" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white placeholder-gray-300 text-white">
+                        </div>
+                        <div class="mb-6">
+                            <input type="text" placeholder="Assunto" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white placeholder-gray-300 text-white">
+                        </div>
+                        <div class="mb-6">
+                            <textarea placeholder="Sua Mensagem" rows="5" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white placeholder-gray-300 text-white"></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="bg-white text-blue-600 font-bold py-3 px-10 rounded-full text-lg hover:bg-gray-200 transition-all transform hover:scale-105">
+                                Enviar Mensagem
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </section>
 
@@ -313,11 +372,42 @@
         mobileMenuButton.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
+
+        // --- Lógica das Abas "Como Funciona" ---
+        const clienteBtn = document.getElementById('cliente-btn');
+        const gestorBtn = document.getElementById('gestor-btn');
+        const clienteSteps = document.getElementById('cliente-steps');
+        const gestorSteps = document.getElementById('gestor-steps');
+
+        clienteBtn.addEventListener('click', () => {
+            clienteSteps.style.display = 'grid';
+            gestorSteps.style.display = 'none';
+            clienteBtn.classList.add('bg-white', 'text-blue-600');
+            clienteBtn.classList.remove('bg-white/20', 'text-white');
+            gestorBtn.classList.add('bg-white/20', 'text-white');
+            gestorBtn.classList.remove('bg-white', 'text-blue-600');
+        });
+
+        gestorBtn.addEventListener('click', () => {
+            gestorSteps.style.display = 'grid';
+            clienteSteps.style.display = 'none';
+            gestorBtn.classList.add('bg-white', 'text-blue-600');
+            gestorBtn.classList.remove('bg-white/20', 'text-white');
+            clienteBtn.classList.add('bg-white/20', 'text-white');
+            clienteBtn.classList.remove('bg-white', 'text-blue-600');
+        });
+
+        function adjustInitialDisplay() {
+            if (window.getComputedStyle(clienteSteps).display !== 'none') {
+                clienteSteps.style.display = 'grid';
+            }
+            if (window.getComputedStyle(gestorSteps).display !== 'none') {
+                gestorSteps.style.display = 'grid';
+            } else {
+                 gestorSteps.style.display = 'none';
+            }
+        }
+        window.addEventListener('load', adjustInitialDisplay);
     </script>
 </body>
 </html>
-
-
-
-
-
