@@ -3,8 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciamento - Oassis do Oceano</title>
-    <link rel="stylesheet" href="/assets/css/barraca.css">
+    <title>Gerenciamento Interativo - Oassis do Oceano</title>
+    <style>
+        /* Estilos Globais */
+        :root {
+            --primary-color: #0138B4;
+            --secondary-color: #73BFF6;
+            --card-background: rgba(255, 255, 255, 0.95);
+            --text-color-dark: #333;
+            --text-color-light: #fff;
+            --success-color: #28a745;
+            --danger-color: #e74c3c;
+            --edit-color: #f39c12;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-color-light);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-section { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+        .logo { 
+            width: 80px; height: 80px; border-radius: 50%; 
+            background: var(--text-color-light); 
+            border: 3px solid var(--secondary-color);
+        }
+        .header-info h1 { color: var(--text-color-light); font-size: 2.5em; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-item { text-align: center; background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 12px; }
+        .stat-number { font-size: 2em; font-weight: bold; color: var(--primary-color); }
+        .stat-label { color: #555; font-size: 0.9em; }
+
+        /* Dashboard Grid & Cards */
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: 1fr;
+            gap: 25px; 
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr; 
+            gap: 25px;
+        }
+
+        .main-column, .side-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            color: var(--primary-color);
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+        .card-title { color: var(--primary-color); font-size: 1.4em; font-weight: bold; }
+        .card-content { flex-grow: 1; }
+        .card p { color: #012a8a; }
+        
+        /* Botões */
+        .btn {
+            background: var(--secondary-color); color: var(--primary-color); border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.3s ease; text-align: center;
+        }
+        .btn:hover { background: var(--primary-color); color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .btn-success { background: var(--success-color); color: white; }
+        .btn-success:hover { background: #218838; color: white; }
+        .btn-cardapio { background: var(--edit-color); color: white; }
+        .btn-cardapio:hover { background: #d48a0f; color: white; }
+
+        /* Card: Promoções e Reservas */
+        .list-item { background: #f0f4f8; border-radius: 12px; padding: 15px; margin-bottom: 12px; border-left: 4px solid var(--secondary-color); display: flex; justify-content: space-between; align-items: center; color: var(--text-color-dark);}
+        .list-info { flex-grow: 1; }
+        .list-actions { display: flex; gap: 10px; }
+        .action-btn { background: none; border: none; cursor: pointer; font-size: 1.2em; padding: 5px; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s; }
+        .action-btn svg { width: 18px; height: 18px; }
+        .action-btn.edit { color: var(--edit-color); }
+        .action-btn.edit:hover { background-color: rgba(243, 156, 18, 0.1); }
+        .action-btn.delete { color: var(--danger-color); }
+        .action-btn.delete:hover { background-color: rgba(231, 76, 60, 0.1); }
+        #reservas-container { max-height: 250px; overflow-y: auto; padding-right: 10px; }
+
+
+        /* Card: Ocupação */
+        .ocupacao-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 5px; font-weight: 500; color: var(--primary-color); }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1.1em; text-align: center; }
+
+        /* Card: Agenda e Horários */
+        .agenda-horarios-container { display: grid; grid-template-columns: 1.2fr 1fr; gap: 25px; }
+        .agenda-section { border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; }
+        .horario-semanal-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 8px; margin-bottom: 8px; background: #f0f4f8; }
+        .horario-semanal-item.fechado { background: #fbebeb; }
+        .horario-semanal-item .day { font-weight: bold; color: var(--primary-color); }
+        .horario-semanal-item .time { font-weight: 500; color: var(--text-color-dark); }
+        .horario-semanal-item.fechado .time { color: var(--danger-color); }
+        .horario-semanal-item.override .day::after { content: ' *'; color: var(--edit-color); font-weight: bold; }
+
+        /* Calendário */
+        .calendar { width: 100%; border-collapse: collapse; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calendar-header button { background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--primary-color); }
+        .calendar-header h3 { color: var(--primary-color); }
+        .calendar th { padding: 10px; text-align: center; font-size: 0.9em; color: var(--primary-color); }
+        .calendar td { border: 1px solid #e2e8f0; padding: 5px; text-align: center; vertical-align: middle; height: 50px; }
+        .calendar .day-cell { cursor: pointer; transition: background-color 0.3s; position: relative; }
+        .calendar .day-cell:not(.empty):hover { background-color: #e8f4fd; }
+        .calendar .day-cell.today .day-number { background-color: var(--secondary-color); color: var(--primary-color); border-radius: 50%; font-weight: bold; }
+        .calendar .day-cell.special .day-number { border: 2px solid var(--edit-color); border-radius: 50%; }
+        .calendar .day-number { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+        .calendar .empty { background: #f8f9fa; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); animation: fadeIn 0.3s; }
+        .modal-content { color: var(--text-color-dark); background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; max-width: 500px; width: 90%; animation: slideUp 0.3s; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { color: var(--primary-color); }
+        .close-btn { color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 900px) {
+            .agenda-horarios-container { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .ocupacao-form { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -14,24 +179,23 @@
                 <div class="logo"></div>
                 <div class="header-info">
                     <h1>Oassis do Oceano</h1>
-                    <span class="status-badge">Online - Funcionando</span>
                 </div>
             </div>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <div class="stat-number">1000</div>
+                    <div class="stat-number" id="total-barracas-stat">100</div>
                     <div class="stat-label">Barracas Total</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="ocupadas-count">350</div>
+                    <div class="stat-number" id="ocupadas-barracas-stat">35</div>
                     <div class="stat-label">Ocupadas</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="disponiveis-count">650</div>
+                    <div class="stat-number" id="disponiveis-barracas-stat">65</div>
                     <div class="stat-label">Disponíveis</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="taxa-ocupacao">35%</div>
+                    <div class="stat-number" id="taxa-ocupacao-stat">35%</div>
                     <div class="stat-label">Taxa Ocupação</div>
                 </div>
             </div>
@@ -42,318 +206,435 @@
             <!-- Reservas -->
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title">Reservas do Dia</h2>
-                    <span class="card-badge">2 Confirmadas</span>
+                    <h2 class="card-title">Reservas de Clientes</h2>
+                    <button class="btn" onclick="openReservaModal()">+ Nova Reserva</button>
                 </div>
-                <div class="reserva-item">
-                    <div class="reserva-info">
-                        <div>
-                            <div class="cliente-name">Maria Santos</div>
-                            <div class="horario">Barraca 15 - 10:00 às 16:00</div>
+                <div class="card-content" id="reservas-container">
+                    <!-- Conteúdo das reservas gerado aqui -->
+                </div>
+            </div>
+            
+            <div class="main-layout">
+                <div class="main-column">
+                    <!-- Ocupação de Barracas -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Ocupação de Barracas</h2>
                         </div>
-                        <span class="btn btn-success" style="opacity: 0.7; cursor: default;">Confirmada</span>
-                    </div>
-                </div>
-                <div class="reserva-item">
-                    <div class="reserva-info">
-                        <div>
-                            <div class="cliente-name">João Silva</div>
-                            <div class="horario">Barraca 08 - 14:00 às 18:00</div>
+                        <div class="card-content">
+                            <div class="ocupacao-form">
+                                <div class="form-group">
+                                    <label for="total-input">Total de Barracas</label>
+                                    <input type="number" id="total-input" value="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ocupadas-input">Barracas Ocupadas</label>
+                                    <input type="number" id="ocupadas-input" value="35">
+                                </div>
+                            </div>
                         </div>
-                        <span class="btn btn-success" style="opacity: 0.7; cursor: default;">Confirmada</span>
                     </div>
-                </div>
-            </div>
 
-            <!-- Cardápio -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Cardápio</h2>
-                    <span class="card-badge available" id="cardapio-count">32 Itens</span>
-                </div>
-                <div id="cardapio-container">
-                    <div class="menu-item">
-                        <span class="menu-name">Caipirinha Tradicional</span>
-                        <span class="menu-price">R$ 15,00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="menu-name">Porção de Camarão</span>
-                        <span class="menu-price">R$ 45,00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="menu-name">Água de Coco</span>
-                        <span class="menu-price">R$ 8,00</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="menu-name">Peixe Grelhado</span>
-                        <span class="menu-price">R$ 35,00</span>
-                    </div>
-                </div>
-                <button class="btn" onclick="openModal('cardapioModal')" style="width: 100%; margin-top: 15px;">
-                    Gerenciar Cardápio
-                </button>
-            </div>
+                    <!-- Botão Cardápio -->
+                    <button class="btn btn-cardapio">Gerenciar Cardápio</button>
 
-            <!-- Promoções -->
-            <div class="card promocoes">
-                <div class="card-header">
-                    <h2 class="card-title">Promoções Ativas</h2>
-                </div>
-                <div id="promocoes-container">
-                    <div class="promocao-item">
-                        <button class="promocao-remove" onclick="removerPromocao(this)">×</button>
-                        <strong>Happy Hour</strong><br>
-                        Todas as bebidas com 20% OFF<br>
-                        <em>15:00 às 17:00</em>
-                    </div>
-                    <div class="promocao-item">
-                        <button class="promocao-remove" onclick="removerPromocao(this)">×</button>
-                        <strong>Combo Família</strong><br>
-                        Peixe + Camarão + 4 Bebidas<br>
-                        <em>De R$ 120,00 por R$ 95,00</em>
+                    <!-- Promoções Ativas -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Promoções Ativas</h2>
+                        </div>
+                        <div class="card-content" id="promocoes-container">
+                            <!-- Promoções geradas dinamicamente -->
+                        </div>
+                        <button class="btn" onclick="openPromoModal()">+ Nova Promoção</button>
                     </div>
                 </div>
-                <button class="btn" onclick="openModal('promocaoModal')" style="width: 100%; margin-top: 15px; background: rgba(255,255,255,0.3);">
-                    + Nova Promoção
-                </button>
-            </div>
-
-            <!-- Horário de Funcionamento -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Horário de Funcionamento</h2>
-                </div>
-                <div class="horario-funcionamento" id="horarios-display">
-                    <div class="horario-item">
-                        <div class="day">Segunda-feira</div>
-                        <div class="time">08:00 - 18:00</div>
-                    </div>
-                    <div class="horario-item">
-                        <div class="day">Terça-feira</div>
-                        <div class="time">08:00 - 18:00</div>
-                    </div>
-                    <div class="horario-item">
-                        <div class="day">Quarta-feira</div>
-                        <div class="time">08:00 - 18:00</div>
-                    </div>
-                    <div class="horario-item">
-                        <div class="day">Quinta-feira</div>
-                        <div class="time">08:00 - 18:00</div>
-                    </div>
-                    <div class="horario-item">
-                        <div class="day">Sexta-feira</div>
-                        <div class="time">08:00 - 18:00</div>
-                    </div>
-                    <div class="horario-item">
-                        <div class="day">Sábado</div>
-                        <div class="time">07:00 - 19:00</div>
-                    </div>
-                    <div class="horario-item">
-                        <div class="day">Domingo</div>
-                        <div class="time">07:00 - 19:00</div>
-                    </div>
-                    <div class="horario-item">
-                        <div class="day">Feriados</div>
-                        <div class="time">07:00 - 20:00</div>
+                
+                <div class="side-column">
+                    <!-- Agenda e Horários -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Agenda e Horários</h2>
+                        </div>
+                        <div class="card-content agenda-horarios-container">
+                            <div class="agenda-section">
+                                <h3>Agenda de Datas Especiais</h3>
+                                <div class="calendar-container">
+                                    <div class="calendar-header">
+                                        <button id="prev-month">❮</button>
+                                        <h3 id="calendar-month-year"></h3>
+                                        <button id="next-month">❯</button>
+                                    </div>
+                                    <table class="calendar">
+                                        <thead>
+                                            <tr>
+                                                <th>Dom</th><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th><th>Sáb</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="calendar-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="agenda-section">
+                                <h3>Horário Padrão</h3>
+                                <div id="horario-semanal-container"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <button class="btn" onclick="openModal('horarioModal')" style="width: 100%; margin-top: 15px;">
-                    Alterar Horários
-                </button>
-            </div>
-
-            <!-- Ocupação das Barracas -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Ocupação das Barracas</h2>
-                    <span class="card-badge">1000 Barracas</span>
-                </div>
-                <div class="ocupacao-grid" id="barracas-grid">
-                    <!-- Barracas serão geradas dinamicamente -->
-                </div>
-                <p style="margin-top: 15px; text-align: center; color: #666;">
-                    <span style="color: #4CAF50;">●</span> Livre 
-                    <span style="color: #FF6B6B; margin-left: 15px;">●</span> Ocupada
-                </p>
             </div>
         </div>
     </div>
 
     <!-- Modals -->
-    <!-- Modal Cardápio -->
-    <div id="cardapioModal" class="modal">
+    <div id="promoModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('cardapioModal')">&times;</span>
-            <h2 style="color: #2C5AA0; margin-bottom: 20px;">Gerenciar Cardápio</h2>
-            <div class="form-group">
-                <label>Nome do Item:</label>
-                <input type="text" id="item-nome" placeholder="Ex: Caipirinha de Limão">
+            <div class="modal-header"><h2 class="modal-title" id="promo-modal-title">Nova Promoção</h2><span class="close-btn" onclick="closeModal('promoModal')">&times;</span></div>
+            <div class="modal-body">
+                <input type="hidden" id="promo-id">
+                <div class="form-group"><label for="promo-nome">Nome:</label><input type="text" id="promo-nome" placeholder="Ex: Happy Hour"></div>
+                <div class="form-group"><label for="promo-descricao">Descrição:</label><input type="text" id="promo-descricao" placeholder="Bebidas com 20% OFF"></div>
+                <div class="form-group"><label for="promo-detalhes">Detalhes (opcional):</label><input type="text" id="promo-detalhes" placeholder="15:00 às 17:00"></div>
             </div>
-            <div class="form-group">
-                <label>Preço:</label>
-                <input type="number" id="item-preco" step="0.01" placeholder="15.00">
+            <div class="modal-footer"><button class="btn" onclick="closeModal('promoModal')">Cancelar</button><button class="btn btn-success" onclick="savePromo()">Salvar</button></div>
+        </div>
+    </div>
+    
+    <div id="agendaModal" class="modal">
+        <div class="modal-content">
+             <div class="modal-header"><h2 class="modal-title">Configurar Horário</h2><span class="close-btn" onclick="closeModal('agendaModal')">&times;</span></div>
+            <div class="modal-body">
+                 <input type="hidden" id="agenda-date">
+                 <p>Editando o dia: <strong id="agenda-date-display"></strong></p>
+                 <div class="form-group"><label for="agenda-status">Status:</label><select id="agenda-status" onchange="toggleAgendaTimeInputs()"><option value="aberto">Aberto</option><option value="fechado">Fechado</option></select></div>
+                 <div id="agenda-time-inputs">
+                    <div class="form-group"><label for="agenda-abre">Abertura:</label><input type="time" id="agenda-abre"></div>
+                    <div class="form-group"><label for="agenda-fecha">Fechamento:</label><input type="time" id="agenda-fecha"></div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Descrição:</label>
-                <textarea id="item-descricao" rows="3" placeholder="Descrição do item do cardápio"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Categoria:</label>
-                <select id="item-categoria">
-                    <option>Bebidas</option>
-                    <option>Petiscos</option>
-                    <option>Pratos Principais</option>
-                    <option>Sobremesas</option>
-                </select>
-            </div>
-            <button class="btn btn-success" onclick="adicionarItemCardapio()" style="width: 100%;">Adicionar Item</button>
+            <div class="modal-footer"><button class="btn" onclick="clearAgendaDate()">Usar Padrão</button><button class="btn btn-success" onclick="saveAgendaDate()">Salvar</button></div>
         </div>
     </div>
 
-    <!-- Modal Promoção -->
-    <div id="promocaoModal" class="modal">
+    <div id="reservaModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('promocaoModal')">&times;</span>
-            <h2 style="color: #2C5AA0; margin-bottom: 20px;">Nova Promoção</h2>
-            <div class="form-group">
-                <label>Nome da Promoção:</label>
-                <input type="text" id="promo-nome" placeholder="Ex: Happy Hour">
+            <div class="modal-header"><h2 class="modal-title" id="reserva-modal-title">Nova Reserva</h2><span class="close-btn" onclick="closeModal('reservaModal')">&times;</span></div>
+            <div class="modal-body">
+                <input type="hidden" id="reserva-id">
+                <div class="form-group"><label for="reserva-nome">Nome do Cliente:</label><input type="text" id="reserva-nome" placeholder="Nome do cliente"></div>
+                <div class="form-group"><label for="reserva-data">Data:</label><input type="date" id="reserva-data"></div>
+                <div class="form-group"><label for="reserva-pessoas">Nº de Pessoas:</label><input type="number" id="reserva-pessoas" min="1" value="2"></div>
             </div>
-            <div class="form-group">
-                <label>Descrição:</label>
-                <textarea id="promo-descricao" rows="3" placeholder="Descreva a promoção"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Tipo de Desconto:</label>
-                <select id="promo-tipo" onchange="alternarTipoDesconto()">
-                    <option value="percentual">Percentual (%)</option>
-                    <option value="valor-fixo">Preço Promocional</option>
-                </select>
-            </div>
-            <div class="form-group" id="desconto-percentual">
-                <label>Desconto (%):</label>
-                <input type="number" id="promo-desconto" max="100" placeholder="20">
-            </div>
-            <div class="form-group" id="preco-original" style="display: none;">
-                <label>Preço Original (R$):</label>
-                <input type="number" id="promo-original" step="0.01" placeholder="120.00">
-            </div>
-            <div class="form-group" id="preco-promocional" style="display: none;">
-                <label>Preço Promocional (R$):</label>
-                <input type="number" id="promo-promocional" step="0.01" placeholder="95.00">
-            </div>
-            <div class="form-group">
-                <label>Horário de Início:</label>
-                <input type="time" id="promo-inicio" value="15:00">
-            </div>
-            <div class="form-group">
-                <label>Horário de Fim:</label>
-                <input type="time" id="promo-fim" value="17:00">
-            </div>
-            <button class="btn btn-success" onclick="criarNovaPromocao()" style="width: 100%;">Criar Promoção</button>
+            <div class="modal-footer"><button class="btn" onclick="closeModal('reservaModal')">Cancelar</button><button class="btn btn-success" onclick="saveReserva()">Salvar</button></div>
         </div>
     </div>
 
-    <!-- Modal Horário -->
-    <div id="horarioModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('horarioModal')">&times;</span>
-            <h2 style="color: #2C5AA0; margin-bottom: 20px;">Configurar Horários</h2>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // --- ESTADO INICIAL ---
+        let state = {
+            barracas: { total: 100, ocupadas: 35 },
+            promocoes: [
+                { id: 1, nome: 'Happy Hour', descricao: 'Todas as bebidas com 20% OFF', detalhes: '15:00 às 17:00' },
+                { id: 2, nome: 'Combo Família', descricao: 'Peixe + Camarão + 4 Bebidas', detalhes: 'De R$ 120 por R$ 95' }
+            ],
+            reservas: [
+                {id: 1, nome: 'Ana Silva', data: '2025-09-20', pessoas: 4},
+                {id: 2, nome: 'Carlos Souza', data: '2025-09-22', pessoas: 2},
+                {id: 3, nome: 'Mariana Costa', data: '2025-09-22', pessoas: 8},
+            ],
+            horarioSemanal: {
+                0: { dia: 'Domingo', abre: '07:00', fecha: '19:00', ativo: true },
+                1: { dia: 'Segunda', abre: '08:00', fecha: '18:00', ativo: true },
+                2: { dia: 'Terça', abre: '08:00', fecha: '18:00', ativo: true },
+                3: { dia: 'Quarta', abre: '08:00', fecha: '18:00', ativo: true },
+                4: { dia: 'Quinta', abre: '08:00', fecha: '18:00', ativo: true },
+                5: { dia: 'Sexta', abre: '08:00', fecha: '18:00', ativo: true },
+                6: { dia: 'Sábado', abre: '07:00', fecha: '19:00', ativo: true }
+            },
+            agenda: {}
+        };
+
+        // --- INICIALIZAÇÃO ---
+        function init() {
+            document.getElementById('total-input').addEventListener('input', handleBarracaChange);
+            document.getElementById('ocupadas-input').addEventListener('input', handleBarracaChange);
+            updateBarracaStats();
+            renderPromocoes();
+            renderReservas();
+            renderHorarioSemanal();
+            initCalendar();
+        }
+
+        // --- LÓGICA DAS BARRACAS ---
+        function handleBarracaChange() {
+            let total = parseInt(document.getElementById('total-input').value) || 0;
+            let ocupadas = parseInt(document.getElementById('ocupadas-input').value) || 0;
+            if (ocupadas > total) {
+                ocupadas = total;
+                document.getElementById('ocupadas-input').value = ocupadas;
+            }
+            state.barracas.total = total;
+            state.barracas.ocupadas = ocupadas;
+            updateBarracaStats();
+        }
+
+        function updateBarracaStats() {
+            const { total, ocupadas } = state.barracas;
+            const disponiveis = total - ocupadas;
+            const taxa = total > 0 ? ((ocupadas / total) * 100).toFixed(0) : 0;
+            document.getElementById('total-barracas-stat').innerText = total;
+            document.getElementById('ocupadas-barracas-stat').innerText = ocupadas;
+            document.getElementById('disponiveis-barracas-stat').innerText = disponiveis;
+            document.getElementById('taxa-ocupacao-stat').innerText = `${taxa}%`;
+        }
+        
+        // --- LÓGICA DE PROMOÇÕES & RESERVAS (CRUD) ---
+        function renderItems(containerId, items, renderFn) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            if (items.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #555;">Nenhum item encontrado.</p>`;
+                return;
+            }
+            items.forEach(item => container.appendChild(renderFn(item)));
+        }
+
+        function createPromoElement(promo) {
+            const el = document.createElement('div');
+            el.className = 'list-item';
+            el.innerHTML = `
+                <div class="list-info">
+                    <strong>${promo.nome}</strong><br><small>${promo.descricao}</small><br><em>${promo.detalhes || ''}</em>
+                </div>
+                <div class="list-actions">
+                    <button class="action-btn edit" onclick="editPromo(${promo.id})" title="Editar">${getIcon('edit')}</button>
+                    <button class="action-btn delete" onclick="deletePromo(${promo.id})" title="Excluir">${getIcon('delete')}</button>
+                </div>`;
+            return el;
+        }
+
+        function createReservaElement(reserva) {
+            const dataFormatada = new Date(reserva.data + 'T00:00:00-03:00').toLocaleDateString('pt-BR');
+            const el = document.createElement('div');
+            el.className = 'list-item';
+            el.innerHTML = `
+                <div class="list-info">
+                    <strong>${reserva.nome}</strong><br><small>Data: ${dataFormatada} - ${reserva.pessoas} pessoas</small>
+                </div>
+                <div class="list-actions">
+                    <button class="action-btn edit" onclick="editReserva(${reserva.id})" title="Editar">${getIcon('edit')}</button>
+                    <button class="action-btn delete" onclick="deleteReserva(${reserva.id})" title="Excluir">${getIcon('delete')}</button>
+                </div>`;
+            return el;
+        }
+        
+        const renderPromocoes = () => renderItems('promocoes-container', state.promocoes, createPromoElement);
+        const renderReservas = () => renderItems('reservas-container', state.reservas, createReservaElement);
+
+        // Funções para Promoções
+        window.openPromoModal = () => {
+            document.getElementById('promo-modal-title').innerText = 'Nova Promoção';
+            document.getElementById('promo-id').value = '';
+            document.getElementById('promo-nome').value = '';
+            document.getElementById('promo-descricao').value = '';
+            document.getElementById('promo-detalhes').value = '';
+            openModal('promoModal');
+        };
+        window.editPromo = id => {
+            const promo = state.promocoes.find(p => p.id === id);
+            if(promo) {
+                document.getElementById('promo-modal-title').innerText = 'Editar Promoção';
+                document.getElementById('promo-id').value = promo.id;
+                document.getElementById('promo-nome').value = promo.nome;
+                document.getElementById('promo-descricao').value = promo.descricao;
+                document.getElementById('promo-detalhes').value = promo.detalhes;
+                openModal('promoModal');
+            }
+        };
+        window.savePromo = () => {
+            const id = document.getElementById('promo-id').value;
+            const promoData = {
+                nome: document.getElementById('promo-nome').value,
+                descricao: document.getElementById('promo-descricao').value,
+                detalhes: document.getElementById('promo-detalhes').value
+            };
+            if (!promoData.nome || !promoData.descricao) return alert('Nome e descrição são obrigatórios.');
             
-            <div id="horarios-config">
-                <div class="horario-row">
-                    <div class="day-toggle">
-                        <input type="checkbox" id="segunda" checked>
-                        <label for="segunda">Segunda-feira</label>
-                    </div>
-                    <div class="time-config">
-                        <input type="time" id="segunda-inicio" value="08:00">
-                        <input type="time" id="segunda-fim" value="18:00">
-                    </div>
-                </div>
-                
-                <div class="horario-row">
-                    <div class="day-toggle">
-                        <input type="checkbox" id="terca" checked>
-                        <label for="terca">Terça-feira</label>
-                    </div>
-                    <div class="time-config">
-                        <input type="time" id="terca-inicio" value="08:00">
-                        <input type="time" id="terca-fim" value="18:00">
-                    </div>
-                </div>
-                
-                <div class="horario-row">
-                    <div class="day-toggle">
-                        <input type="checkbox" id="quarta" checked>
-                        <label for="quarta">Quarta-feira</label>
-                    </div>
-                    <div class="time-config">
-                        <input type="time" id="quarta-inicio" value="08:00">
-                        <input type="time" id="quarta-fim" value="18:00">
-                    </div>
-                </div>
-                
-                <div class="horario-row">
-                    <div class="day-toggle">
-                        <input type="checkbox" id="quinta" checked>
-                        <label for="quinta">Quinta-feira</label>
-                    </div>
-                    <div class="time-config">
-                        <input type="time" id="quinta-inicio" value="08:00">
-                        <input type="time" id="quinta-fim" value="18:00">
-                    </div>
-                </div>
-                
-                <div class="horario-row">
-                    <div class="day-toggle">
-                        <input type="checkbox" id="sexta" checked>
-                        <label for="sexta">Sexta-feira</label>
-                    </div>
-                    <div class="time-config">
-                        <input type="time" id="sexta-inicio" value="08:00">
-                        <input type="time" id="sexta-fim" value="18:00">
-                    </div>
-                </div>
-                
-                <div class="horario-row">
-                    <div class="day-toggle">
-                        <input type="checkbox" id="sabado" checked>
-                        <label for="sabado">Sábado</label>
-                    </div>
-                    <div class="time-config">
-                        <input type="time" id="sabado-inicio" value="07:00">
-                        <input type="time" id="sabado-fim" value="19:00">
-                    </div>
-                </div>
-                
-                <div class="horario-row">
-                    <div class="day-toggle">
-                        <input type="checkbox" id="domingo" checked>
-                        <label for="domingo">Domingo</label>
-                    </div>
-                    <div class="time-config">
-                        <input type="time" id="domingo-inicio" value="07:00">
-                        <input type="time" id="domingo-fim" value="19:00">
-                    </div>
-                </div>
-                
-                <div class="horario-row">
-                    <div class="day-toggle">
-                        <input type="checkbox" id="feriados" checked>
-                        <label for="feriados">Feriados</label>
-                    </div>
-                    <div class="time-config">
-                        <input type="time" id="feriados-inicio" value="07:00">
-                        <input type="time" id="feriados-fim" value="20:00">
-                    </div>
-                </div>
-            </div>
-            
-            <button class="btn btn-success" onclick="salvarHorarios()" style="width: 100%; margin-top: 20px;">Salvar Horários</button>
-        </div>
-    </div>
+            if (id) {
+                const index = state.promocoes.findIndex(p => p.id == id);
+                state.promocoes[index] = { ...state.promocoes[index], ...promoData };
+            } else {
+                const newId = (state.promocoes[state.promocoes.length-1]?.id || 0) + 1;
+                state.promocoes.push({ id: newId, ...promoData });
+            }
+            renderPromocoes();
+            closeModal('promoModal');
+        };
+        window.deletePromo = id => {
+            if (confirm('Deseja excluir esta promoção?')) {
+                state.promocoes = state.promocoes.filter(p => p.id !== id);
+                renderPromocoes();
+            }
+        };
 
-    <script src="script.js"></script>
+        // Funções para Reservas
+        window.openReservaModal = () => {
+            document.getElementById('reserva-modal-title').innerText = 'Nova Reserva';
+            document.getElementById('reserva-id').value = '';
+            document.getElementById('reserva-nome').value = '';
+            document.getElementById('reserva-data').value = new Date().toISOString().split('T')[0];
+            document.getElementById('reserva-pessoas').value = '2';
+            openModal('reservaModal');
+        };
+         window.editReserva = id => {
+            const reserva = state.reservas.find(r => r.id === id);
+            if(reserva) {
+                document.getElementById('reserva-modal-title').innerText = 'Editar Reserva';
+                document.getElementById('reserva-id').value = reserva.id;
+                document.getElementById('reserva-nome').value = reserva.nome;
+                document.getElementById('reserva-data').value = reserva.data;
+                document.getElementById('reserva-pessoas').value = reserva.pessoas;
+                openModal('reservaModal');
+            }
+        };
+        window.saveReserva = () => {
+            const id = document.getElementById('reserva-id').value;
+            const reservaData = {
+                nome: document.getElementById('reserva-nome').value,
+                data: document.getElementById('reserva-data').value,
+                pessoas: parseInt(document.getElementById('reserva-pessoas').value)
+            };
+            if (!reservaData.nome || !reservaData.data || !reservaData.pessoas) return alert('Todos os campos são obrigatórios.');
+
+            if (id) {
+                const index = state.reservas.findIndex(r => r.id == id);
+                state.reservas[index] = { ...state.reservas[index], ...reservaData };
+            } else {
+                const newId = (state.reservas[state.reservas.length-1]?.id || 0) + 1;
+                state.reservas.push({ id: newId, ...reservaData });
+            }
+            state.reservas.sort((a, b) => new Date(a.data) - new Date(b.data)); // Reordenar por data
+            renderReservas();
+            closeModal('reservaModal');
+        };
+        window.deleteReserva = id => {
+            if (confirm('Deseja excluir esta reserva?')) {
+                state.reservas = state.reservas.filter(r => r.id !== id);
+                renderReservas();
+            }
+        };
+
+        
+        // --- LÓGICA DE AGENDA E HORÁRIOS ---
+        let currentDate = new Date();
+
+        function renderHorarioSemanal() {
+            const container = document.getElementById('horario-semanal-container');
+            container.innerHTML = '';
+            for (let i = 0; i < 7; i++) {
+                const horario = state.horarioSemanal[i];
+                const itemEl = document.createElement('div');
+                itemEl.className = 'horario-semanal-item';
+                if (!horario.ativo) itemEl.classList.add('fechado');
+                const dateKey = Object.keys(state.agenda).find(key => new Date(key + 'T00:00:00-03:00').getUTCDay() === i);
+                if (dateKey) itemEl.classList.add('override');
+                itemEl.innerHTML = `<span class="day">${horario.dia}</span><span class="time">${horario.ativo ? `${horario.abre} - ${horario.fecha}` : 'Fechado'}</span>`;
+                container.appendChild(itemEl);
+            }
+        }
+
+        function initCalendar() {
+            document.getElementById('prev-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+            document.getElementById('next-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const month = currentDate.getMonth(), year = currentDate.getFullYear();
+            document.getElementById('calendar-month-year').innerText = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+            
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const body = document.getElementById('calendar-body');
+            body.innerHTML = '';
+            
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                let row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    let cell = document.createElement('td');
+                    if (i === 0 && j < firstDayOfMonth || date > daysInMonth) {
+                        cell.classList.add('empty');
+                    } else {
+                        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                        cell.className = 'day-cell';
+                        if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) cell.classList.add('today');
+                        if (state.agenda[dateKey]) cell.classList.add('special');
+                        
+                        cell.innerHTML = `<div class="day-number">${date}</div>`;
+                        cell.dataset.date = dateKey;
+                        cell.addEventListener('click', () => openAgendaModal(dateKey));
+                        date++;
+                    }
+                    row.appendChild(cell);
+                }
+                body.appendChild(row);
+                if (date > daysInMonth) break;
+            }
+        }
+        
+        function openAgendaModal(dateKey) {
+            document.getElementById('agenda-date').value = dateKey;
+            const [year, month, day] = dateKey.split('-');
+            document.getElementById('agenda-date-display').innerText = `${day}/${month}/${year}`;
+            
+            const savedData = state.agenda[dateKey];
+            const dayOfWeek = new Date(dateKey + 'T00:00:00-03:00').getUTCDay();
+            const defaultData = state.horarioSemanal[dayOfWeek];
+            
+            document.getElementById('agenda-status').value = savedData?.status || 'aberto';
+            document.getElementById('agenda-abre').value = savedData?.abre || defaultData.abre;
+            document.getElementById('agenda-fecha').value = savedData?.fecha || defaultData.fecha;
+            
+            toggleAgendaTimeInputs();
+            openModal('agendaModal');
+        }
+        
+        window.toggleAgendaTimeInputs = () => document.getElementById('agenda-time-inputs').style.display = document.getElementById('agenda-status').value === 'aberto' ? 'block' : 'none';
+        window.saveAgendaDate = () => {
+            const dateKey = document.getElementById('agenda-date').value;
+            state.agenda[dateKey] = { status: document.getElementById('agenda-status').value, abre: document.getElementById('agenda-abre').value, fecha: document.getElementById('agenda-fecha').value };
+            closeModal('agendaModal');
+            renderCalendar();
+            renderHorarioSemanal();
+        };
+        window.clearAgendaDate = () => {
+             const dateKey = document.getElementById('agenda-date').value;
+             if(state.agenda[dateKey]) {
+                delete state.agenda[dateKey];
+                closeModal('agendaModal');
+                renderCalendar();
+                renderHorarioSemanal();
+             }
+        };
+
+        // --- FUNÇÕES UTILITÁRIAS ---
+        window.openModal = modalId => document.getElementById(modalId).style.display = 'block';
+        window.closeModal = modalId => document.getElementById(modalId).style.display = 'none';
+        window.onclick = event => { if (event.target.classList.contains('modal')) event.target.style.display = 'none'; };
+        const getIcon = name => ({
+            edit: '<svg fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>',
+            delete: '<svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd"></path></svg>'
+        }[name] || '');
+        
+        // --- INICIAR APLICAÇÃO ---
+        init();
+    });
+    </script>
 </body>
 </html>
+
