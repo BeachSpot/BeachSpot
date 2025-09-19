@@ -16,6 +16,9 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Swiper JS CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
     <style>
         /* Estilos base e fundo */
         body {
@@ -23,16 +26,12 @@
             background: linear-gradient(135deg, #0138b4, #73bff6);
             background-attachment: fixed;
             min-height: 100vh;
-            /* Flexbox para empurrar o footer para baixo */
             display: flex;
             flex-direction: column;
         }
-
-        /* Faz o conteúdo principal crescer */
         main {
             flex-grow: 1;
         }
-
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -47,6 +46,34 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
         }
+
+        /* --- ESTILOS PARA GALERIA (SWIPER CARDS) --- */
+        .image-gallery-swiper {
+            width: 80%; /* Largura diminuída */
+            height: 240px; /* Altura diminuída */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .image-gallery-swiper .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .image-gallery-swiper .swiper-button-next,
+        .image-gallery-swiper .swiper-button-prev {
+            color: white !important;
+        }
+
+        .image-gallery-swiper .swiper-button-next:after,
+        .image-gallery-swiper .swiper-button-prev:after {
+            font-size: 24px !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="text-white">
@@ -60,10 +87,9 @@
             </a>
             <ul class="hidden md:flex items-center space-x-6">
                 <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                <li><a href="perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
-                <li><a href="biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
-                <li><a href="sobre.html" class="hover:text-blue-600 transition-colors">Sobre</a></li>
-                <li><a href="config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
             </ul>
             <button class="md:hidden" id="mobile-menu-button">
                 <i data-lucide="menu"></i>
@@ -72,10 +98,9 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-white text-gray-800">
             <a href="inicio.html" class="block py-2 px-6 hover:bg-gray-100">Início</a>
-            <a href="perfil.html" class="block py-2 px-6 hover:bg-gray-100">Perfil</a>
-            <a href="biblioteca.html" class="block py-2 px-6 hover:bg-gray-100">Biblioteca</a>
-            <a href="sobre.html" class="block py-2 px-6 hover:bg-gray-100">Sobre</a>
-            <a href="config.html" class="block py-2 px-6 hover:bg-gray-100">Configurações</a>
+            <a href="perfilCliente.html" class="block py-2 px-6 hover:bg-gray-100">Perfil</a>
+            <a href="suasReservas.html" class="block py-2 px-6 hover:bg-gray-100">Suas Reservas</a>
+            <a href="configuracoes.html" class="block py-2 px-6 hover:bg-gray-100">Configurações</a>
         </div>
     </header>
 
@@ -147,20 +172,26 @@
 
                     <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
                         <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Galeria de Fotos</h2>
-                        <div id="image-carousel" class="relative w-full h-64 md:h-80 rounded-lg overflow-hidden shadow-md">
-                            <!-- Images -->
-                            <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" alt="Vista da barraca" class="carousel-image absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out">
-                            <img src="https://simonde.com.br/wp-content/uploads/2017/12/uxua-quadrado-trancoso-bahia-hoteis-de-luxo-critica-review-1100-36-1024x682.jpg.webp" alt="Área de mesas" class="carousel-image absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-0">
-                            <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" alt="Pratos servidos" class="carousel-image absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-0">
-                            <img src="https://media-cdn.tripadvisor.com/media/photo-s/04/32/53/44/barraca-marguerita.jpg" alt="Vista do mar" class="carousel-image absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out opacity-0">
-                            
-                            <!-- Controls -->
-                            <button id="prev-btn" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white p-2 rounded-full hover:bg-opacity-60 focus:outline-none z-10">
-                                <i data-lucide="chevron-left" class="w-6 h-6"></i>
-                            </button>
-                            <button id="next-btn" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-40 text-white p-2 rounded-full hover:bg-opacity-60 focus:outline-none z-10">
-                                <i data-lucide="chevron-right" class="w-6 h-6"></i>
-                            </button>
+                        <!-- Swiper container -->
+                        <div class="swiper-container image-gallery-swiper">
+                            <div class="swiper-wrapper">
+                                <!-- Slides -->
+                                <div class="swiper-slide">
+                                    <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" alt="Vista da barraca" class="w-full h-full object-cover">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="https://simonde.com.br/wp-content/uploads/2017/12/uxua-quadrado-trancoso-bahia-hoteis-de-luxo-critica-review-1100-36-1024x682.jpg.webp" alt="Área de mesas" class="w-full h-full object-cover">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" alt="Pratos servidos" class="w-full h-full object-cover">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/04/32/53/44/barraca-marguerita.jpg" alt="Vista do mar" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                            <!-- Add Navigation -->
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
                         </div>
                     </section>
 
@@ -168,7 +199,7 @@
                      <section>
                         <div class="flex flex-col sm:flex-row gap-4">
                             <button class="flex-1 bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg">Reservar</button>
-                            <button onclick="viewProducts()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 px-8 rounded-full hover:bg-gray-300 transition-all transform hover:scale-105">Cardápio</button>
+                            <a href="cardapio.html" class="flex-1 text-center bg-gray-200 text-gray-800 font-bold py-3 px-8 rounded-full hover:bg-gray-300 transition-all transform hover:scale-105">Cardápio</a>
                         </div>
                     </section>
                 </div>
@@ -180,7 +211,7 @@
                         <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Deixe sua Avaliação</h2>
                         <div class="flex items-center justify-center mb-4">
                             <span class="mr-4 text-gray-700 font-semibold">Sua nota:</span>
-                            <div class="flex text-gray-300 space-x-1">
+                            <div class="flex text-gray-300 space-x-1" id="rating-stars">
                                 <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
                                 <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
                                 <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
@@ -216,9 +247,9 @@
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="/perfil-pessoal/biblioteca.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
-                        <li><a href="/perfil-pessoal/perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
-                        <li><a href="/perfil-pessoal/config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                        <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                        <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
                     </ul>
                 </div>
                 <!-- Coluna 3: Social -->
@@ -237,23 +268,8 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script>
-        // This function is defined globally so the onclick attribute can find it.
-        function viewProducts() {
-            // Use a custom modal instead of alert
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
-            modal.innerHTML = `
-                <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full text-center">
-                    <p class="text-gray-800 text-lg mb-4">Redirecionando para a página de cardápio...</p>
-                    <button onclick="this.parentElement.parentElement.remove()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition-colors">OK</button>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            // window.location.href = "Cardapio.html";
-        }
-
-        // Wait for the DOM to be fully loaded before running scripts
         document.addEventListener('DOMContentLoaded', () => {
             // Lógica para o menu mobile
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -264,35 +280,33 @@
                 });
             }
 
-            // Lógica para o carrossel da galeria
-            const carousel = document.getElementById('image-carousel');
-            if (carousel) {
-                const images = carousel.querySelectorAll('.carousel-image');
-                const prevBtn = document.getElementById('prev-btn');
-                const nextBtn = document.getElementById('next-btn');
-                let currentIndex = 0;
-
-                function showImage(index) {
-                    images.forEach((img, i) => {
-                        img.classList.toggle('opacity-0', i !== index);
-                    });
-                }
-                
-                if (images.length > 0) {
-                    nextBtn.addEventListener('click', () => {
-                        currentIndex = (currentIndex + 1) % images.length;
-                        showImage(currentIndex);
-                    });
-
-                    prevBtn.addEventListener('click', () => {
-                        currentIndex = (currentIndex - 1 + images.length) % images.length;
-                        showImage(currentIndex);
-                    });
-                }
-            }
+            // --- LÓGICA PARA A NOVA GALERIA (SWIPER) ---
+            const gallerySwiper = new Swiper('.image-gallery-swiper', {
+                effect: 'cards',
+                grabCursor: true,
+                loop: true,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
 
             // Ativa os ícones do Lucide em toda a página.
             lucide.createIcons();
+
+            // Lógica para avaliação com estrelas
+            const stars = document.querySelectorAll('#rating-stars i');
+            stars.forEach((star, index) => {
+                star.addEventListener('click', () => {
+                    stars.forEach((s, i) => {
+                        if (i <= index) {
+                            s.classList.add('text-yellow-400', 'fill-current');
+                        } else {
+                            s.classList.remove('text-yellow-400', 'fill-current');
+                        }
+                    });
+                });
+            });
         });
     </script>
 </body>

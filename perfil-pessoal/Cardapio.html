@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cardápio - BeachSpot</title>
+    <title>BeachSpot</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,6 +47,12 @@
             display: block;
             transition: opacity 0.3s ease-in-out;
         }
+        /* Estilo para a aba ativa - igual a tela de reservas */
+        .tab-button.active {
+            border-bottom-color: #2563eb; /* Tailwind blue-600 */
+            color: #111827; /* Tailwind gray-900 */
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="text-white">
@@ -60,15 +66,10 @@
             </a>
             <ul class="hidden md:flex items-center space-x-6">
                 <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                <li><a href="perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
-                <li><a href="biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
-                <li><a href="sobre.html" class="hover:text-blue-600 transition-colors">Sobre</a></li>
-                <li><a href="config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
             </ul>
-             <div class="relative hidden md:block">
-                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                <input type="text" placeholder="Buscar..." class="bg-gray-100 rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all w-40 focus:w-64">
-            </div>
             <button class="md:hidden" id="mobile-menu-button">
                 <i data-lucide="menu"></i>
             </button>
@@ -76,13 +77,9 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-white text-gray-800">
             <a href="inicio.html" class="block py-2 px-6 hover:bg-gray-100">Início</a>
-            <a href="perfil.html" class="block py-2 px-6 hover:bg-gray-100">Perfil</a>
-            <a href="biblioteca.html" class="block py-2 px-6 hover:bg-gray-100">Biblioteca</a>
-            <a href="sobre.html" class="block py-2 px-6 hover:bg-gray-100">Sobre</a>
-            <a href="config.html" class="block py-2 px-6 hover:bg-gray-100">Configurações</a>
-             <div class="p-4">
-                <input type="text" placeholder="Buscar..." class="w-full bg-gray-100 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
+            <a href="perfilCliente.html" class="block py-2 px-6 hover:bg-gray-100">Perfil</a>
+            <a href="suasReservas.html" class="block py-2 px-6 hover:bg-gray-100">Suas Reservas</a>
+            <a href="configuracoes.html" class="block py-2 px-6 hover:bg-gray-100">Configurações</a>
         </div>
     </header>
 
@@ -90,7 +87,7 @@
     <main class="pt-28 md:pt-32 container mx-auto max-w-5xl px-6">
         
         <!-- Card Principal -->
-        <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
+        <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg flex flex-col main-content-card">
             
             <!-- Título da Página -->
             <section class="text-center border-b border-gray-200 pb-8 mb-8">
@@ -99,120 +96,123 @@
             </section>
 
             <!-- Filtros de Categoria -->
-            <div id="category-filters" class="flex flex-wrap justify-center gap-2 mb-8">
-                <button class="filter-btn bg-blue-600 text-white font-semibold py-2 px-6 rounded-full transition-colors" data-filter="all">Todos</button>
-                <button class="filter-btn bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full transition-colors" data-filter="bebidas">Bebidas</button>
-                <button class="filter-btn bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full transition-colors" data-filter="comidas">Comidas e Petiscos</button>
-                <button class="filter-btn bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-full transition-colors" data-filter="outros">Outros</button>
+            <div id="category-filters" class="flex justify-center border-b border-gray-200 mb-10">
+                <button class="tab-button text-lg text-gray-500 py-3 px-6 border-b-2 border-transparent transition-colors active" data-filter="all">Todos</button>
+                <button class="tab-button text-lg text-gray-500 py-3 px-6 border-b-2 border-transparent transition-colors" data-filter="bebidas">Bebidas</button>
+                <button class="tab-button text-lg text-gray-500 py-3 px-6 border-b-2 border-transparent transition-colors" data-filter="comidas">Comidas e Petiscos</button>
+                <button class="tab-button text-lg text-gray-500 py-3 px-6 border-b-2 border-transparent transition-colors" data-filter="outros">Outros</button>
             </div>
 
-            <!-- Seção de Bebidas -->
-            <section id="bebidas-section" class="mb-12 category-section" data-category="bebidas">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Bebidas</h2>
-                <p class="text-gray-500 mb-6">Refrescantes opções para hidratar e relaxar.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Card de Produto -->
-                    <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
-                        <img src="https://placehold.co/400x250/73BFF6/FFFFFF?text=Bebida" alt="Água Mineral" class="w-full h-48 object-cover">
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="font-bold text-lg text-gray-900">Água Mineral</h3>
-                            <p class="text-gray-600 text-sm mt-1 mb-4 flex-grow">Água mineral com e sem gás, sempre gelada.</p>
-                            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
-                                <span class="font-bold text-xl text-blue-600">R$3,50</span>
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">Disponível</span>
+            <!-- Wrapper para conteúdo -->
+            <div class="flex-grow pr-2">
+                <!-- Seção de Bebidas -->
+                <section id="bebidas-section" class="mb-12 category-section" data-category="bebidas">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Bebidas</h2>
+                    <p class="text-gray-500 mb-6">Refrescantes opções para hidratar e relaxar.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Card de Produto -->
+                        <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
+                            <img src="https://placehold.co/400x250/73BFF6/FFFFFF?text=Bebida" alt="Água Mineral" class="w-full h-32 object-cover">
+                            <div class="p-2 flex flex-col flex-grow">
+                                <h3 class="font-bold text-base text-gray-900">Água Mineral</h3>
+                                <p class="text-gray-600 text-xs mt-1 mb-2 flex-grow">Água mineral com e sem gás, sempre gelada.</p>
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
+                                    <span class="font-bold text-lg text-blue-600">R$3,50</span>
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full">Disponível</span>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- Card de Produto -->
+                        <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
+                            <img src="https://placehold.co/400x250/73BFF6/FFFFFF?text=Bebida" alt="Água de Coco" class="w-full h-32 object-cover">
+                            <div class="p-2 flex flex-col flex-grow">
+                                <h3 class="font-bold text-base text-gray-900">Água de Coco</h3>
+                                <p class="text-gray-600 text-xs mt-1 mb-2 flex-grow">Natural direto do coco ou industrializada.</p>
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
+                                    <span class="font-bold text-lg text-blue-600">R$8,00</span>
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">Popular</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                     <!-- Card de Produto -->
-                    <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
-                        <img src="https://placehold.co/400x250/73BFF6/FFFFFF?text=Bebida" alt="Água de Coco" class="w-full h-48 object-cover">
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="font-bold text-lg text-gray-900">Água de Coco</h3>
-                            <p class="text-gray-600 text-sm mt-1 mb-4 flex-grow">Natural direto do coco ou industrializada.</p>
-                            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
-                                <span class="font-bold text-xl text-blue-600">R$8,00</span>
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">Popular</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Seção de Comidas e Petiscos -->
-            <section id="comidas-section" class="mb-12 category-section" data-category="comidas">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Comidas e Petiscos</h2>
-                <p class="text-gray-500 mb-6">Deliciosas opções para satisfazer sua fome na praia.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Card de Produto -->
-                    <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
-                        <img src="https://placehold.co/400x250/0138B4/FFFFFF?text=Comida" alt="Pastéis Variados" class="w-full h-48 object-cover">
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="font-bold text-lg text-gray-900">Pastéis Variados</h3>
-                            <p class="text-gray-600 text-sm mt-1 mb-4 flex-grow">Crocantes e deliciosos, vários sabores.</p>
-                            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
-                                <span class="font-bold text-xl text-blue-600">R$8,50</span>
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">Disponível</span>
+                <!-- Seção de Comidas e Petiscos -->
+                <section id="comidas-section" class="mb-12 category-section" data-category="comidas">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Comidas e Petiscos</h2>
+                    <p class="text-gray-500 mb-6">Deliciosas opções para satisfazer sua fome na praia.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Card de Produto -->
+                        <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
+                            <img src="https://placehold.co/400x250/0138B4/FFFFFF?text=Comida" alt="Pastéis Variados" class="w-full h-32 object-cover">
+                            <div class="p-2 flex flex-col flex-grow">
+                                <h3 class="font-bold text-base text-gray-900">Pastéis Variados</h3>
+                                <p class="text-gray-600 text-xs mt-1 mb-2 flex-grow">Crocantes e deliciosos, vários sabores.</p>
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
+                                    <span class="font-bold text-lg text-blue-600">R$8,50</span>
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full">Disponível</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card de Produto -->
+                        <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
+                            <img src="https://placehold.co/400x250/0138B4/FFFFFF?text=Comida" alt="Batata Frita" class="w-full h-32 object-cover">
+                            <div class="p-2 flex flex-col flex-grow">
+                                <h3 class="font-bold text-base text-gray-900">Batata Frita</h3>
+                                <p class="text-gray-600 text-xs mt-1 mb-2 flex-grow">Porção crocante, ideal para compartilhar.</p>
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
+                                    <span class="font-bold text-lg text-blue-600">R$15,00</span>
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">Popular</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Card de Produto -->
-                    <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
-                        <img src="https://placehold.co/400x250/0138B4/FFFFFF?text=Comida" alt="Batata Frita" class="w-full h-48 object-cover">
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="font-bold text-lg text-gray-900">Batata Frita</h3>
-                            <p class="text-gray-600 text-sm mt-1 mb-4 flex-grow">Porção crocante, ideal para compartilhar.</p>
-                            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
-                                <span class="font-bold text-xl text-blue-600">R$15,00</span>
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">Popular</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Seção de Outros -->
-            <section id="outros-section" class="category-section" data-category="outros">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Acessórios e Serviços</h2>
-                <p class="text-gray-500 mb-6">Produtos e serviços adicionais para seu conforto.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Card de Produto -->
-                    <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
-                        <img src="https://placehold.co/400x250/1985D4/FFFFFF?text=Serviço" alt="Aluguel de Cadeira e Guarda-sol" class="w-full h-48 object-cover">
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="font-bold text-lg text-gray-900">Aluguel de Cadeira e Guarda-sol</h3>
-                            <p class="text-gray-600 text-sm mt-1 mb-4 flex-grow">Alugue por hora ou pelo dia todo.</p>
-                            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
-                                <span class="font-bold text-xl text-blue-600">R$25,00</span>
-                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Por Dia</span>
+                <!-- Seção de Outros -->
+                <section id="outros-section" class="category-section" data-category="outros">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Acessórios e Serviços</h2>
+                    <p class="text-gray-500 mb-6">Produtos e serviços adicionais para seu conforto.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Card de Produto -->
+                        <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
+                            <img src="https://placehold.co/400x250/1985D4/FFFFFF?text=Serviço" alt="Aluguel de Cadeira e Guarda-sol" class="w-full h-32 object-cover">
+                            <div class="p-2 flex flex-col flex-grow">
+                                <h3 class="font-bold text-base text-gray-900">Aluguel de Cadeira e Guarda-sol</h3>
+                                <p class="text-gray-600 text-xs mt-1 mb-2 flex-grow">Alugue por hora ou pelo dia todo.</p>
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
+                                    <span class="font-bold text-lg text-blue-600">R$25,00</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full">Por Dia</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card: Óculos de Sol -->
+                        <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
+                            <img src="https://placehold.co/400x250/1985D4/FFFFFF?text=Acessório" alt="Óculos de Sol" class="w-full h-32 object-cover">
+                            <div class="p-2 flex flex-col flex-grow">
+                                <h3 class="font-bold text-base text-gray-900">Óculos de Sol</h3>
+                                <p class="text-gray-600 text-xs mt-1 mb-2 flex-grow">Proteja seus olhos com estilo. Diversos modelos.</p>
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
+                                    <span class="font-bold text-lg text-blue-600">R$45,00</span>
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full">Disponível</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card: Canga -->
+                        <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
+                            <img src="https://placehold.co/400x250/1985D4/FFFFFF?text=Acessório" alt="Canga de Praia" class="w-full h-32 object-cover">
+                            <div class="p-2 flex flex-col flex-grow">
+                                <h3 class="font-bold text-base text-gray-900">Canga de Praia</h3>
+                                <p class="text-gray-600 text-xs mt-1 mb-2 flex-grow">Cangas estampadas para curtir a areia com conforto.</p>
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
+                                    <span class="font-bold text-lg text-blue-600">R$35,00</span>
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">Popular</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Card: Óculos de Sol -->
-                    <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
-                        <img src="https://placehold.co/400x250/1985D4/FFFFFF?text=Acessório" alt="Óculos de Sol" class="w-full h-48 object-cover">
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="font-bold text-lg text-gray-900">Óculos de Sol</h3>
-                            <p class="text-gray-600 text-sm mt-1 mb-4 flex-grow">Proteja seus olhos com estilo. Diversos modelos.</p>
-                            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
-                                <span class="font-bold text-xl text-blue-600">R$45,00</span>
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">Disponível</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Card: Canga -->
-                    <div class="bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
-                        <img src="https://placehold.co/400x250/1985D4/FFFFFF?text=Acessório" alt="Canga de Praia" class="w-full h-48 object-cover">
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="font-bold text-lg text-gray-900">Canga de Praia</h3>
-                            <p class="text-gray-600 text-sm mt-1 mb-4 flex-grow">Cangas estampadas para curtir a areia com conforto.</p>
-                            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-200">
-                                <span class="font-bold text-xl text-blue-600">R$35,00</span>
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">Popular</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                </section>
+            </div>
         </div>
     </main>
 
@@ -232,9 +232,9 @@
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="biblioteca.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
-                        <li><a href="perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
-                        <li><a href="config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                        <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                        <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
                     </ul>
                 </div>
                 <!-- Coluna 3: Social -->
@@ -258,6 +258,14 @@
             // Ativa os ícones do Lucide
             lucide.createIcons();
 
+            // Lógica para manter a altura do card principal
+            const mainCard = document.querySelector('.main-content-card');
+            if (mainCard) {
+                // Define a altura mínima com base na altura inicial do conteúdo
+                const initialHeight = mainCard.offsetHeight;
+                mainCard.style.minHeight = `${initialHeight}px`;
+            }
+
             // Lógica para o menu mobile
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -278,11 +286,9 @@
 
                     // Atualiza o estilo dos botões
                     filterContainer.querySelectorAll('button').forEach(btn => {
-                        btn.classList.remove('bg-blue-600', 'text-white');
-                        btn.classList.add('bg-gray-200', 'text-gray-800');
+                        btn.classList.remove('active');
                     });
-                    targetButton.classList.add('bg-blue-600', 'text-white');
-                    targetButton.classList.remove('bg-gray-200', 'text-gray-800');
+                    targetButton.classList.add('active');
                     
                     const filter = targetButton.getAttribute('data-filter');
 
@@ -301,4 +307,3 @@
     </script>
 </body>
 </html>
-

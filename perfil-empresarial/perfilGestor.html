@@ -16,34 +16,12 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        /* Estilos base e fundo (mantidos do seu código original) */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0138b4, #73bff6);
-            background-attachment: fixed;
-            min-height: 100vh;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(1, 56, 180, 0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-    </style>
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="/BeachSpot/assets/css/perfilGestor.css">
 </head>
 <body class="text-white">
 
-    <!-- Header Fixo Branco (Mantido) -->
+    <!-- Header Fixo Branco -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
             <a href="inicio.html" class="flex items-center space-x-3">
@@ -52,7 +30,7 @@
             </a>
             <ul class="hidden md:flex items-center space-x-6">
                 <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                <li><a href="/perfil-pessoal/biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
+                <li><a href="/perfil-pessoal/biblioteca.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
                 <li><a href="/perfil-pessoal/perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                 <li><a href="/perfil-pessoal/config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
             </ul>
@@ -105,14 +83,14 @@
                                 </div>
                             </label>
                             <input type="file" id="foto-perfil-input" accept="image/*" class="hidden" />
-                            <p class="mt-3 text-sm font-mono bg-gray-200 inline-block px-3 py-1 rounded">ID: BPS-12345</p>
+                            <p class="mt-3 text-sm font-mono bg-gray-200 inline-block px-3 py-1 rounded">ID: GST-54321</p>
                         </div>
 
                         <!-- Lado Direito: Informações -->
                         <div class="flex-1 flex flex-col">
                             <!-- Nome e Chat -->
                             <div class="flex justify-between items-start">
-                            <h3 id="user-name" class="text-5xl font-bold leading-tight">João da Silva</h3>
+                            <h3 id="user-name" class="text-5xl font-bold leading-tight">Ana Carolina Cunha</h3>
                             <a href="#" class="p-3 rounded-full bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 transition-colors flex-shrink-0" title="Minhas Mensagens">
                                 <i data-lucide="messages-square" class="w-7 h-7"></i>
                             </a>
@@ -121,25 +99,26 @@
                         <!-- Tipo de Usuário -->
                         <div class="flex items-center space-x-2 text-base font-semibold text-cyan-600 mt-2">
                             <!-- Ícone para Cliente. Para Gestor, troque por 'key' -->
-                            <i data-lucide="sun" class="w-6 h-6"></i>
-                            <span>CLIENTE</span>
+                            <i data-lucide="key" class="w-6 h-6"></i>
+                            <span>GESTOR</span>
                         </div>
 
-                        <p class="text-sm text-gray-500 mt-4">Membro desde: 10/05/2023</p>
+                        <p class="text-sm text-gray-500 mt-4">Gestor desde: 16/04/2022</p>
                         
                         <!-- Bio do Usuário -->
-                        <p id="user-bio" class="text-base text-gray-600 mt-6 italic">"Amante do sol, do mar e de uma boa sombra na praia. Sempre em busca da barraca perfeita!"</p>
+                        <p id="user-bio" class="text-base text-gray-600 mt-6 italic">"Responsável pela gestão e coordenação das atividades da praia. 
+                        Sempre buscando proporcionar a melhor experiência aos nossos clientes!"</p>
 
                         <!-- Stats: Divisor e Grade -->
                         <div class="border-t border-gray-200 mt-auto pt-6">
                             <div class="grid grid-cols-2 gap-6 text-center">
                                 <div>
-                                    <p class="text-sm uppercase text-gray-500">Avaliação</p>
-                                    <p class="font-bold text-3xl">4.5 ★</p>
+                                    <p class="text-sm uppercase text-gray-500">Avaliação geral das barracas</p>
+                                    <p class="font-bold text-3xl">5.0 ★</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm uppercase text-gray-500">Reservas</p>
-                                    <p class="font-bold text-3xl">12</p>
+                                    <p class="text-sm uppercase text-gray-500">quantidade de barracas</p>
+                                    <p class="font-bold text-3xl">20</p>
                                 </div>
                             </div>
                         </div>
@@ -150,7 +129,7 @@
         
     </main>
 
-    <!-- Footer Branco (Mantido) -->
+    <!-- Footer Branco -->
     <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-start text-left">
@@ -168,7 +147,7 @@
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="/perfil-pessoal/biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
+                        <li><a href="/perfil-pessoal/biblioteca.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
                         <li><a href="/perfil-pessoal/perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                         <li><a href="/perfil-pessoal/config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
                     </ul>
@@ -191,88 +170,7 @@
         </div>
     </footer>
 
-
-    <script>
-        // Ativa os ícones do Lucide
-        lucide.createIcons();
-
-        // Lógica para o menu mobile (Mantido)
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // Lógica para preview da foto de perfil na carteirinha
-        const avatarInput = document.getElementById('foto-perfil-input');
-        const avatarImage = document.getElementById('carteirinha-avatar');
-
-        avatarInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    avatarImage.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // --- NOVA LÓGICA PARA EDITAR PERFIL ---
-        const editProfileButton = document.getElementById('edit-profile-button');
-        const userName = document.getElementById('user-name');
-        const userBio = document.getElementById('user-bio');
-
-        let isEditing = false;
-
-        editProfileButton.addEventListener('click', (e) => {
-            e.preventDefault(); // Impede comportamento padrão do botão
-            isEditing = !isEditing;
-            const iconContainer = editProfileButton.querySelector('i');
-
-            if (isEditing) {
-                // Entrar no modo de edição
-                userName.contentEditable = true;
-                userBio.contentEditable = true;
-                
-                userName.classList.add('bg-blue-50', 'p-2', 'rounded-md', 'outline-blue-300');
-                userBio.classList.add('bg-blue-50', 'p-2', 'rounded-md', 'outline-blue-300');
-                userBio.classList.remove('italic');
-
-                // Troca o ícone para 'save' (check)
-                editProfileButton.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
-                lucide.createIcons({
-                    nodes: [editProfileButton.querySelector('i')]
-                });
-                
-                editProfileButton.title = 'Salvar Alterações';
-                userName.focus();
-
-            } else {
-                // Sair do modo de edição e salvar
-                userName.contentEditable = false;
-                userBio.contentEditable = false;
-
-                userName.classList.remove('bg-blue-50', 'p-2', 'rounded-md', 'outline-blue-300');
-                userBio.classList.remove('bg-blue-50', 'p-2', 'rounded-md', 'outline-blue-300');
-                userBio.classList.add('italic');
-                
-                // Troca o ícone de volta para 'pencil'
-                editProfileButton.innerHTML = '<i data-lucide="pencil" class="w-5 h-5"></i>';
-                lucide.createIcons({
-                    nodes: [editProfileButton.querySelector('i')]
-                });
-
-                editProfileButton.title = 'Editar Perfil';
-                
-                // Simulação de salvamento
-                console.log('Dados salvos:', {
-                    nome: userName.textContent.trim(),
-                    bio: userBio.textContent.trim()
-                });
-            }
-        });
-
-    </script>
+    <!-- JavaScript -->
+    <script src="/BeachSpot/assets/js/perfilGestor.js"></script>
 </body>
 </html>

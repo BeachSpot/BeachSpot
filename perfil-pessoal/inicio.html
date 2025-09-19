@@ -39,14 +39,18 @@
             background: rgba(255, 255, 255, 0.5);
         }
 
-        /* Estilos do Carrossel de Barracas */
-        .barracas-swiper {
+        /* Estilos dos Carrosséis */
+        .barracas-swiper,
+        .praias-swiper,
+        .mais-barracas-swiper {
             width: 100%;
             padding-top: 50px;
             padding-bottom: 50px;
         }
 
-        .barracas-swiper .swiper-slide {
+        .barracas-swiper .swiper-slide,
+        .praias-swiper .swiper-slide,
+        .mais-barracas-swiper .swiper-slide {
            width: 280px; /* Largura ajustada */
            height: auto;
            border-radius: 12px;
@@ -59,28 +63,23 @@
         
         /* Revela e estiliza apenas os 3 slides principais */
         .barracas-swiper .swiper-slide-prev,
-        .barracas-swiper .swiper-slide-next {
+        .barracas-swiper .swiper-slide-next,
+        .praias-swiper .swiper-slide-prev,
+        .praias-swiper .swiper-slide-next,
+        .mais-barracas-swiper .swiper-slide-prev,
+        .mais-barracas-swiper .swiper-slide-next {
             opacity: 0.7;
             transform: scale(0.85);
         }
 
-        .barracas-swiper .swiper-slide-active {
+        .barracas-swiper .swiper-slide-active,
+        .praias-swiper .swiper-slide-active,
+        .mais-barracas-swiper .swiper-slide-active {
             opacity: 1;
             transform: scale(1);
         }
         
-        /* Estilos do Carrossel de Depoimentos */
-        .testimonials-swiper {
-            width: 300px;
-            height: 250px;
-        }
-
-        .testimonials-swiper .swiper-slide {
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        /* Botões de navegação customizados para ambos */
+        /* Botões de navegação customizados */
         .swiper-button-next,
         .swiper-button-prev {
             color: #1985d4 !important;
@@ -105,29 +104,23 @@
             display: none;
         }
         
-        /* Ajuste de Posição - Setas das Barracas */
-        .barracas-swiper-container .swiper-button-prev {
+        /* Ajuste de Posição - Setas */
+        .barracas-swiper-container .swiper-button-prev,
+        .praias-swiper-container .swiper-button-prev,
+        .mais-barracas-swiper-container .swiper-button-prev {
             left: 1rem;
         }
-        .barracas-swiper-container .swiper-button-next {
+        .barracas-swiper-container .swiper-button-next,
+        .praias-swiper-container .swiper-button-next,
+        .mais-barracas-swiper-container .swiper-button-next {
             right: 1rem;
         }
 
-        /* Ajuste de Posição - Setas dos Depoimentos */
-        .testimonials-container .swiper-button-prev {
-            left: -3rem;
-        }
-        .testimonials-container .swiper-button-next {
-            right: -3rem;
-        }
-
-        /* ===== INÍCIO DA ADIÇÃO ===== */
         /* Estilo para o botão de favorito ativo */
         .btn-favorite.favorited svg {
             fill: #ef4444; /* Cor vermelha do Tailwind (red-500) */
             stroke: #ef4444;
         }
-        /* ===== FIM DA ADIÇÃO ===== */
     </style>
 </head>
 <body class="text-white">
@@ -139,10 +132,10 @@
                 <span class="text-xl font-bold">beachspot</span>
             </div>
             <ul class="flex items-center space-x-6">
-                <li><a href="#" class="hover:text-blue-600 transition-colors">Início</a></li>
-                <li><a href="/perfil-pessoal/biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
-                <li><a href="/perfil-pessoal/perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
-                <li><a href="/perfil-pessoal/config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
             </ul>
         </nav>
     </header>
@@ -168,48 +161,109 @@
 
         <div class="space-y-16 mt-8">
 
+            <!-- 1. Praias Próximas -->
             <section>
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-bold">Categorias</h2>
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-3xl font-bold">Praias Próximas</h2>
+                    <a href="#" class="text-white hover:text-gray-200 font-semibold">Ver todas</a>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 text-center">
-                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="fish"></i>
-                        <span>Frutos do Mar</span>
+                <p class="text-gray-300 mb-6">Com base na sua localização em Salvador, BA</p>
+                <div class="relative praias-swiper-container overflow-hidden px-16">
+                    <div class="swiper-container praias-swiper">
+                        <div class="swiper-wrapper">
+                            <!-- Slide 1: Porto da Barra -->
+                            <div class="swiper-slide">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Porto+da+Barra" alt="Imagem da Praia do Porto da Barra" class="w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-center mb-2">Porto da Barra</h3>
+                                            <p class="text-sm text-gray-600 mb-4 text-center">Águas calmas e cristalinas, ideal para famílias e esportes náuticos.</p>
+                                        </div>
+                                        <a href="#" class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
+                                            Ver barracas
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Slide 2: Farol da Barra -->
+                            <div class="swiper-slide">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Farol+da+Barra" alt="Imagem da Praia do Farol da Barra" class="w-full h-40 object-cover">
+                                     <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-center mb-2">Farol da Barra</h3>
+                                            <p class="text-sm text-gray-600 mb-4 text-center">Pôr do sol deslumbrante e piscinas naturais na maré baixa.</p>
+                                        </div>
+                                         <a href="#" class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
+                                            Ver barracas
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Slide 3: Itapuã -->
+                            <div class="swiper-slide">
+                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Itapuã" alt="Imagem da Praia de Itapuã" class="w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-center mb-2">Itapuã</h3>
+                                            <p class="text-sm text-gray-600 mb-4 text-center">Famosa pela música, com coqueiros e um ambiente boêmio.</p>
+                                        </div>
+                                         <a href="#" class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
+                                            Ver barracas
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Slide 4: Flamengo -->
+                            <div class="swiper-slide">
+                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Flamengo" alt="Imagem da Praia do Flamengo" class="w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-center mb-2">Praia do Flamengo</h3>
+                                            <p class="text-sm text-gray-600 mb-4 text-center">Extensa faixa de areia, coqueiros e ondas boas para o surf.</p>
+                                        </div>
+                                         <a href="#" class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
+                                            Ver barracas
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Slide 5: Stella Maris -->
+                             <div class="swiper-slide">
+                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Stella+Maris" alt="Imagem da Praia de Stella Maris" class="w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-center mb-2">Stella Maris</h3>
+                                            <p class="text-sm text-gray-600 mb-4 text-center">Resorts de luxo, barracas bem estruturadas e mar agitado.</p>
+                                        </div>
+                                        <a href="#" class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
+                                            Ver barracas
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="martini"></i>
-                        <span>Bebidas</span>
-                    </div>
-                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="pizza"></i>
-                        <span>Petiscos</span>
-                    </div>
-                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="utensils-crossed"></i>
-                        <span>Refeições</span>
-                    </div>
-                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="ice-cream-2"></i>
-                        <span>Sobremesas</span>
-                    </div>
-                     <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="concierge-bell"></i>
-                        <span>Cardápios</span>
-                    </div>
+                    <div class="swiper-button-next"><i data-lucide="chevron-right"></i></div>
+                    <div class="swiper-button-prev"><i data-lucide="chevron-left"></i></div>
                 </div>
             </section>
 
+            <!-- 2. Barracas Populares -->
             <section>
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Barracas Populares</h2>
-                    <a href="#" class="text-cyan-300 hover:text-cyan-400 font-semibold">Ver mais</a>
+                    <a href="#" class="text-white hover:text-gray-200 font-semibold">Ver mais</a>
                 </div>
                 <div class="relative barracas-swiper-container overflow-hidden px-16">
                     <div class="swiper-container barracas-swiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide barraca-card" data-id="barraca-do-sol">
-                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
                                         <i data-lucide="heart" class="w-5 h-5"></i>
                                     </button>
@@ -228,8 +282,8 @@
                                 </div>
                             </div>
                              <div class="swiper-slide barraca-card" data-id="recanto-da-onda">
-                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
                                         <i data-lucide="heart" class="w-5 h-5"></i>
                                     </button>
                                     <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Recanto+da+Onda" alt="Imagem da barraca" class="barraca-img w-full h-40 object-cover">
@@ -248,7 +302,7 @@
                             </div>
                             <div class="swiper-slide barraca-card" data-id="mare-alta-lounge">
                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
+                                    <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
                                         <i data-lucide="heart" class="w-5 h-5"></i>
                                     </button>
                                     <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Maré+Alta" alt="Imagem da barraca" class="barraca-img w-full h-40 object-cover">
@@ -266,8 +320,8 @@
                                 </div>
                             </div>
                             <div class="swiper-slide barraca-card" data-id="paraiso-tropical">
-                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
                                         <i data-lucide="heart" class="w-5 h-5"></i>
                                     </button>
                                     <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Paraíso+Tropical" alt="Imagem da barraca" class="barraca-img w-full h-40 object-cover">
@@ -285,7 +339,7 @@
                                 </div>
                             </div>
                             <div class="swiper-slide barraca-card" data-id="cantinho-do-mar">
-                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
                                         <i data-lucide="heart" class="w-5 h-5"></i>
                                     </button>
@@ -310,13 +364,16 @@
                 </div>
             </section>
             
-             <section>
-                 <div class="flex justify-between items-center mb-6">
+            <!-- 3. Promoções e Descontos -->
+            <section>
+                <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Promoções e Descontos</h2>
-                    <a href="#" class="text-cyan-300 hover:text-cyan-400 font-semibold">Ver mais</a>
+                    <a href="#" class="text-white hover:text-gray-200 font-semibold">Ver mais</a>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="relative rounded-xl overflow-hidden h-64 flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/0138b4/FFFFFF?text=Promo')">
+                <!-- Grid container for hierarchical layout -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-auto md:h-[34rem]">
+                    <!-- Large Item (Left) -->
+                    <div class="relative rounded-xl overflow-hidden h-64 md:h-full flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/600x800/0138b4/FFFFFF?text=Promo')">
                         <div class="absolute inset-0 bg-black/50"></div>
                         <div class="relative z-10">
                             <h3 class="text-2xl font-bold">20% OFF em Bebidas</h3>
@@ -324,102 +381,187 @@
                             <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-full transition">Aproveitar</button>
                         </div>
                     </div>
-                     <div class="relative rounded-xl overflow-hidden h-64 flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/73bff6/FFFFFF?text=Combo')">
-                        <div class="absolute inset-0 bg-black/50"></div>
-                        <div class="relative z-10">
-                            <h3 class="text-2xl font-bold">Combo Família</h3>
-                            <p class="mb-4">Pague 3, leve 4 em pratos selecionados.</p>
-                            <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-full transition">Ver Cardápio</button>
+
+                    <!-- Right column container -->
+                    <div class="flex flex-col gap-6">
+                        <!-- Medium Item (Top Right) -->
+                        <div class="relative rounded-xl overflow-hidden h-64 flex-1 flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/73bff6/FFFFFF?text=Combo')">
+                            <div class="absolute inset-0 bg-black/50"></div>
+                            <div class="relative z-10">
+                                <h3 class="text-2xl font-bold">Combo Família</h3>
+                                <p class="mb-4">Pague 3, leve 4 em pratos selecionados.</p>
+                                <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-full transition">Ver Cardápio</button>
+                            </div>
                         </div>
-                    </div>
-                     <div class="relative rounded-xl overflow-hidden h-64 flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/0138b4/FFFFFF?text=Happy+Hour')">
-                        <div class="absolute inset-0 bg-black/50"></div>
-                        <div class="relative z-10">
-                            <h3 class="text-2xl font-bold">Happy Hour em Dobro</h3>
-                            <p class="mb-4">Peça um petisco e ganhe outro igual.</p>
-                            <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-full transition">Reservar Mesa</button>
+
+                        <!-- Container for 2 Small Items (Bottom Right) -->
+                        <div class="flex-1 grid grid-cols-2 gap-6">
+                            <div class="relative rounded-xl overflow-hidden h-full flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/400x400/0138b4/FFFFFF?text=Happy+Hour')">
+                                <div class="absolute inset-0 bg-black/50"></div>
+                                <div class="relative z-10">
+                                    <h3 class="text-xl font-bold">Happy Hour</h3>
+                                    <p class="text-sm mb-2">Peça um petisco e ganhe outro.</p>
+                                    <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 text-sm rounded-full transition">Reservar</button>
+                                </div>
+                            </div>
+                            <div class="relative rounded-xl overflow-hidden h-full flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/400x400/73bff6/FFFFFF?text=Dose+Dupla')">
+                                <div class="absolute inset-0 bg-black/50"></div>
+                                <div class="relative z-10">
+                                    <h3 class="text-xl font-bold">Dose Dupla</h3>
+                                    <p class="text-sm mb-2">Caipirinhas em dobro toda quinta.</p>
+                                    <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 text-sm rounded-full transition">Aproveitar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
-
-            <section class="text-center">
-                <h2 class="text-3xl font-bold mb-8">Como Funciona</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="flex flex-col items-center">
-                        <div class="bg-white/10 rounded-full p-6 mb-4">
-                            <i data-lucide="search" class="w-10 h-10 text-cyan-300"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">1. Busque</h3>
-                        <p class="text-gray-300">Encontre a praia ou barraca que você deseja.</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <div class="bg-white/10 rounded-full p-6 mb-4">
-                             <i data-lucide="mouse-pointer-click" class="w-10 h-10 text-cyan-300"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">2. Escolha</h3>
-                        <p class="text-gray-300">Selecione a data, horário e os itens que desejar.</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <div class="bg-white/10 rounded-full p-6 mb-4">
-                            <i data-lucide="calendar-check" class="w-10 h-10 text-cyan-300"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">3. Reserve</h3>
-                        <p class="text-gray-300">Confirme sua reserva e pague com segurança.</p>
-                    </div>
-                </div>
-            </section>
-
+            
+            <!-- 4. Categorias -->
             <section>
-                <h2 class="text-3xl font-bold text-center mb-8">O que nossos clientes dizem</h2>
-                <div class="relative w-max mx-auto testimonials-container">
-                    <div class="swiper-container testimonials-swiper">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold">Categorias</h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 text-center">
+                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
+                        <i data-lucide="users"></i>
+                        <span>Ideal para Famílias</span>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
+                        <i data-lucide="music"></i>
+                        <span>Música ao Vivo</span>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
+                        <i data-lucide="party-popper"></i>
+                        <span>Ambiente Agitado</span>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
+                        <i data-lucide="wind"></i>
+                        <span>Relax & Tranquilo</span>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
+                        <i data-lucide="dog"></i>
+                        <span>Pet Friendly</span>
+                    </div>
+                     <div class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
+                        <i data-lucide="volleyball"></i>
+                        <span>Esportes</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Mais barracas para você -->
+            <section>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold">Mais barracas para você</h2>
+                    <a href="#" class="text-white hover:text-gray-200 font-semibold">Ver todas</a>
+                </div>
+                <div class="relative mais-barracas-swiper-container overflow-hidden px-16">
+                    <div class="swiper-container mais-barracas-swiper">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="bg-white text-gray-800 p-6 rounded-xl h-full flex flex-col justify-between">
-                                    <p class="text-sm">"Plataforma incrível! Consegui reservar minha barraca favorita sem estresse."</p>
-                                    <div class="flex items-center mt-4">
-                                        <img src="https://placehold.co/40x40/FFFFFF/0138b4?text=A" class="w-10 h-10 rounded-full mr-4" alt="Foto do cliente">
-                                        <div>
-                                            <p class="font-bold">Ana Silva</p>
-                                            <div class="flex text-yellow-400">
-                                                <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                                            </div>
+                            <!-- Barraca 1 -->
+                            <div class="swiper-slide barraca-card" data-id="onda-azul">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
+                                        <i data-lucide="heart" class="w-5 h-5"></i>
+                                    </button>
+                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Onda+Azul" alt="Imagem da barraca Onda Azul" class="barraca-img w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col" style="height: 10rem;">
+                                        <h3 class="barraca-title text-xl font-bold text-center">Onda Azul</h3>
+                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Petiscos frescos e cerveja sempre gelada.</p>
+                                        <div class="flex-grow"></div>
+                                        <div class="flex justify-between items-center">
+                                            <p class="text-lg font-semibold">R$45</p>
+                                            <a href="info-produto.html" title="Mais informações" class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
+                                                <i data-lucide="info" class="w-5 h-5"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="swiper-slide">
-                                <div class="bg-white text-gray-800 p-6 rounded-xl h-full flex flex-col justify-between">
-                                    <p class="text-sm">"Adorei a facilidade de ver os cardápios e já deixar tudo pré-agendado."</p>
-                                    <div class="flex items-center mt-4">
-                                        <img src="https://placehold.co/40x40/FFFFFF/0138b4?text=B" class="w-10 h-10 rounded-full mr-4" alt="Foto do cliente">
-                                        <div>
-                                            <p class="font-bold">Bruno Costa</p>
-                                            <div class="flex text-yellow-400">
-                                                 <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                                            </div>
+                            <!-- Barraca 2 -->
+                            <div class="swiper-slide barraca-card" data-id="coqueiro-verde">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
+                                        <i data-lucide="heart" class="w-5 h-5"></i>
+                                    </button>
+                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Coqueiro+Verde" alt="Imagem da barraca Coqueiro Verde" class="barraca-img w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col" style="height: 10rem;">
+                                        <h3 class="barraca-title text-xl font-bold text-center">Coqueiro Verde</h3>
+                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Sombra e tranquilidade para toda a família.</p>
+                                        <div class="flex-grow"></div>
+                                        <div class="flex justify-between items-center">
+                                            <p class="text-lg font-semibold">R$60</p>
+                                            <a href="info-produto.html" title="Mais informações" class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
+                                                <i data-lucide="info" class="w-5 h-5"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="swiper-slide">
-                               <div class="bg-white text-gray-800 p-6 rounded-xl h-full flex flex-col justify-between">
-                                    <p class="text-sm">"Usei o beachspot para organizar um dia na praia com amigos e foi perfeito. Recomendo muito!"</p>
-                                    <div class="flex items-center mt-4">
-                                        <img src="https://placehold.co/40x40/FFFFFF/0138b4?text=C" class="w-10 h-10 rounded-full mr-4" alt="Foto do cliente">
-                                        <div>
-                                            <p class="font-bold">Carla Martins</p>
-                                            <div class="flex text-yellow-400">
-                                                <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star-half" class="w-4 h-4 fill-current"></i>
-                                            </div>
+                            <!-- Barraca 3 -->
+                            <div class="swiper-slide barraca-card" data-id="sol-a-pino">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
+                                        <i data-lucide="heart" class="w-5 h-5"></i>
+                                    </button>
+                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Sol+a+Pino" alt="Imagem da barraca Sol a Pino" class="barraca-img w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col" style="height: 10rem;">
+                                        <h3 class="barraca-title text-xl font-bold text-center">Sol a Pino</h3>
+                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Agito e música boa de frente para o mar.</p>
+                                        <div class="flex-grow"></div>
+                                        <div class="flex justify-between items-center">
+                                            <p class="text-lg font-semibold">R$75</p>
+                                            <a href="info-produto.html" title="Mais informações" class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
+                                                <i data-lucide="info" class="w-5 h-5"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <!-- Barraca 4 -->
+                            <div class="swiper-slide barraca-card" data-id="areia-dourada">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
+                                        <i data-lucide="heart" class="w-5 h-5"></i>
+                                    </button>
+                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Areia+Dourada" alt="Imagem da barraca Areia Dourada" class="barraca-img w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col" style="height: 10rem;">
+                                        <h3 class="barraca-title text-xl font-bold text-center">Areia Dourada</h3>
+                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Porções generosas e ambiente descontraído.</p>
+                                        <div class="flex-grow"></div>
+                                        <div class="flex justify-between items-center">
+                                            <p class="text-lg font-semibold">R$50</p>
+                                            <a href="info-produto.html" title="Mais informações" class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
+                                                <i data-lucide="info" class="w-5 h-5"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <!-- Barraca 5 -->
+                             <div class="swiper-slide barraca-card" data-id="pier-do-sabor">
+                                <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
+                                    <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
+                                        <i data-lucide="heart" class="w-5 h-5"></i>
+                                    </button>
+                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Pier+do+Sabor" alt="Imagem da barraca Pier do Sabor" class="barraca-img w-full h-40 object-cover">
+                                    <div class="p-4 flex flex-col" style="height: 10rem;">
+                                        <h3 class="barraca-title text-xl font-bold text-center">Pier do Sabor</h3>
+                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Especialidade em moquecas e frutos do mar.</p>
+                                        <div class="flex-grow"></div>
+                                        <div class="flex justify-between items-center">
+                                            <p class="text-lg font-semibold">R$85</p>
+                                            <a href="info-produto.html" title="Mais informações" class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
+                                                <i data-lucide="info" class="w-5 h-5"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                     <div class="swiper-button-next"><i data-lucide="chevron-right"></i></div>
+                    <div class="swiper-button-next"><i data-lucide="chevron-right"></i></div>
                     <div class="swiper-button-prev"><i data-lucide="chevron-left"></i></div>
                 </div>
             </section>
@@ -441,10 +583,10 @@
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="/perfil-pessoal/biblioteca.html" class="hover:text-blue-600 transition-colors">Biblioteca</a></li>
-                        <li><a href="/perfil-pessoal/perfil.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
-                        <li><a href="/perfil-pessoal/config.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                        <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                        <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
                     </ul>
                 </div>
 
@@ -482,19 +624,33 @@
                 prevEl: ".barracas-swiper-container .swiper-button-prev",
             },
         });
-        
-        // Inicializa o Carrossel de Depoimentos
-        var testimonialsSwiper = new Swiper(".testimonials-swiper", {
-            effect: "cards",
+
+        // Inicializa o Carrossel de Praias
+        var praiasSwiper = new Swiper(".praias-swiper", {
+            effect: "slide",
             grabCursor: true,
+            centeredSlides: true,
             loop: true,
+            slidesPerView: 3,
             navigation: {
-                nextEl: ".testimonials-container .swiper-button-next",
-                prevEl: ".testimonials-container .swiper-button-prev",
+                nextEl: ".praias-swiper-container .swiper-button-next",
+                prevEl: ".praias-swiper-container .swiper-button-prev",
             },
         });
 
-        // ===== INÍCIO DA ADIÇÃO =====
+        // Inicializa o Carrossel 'Mais barracas para você'
+        var maisBarracasSwiper = new Swiper(".mais-barracas-swiper", {
+            effect: "slide",
+            grabCursor: true,
+            centeredSlides: true,
+            loop: true,
+            slidesPerView: 3,
+            navigation: {
+                nextEl: ".mais-barracas-swiper-container .swiper-button-next",
+                prevEl: ".mais-barracas-swiper-container .swiper-button-prev",
+            },
+        });
+        
         // --- LÓGICA DE FAVORITOS ---
         document.addEventListener('DOMContentLoaded', function() {
             const favoriteButtons = document.querySelectorAll('.btn-favorite');
@@ -547,7 +703,6 @@
 
             updateButtonStates();
         });
-        // ===== FIM DA ADIÇÃO =====
     </script>
 </body>
 </html>
