@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestão da Barraca - BeachSpot</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Estilos base e fundo (reutilizados do infoBarraca.html) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex-grow: 1;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Estilos para abas de navegação da gestão */
+        .tab-button.active {
+            border-bottom-color: #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Estilos para o Modal */
+        #promotion-modal.hidden, #confirm-delete-modal.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- Header Fixo Branco (Original) -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-3">
+                <i data-lucide="anchor"></i>
+                <span class="text-xl font-bold">beachspot</span>
+            </a>
+            
+            <div class="flex items-center space-x-4">
+                <a href="perfilGestor.html">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="pt-28 md:pt-32 container mx-auto max-w-5xl px-6">
+        
+        <!-- Card Principal de Gestão -->
+        <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-8 shadow-lg">
+            
+            <!-- Header do Card -->
+            <section class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-gray-200 pb-6 mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Painel de Gestão</h1>
+                    <p class="text-gray-500">Administre sua barraca Oassis do Oceano</p>
+                </div>
+                <div>
+                    <a href="infoBarraca.html" class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 font-semibold py-2 px-4 rounded-full hover:bg-blue-100 transition-colors">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                        Ver Página da Barraca
+                    </a>
+                </div>
+            </section>
+
+            <!-- Navegação por Abas -->
+            <nav class="border-b border-gray-200 mb-6">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500">
+                    <li class="mr-2">
+                        <button class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors active" data-tab="dashboard">
+                            <i data-lucide="layout-dashboard"></i> Dashboard
+                        </button>
+                    </li>
+                    <li class="mr-2">
+                        <button class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors" data-tab="reservas">
+                            <i data-lucide="calendar-check"></i> Reservas
+                        </button>
+                    </li>
+                    <li class="mr-2">
+                        <button class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors" data-tab="promocoes">
+                            <i data-lucide="ticket-percent"></i> Promoções
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Conteúdo das Abas -->
+            <div>
+                <!-- ABA: Dashboard -->
+                <div id="dashboard" class="tab-content active">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Card de Estatística -->
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 flex items-center gap-4">
+                            <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
+                                <i data-lucide="calendar-check-2"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Reservas Hoje</p>
+                                <p class="text-2xl font-bold">12</p>
+                            </div>
+                        </div>
+                        <!-- Card de Estatística -->
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 flex items-center gap-4">
+                            <div class="bg-green-100 text-green-600 p-3 rounded-full">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 text-sm">Ocupação Atual</p>
+                                <p class="text-2xl font-bold">75%</p>
+                            </div>
+                        </div>
+                         <!-- Card de Ação: Gerenciar Cardápio -->
+                        <a href="gerenciar-cardapio.html" class="bg-blue-600 text-white p-6 rounded-xl border border-blue-700 flex flex-col justify-center items-center gap-3 hover:bg-blue-700 transition-colors transform hover:-translate-y-1 shadow-lg">
+                            <i data-lucide="book-open-check"></i>
+                            <p class="text-lg font-bold text-center">Gerenciar Cardápio</p>
+                        </a>
+                    </div>
+
+                    <div class="mt-8 relative border border-gray-200 rounded-xl p-6 pt-8">
+                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Últimas Atividades</h2>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3">
+                                <div class="bg-green-100 text-green-600 p-2 rounded-full"><i data-lucide="user-plus" class="w-4 h-4"></i></div>
+                                <p class="text-gray-600">Nova reserva de <span class="font-semibold">Carlos F.</span> para 4 pessoas.</p>
+                                <span class="text-xs text-gray-400 ml-auto">agora</span>
+                            </li>
+                             <li class="flex items-center gap-3">
+                                <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full"><i data-lucide="star" class="w-4 h-4"></i></div>
+                                <p class="text-gray-600">Nova avaliação de 5 estrelas de <span class="font-semibold">Maria S.</span></p>
+                                <span class="text-xs text-gray-400 ml-auto">15 min atrás</span>
+                            </li>
+                             <li class="flex items-center gap-3">
+                                <div class="bg-red-100 text-red-600 p-2 rounded-full"><i data-lucide="calendar-x" class="w-4 h-4"></i></div>
+                                <p class="text-gray-600">Reserva de <span class="font-semibold">João P.</span> foi cancelada.</p>
+                                <span class="text-xs text-gray-400 ml-auto">1h atrás</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ABA: Reservas -->
+                <div id="reservas" class="tab-content">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Cliente</th>
+                                    <th scope="col" class="px-6 py-3">Data/Hora</th>
+                                    <th scope="col" class="px-6 py-3">Pessoas</th>
+                                    <th scope="col" class="px-6 py-3">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b">
+                                    <td class="px-6 py-4 font-medium text-gray-900">Carlos F.</td>
+                                    <td class="px-6 py-4">22/09/2025 14:00</td>
+                                    <td class="px-6 py-4">4</td>
+                                    <td class="px-6 py-4"><span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Pendente</span></td>
+                                    <td class="px-6 py-4 flex justify-center gap-2">
+                                        <button class="text-green-600 hover:text-green-800"><i data-lucide="check-circle"></i></button>
+                                        <button class="text-red-600 hover:text-red-800"><i data-lucide="x-circle"></i></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white border-b">
+                                    <td class="px-6 py-4 font-medium text-gray-900">Mariana V.</td>
+                                    <td class="px-6 py-4">22/09/2025 12:30</td>
+                                    <td class="px-6 py-4">2</td>
+                                    <td class="px-6 py-4"><span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Confirmada</span></td>
+                                    <td class="px-6 py-4 flex justify-center gap-2">
+                                        <button class="text-gray-400 cursor-not-allowed"><i data-lucide="check-circle"></i></button>
+                                        <button class="text-red-600 hover:text-red-800"><i data-lucide="x-circle"></i></button>
+                                    </td>
+                                </tr>
+                                 <tr class="bg-white border-b">
+                                    <td class="px-6 py-4 font-medium text-gray-900">Roberto A.</td>
+                                    <td class="px-6 py-4">23/09/2025 11:00</td>
+                                    <td class="px-6 py-4">6</td>
+                                    <td class="px-6 py-4"><span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Confirmada</span></td>
+                                    <td class="px-6 py-4 flex justify-center gap-2">
+                                        <button class="text-gray-400 cursor-not-allowed"><i data-lucide="check-circle"></i></button>
+                                        <button class="text-red-600 hover:text-red-800"><i data-lucide="x-circle"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA: Promoções -->
+                <div id="promocoes" class="tab-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-700">Gerenciar Promoções</h2>
+                        <button id="add-promotion-btn" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
+                            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                            Adicionar Promoção
+                        </button>
+                    </div>
+                    
+                    <!-- Container da Lista de Promoções -->
+                    <div id="promotions-list" class="space-y-4">
+                        <!-- As promoções serão inseridas aqui pelo JavaScript -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Adicionar/Editar Promoção -->
+    <div id="promotion-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-md">
+            <form id="promotion-form" class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="modal-title" class="text-xl font-bold text-gray-800">Adicionar Nova Promoção</h3>
+                    <button type="button" id="close-modal-btn" class="text-gray-400 hover:text-gray-600">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="promotion-id">
+                <div class="space-y-4">
+                    <div>
+                        <label for="promotion-title" class="block mb-2 text-sm font-medium text-gray-700">Título da Promoção</label>
+                        <input type="text" id="promotion-title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Ex: Happy Hour Dobrado" required>
+                    </div>
+                    <div>
+                        <label for="promotion-description" class="block mb-2 text-sm font-medium text-gray-700">Descrição</label>
+                        <textarea id="promotion-description" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Ex: Compre uma caipirinha e ganhe outra." required></textarea>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" id="cancel-modal-btn" class="py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        Salvar Promoção
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="confirm-delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-sm">
+            <div class="p-6 text-center">
+                <i data-lucide="alert-triangle" class="mx-auto mb-4 h-14 w-14 text-red-500"></i>
+                <h3 class="mb-5 text-lg font-normal text-gray-600">Tem certeza que deseja excluir esta promoção?</h3>
+                <button id="confirm-delete-btn" type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                    Sim, excluir
+                </button>
+                <button id="cancel-delete-btn" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Branco (Original) -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+        <div class="container mx-auto max-w-6xl px-6 text-center">
+            <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ativa os ícones do Lucide
+            lucide.createIcons();
+            
+            // Lógica para navegação por abas
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // --- LÓGICA DA ABA DE PROMOÇÕES ---
+
+            const promotionsListContainer = document.getElementById('promotions-list');
+            const addPromotionBtn = document.getElementById('add-promotion-btn');
+            
+            // Modal de Edição/Criação
+            const promotionModal = document.getElementById('promotion-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const cancelModalBtn = document.getElementById('cancel-modal-btn');
+            const promotionForm = document.getElementById('promotion-form');
+            const modalTitle = document.getElementById('modal-title');
+            const promotionIdInput = document.getElementById('promotion-id');
+            const promotionTitleInput = document.getElementById('promotion-title');
+            const promotionDescriptionInput = document.getElementById('promotion-description');
+
+            // Modal de Confirmação de Exclusão
+            const confirmDeleteModal = document.getElementById('confirm-delete-modal');
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+            let promotionIdToDelete = null;
+
+            // Carrega promoções do localStorage ou usa dados de exemplo
+            let promotions = JSON.parse(localStorage.getItem('promotions')) || [
+                { id: 1, title: 'Happy Hour Dobrado', description: 'Compre uma caipirinha e ganhe outra. Válido de segunda a quinta, das 17h às 19h.', active: true },
+                { id: 2, title: 'Balde de Cerveja com Desconto', description: 'Balde com 6 long necks por R$50,00.', active: false },
+            ];
+
+            const savePromotions = () => {
+                localStorage.setItem('promotions', JSON.stringify(promotions));
+            };
+
+            const renderPromotions = () => {
+                promotionsListContainer.innerHTML = '';
+                if (promotions.length === 0) {
+                    promotionsListContainer.innerHTML = `<p class="text-gray-500 text-center py-4">Nenhuma promoção cadastrada.</p>`;
+                } else {
+                    promotions.forEach(promo => {
+                        const promoElement = document.createElement('div');
+                        promoElement.className = 'bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4';
+                        promoElement.innerHTML = `
+                            <div class="flex-grow">
+                                <h3 class="font-bold text-gray-800">${promo.title}</h3>
+                                <p class="text-sm text-gray-500">${promo.description}</p>
+                            </div>
+                            <div class="flex items-center gap-4 flex-shrink-0 w-full sm:w-auto">
+                                <button data-id="${promo.id}" class="edit-promo-btn text-blue-600 hover:text-blue-800 p-2"><i data-lucide="edit" class="pointer-events-none"></i></button>
+                                <button data-id="${promo.id}" class="delete-promo-btn text-red-600 hover:text-red-800 p-2"><i data-lucide="trash-2" class="pointer-events-none"></i></button>
+                                <label for="promo-toggle-${promo.id}" class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="promo-toggle-${promo.id}" data-id="${promo.id}" class="promo-toggle sr-only peer" ${promo.active ? 'checked' : ''}>
+                                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    <span class="ml-3 text-sm font-medium text-gray-900">${promo.active ? 'Ativa' : 'Inativa'}</span>
+                                </label>
+                            </div>
+                        `;
+                        promotionsListContainer.appendChild(promoElement);
+                    });
+                }
+                lucide.createIcons(); // Recria os ícones após a renderização
+            };
+            
+            // --- Funções dos Modais ---
+            const openPromotionModal = (mode = 'add', promo = null) => {
+                promotionForm.reset();
+                if (mode === 'edit' && promo) {
+                    modalTitle.textContent = 'Editar Promoção';
+                    promotionIdInput.value = promo.id;
+                    promotionTitleInput.value = promo.title;
+                    promotionDescriptionInput.value = promo.description;
+                } else {
+                    modalTitle.textContent = 'Adicionar Nova Promoção';
+                    promotionIdInput.value = '';
+                }
+                promotionModal.classList.remove('hidden');
+            };
+
+            const closePromotionModal = () => {
+                promotionModal.classList.add('hidden');
+            };
+
+            const openConfirmModal = (id) => {
+                promotionIdToDelete = id;
+                confirmDeleteModal.classList.remove('hidden');
+            };
+
+            const closeConfirmModal = () => {
+                promotionIdToDelete = null;
+                confirmDeleteModal.classList.add('hidden');
+            };
+
+            // --- Event Listeners ---
+            addPromotionBtn.addEventListener('click', () => openPromotionModal('add'));
+            closeModalBtn.addEventListener('click', closePromotionModal);
+            cancelModalBtn.addEventListener('click', closePromotionModal);
+            promotionModal.addEventListener('click', (e) => {
+                if(e.target === promotionModal) closePromotionModal();
+            });
+
+            promotionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = promotionIdInput.value;
+                const title = promotionTitleInput.value;
+                const description = promotionDescriptionInput.value;
+
+                if (id) { // Editando
+                    const promoIndex = promotions.findIndex(p => p.id == id);
+                    if (promoIndex > -1) {
+                        promotions[promoIndex] = { ...promotions[promoIndex], title, description };
+                    }
+                } else { // Adicionando
+                    const newPromo = {
+                        id: Date.now(),
+                        title,
+                        description,
+                        active: true
+                    };
+                    promotions.push(newPromo);
+                }
+                savePromotions();
+                renderPromotions();
+                closePromotionModal();
+            });
+            
+            // Listeners para a lista de promoções (editar, deletar)
+            promotionsListContainer.addEventListener('click', (e) => {
+                const target = e.target;
+                                
+                if (target.closest('.edit-promo-btn')) {
+                    const id = target.closest('.edit-promo-btn').dataset.id;
+                    const promo = promotions.find(p => p.id == id);
+                    if(promo) openPromotionModal('edit', promo);
+                }
+                
+                if (target.closest('.delete-promo-btn')) {
+                    const id = target.closest('.delete-promo-btn').dataset.id;
+                    openConfirmModal(id);
+                }
+            });
+
+            // Listener específico para a MUDANÇA (change) do switch
+            promotionsListContainer.addEventListener('change', (e) => {
+                const target = e.target;
+                if (target.classList.contains('promo-toggle')) {
+                    const id = target.dataset.id;
+                    const promoIndex = promotions.findIndex(p => p.id == id);
+                    if(promoIndex > -1) {
+                        promotions[promoIndex].active = target.checked;
+                        savePromotions();
+                        renderPromotions();
+                    }
+                }
+            });
+
+            // Listeners do modal de exclusão
+            cancelDeleteBtn.addEventListener('click', closeConfirmModal);
+            confirmDeleteModal.addEventListener('click', (e) => {
+                if(e.target === confirmDeleteModal) closeConfirmModal();
+            });
+
+            confirmDeleteBtn.addEventListener('click', () => {
+                if (promotionIdToDelete) {
+                    promotions = promotions.filter(p => p.id != promotionIdToDelete);
+                    savePromotions();
+                    renderPromotions();
+                    closeConfirmModal();
+                }
+            });
+
+            // Renderização inicial
+            renderPromotions();
+        });
+    </script>
+</body>
+</html>
