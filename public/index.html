@@ -16,53 +16,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        /* Estilos base e fundo */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0138b4, #73bff6);
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        main {
-            flex-grow: 1;
-        }
-
-        /* Animações de Rotação */
-        @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-            animation: spin-slow 30s linear infinite;
-        }
-
-        @keyframes spin-slow-reverse {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
-        }
-        .animate-spin-slow-reverse {
-            animation: spin-slow-reverse 40s linear infinite;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(1, 56, 180, 0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-    </style>
+    <link rel="stylesheet" href="/public/assets/css/style.css">
 </head>
 <body class="text-white">
 
@@ -363,51 +317,6 @@
         </div>
     </footer>
 
-    <script>
-        // --- Ativação de Ícones e Menu Mobile ---
-        lucide.createIcons();
-
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // --- Lógica das Abas "Como Funciona" ---
-        const clienteBtn = document.getElementById('cliente-btn');
-        const gestorBtn = document.getElementById('gestor-btn');
-        const clienteSteps = document.getElementById('cliente-steps');
-        const gestorSteps = document.getElementById('gestor-steps');
-
-        clienteBtn.addEventListener('click', () => {
-            clienteSteps.style.display = 'grid';
-            gestorSteps.style.display = 'none';
-            clienteBtn.classList.add('bg-white', 'text-blue-600');
-            clienteBtn.classList.remove('bg-white/20', 'text-white');
-            gestorBtn.classList.add('bg-white/20', 'text-white');
-            gestorBtn.classList.remove('bg-white', 'text-blue-600');
-        });
-
-        gestorBtn.addEventListener('click', () => {
-            gestorSteps.style.display = 'grid';
-            clienteSteps.style.display = 'none';
-            gestorBtn.classList.add('bg-white', 'text-blue-600');
-            gestorBtn.classList.remove('bg-white/20', 'text-white');
-            clienteBtn.classList.add('bg-white/20', 'text-white');
-            clienteBtn.classList.remove('bg-white', 'text-blue-600');
-        });
-
-        function adjustInitialDisplay() {
-            if (window.getComputedStyle(clienteSteps).display !== 'none') {
-                clienteSteps.style.display = 'grid';
-            }
-            if (window.getComputedStyle(gestorSteps).display !== 'none') {
-                gestorSteps.style.display = 'grid';
-            } else {
-                 gestorSteps.style.display = 'none';
-            }
-        }
-        window.addEventListener('load', adjustInitialDisplay);
-    </script>
+    <script src="/public/assets/js/script.js"></script>
 </body>
 </html>

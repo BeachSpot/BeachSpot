@@ -15,22 +15,17 @@
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(1, 56, 180, 0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
         }
-        .category-section {
-            display: block;
-            transition: opacity 0.3s ease-in-out;
-        }
-        /* Estilo para a aba ativa - igual a tela de reservas */
-        .tab-button.active {
-            border-bottom-color: #2563eb; /* Tailwind blue-600 */
-            color: #111827; /* Tailwind gray-900 */
-            font-weight: 600;
+        
+        .active-filter {
+            background-color: #2563eb !important;
+            color: white !important;
         }

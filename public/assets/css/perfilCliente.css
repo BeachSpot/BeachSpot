@@ -1,15 +1,11 @@
-        /* Estilos base e fundo */
+        /* Estilos base e fundo (mantidos do seu código original) */
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #0138b4, #73bff6);
             background-attachment: fixed;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-        main {
-            flex-grow: 1;
-        }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -23,14 +19,4 @@
         }
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
-        }
-        .category-section {
-            display: block;
-            transition: opacity 0.3s ease-in-out;
-        }
-        /* Estilo para a aba ativa - igual a tela de reservas */
-        .tab-button.active {
-            border-bottom-color: #2563eb; /* Tailwind blue-600 */
-            color: #111827; /* Tailwind gray-900 */
-            font-weight: 600;
         }

@@ -12,23 +12,6 @@
             flex-grow: 1;
         }
 
-        /* Animações de Rotação */
-        @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-            animation: spin-slow 30s linear infinite;
-        }
-
-        @keyframes spin-slow-reverse {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
-        }
-        .animate-spin-slow-reverse {
-            animation: spin-slow-reverse 40s linear infinite;
-        }
-
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -42,4 +25,21 @@
         }
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Estilos para o Modal */
+        #cancelModal {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Estilo para o botão de favorito ativo */
+        .btn-favorite.favorited svg {
+            fill: #ef4444; /* Cor vermelha do Tailwind (red-500) */
+            stroke: #ef4444;
+        }
+
+        /* Estilo para a aba ativa */
+        .tab-button.active {
+            border-bottom-color: white;
+            font-weight: 600;
         }

@@ -16,39 +16,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        /* Estilos base e fundo */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0138b4, #73bff6);
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        main {
-            flex-grow: 1;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.6);
-        }
-        
-        .active-filter {
-            background-color: #2563eb !important;
-            color: white !important;
-        }
-    </style>
+    <link rel="stylesheet" href="/public/assets/css/infoBarraca.css">
 </head>
 <body class="text-white">
 
@@ -309,57 +277,6 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Lógica para o menu mobile
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('hidden');
-                });
-            }
-
-            // Ativa os ícones do Lucide em toda a página.
-            lucide.createIcons();
-
-            // Lógica para avaliação com estrelas
-            const stars = document.querySelectorAll('#rating-stars i');
-            stars.forEach((star, index) => {
-                star.addEventListener('click', () => {
-                    stars.forEach((s, i) => {
-                        if (i <= index) {
-                            s.classList.add('text-yellow-400', 'fill-current');
-                        } else {
-                            s.classList.remove('text-yellow-400', 'fill-current');
-                        }
-                    });
-                });
-            });
-
-            // Lógica para filtrar avaliações
-            const filterAllButton = document.getElementById('filter-all');
-            const filterMediaButton = document.getElementById('filter-media');
-            const reviewCards = document.querySelectorAll('.review-card');
-
-            filterAllButton.addEventListener('click', () => {
-                reviewCards.forEach(card => card.style.display = 'block');
-                filterAllButton.classList.add('active-filter');
-                filterMediaButton.classList.remove('active-filter');
-            });
-
-            filterMediaButton.addEventListener('click', () => {
-                reviewCards.forEach(card => {
-                    if (card.classList.contains('has-media')) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-                filterMediaButton.classList.add('active-filter');
-                filterAllButton.classList.remove('active-filter');
-            });
-        });
-    </script>
+    <script src="/public/assets/js/infoBarraca.js"></script>
 </body>
 </html>
