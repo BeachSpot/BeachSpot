@@ -64,7 +64,7 @@
                         // Redireciona após um pequeno delay
                         setTimeout(() => {
                             // Idealmente, redirecionar com base no tipo de conta
-                            window.location.href = '/perfil-pessoal/inicio.html';
+                            window.location.href = '/public/Telas Clientes/inicio.html';
                             hideAlert(); // Esconde o modal antes de sair da página
                         }, 1500);
 
