@@ -1,45 +1,50 @@
-        /* Estilos base e fundo */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0138b4, #73bff6);
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+/* Estilos base e fundo */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0138b4, #73bff6);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-        main {
-            flex-grow: 1;
-        }
+main {
+    flex-grow: 1;
+}
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(1, 56, 180, 0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* Estilos para o Modal */
-        #cancelModal {
-            transition: opacity 0.3s ease-in-out;
-        }
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(1, 56, 180, 0.1);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
 
-        /* Estilo para o botão de favorito ativo */
-        .btn-favorite.favorited svg {
-            fill: #ef4444; /* Cor vermelha do Tailwind (red-500) */
-            stroke: #ef4444;
-        }
+/* Estilos para o Modal */
+#cancelModal {
+    transition: opacity 0.3s ease-in-out;
+}
 
-        /* Estilo para a aba ativa */
-        .tab-button.active {
-            border-bottom-color: white;
-            font-weight: 600;
-        }
+.tab-button {
+     color: #a0aec0; /* cinza claro para abas inativas */
+}
+
+/* Estilo para a aba ativa */
+.tab-button.active {
+    color: white;
+    border-bottom-color: white;
+    font-weight: 600;
+}
+
+/* Estilo para o botão de favorito ativo */
+.btn-favorite.favorited svg {
+    fill: #ef4444; /* Cor vermelha do Tailwind (red-500) */
+    stroke: #ef4444;
+}
