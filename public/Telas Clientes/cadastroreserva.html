@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faça sua Reserva - Beachspot</title>
+    <title>Faça sua Reserva - Beachspot (Local)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,133 +14,260 @@
     <style>
         :root {
             --brand-blue: #0138b4;
+            --brand-blue-light: #3b82f6;
             --brand-blue-dark: #012a8c;
-            --light-blue-gradient: #73bff6;
             --text-dark: #111827;
             --text-light: #6B7280;
             --border-color: #E5E7EB;
-            --input-bg: #F9FAFB;
+            --background-color: #F9FAFB;
             --white: #FFFFFF;
             --success-green: #059669;
+            --error-red: #ef4444;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--brand-blue), var(--light-blue-gradient));
-            background-attachment: fixed;
+            background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-light));
             margin: 0;
-            padding: 40px 20px;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--text-dark);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
+        }
+        .notification.show {
+            top: 20px;
+        }
+
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-header {
+            background-color: var(--white);
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .nav-and-user { display: flex; align-items: center; gap: 24px; }
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+        .nav-links a { text-decoration: none; color: var(--text-light); font-weight: 500; transition: color 0.2s; font-size: 15px; cursor: pointer; }
+        .nav-links a:hover { color: var(--brand-blue); }
+        .nav-links .lucide { color: var(--text-light); transition: color 0.2s; }
+        .nav-links a:hover .lucide { color: var(--brand-blue); }
+        .user-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background-color: var(--brand-blue);
+            color: var(--white);
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow: hidden; /* Para os círculos não criarem scrollbars */
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
         }
 
-        /* MELHORIA: CÍRCULOS ANIMADOS NO FUNDO */
-        .background-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+        .page-title-banner {
+            background: transparent;
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--white);
         }
-        .background-shapes div {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            animation: float 25s infinite linear;
-        }
-        .background-shapes div:nth-child(1) { width: 60px; height: 60px; top: 10%; left: 15%; animation-duration: 30s; }
-        .background-shapes div:nth-child(2) { width: 120px; height: 120px; top: 20%; left: 80%; animation-duration: 40s; }
-        .background-shapes div:nth-child(3) { width: 80px; height: 80px; top: 75%; left: 10%; animation-duration: 20s; }
-        .background-shapes div:nth-child(4) { width: 40px; height: 40px; top: 80%; left: 90%; animation-duration: 35s; }
-
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-120vh) rotate(360deg); }
+        .page-title-banner h1 {
+            font-size: 40px;
+            font-weight: 700;
+            margin: 0;
+            animation: fadeInDown 0.8s both;
         }
 
-        /* CARD PRINCIPAL */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .booking-card {
             width: 100%;
-            max-width: 640px;
+            max-width: 720px;
             background: var(--white);
-            border-radius: 24px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
-            padding: 24px;
-            animation: popIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-            opacity: 0;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+            padding: 32px;
+            margin: -40px auto 60px auto;
+            position: relative;
+            z-index: 10;
+            animation: popIn 0.6s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) both;
         }
         
         @keyframes popIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* CABEÇALHO */
-        .card-header { display: flex; justify-content: space-between; align-items: center; padding: 8px; margin-bottom: 24px; }
-        .logo { font-size: 24px; font-weight: 700; color: var(--text-dark); text-decoration: none; }
-        .nav-and-user { display: flex; align-items: center; gap: 24px; }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a { text-decoration: none; color: var(--text-light); font-weight: 500; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--brand-blue); }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--brand-blue); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--white); box-shadow: 0 0 0 2px var(--brand-blue); }
-        
-        /* MELHORIA: ILUSTRAÇÃO */
-        .card-illustration {
-            height: 120px;
-            border-radius: 16px;
-            background: linear-gradient(45deg, var(--brand-blue), var(--light-blue-gradient));
-            margin: 0 8px 32px 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+        .form-intro {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .form-intro p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 16px;
+            line-height: 1.6;
         }
 
-        .form-intro { padding: 0 8px; margin-bottom: 24px; text-align: center; }
-        .form-intro h1 { font-size: 32px; font-weight: 700; color: var(--text-dark); margin: 0 0 8px 0; }
-        .form-intro p { margin: 0; color: var(--text-light); font-size: 16px; }
+        hr { border: none; height: 1px; background-color: var(--border-color); margin: 0 0 32px 0; }
 
-        hr { border: none; height: 1px; background-color: #e5e7eb; margin: 0 8px 24px 8px; }
-
-        /* FORMULÁRIO COM ÍCONES */
-        .form-group { margin-bottom: 24px; padding: 0 8px; }
-        .form-group label { display: block; font-size: 14px; font-weight: 500; color: var(--text-light); margin-bottom: 8px; }
+        .form-group { margin-bottom: 24px; position: relative; }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
         
         .input-wrapper { position: relative; }
-        .input-wrapper .lucide { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; transition: color 0.2s; pointer-events: none; }
+        .input-wrapper .lucide {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            transition: color 0.2s;
+            pointer-events: none;
+        }
         
         .form-input {
-            width: 100%; height: 52px; background-color: var(--input-bg);
-            border: 1px solid var(--border-color); border-radius: 12px;
-            padding: 0 16px 0 50px; /* Espaço para o ícone */
-            font-size: 16px; font-family: 'Poppins', sans-serif;
-            color: var(--text-dark); transition: all 0.2s ease-in-out;
+            width: 100%;
+            height: 52px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0 16px 0 50px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            transition: all 0.2s ease-in-out;
+            -webkit-appearance: none;
         }
         .form-input:focus {
-            outline: none; background-color: var(--white); border-color: var(--brand-blue);
+            outline: none;
+            background-color: var(--white);
+            border-color: var(--brand-blue);
             box-shadow: 0 0 0 3px rgba(1, 56, 180, 0.15);
         }
-        .form-input:focus + .lucide { color: var(--brand-blue); }
+        .form-input:focus ~ .lucide { color: var(--brand-blue); }
+        .form-input::placeholder { color: #9ca3af; }
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            opacity: 0;
+        }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
-        .stepper { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 6px; }
-        .stepper button { background-color: var(--white); border: 1px solid var(--border-color); border-radius: 8px; width: 40px; height: 40px; font-size: 24px; font-weight: 400; color: var(--brand-blue); cursor: pointer; transition: all 0.2s; }
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 52px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 6px;
+        }
+        .stepper button {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--brand-blue);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .stepper button:hover { background-color: var(--brand-blue); color: var(--white); }
-        .stepper #peopleCount { font-size: 18px; font-weight: 600; color: var(--text-dark); }
+        .stepper #peopleCount {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            min-width: 50px;
+            text-align: center;
+        }
 
-        .submit-btn { width: 100%; height: 52px; border: none; border-radius: 12px; background-color: var(--brand-blue); color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 16px; }
-        .submit-btn:hover { transform: translateY(-3px); background-color: var(--brand-blue-dark); box-shadow: 0 10px 20px rgba(1, 56, 180, 0.25); }
-        .submit-btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(1, 56, 180, 0.2); }
+        .submit-btn {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 12px;
+            background-color: var(--brand-blue);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            background-color: var(--brand-blue-dark);
+            box-shadow: 0 10px 20px rgba(1, 56, 180, 0.25);
+        }
+        .submit-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(1, 56, 180, 0.2);
+        }
         
-        /* MELHORIA: TELA DE SUCESSO */
+        .validation-error {
+            color: var(--error-red);
+            font-size: 14px;
+            margin-top: 8px;
+            text-align: center;
+            display: none;
+        }
+        
         .success-view {
             display: none;
             text-align: center;
@@ -158,48 +285,44 @@
             margin: 0 auto 24px auto;
         }
         .success-view h2 { font-size: 24px; color: var(--text-dark); margin: 0 0 8px 0; }
-        .success-view p { color: var(--text-light); margin: 0 0 32px 0; max-width: 350px; margin-left: auto; margin-right: auto; }
+        .success-view p { color: var(--text-light); margin: 0 0 32px 0; max-width: 350px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            .page-title-banner h1 { font-size: 32px; }
+            .booking-card { padding: 24px; margin-left: 20px; margin-right: 20px; width: auto; }
+        }
 
         @media (max-width: 600px) {
             .nav-links { display: none; }
-            .booking-card { padding: 16px; }
             .form-grid { grid-template-columns: 1fr; }
+            .booking-card { padding: 20px;}
         }
     </style>
 </head>
 <body>
-    <div class="background-shapes">
-        <div></div><div></div><div></div><div></div>
-    </div>
+    <div id="notification" class="notification"></div>
 
-    <div class="booking-card">
-        <header class="card-header">
+    <header class="main-header">
+        <div class="container">
             <a href="#" class="logo">Beachspot</a>
             <div class="nav-and-user">
-                <div class="nav-links">
-                    <a href="#">Início</a>
-                    <a href="#">Suas Reservas</a>
-                </div>
-                <div class="user-avatar">C</div>
+                <nav class="nav-links">
+                    <a id="nav-inicio">Início</a>
+                    <a id="nav-reservas">Suas Reservas</a>
+                    <a id="nav-settings"><i data-lucide="settings" style="width:20px; height:20px;"></i></a>
+                </nav>
+                <div id="user-avatar" class="user-avatar">C</div>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <main id="booking-main">
-            <div class="card-illustration">
-                <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M50 75C63.8071 75 75 63.8071 75 50C75 36.1929 63.8071 25 50 25C36.1929 25 25 36.1929 25 50C25 63.8071 36.1929 75 50 75Z" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M50 12.5V6.25" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M50 93.75V87.5" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M28.125 28.125L23.75 23.75" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M76.25 76.25L71.875 71.875" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12.5 50H6.25" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M93.75 50H87.5" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M28.125 71.875L23.75 76.25" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M76.25 23.75L71.875 28.125" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
+    <div class="page-title-banner">
+        <h1>Faça sua Reserva</h1>
+    </div>
+
+    <main class="booking-card">
+        <div id="booking-form-view">
             <div class="form-intro">
-                <h1>Faça sua Reserva</h1>
                 <p>Garanta seu lugar ao sol com conforto e praticidade.</p>
             </div>
             <hr>
@@ -236,10 +359,14 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="submit-btn">Confirmar Reserva</button>
+                     <p id="validation-message" class="validation-error">Por favor, preencha todos os campos.</p>
+                    <button type="submit" class="submit-btn">
+                        <i data-lucide="check-circle" style="width:20px; height:20px;"></i>
+                        Confirmar Reserva
+                    </button>
                 </div>
             </form>
-        </main>
+        </div>
         
         <div id="success-view" class="success-view">
             <div class="success-icon">
@@ -249,17 +376,78 @@
             <p id="success-message"></p>
             <button id="new-reservation-btn" class="submit-btn">Fazer Nova Reserva</button>
         </div>
-    </div>
+    </main>
 
-    <script>
-        lucide.createIcons();
+    <script type="module">
+        // Importações do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const bookingMain = document.getElementById('booking-main');
+        // ************************************************************************************
+        // PASSO 1: CRIE SEU PROJETO NO FIREBASE E COLE SUA CONFIGURAÇÃO AQUI
+        // Acesse https://console.firebase.google.com/
+        // Crie um novo projeto, depois crie um "Aplicativo da Web" (ícone </>)
+        // Copie o objeto de configuração do Firebase e cole aqui.
+        // ************************************************************************************
+        const firebaseConfig = {
+            apiKey: "COLE_SUA_API_KEY_AQUI",
+            authDomain: "COLE_SEU_AUTH_DOMAIN_AQUI",
+            projectId: "COLE_SEU_PROJECT_ID_AQUI",
+            storageBucket: "COLE_SEU_STORAGE_BUCKET_AQUI",
+            messagingSenderId: "COLE_SEU_MESSAGING_SENDER_ID_AQUI",
+            appId: "COLE_SEU_APP_ID_AQUI"
+        };
+        
+        // Inicialização do Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        async function main() {
+            lucide.createIcons();
+            
+            // Definição da função de notificação e sua variável de timeout movidas para o topo
+            const notification = document.getElementById('notification');
+            let notificationTimeout;
+            function showNotification(message, isError = false) {
+                clearTimeout(notificationTimeout);
+                notification.textContent = message;
+                notification.style.backgroundColor = isError ? 'var(--error-red)' : 'var(--text-dark)';
+                notification.classList.add('show');
+                notificationTimeout = setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 5000); // Aumentei o tempo para 5 segundos
+            }
+
+            // Checa se a configuração do Firebase foi preenchida
+            if (firebaseConfig.apiKey === "COLE_SUA_API_KEY_AQUI") {
+                showNotification("Por favor, configure suas chaves do Firebase no código para conectar ao backend.", true);
+                console.warn("A configuração do Firebase não foi definida. Adicione as credenciais do seu projeto em index_local.html.");
+                return; // Para a execução se não estiver configurado
+            }
+
+            try {
+                // Para o ambiente local, vamos usar autenticação anônima simples.
+                await signInAnonymously(auth);
+                console.log("Usuário anônimo conectado:", auth.currentUser.uid);
+            } catch (error) {
+                console.error("Erro na autenticação anônima:", error);
+                showNotification("Erro ao conectar com o backend. Verifique sua configuração do Firebase.", true);
+                return; // Para a execução em caso de erro de autenticação
+            }
+            
+            const bookingFormView = document.getElementById('booking-form-view');
             const successView = document.getElementById('success-view');
             const form = document.getElementById('reservationForm');
             const newReservationBtn = document.getElementById('new-reservation-btn');
-            
+            const validationMessage = document.getElementById('validation-message');
+
+            document.getElementById('nav-inicio').addEventListener('click', () => showNotification('Navegando para a página inicial...'));
+            document.getElementById('nav-reservas').addEventListener('click', () => showNotification('Acessando suas reservas...'));
+            document.getElementById('nav-settings').addEventListener('click', () => showNotification('Abrindo configurações...'));
+            document.getElementById('user-avatar').addEventListener('click', () => showNotification('Exibindo perfil do usuário...'));
+
             const decreaseBtn = document.getElementById('decreaseBtn');
             const increaseBtn = document.getElementById('increaseBtn');
             const peopleCountSpan = document.getElementById('peopleCount');
@@ -267,43 +455,98 @@
 
             decreaseBtn.addEventListener('click', () => { if (peopleCount > 1) { peopleCount--; peopleCountSpan.textContent = peopleCount; } });
             increaseBtn.addEventListener('click', () => { peopleCount++; peopleCountSpan.textContent = peopleCount; });
-
+            
             const dateInput = document.getElementById('reservationDate');
             const today = new Date();
             const offset = today.getTimezoneOffset();
             const todayLocal = new Date(today.getTime() - (offset*60*1000));
-            dateInput.setAttribute('min', todayLocal.toISOString().split('T')[0]);
+            const minDate = todayLocal.toISOString().split('T')[0];
+            dateInput.setAttribute('min', minDate);
 
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', async function(event) {
                 event.preventDefault();
-                const formData = {
-                    date: dateInput.value,
-                    time: document.getElementById('reservationTime').value,
-                    people: peopleCountSpan.textContent,
-                    name: document.getElementById('fullName').value
-                };
+                
+                let isValid = true;
+                validationMessage.style.display = 'none';
+                form.querySelectorAll('[required]').forEach(input => {
+                    if (!input.value) {
+                        isValid = false;
+                        input.style.borderColor = 'var(--error-red)';
+                    } else {
+                        input.style.borderColor = '';
+                    }
+                });
 
-                if (!formData.date || !formData.time || !formData.name) {
-                    alert('Por favor, preencha todos os campos obrigatórios.');
+                if (!isValid) {
+                    validationMessage.style.display = 'block';
                     return;
                 }
-                
-                const formattedDate = new Date(formData.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-                document.getElementById('success-message').textContent = `Enviamos todos os detalhes da sua reserva para ${formData.people} pessoa(s) no dia ${formattedDate} para o seu e-mail.`;
 
-                bookingMain.style.display = 'none';
-                successView.style.display = 'block';
+                const submitButton = form.querySelector('.submit-btn');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
+                
+                try {
+                    const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous_local';
+                    // ************************************************************************************
+                    // PASSO 2: NO FIREBASE, CRIE UM BANCO DE DADOS 'FIRESTORE' E CONFIGURE AS REGRAS
+                    // No console do Firebase, vá em 'Cloud Firestore', crie um banco de dados.
+                    // Em seguida, vá para a aba 'Regras' e cole o seguinte para permitir a escrita:
+                    // rules_version = '2';
+                    // service cloud.firestore {
+                    //   match /databases/{database}/documents {
+                    //     match /reservations/{docId} {
+                    //       allow read, write: if true; // Apenas para teste, não use em produção!
+                    //     }
+                    //   }
+                    // }
+                    // ************************************************************************************
+                    const reservationsCol = collection(db, "reservations");
+
+                    await addDoc(reservationsCol, {
+                        userId: userId,
+                        fullName: document.getElementById('fullName').value,
+                        reservationDate: document.getElementById('reservationDate').value,
+                        reservationTime: document.getElementById('reservationTime').value,
+                        peopleCount: parseInt(peopleCountSpan.textContent, 10),
+                        createdAt: serverTimestamp()
+                    });
+
+                    const formData = {
+                        date: dateInput.value,
+                        people: peopleCountSpan.textContent,
+                    };
+                    
+                    const formattedDate = new Date(formData.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+                    document.getElementById('success-message').textContent = `Sua reserva para ${formData.people} pessoa(s) no dia ${formattedDate} foi confirmada com sucesso!`;
+
+                    bookingFormView.style.display = 'none';
+                    successView.style.display = 'block';
+
+                } catch (error) {
+                    console.error("Erro ao salvar no Firestore: ", error);
+                    showNotification("Erro ao salvar. Verifique o console para mais detalhes.", true);
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i data-lucide="check-circle" style="width:20px; height:20px;"></i> Confirmar Reserva';
+                    lucide.createIcons();
+                }
             });
 
             newReservationBtn.addEventListener('click', () => {
                 successView.style.display = 'none';
-                bookingMain.style.display = 'block';
+                bookingFormView.style.display = 'block';
                 form.reset();
+                form.querySelectorAll('[required]').forEach(input => {
+                    input.style.borderColor = '';
+                });
                 peopleCount = 1;
                 peopleCountSpan.textContent = '1';
-                dateInput.setAttribute('min', todayLocal.toISOString().split('T')[0]);
+                dateInput.setAttribute('min', minDate);
             });
-        });
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
     </script>
 </body>
 </html>
