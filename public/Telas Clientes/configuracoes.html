@@ -235,7 +235,7 @@
                         <a href="#" id="login-btn" class="block w-full text-center py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105" data-translate="login_button">
                             Entrar na conta existente
                         </a>
-                        <a href="#" id="create-account-btn" class="block w-full text-center py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-full transition-colors" data-translate="create_account_button">
+                        <a href="#" id="create-account-btn" class="block w-full text-center py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-full transition-colors border border-gray-300" data-translate="create_account_button">
                             Criar nova conta
                         </a>
                     </div>
@@ -278,14 +278,14 @@
             
             <form id="contact-form" action="#" method="POST" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" name="name" placeholder="Seu Nome" required class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
-                    <input type="email" name="email" placeholder="Seu E-mail" required class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                    <input type="text" name="name" placeholder="Seu Nome" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" data-translate-placeholder="contact_name_placeholder">
+                    <input type="email" name="email" placeholder="Seu E-mail" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" data-translate-placeholder="contact_email_placeholder">
                 </div>
                 <div>
-                    <input type="text" name="subject" placeholder="Assunto" required class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                    <input type="text" name="subject" placeholder="Assunto" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" data-translate-placeholder="contact_subject_placeholder">
                 </div>
                 <div>
-                    <textarea name="message" placeholder="Sua Mensagem" rows="5" required class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"></textarea>
+                    <textarea name="message" placeholder="Sua Mensagem" rows="5" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none" data-translate-placeholder="contact_message_placeholder"></textarea>
                 </div>
                 <div class="text-right pt-2">
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition-colors duration-300" data-translate="contact_button">
@@ -349,12 +349,6 @@
         const translations = {
             en: {
                 page_title: "Settings - BeachSpot",
-                header_inicio: "Home",
-                header_reservas: "Your Reservations",
-                header_perfil: "Profile",
-                header_sobre: "About",
-                header_config: "Settings",
-                main_title: "Settings",
                 lang_title: "Language",
                 lang_desc: "Choose the platform's display language.",
                 account_details_title: "Account Details",
@@ -380,16 +374,36 @@
                 delete_account_button: "Delete",
                 contact_title: "Contact Us",
                 contact_subtitle: "Have a question or suggestion? We'd love to hear from you!",
-                contact_button: "Send Message"
+                contact_button: "Send Message",
+                contact_name_placeholder: "Your Name",
+                contact_email_placeholder: "Your Email",
+                contact_subject_placeholder: "Subject",
+                contact_message_placeholder: "Your Message",
+                // Modal and Toast translations
+                modal_change_email_title: "Change Email",
+                modal_change_email_label: "New Email",
+                modal_save_button: "Save",
+                toast_email_success: "Email changed successfully!",
+                modal_change_password_title: "Change Password",
+                modal_current_password_label: "Current Password",
+                modal_new_password_label: "New Password",
+                modal_confirm_password_label: "Confirm New Password",
+                modal_forgot_password_button: "Forgot password?",
+                toast_password_success: "Password changed successfully!",
+                toast_recovery_sent: "Recovery instructions sent to your email.",
+                modal_change_phone_title: "Change Phone Number",
+                modal_change_phone_label: "New Phone Number",
+                toast_phone_success: "Phone number changed successfully!",
+                modal_cancel_button: "Cancel",
+                modal_disconnect_title: "Disconnect Account",
+                modal_disconnect_message: "Are you sure you want to end the session?",
+                toast_disconnect_success: "You have been disconnected.",
+                modal_delete_title: "Delete Account",
+                modal_delete_message: "This action is permanent and all your data will be lost. Are you absolutely sure?",
+                toast_delete_success: "Account deleted successfully."
             },
             es: {
                 page_title: "Configuraciones - BeachSpot",
-                header_inicio: "Inicio",
-                header_reservas: "Tus Reservas",
-                header_perfil: "Perfil",
-                header_sobre: "Sobre",
-                header_config: "Configuraciones",
-                main_title: "Configuraciones",
                 lang_title: "Idioma",
                 lang_desc: "Elija el idioma de visualización de la plataforma.",
                 account_details_title: "Detalles de la Cuenta",
@@ -415,35 +429,75 @@
                 delete_account_button: "Eliminar",
                 contact_title: "Contacto",
                 contact_subtitle: "¿Tiene alguna pregunta o sugerencia? ¡Nos encantaría saber de usted!",
-                contact_button: "Enviar Mensaje"
+                contact_button: "Enviar Mensaje",
+                contact_name_placeholder: "Tu Nombre",
+                contact_email_placeholder: "Tu Correo Electrónico",
+                contact_subject_placeholder: "Asunto",
+                contact_message_placeholder: "Tu Mensaje",
+                // Modal and Toast translations
+                modal_change_email_title: "Cambiar Correo Electrónico",
+                modal_change_email_label: "Nuevo Correo Electrónico",
+                modal_save_button: "Guardar",
+                toast_email_success: "¡Correo electrónico cambiado con éxito!",
+                modal_change_password_title: "Cambiar Contraseña",
+                modal_current_password_label: "Contraseña Actual",
+                modal_new_password_label: "Nueva Contraseña",
+                modal_confirm_password_label: "Confirmar Nueva Contraseña",
+                modal_forgot_password_button: "¿Olvidaste tu contraseña?",
+                toast_password_success: "¡Contraseña cambiada con éxito!",
+                toast_recovery_sent: "Instrucciones de recuperación enviadas a su correo electrónico.",
+                modal_change_phone_title: "Cambiar Número de Teléfono",
+                modal_change_phone_label: "Nuevo Número de Teléfono",
+                toast_phone_success: "¡Número de teléfono cambiado con éxito!",
+                modal_cancel_button: "Cancelar",
+                modal_disconnect_title: "Desconectar Cuenta",
+                modal_disconnect_message: "¿Estás seguro de que quieres cerrar la sesión?",
+                toast_disconnect_success: "Has sido desconectado.",
+                modal_delete_title: "Eliminar Cuenta",
+                modal_delete_message: "Esta acción es permanente y todos sus datos se perderán. ¿Está absolutamente seguro?",
+                toast_delete_success: "Cuenta eliminada con éxito."
             }
         };
 
         const languageSelect = document.getElementById('language-select');
 
-        function translatePage(lang) {
-            document.documentElement.lang = lang;
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.dataset.translate;
-                if (lang === 'pt') {
-                    if (localStorage.getItem('beachspot_lang') !== 'pt') {
-                        localStorage.setItem('beachspot_lang', 'pt');
-                        location.reload();
-                    }
-                } else if (translations[lang] && translations[lang][key]) {
-                    el.textContent = translations[lang][key];
-                }
-            });
-            if (lang !== 'pt') {
-                localStorage.setItem('beachspot_lang', lang);
+        function getTranslation(key, fallback) {
+            const lang = localStorage.getItem('beachspot_lang') || 'pt';
+            if (lang === 'pt' || !translations[lang] || !translations[lang][key]) {
+                return fallback;
             }
+            return translations[lang][key];
         }
 
-        languageSelect.addEventListener('change', (e) => {
-            translatePage(e.target.value);
-        });
+        function translatePage(lang) {
+            document.documentElement.lang = lang;
+            
+            if (lang === 'pt') {
+                if (localStorage.getItem('beachspot_lang') !== 'pt') {
+                    localStorage.setItem('beachspot_lang', 'pt');
+                    location.reload();
+                }
+                return;
+            }
+
+            const languagePack = translations[lang];
+            if (!languagePack) return;
+
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.dataset.translate;
+                if (languagePack[key]) el.textContent = languagePack[key];
+            });
+
+            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                const key = el.dataset.translatePlaceholder;
+                if (languagePack[key]) el.placeholder = languagePack[key];
+            });
+
+            localStorage.setItem('beachspot_lang', lang);
+        }
+
+        languageSelect.addEventListener('change', (e) => translatePage(e.target.value));
         
-        // --- Sistema de Toast e Modal (Genérico) ---
         const toast = document.getElementById('toast');
         const modalContainer = document.getElementById('modal');
 
@@ -456,13 +510,13 @@
             }, 3000);
         }
 
-        function showModal({ title, message, contentHtml, confirmText, onConfirm, confirmColor = 'bg-blue-600', confirmHoverColor = 'hover:bg-blue-700', onDisplay }) {
+        function showModal({ title, message, contentHtml, confirmText, cancelText, onConfirm, confirmColor = 'bg-blue-600', confirmHoverColor = 'hover:bg-blue-700', onDisplay }) {
             modalContainer.innerHTML = `
                 <div class="bg-white text-gray-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-auto transform transition-transform duration-300 scale-95" id="modal-content">
                     <h2 class="text-2xl font-bold text-left mb-4">${title}</h2>
                     ${contentHtml ? contentHtml : `<p class="text-left text-gray-600 mb-6">${message}</p>`}
                     <div class="flex justify-end gap-3 mt-6">
-                        <button id="modal-cancel" class="py-2 px-5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-full">Cancelar</button>
+                        <button id="modal-cancel" class="py-2 px-5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-full">${cancelText}</button>
                         <button id="modal-confirm" class="py-2 px-5 ${confirmColor} ${confirmHoverColor} text-white font-bold rounded-full">${confirmText}</button>
                     </div>
                 </div>
@@ -470,9 +524,7 @@
             modalContainer.classList.remove('opacity-0', 'pointer-events-none');
             setTimeout(() => {
                 modalContainer.querySelector('#modal-content').classList.remove('scale-95');
-                if (onDisplay) {
-                    onDisplay();
-                }
+                if (onDisplay) onDisplay();
             }, 10);
 
             const closeModal = () => {
@@ -481,14 +533,10 @@
                 setTimeout(() => modalContainer.classList.add('pointer-events-none'), 300);
             };
 
-            document.getElementById('modal-confirm').onclick = () => {
-                onConfirm();
-                closeModal();
-            };
+            document.getElementById('modal-confirm').onclick = () => { onConfirm(); closeModal(); };
             document.getElementById('modal-cancel').onclick = closeModal;
         }
 
-        // --- Adiciona funcionalidade aos botões ---
         document.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('beachspot_lang');
             if (savedLang && savedLang !== 'pt') {
@@ -496,21 +544,20 @@
                 translatePage(savedLang);
             }
             
-            // --- Botões de Detalhes da Conta ---
             document.getElementById('change-email-btn').addEventListener('click', () => {
                 const modalContent = `
                     <div class="space-y-2">
-                        <label for="new-email" class="block text-sm font-medium text-gray-700">Novo E-mail</label>
-                        <input type="email" id="new-email" value="${document.getElementById('current-email').textContent}" class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                        <label for="new-email" class="block text-sm font-medium text-gray-700">${getTranslation('modal_change_email_label', 'Novo E-mail')}</label>
+                        <input type="email" id="new-email" value="${document.getElementById('current-email').textContent}" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
                     </div>`;
                 showModal({
-                    title: 'Alterar E-mail',
+                    title: getTranslation('modal_change_email_title', 'Alterar E-mail'),
                     contentHtml: modalContent,
-                    confirmText: 'Salvar',
+                    confirmText: getTranslation('modal_save_button', 'Salvar'),
+                    cancelText: getTranslation('modal_cancel_button', 'Cancelar'),
                     onConfirm: () => {
-                        const newEmail = document.getElementById('new-email').value;
-                        document.getElementById('current-email').textContent = newEmail;
-                        showToast('E-mail alterado com sucesso!');
+                        document.getElementById('current-email').textContent = document.getElementById('new-email').value;
+                        showToast(getTranslation('toast_email_success', 'E-mail alterado com sucesso!'));
                     }
                 });
             });
@@ -519,32 +566,31 @@
                 const modalContent = `
                     <div class="space-y-4 text-left">
                         <div>
-                            <label for="current-password" class="block text-sm font-medium text-gray-700">Senha Atual</label>
-                            <input type="password" id="current-password" class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                            <label for="current-password" class="block text-sm font-medium text-gray-700">${getTranslation('modal_current_password_label', 'Senha Atual')}</label>
+                            <input type="password" id="current-password" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label for="new-password" class="block text-sm font-medium text-gray-700">Nova Senha</label>
-                            <input type="password" id="new-password" class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                            <label for="new-password" class="block text-sm font-medium text-gray-700">${getTranslation('modal_new_password_label', 'Nova Senha')}</label>
+                            <input type="password" id="new-password" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirmar Nova Senha</label>
-                            <input type="password" id="confirm-password" class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-700">${getTranslation('modal_confirm_password_label', 'Confirmar Nova Senha')}</label>
+                            <input type="password" id="confirm-password" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                     <div class="text-right mt-2">
-                        <button id="forgot-password-btn" class="text-sm font-medium text-blue-600 hover:underline">Esqueceu a senha?</button>
+                        <button id="forgot-password-btn" class="text-sm font-medium text-blue-600 hover:underline">${getTranslation('modal_forgot_password_button', 'Esqueceu a senha?')}</button>
                     </div>`;
                 showModal({
-                    title: 'Alterar Senha',
+                    title: getTranslation('modal_change_password_title', 'Alterar Senha'),
                     contentHtml: modalContent,
-                    confirmText: 'Salvar',
-                    onConfirm: () => {
-                        showToast('Senha alterada com sucesso!');
-                    },
+                    confirmText: getTranslation('modal_save_button', 'Salvar'),
+                    cancelText: getTranslation('modal_cancel_button', 'Cancelar'),
+                    onConfirm: () => showToast(getTranslation('toast_password_success', 'Senha alterada com sucesso!')),
                     onDisplay: () => {
                         document.getElementById('forgot-password-btn').addEventListener('click', (e) => {
                             e.preventDefault();
-                            showToast('Instruções de recuperação enviadas para seu e-mail.');
+                            showToast(getTranslation('toast_recovery_sent', 'Instruções de recuperação enviadas para seu e-mail.'));
                         });
                     }
                 });
@@ -553,22 +599,21 @@
             document.getElementById('change-phone-btn').addEventListener('click', () => {
                 const modalContent = `
                     <div class="space-y-2">
-                        <label for="new-phone" class="block text-sm font-medium text-gray-700">Novo Número de Telefone</label>
-                        <input type="tel" id="new-phone" value="${document.getElementById('current-phone').textContent}" class="w-full bg-gray-100 border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                        <label for="new-phone" class="block text-sm font-medium text-gray-700">${getTranslation('modal_change_phone_label', 'Novo Número de Telefone')}</label>
+                        <input type="tel" id="new-phone" value="${document.getElementById('current-phone').textContent}" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
                     </div>`;
                 showModal({
-                    title: 'Alterar Telefone',
+                    title: getTranslation('modal_change_phone_title', 'Alterar Telefone'),
                     contentHtml: modalContent,
-                    confirmText: 'Salvar',
+                    confirmText: getTranslation('modal_save_button', 'Salvar'),
+                    cancelText: getTranslation('modal_cancel_button', 'Cancelar'),
                     onConfirm: () => {
-                         const newPhone = document.getElementById('new-phone').value;
-                        document.getElementById('current-phone').textContent = newPhone;
-                        showToast('Telefone alterado com sucesso!');
+                        document.getElementById('current-phone').textContent = document.getElementById('new-phone').value;
+                        showToast(getTranslation('toast_phone_success', 'Telefone alterado com sucesso!'));
                     }
                 });
             });
 
-            // --- Botões de Adicionar Conta ---
             document.getElementById('login-btn').addEventListener('click', (e) => {
                 e.preventDefault();
                 showToast('Redirecionando para a página de login...');
@@ -579,40 +624,37 @@
                 showToast('Redirecionando para a criação de conta...');
             });
 
-            // --- Botões de Ações da Conta (Desconectar/Excluir) ---
             document.getElementById('disconnect-btn').addEventListener('click', () => {
                 showModal({
-                    title: 'Desconectar Conta',
-                    message: 'Você tem certeza que quer encerrar a sessão?',
-                    confirmText: 'Desconectar',
+                    title: getTranslation('modal_disconnect_title', 'Desconectar Conta'),
+                    message: getTranslation('modal_disconnect_message', 'Você tem certeza que quer encerrar a sessão?'),
+                    confirmText: getTranslation('disconnect_button', 'Desconectar'),
+                    cancelText: getTranslation('modal_cancel_button', 'Cancelar'),
                     confirmColor: 'bg-amber-500',
                     confirmHoverColor: 'hover:bg-amber-600',
-                    onConfirm: () => {
-                        showToast('Você foi desconectado.');
-                    }
+                    onConfirm: () => showToast(getTranslation('toast_disconnect_success', 'Você foi desconectado.'))
                 });
             });
             
             document.getElementById('delete-account-btn').addEventListener('click', () => {
                 showModal({
-                    title: 'Excluir Conta',
-                    message: 'Esta ação é permanente e todos os seus dados serão perdidos. Tem certeza absoluta?',
-                    confirmText: 'Excluir',
+                    title: getTranslation('modal_delete_title', 'Excluir Conta'),
+                    message: getTranslation('modal_delete_message', 'Esta ação é permanente e todos os seus dados serão perdidos. Tem certeza absoluta?'),
+                    confirmText: getTranslation('delete_account_button', 'Excluir'),
+                    cancelText: getTranslation('modal_cancel_button', 'Cancelar'),
                     confirmColor: 'bg-red-500',
                     confirmHoverColor: 'hover:bg-red-600',
-                    onConfirm: () => {
-                        showToast('Conta excluída com sucesso.', false);
-                    }
+                    onConfirm: () => showToast(getTranslation('toast_delete_success', 'Conta excluída com sucesso.'), false)
                 });
             });
 
-            // --- Formulário de Contato ---
             document.getElementById('contact-form').addEventListener('submit', function(event) {
                 event.preventDefault();
-                showToast('Mensagem enviada com sucesso!');
+                showToast(getTranslation('contact_form_success', 'Mensagem enviada com sucesso!'));
                 this.reset(); 
             });
         });
     </script>
 </body>
 </html>
+
