@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beachspot</title>
-    
+    <link rel="icon" type="image/png" href="/public/assets/icons/Logo BeachSpot.png">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -449,19 +449,18 @@
         </div>
     </main>
 
-            <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+        <!-- Footer Branco Modificado -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-auto">
         <div class="container mx-auto max-w-6xl px-6">
-            <div class="flex flex-wrap justify-between items-center text-left">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <!-- Coluna 1: Logo -->
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="inicio.html" class="flex items-center">
-                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-8 w-auto">
+                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
                     </a>
                 </div>
 
-                <div class="hidden md:flex w-full md:w-auto justify-center mb-8 md:mb-0">
-                    <i data-lucide="anchor" class="w-20 h-20 text-gray-800"></i>
-                </div>
-
+                <!-- Coluna 2: Navegação -->
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
@@ -471,6 +470,7 @@
                         <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
+                <!-- Coluna 3: Social -->
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
                     <div class="flex space-x-4">
@@ -485,6 +485,7 @@
             </div>
         </div>
     </footer>
+
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 

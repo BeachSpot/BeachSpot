@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -31,8 +32,9 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(90deg, var(--brand-blue), var(--brand-blue-light));
+            background: linear-gradient(135deg, #0138b4, #73bff6);
             margin: 0;
+            padding-top: 72px; /* Espaçamento para o header fixo */
             color: var(--text-dark);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -53,57 +55,12 @@
             font-weight: 500;
         }
         .notification.show {
-            top: 20px;
-        }
-
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .main-header {
-            background-color: var(--white);
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .main-header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-dark);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-        .nav-and-user { display: flex; align-items: center; gap: 24px; }
-        .nav-links { display: flex; align-items: center; gap: 24px; }
-        .nav-links a { text-decoration: none; color: var(--text-light); font-weight: 500; transition: color 0.2s; font-size: 15px; cursor: pointer; }
-        .nav-links a:hover { color: var(--brand-blue); }
-        .nav-links .lucide { color: var(--text-light); transition: color 0.2s; }
-        .nav-links a:hover .lucide { color: var(--brand-blue); }
-        .user-avatar {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background-color: var(--brand-blue);
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
+            top: 90px; /* Ajustado para não sobrepor o header */
         }
 
         .page-title-banner {
             background: transparent;
-            padding: 60px 20px;
+            padding: 40px 20px;
             text-align: center;
             color: var(--white);
         }
@@ -137,162 +94,40 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .form-intro {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .form-intro p {
-            margin: 0;
-            color: var(--text-light);
-            font-size: 16px;
-            line-height: 1.6;
-        }
-
+        .form-intro { text-align: center; margin-bottom: 24px; }
+        .form-intro p { margin: 0; color: var(--text-light); font-size: 16px; line-height: 1.6; }
         hr { border: none; height: 1px; background-color: var(--border-color); margin: 0 0 32px 0; }
-
         .form-group { margin-bottom: 24px; position: relative; }
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-        
+        .form-group label { display: block; font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 8px; }
         .input-wrapper { position: relative; }
-        .input-wrapper .lucide {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af;
-            transition: color 0.2s;
-            pointer-events: none;
-        }
+        .input-wrapper .lucide { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; transition: color 0.2s; pointer-events: none; }
         
         .form-input {
-            width: 100%;
-            height: 52px;
-            background-color: var(--background-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 0 16px 0 50px;
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-dark);
-            transition: all 0.2s ease-in-out;
-            appearance: none;
-            -webkit-appearance: none;
+            width: 100%; height: 52px; background-color: var(--background-color); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 0 16px 0 50px; font-size: 16px; font-family: 'Poppins', sans-serif;
+            color: var(--text-dark); transition: all 0.2s ease-in-out; appearance: none; -webkit-appearance: none;
         }
-        .form-input:focus {
-            outline: none;
-            background-color: var(--white);
-            border-color: var(--brand-blue);
-            box-shadow: 0 0 0 3px rgba(1, 56, 180, 0.15);
-        }
+        .form-input:focus { outline: none; background-color: var(--white); border-color: var(--brand-blue); box-shadow: 0 0 0 3px rgba(1, 56, 180, 0.15); }
         .form-input:focus ~ .lucide { color: var(--brand-blue); }
         .form-input::placeholder { color: #9ca3af; }
-        input[type="date"]::-webkit-calendar-picker-indicator,
-        input[type="time"]::-webkit-calendar-picker-indicator {
-            opacity: 0;
-        }
+        input[type="date"]::-webkit-calendar-picker-indicator, input[type="time"]::-webkit-calendar-picker-indicator { opacity: 0; }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
-        .stepper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            height: 52px;
-            background-color: var(--background-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 6px;
-        }
-        .stepper button {
-            background-color: var(--white);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            width: 40px;
-            height: 40px;
-            font-size: 24px;
-            font-weight: 400;
-            color: var(--brand-blue);
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .stepper { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; background-color: var(--background-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 6px; }
+        .stepper button { background-color: var(--white); border: 1px solid var(--border-color); border-radius: 8px; width: 40px; height: 40px; font-size: 24px; font-weight: 400; color: var(--brand-blue); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
         .stepper button:hover { background-color: var(--brand-blue); color: var(--white); }
-        .stepper #peopleCount {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-dark);
-            min-width: 50px;
-            text-align: center;
-        }
+        .stepper #peopleCount { font-size: 18px; font-weight: 600; color: var(--text-dark); min-width: 50px; text-align: center; }
 
-        .submit-btn {
-            width: 100%;
-            height: 52px;
-            border: none;
-            border-radius: 12px;
-            background-color: var(--brand-blue);
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            background-color: var(--brand-blue-dark);
-            box-shadow: 0 10px 20px rgba(1, 56, 180, 0.25);
-        }
-        .submit-btn:active {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(1, 56, 180, 0.2);
-        }
+        .submit-btn { width: 100%; height: 52px; border: none; border-radius: 12px; background-color: var(--brand-blue); color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .submit-btn:hover { transform: translateY(-3px); background-color: var(--brand-blue-dark); box-shadow: 0 10px 20px rgba(1, 56, 180, 0.25); }
+        .submit-btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(1, 56, 180, 0.2); }
 
-        .input-hint {
-            display: block;
-            margin-top: 6px;
-            font-size: 12px;
-            color: var(--text-light);
-            font-weight: 400;
-        }
+        .input-hint { display: block; margin-top: 6px; font-size: 12px; color: var(--text-light); font-weight: 400; }
+        .validation-error { color: var(--error-red); font-size: 14px; margin-top: 8px; text-align: center; display: none; }
         
-        .validation-error {
-            color: var(--error-red);
-            font-size: 14px;
-            margin-top: 8px;
-            text-align: center;
-            display: none;
-        }
-        
-        .success-view {
-            display: none;
-            text-align: center;
-            padding: 40px 20px;
-            animation: popIn 0.5s;
-        }
-        .success-icon {
-            width: 80px; height: 80px;
-            background-color: #d1fae5;
-            color: var(--success-green);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px auto;
-        }
+        .success-view { display: none; text-align: center; padding: 40px 20px; animation: popIn 0.5s; }
+        .success-icon { width: 80px; height: 80px; background-color: #d1fae5; color: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px auto; }
         .success-view h2 { font-size: 24px; color: var(--text-dark); margin: 0 0 8px 0; }
         .success-view p { color: var(--text-light); margin: 0 0 32px 0; max-width: 350px; margin-left: auto; margin-right: auto; line-height: 1.6; }
 
@@ -302,7 +137,6 @@
         }
 
         @media (max-width: 600px) {
-            .nav-links { display: none; }
             .form-grid { grid-template-columns: 1fr; }
             .booking-card { padding: 20px;}
         }
@@ -311,18 +145,31 @@
 <body>
     <div id="notification" class="notification"></div>
 
-    <header class="main-header">
-        <div class="container">
-            <a href="#" class="logo">Beachspot</a>
-            <div class="nav-and-user">
-                <nav class="nav-links">
-                    <a id="nav-inicio">Início</a>
-                    <a id="nav-reservas">Suas Reservas</a>
-                    <a id="nav-settings"><i data-lucide="settings" style="width:20px; height:20px;"></i></a>
-                </nav>
-                <div id="user-avatar" class="user-avatar">C</div>
+    <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="inicio.html" class="flex items-center">
+                <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
+            </a>
+            
+            <!-- Navegação e Perfil do Usuário -->
+            <div class="flex items-center space-x-6">
+                <!-- Links de Navegação -->
+                <a href="inicio.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="suasReservas.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
+    
+                <!-- Ícone de Configurações Adicionado -->
+                <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="settings" class="w-6 h-6"></i>
+                </a>
+    
+                <!-- Avatar do Cliente -->
+                <a href="perfilCliente.html">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                </a>
             </div>
-        </div>
+        </nav>
     </header>
 
     <div class="page-title-banner">
@@ -370,7 +217,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                     <p id="validation-message" class="validation-error">Por favor, preencha todos os campos.</p>
+                    <p id="validation-message" class="validation-error">Por favor, preencha todos os campos.</p>
                     <button type="submit" class="submit-btn">
                         <i data-lucide="check-circle" style="width:20px; height:20px;"></i>
                         Confirmar Reserva
@@ -389,6 +236,44 @@
         </div>
     </main>
 
+    <!-- Footer Branco Modificado -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-auto">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <!-- Coluna 1: Logo -->
+                <div class="w-full md:w-auto mb-8 md:mb-0">
+                    <a href="inicio.html" class="flex items-center">
+                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
+                    </a>
+                </div>
+
+                <!-- Coluna 2: Navegação -->
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold mb-3">Navegação</h3>
+                    <ul class="space-y-2">
+                        <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                        <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                    </ul>
+                </div>
+                <!-- Coluna 3: Social -->
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold mb-3">Redes Sociais</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12 border-t border-gray-200 pt-6">
+                <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+
     <script type="module">
         // Importações do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -397,9 +282,6 @@
 
         // ************************************************************************************
         // PASSO 1: CRIE SEU PROJETO NO FIREBASE E COLE SUA CONFIGURAÇÃO AQUI
-        // Acesse https://console.firebase.google.com/
-        // Crie um novo projeto, depois crie um "Aplicativo da Web" (ícone </>)
-        // Copie o objeto de configuração do Firebase e cole aqui.
         // ************************************************************************************
         const firebaseConfig = {
             apiKey: "COLE_SUA_API_KEY_AQUI",
@@ -418,7 +300,6 @@
         async function main() {
             lucide.createIcons();
             
-            // Definição da função de notificação e sua variável de timeout movidas para o topo
             const notification = document.getElementById('notification');
             let notificationTimeout;
             function showNotification(message, isError = false) {
@@ -428,24 +309,20 @@
                 notification.classList.add('show');
                 notificationTimeout = setTimeout(() => {
                     notification.classList.remove('show');
-                }, 5000); // Aumentei o tempo para 5 segundos
+                }, 5000);
             }
 
-            // Checa se a configuração do Firebase foi preenchida
             if (firebaseConfig.apiKey === "COLE_SUA_API_KEY_AQUI") {
-                showNotification("Por favor, configure suas chaves do Firebase no código para conectar ao backend.", true);
-                console.warn("A configuração do Firebase não foi definida. Adicione as credenciais do seu projeto em index_local.html.");
-                return; // Para a execução se não estiver configurado
+                showNotification("Por favor, configure suas chaves do Firebase no código.", true);
+                return;
             }
 
             try {
-                // Para o ambiente local, vamos usar autenticação anônima simples.
                 await signInAnonymously(auth);
-                console.log("Usuário anônimo conectado:", auth.currentUser.uid);
             } catch (error) {
                 console.error("Erro na autenticação anônima:", error);
-                showNotification("Erro ao conectar com o backend. Verifique sua configuração do Firebase.", true);
-                return; // Para a execução em caso de erro de autenticação
+                showNotification("Erro ao conectar com o backend.", true);
+                return;
             }
             
             const bookingFormView = document.getElementById('booking-form-view');
@@ -453,11 +330,6 @@
             const form = document.getElementById('reservationForm');
             const newReservationBtn = document.getElementById('new-reservation-btn');
             const validationMessage = document.getElementById('validation-message');
-
-            document.getElementById('nav-inicio').addEventListener('click', () => showNotification('Navegando para a página inicial...'));
-            document.getElementById('nav-reservas').addEventListener('click', () => showNotification('Acessando suas reservas...'));
-            document.getElementById('nav-settings').addEventListener('click', () => showNotification('Abrindo configurações...'));
-            document.getElementById('user-avatar').addEventListener('click', () => showNotification('Exibindo perfil do usuário...'));
 
             const decreaseBtn = document.getElementById('decreaseBtn');
             const increaseBtn = document.getElementById('increaseBtn');
@@ -495,23 +367,10 @@
 
                 const submitButton = form.querySelector('.submit-btn');
                 submitButton.disabled = true;
-                submitButton.textContent = 'Enviando...';
+                submitButton.innerHTML = 'Enviando...';
                 
                 try {
                     const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous_local';
-                    // ************************************************************************************
-                    // PASSO 2: NO FIREBASE, CRIE UM BANCO DE DADOS 'FIRESTORE' E CONFIGURE AS REGRAS
-                    // No console do Firebase, vá em 'Cloud Firestore', crie um banco de dados.
-                    // Em seguida, vá para a aba 'Regras' e cole o seguinte para permitir a escrita:
-                    // rules_version = '2';
-                    // service cloud.firestore {
-                    //   match /databases/{database}/documents {
-                    //     match /reservations/{docId} {
-                    //       allow read, write: if true; // Apenas para teste, não use em produção!
-                    //     }
-                    //   }
-                    // }
-                    // ************************************************************************************
                     const reservationsCol = collection(db, "reservations");
 
                     await addDoc(reservationsCol, {
