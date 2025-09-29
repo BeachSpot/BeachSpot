@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeachSpot</title>
-    <link rel="icon" type="image/png" href="/public/assets/icons/Logo BeachSpot.png">
+    <title>Beachspot</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,26 +19,20 @@
 </head>
 <body class="text-white">
 
-     <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
-    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-            <!-- Logo -->
             <a href="inicio.html" class="flex items-center">
                 <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
             
-            <!-- Navegação e Perfil do Usuário -->
             <div class="flex items-center space-x-6">
-                <!-- Links de Navegação -->
                 <a href="inicio.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
                 <a href="suasReservas.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
     
-                <!-- Ícone de Configurações Adicionado -->
                 <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
     
-                <!-- Avatar do Cliente -->
                 <a href="perfilCliente.html">
                     <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
@@ -57,7 +51,7 @@
             </p>
             <div class="w-full max-w-xl mx-auto">
                 <form class="relative">
-                    <input type="search" placeholder="Digite o nome da praia ou barraca..." class="w-full p-4 pr-16 rounded-full bg-white/20 border border-white/30 placeholder-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 transition">
+                    <input type="search" id="search-input" placeholder="Digite o nome da praia ou barraca..." class="w-full p-4 pr-16 rounded-full bg-white/20 border border-white/30 placeholder-gray-300 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 transition">
                     <button type="submit" class="absolute top-1/2 right-2 -translate-y-1/2 bg-[#1985d4] hover:bg-blue-700 text-white p-3 rounded-full transition">
                         <i data-lucide="search"></i>
                     </button>
@@ -67,7 +61,6 @@
 
         <div class="space-y-16 mt-8">
 
-            <!-- 1. Praias Próximas -->
             <section>
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="text-3xl font-bold">Praias Próximas</h2>
@@ -77,7 +70,6 @@
                 <div class="relative praias-swiper-container overflow-hidden px-16">
                     <div class="swiper-container praias-swiper">
                         <div class="swiper-wrapper">
-                            <!-- Slide 1: Porto da Barra -->
                             <div class="swiper-slide">
                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Porto+da+Barra" alt="Imagem da Praia do Porto da Barra" class="w-full h-40 object-cover">
@@ -92,7 +84,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Slide 2: Farol da Barra -->
                             <div class="swiper-slide">
                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Farol+da+Barra" alt="Imagem da Praia do Farol da Barra" class="w-full h-40 object-cover">
@@ -107,7 +98,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Slide 3: Itapuã -->
                             <div class="swiper-slide">
                                  <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Itapuã" alt="Imagem da Praia de Itapuã" class="w-full h-40 object-cover">
@@ -122,7 +112,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Slide 4: Flamengo -->
                             <div class="swiper-slide">
                                  <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Flamengo" alt="Imagem da Praia do Flamengo" class="w-full h-40 object-cover">
@@ -137,8 +126,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Slide 5: Stella Maris -->
-                             <div class="swiper-slide">
+                            <div class="swiper-slide">
                                  <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Stella+Maris" alt="Imagem da Praia de Stella Maris" class="w-full h-40 object-cover">
                                     <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
@@ -159,7 +147,6 @@
                 </div>
             </section>
 
-            <!-- 2. Barracas Populares -->
             <section>
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Barracas Populares</h2>
@@ -270,15 +257,12 @@
                 </div>
             </section>
             
-            <!-- 3. Promoções e Descontos -->
             <section>
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Promoções e Descontos</h2>
                     <a href="#" class="text-white hover:text-gray-200 font-semibold">Ver mais</a>
                 </div>
-                <!-- Grid container for hierarchical layout -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-auto md:h-[34rem]">
-                    <!-- Large Item (Left) -->
                     <div class="relative rounded-xl overflow-hidden h-64 md:h-full flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/600x800/0138b4/FFFFFF?text=Promo')">
                         <div class="absolute inset-0 bg-black/50"></div>
                         <div class="relative z-10">
@@ -288,9 +272,7 @@
                         </div>
                     </div>
 
-                    <!-- Right column container -->
                     <div class="flex flex-col gap-6">
-                        <!-- Medium Item (Top Right) -->
                         <div class="relative rounded-xl overflow-hidden h-64 flex-1 flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/600x400/73bff6/FFFFFF?text=Combo')">
                             <div class="absolute inset-0 bg-black/50"></div>
                             <div class="relative z-10">
@@ -300,7 +282,6 @@
                             </div>
                         </div>
 
-                        <!-- Container for 2 Small Items (Bottom Right) -->
                         <div class="flex-1 grid grid-cols-2 gap-6">
                             <div class="relative rounded-xl overflow-hidden h-full flex items-end p-6 text-white bg-cover bg-center" style="background-image: url('https://placehold.co/400x400/0138b4/FFFFFF?text=Happy+Hour')">
                                 <div class="absolute inset-0 bg-black/50"></div>
@@ -323,7 +304,6 @@
                 </div>
             </section>
             
-            <!-- 4. Categorias -->
             <section>
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Categorias</h2>
@@ -356,7 +336,6 @@
                 </div>
             </section>
 
-            <!-- 5. Mais barracas para você -->
             <section>
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Mais barracas para você</h2>
@@ -365,7 +344,6 @@
                 <div class="relative mais-barracas-swiper-container overflow-hidden px-16">
                     <div class="swiper-container mais-barracas-swiper">
                         <div class="swiper-wrapper">
-                            <!-- Barraca 1 -->
                             <div class="swiper-slide barraca-card" data-id="onda-azul">
                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
@@ -385,7 +363,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Barraca 2 -->
                             <div class="swiper-slide barraca-card" data-id="coqueiro-verde">
                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
@@ -405,7 +382,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Barraca 3 -->
                             <div class="swiper-slide barraca-card" data-id="sol-a-pino">
                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
@@ -425,8 +401,7 @@
                                     </div>
                                 </div>
                             </div>
-                             <!-- Barraca 4 -->
-                            <div class="swiper-slide barraca-card" data-id="areia-dourada">
+                             <div class="swiper-slide barraca-card" data-id="areia-dourada">
                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
                                         <i data-lucide="heart" class="w-5 h-5"></i>
@@ -445,7 +420,6 @@
                                     </div>
                                 </div>
                             </div>
-                             <!-- Barraca 5 -->
                              <div class="swiper-slide barraca-card" data-id="pier-do-sabor">
                                 <div class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
                                     <button class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10" title="Favoritar">
@@ -475,18 +449,19 @@
         </div>
     </main>
 
-            <!-- Footer Branco Modificado -->
-    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+            <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-center text-left">
-                <!-- Coluna 1: Logo -->
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="inicio.html" class="flex items-center">
-                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-8 w-auto">
                     </a>
                 </div>
 
-                <!-- Coluna 2: Navegação -->
+                <div class="hidden md:flex w-full md:w-auto justify-center mb-8 md:mb-0">
+                    <i data-lucide="anchor" class="w-20 h-20 text-gray-800"></i>
+                </div>
+
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
@@ -496,7 +471,6 @@
                         <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
-                <!-- Coluna 3: Social -->
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
                     <div class="flex space-x-4">
@@ -514,6 +488,88 @@
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
+    <script>
+        // --- FUNCIONALIDADE DA BARRA DE PESQUISA ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Obter referências dos elementos
+            const searchInput = document.getElementById('search-input');
+            const searchForm = document.querySelector('form.relative');
+            
+            // Todos os cards de Praia (swiper-slide)
+            const beachCards = document.querySelectorAll('.praias-swiper-container .swiper-slide');
+            // Todos os cards de Barraca (que são .swiper-slide .barraca-card)
+            const shackCards = document.querySelectorAll('.barraca-card');
+            
+            // Função para reativar (re-inicializar) um Swiper específico
+            function updateSwiper(swiperSelector) {
+                const swiperElement = document.querySelector(swiperSelector);
+                if (swiperElement && swiperElement.swiper) {
+                    // Força a atualização do layout e da navegação do Swiper
+                    swiperElement.swiper.update(); 
+                    swiperElement.swiper.navigation.update();
+                }
+            }
+
+            // Função principal de filtragem
+            function filterItems(searchTerm) {
+                const filter = searchTerm.toLowerCase().trim();
+
+                // --- FILTRAR PRAIAS (Section 1) ---
+                beachCards.forEach(card => {
+                    const textToSearch = card.textContent.toLowerCase();
+                    
+                    if (textToSearch.includes(filter)) {
+                        // Exibe o slide
+                        card.style.display = 'block'; 
+                    } else {
+                        // Esconde o slide
+                        card.style.display = 'none'; 
+                    }
+                });
+                
+                // Recalcula o layout do Swiper de Praias
+                updateSwiper('.praias-swiper-container .swiper-container');
+
+
+                // --- FILTRAR BARRACAS (Sections 2 e 5) ---
+                shackCards.forEach(card => {
+                    // Encontra o elemento pai (o slide) para esconder/mostrar
+                    const slide = card.closest('.swiper-slide'); 
+                    const textToSearch = card.textContent.toLowerCase();
+                    
+                    if (textToSearch.includes(filter)) {
+                        // CORRIGIDO: Aplica a visibilidade ao swiper-slide
+                        slide.style.display = 'block';
+                    } else {
+                        // CORRIGIDO: Aplica a visibilidade ao swiper-slide
+                        slide.style.display = 'none';
+                    }
+                });
+
+                // Recalcula o layout dos Swipers de Barracas
+                updateSwiper('.barracas-swiper-container .swiper-container');
+                updateSwiper('.mais-barracas-swiper-container .swiper-container');
+            }
+
+            // 2. Adicionar o Listener para a digitação (busca em tempo real)
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    filterItems(e.target.value);
+                });
+            }
+
+            // 3. Adicionar o Listener para o clique no botão (submissão do formulário)
+            if (searchForm) {
+                searchForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (searchInput) {
+                        filterItems(searchInput.value);
+                    }
+                });
+            }
+        });
+    </script>
     <script src="/public/assets/js/inicio.js"></script>
 </body>
 </html>
