@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF--8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Oassis do Oceano - BeachSpot</title>
 
@@ -13,13 +13,17 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
+    
+    <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+
     <link rel="stylesheet" href="/public/assets/css/infoBarraca.css">
     
     <style>
         /* Estilo apenas para o estado de favorito, sem alterar cores originais */
         .is-favorited .lucide-heart {
             fill: #ef4444; /* Cor vermelha para o coração preenchido */
-            color: #ef4444; /* Cor vermelha para a borda */
+            color: #ef4444; /* Cor vermelha para la borda */
         }
     </style>
 </head>
@@ -253,7 +257,7 @@
                 </div>
             </div>
             <div class="text-center mt-12 border-t border-gray-200 pt-6">
-                <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+                <p>© 2024 Beachspot. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
@@ -261,17 +265,21 @@
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-5 rounded-lg shadow-lg opacity-0 translate-y-3 transition-all duration-300 z-50"></div>
 
     <div id="gallery-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-        <button id="modal-close" class="absolute top-4 right-4 text-white text-5xl leading-none hover:text-gray-300">&times;</button>
+        <button id="modal-close" class="absolute top-4 right-4 text-white text-5xl leading-none hover:text-gray-300">×</button>
         <img id="modal-image" src="" alt="Imagem da galeria em tamanho maior" class="max-w-[90vw] max-h-[90vh] rounded-lg">
+    </div>
+
+    <div id="map-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl h-[80vh] p-4 relative flex flex-col">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Localização da Barraca</h2>
+            <button id="map-modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
+            <div id='map' class="w-full h-full rounded-md"></div>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-
-            // --- CÓDIGO DO MENU MOBILE REMOVIDO POIS OS ELEMENTOS NÃO EXISTIAM NO HTML ---
-            // O código original tentava encontrar 'mobile-menu-button' e 'mobile-menu',
-            // o que causava um erro e impedia o restante do script de rodar.
 
             // --- Sistema de Toast (Notificação) ---
             const toast = document.getElementById('toast');
@@ -294,12 +302,58 @@
                 }
             });
 
-            // --- Botão de Localização ---
-            document.getElementById('location-btn').addEventListener('click', () => {
-                // Para uma melhor experiência, o ideal seria abrir o Google Maps
-                window.open('https://www.google.com/maps/search/?api=1&query=Praia+de+Copacabana+Rio+de+Janeiro', '_blank');
-                showToast('Abrindo localização no mapa...');
+            // --- CÓDIGO DO MAPA ADICIONADO ---
+            
+            // --- Modal do Mapa ---
+            const locationBtn = document.getElementById('location-btn');
+            const mapModal = document.getElementById('map-modal');
+            const mapModalClose = document.getElementById('map-modal-close');
+            let map; // Variável para guardar a instância do mapa
+
+            // Coordenadas da barraca (exemplo: Praia de Copacabana)
+            // **IMPORTANTE**: Estas coordenadas virão do seu banco de dados no futuro.
+            const barracaLongitude = -43.1822;
+            const barracaLatitude = -22.9698;
+
+            locationBtn.addEventListener('click', () => {
+                mapModal.classList.remove('hidden');
+
+                // Inicializa o mapa apenas se ele ainda não foi criado
+                if (!map) {
+                    // **IMPORTANTE**: Substitua 'SUA_CHAVE_DE_API_AQUI' pela sua chave do Maptiler
+                    const apiKey = 'fQkLRhuKNXOuJ7C7hE32'; 
+                    
+                    map = new maplibregl.Map({
+                        container: 'map', // ID do container do mapa
+                        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`, // Estilo do mapa
+                        center: [barracaLongitude, barracaLatitude], // Posição inicial [longitude, latitude]
+                        zoom: 15 // Nível de zoom inicial
+                    });
+
+                    // Adiciona um marcador na localização da barraca
+                    new maplibregl.Marker({color: "#FF0000"}) // Cor vermelha para o marcador
+                        .setLngLat([barracaLongitude, barracaLatitude])
+                        .addTo(map);
+                } else {
+                    // Se o mapa já existe, apenas garante que ele seja redimensionado corretamente
+                    map.resize();
+                }
             });
+
+            function closeMapModal() {
+                mapModal.classList.add('hidden');
+            }
+
+            mapModalClose.addEventListener('click', closeMapModal);
+
+            // Fecha o modal se o usuário clicar fora da área do conteúdo
+            mapModal.addEventListener('click', (e) => {
+                if (e.target === mapModal) {
+                    closeMapModal();
+                }
+            });
+            // --- FIM DO CÓDIGO DO MAPA ---
+
 
             // --- Botão de Reservar ---
             document.getElementById('reserve-btn').addEventListener('click', () => {
