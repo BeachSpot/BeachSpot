@@ -153,37 +153,36 @@
                             </h3>
                             <p class="setting-description" data-translate="lang_desc">Escolha o idioma de exibição da plataforma.</p>
                         </div>
-                        <select id="language-select" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-auto p-2 cursor-pointer">
+                        <select id="language-select" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-full focus:outline-none focus:border-blue-500 block w-auto p-2 cursor-pointer">
                             <option value="pt" selected data-translate="lang_option_pt">Português</option>
                             <option value="en" data-translate="lang_option_en">English</option>
                             <option value="es" data-translate="lang_option_es">Español</option>
                         </select>
                     </div>
+                     <hr class="border-gray-200 mt-6">
                 </div>
-
-                <hr class="border-gray-200">
 
                 <div>
                     <h3 class="section-title flex items-center space-x-2 mb-4">
                         <i data-lucide="user-circle-2" class="text-blue-500"></i>
                         <span data-translate="account_details_title">Detalhes da Conta</span>
                     </h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
+                    <div class="divide-y divide-gray-200">
+                        <div class="flex items-center justify-between py-3">
                             <div>
                                 <p class="font-medium text-gray-900" data-translate="email_label">E-mail</p>
                                 <p class="setting-description" id="current-email">ana.silva@email.com</p>
                             </div>
                             <button id="change-email-btn" class="font-semibold text-blue-600 hover:underline" data-translate="change_button">Alterar</button>
                         </div>
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between py-3">
                             <div>
                                 <p class="font-medium text-gray-900" data-translate="password_label">Senha</p>
                                 <p class="setting-description" data-translate="password_desc">************</p>
                             </div>
                             <button id="change-password-btn" class="font-semibold text-blue-600 hover:underline" data-translate="change_button">Alterar</button>
                         </div>
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between pt-3">
                             <div>
                                 <p class="font-medium text-gray-900" data-translate="phone_label">Número de Telefone</p>
                                 <p class="setting-description" id="current-phone">(11) 98765-4321</p>
@@ -191,8 +190,8 @@
                             <button id="change-phone-btn" class="font-semibold text-blue-600 hover:underline" data-translate="change_button">Alterar</button>
                         </div>
                     </div>
+                    <hr class="border-gray-200 mt-4">
                 </div>
-                <hr class="border-gray-200">
 
                 <div>
                     <h3 class="section-title flex items-center space-x-2 mb-4">
@@ -221,9 +220,8 @@
                             </label>
                         </div>
                     </div>
+                    <hr class="border-gray-200 mt-6">
                 </div>
-
-                <hr class="border-gray-200">
 
                 <div>
                     <h3 class="section-title flex items-center space-x-2 mb-1">
@@ -239,9 +237,8 @@
                             Criar nova conta
                         </a>
                     </div>
+                    <hr class="border-gray-200 mt-6">
                 </div>
-
-                <hr class="border-gray-200">
 
                 <div>
                     <div class="border border-gray-200 rounded-lg">
@@ -278,14 +275,14 @@
             
             <form id="contact-form" action="#" method="POST" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" name="name" placeholder="Seu Nome" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" data-translate-placeholder="contact_name_placeholder">
-                    <input type="email" name="email" placeholder="Seu E-mail" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" data-translate-placeholder="contact_email_placeholder">
+                    <input type="text" name="name" placeholder="Seu Nome" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all" data-translate-placeholder="contact_name_placeholder">
+                    <input type="email" name="email" placeholder="Seu E-mail" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all" data-translate-placeholder="contact_email_placeholder">
                 </div>
                 <div>
-                    <input type="text" name="subject" placeholder="Assunto" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" data-translate-placeholder="contact_subject_placeholder">
+                    <input type="text" name="subject" placeholder="Assunto" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all" data-translate-placeholder="contact_subject_placeholder">
                 </div>
                 <div>
-                    <textarea name="message" placeholder="Sua Mensagem" rows="5" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none" data-translate-placeholder="contact_message_placeholder"></textarea>
+                    <textarea name="message" placeholder="Sua Mensagem" rows="5" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all resize-none" data-translate-placeholder="contact_message_placeholder"></textarea>
                 </div>
                 <div class="text-center pt-2">
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition-colors duration-300" data-translate="contact_button">
@@ -296,14 +293,14 @@
         </div>
     </main>
 
-            <!-- Footer Branco Modificado -->
-    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+        <!-- Footer Branco Modificado -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-auto">
         <div class="container mx-auto max-w-6xl px-6">
-            <div class="flex flex-wrap justify-between items-center text-left">
+            <div class="flex flex-wrap justify-between items-start text-left">
                 <!-- Coluna 1: Logo -->
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="inicio.html" class="flex items-center">
-                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
                     </a>
                 </div>
 
@@ -332,6 +329,7 @@
             </div>
         </div>
     </footer>
+
 
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-5 rounded-lg shadow-lg opacity-0 translate-y-3 transition-all duration-300"></div>
     <div id="modal" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
@@ -540,9 +538,15 @@
             
             document.getElementById('change-email-btn').addEventListener('click', () => {
                 const modalContent = `
-                    <div class="space-y-2">
-                        <label for="new-email" class="block text-sm font-medium text-gray-700">${getTranslation('modal_change_email_label', 'Novo E-mail')}</label>
-                        <input type="email" id="new-email" value="${document.getElementById('current-email').textContent}" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                    <div class="space-y-4 text-left">
+                        <div>
+                            <label for="current-password-email" class="block text-sm font-medium text-gray-700">${getTranslation('modal_current_password_label', 'Senha Atual')}</label>
+                            <input type="password" id="current-password-email" placeholder="************" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="new-email" class="block text-sm font-medium text-gray-700">${getTranslation('modal_change_email_label', 'Novo E-mail')}</label>
+                            <input type="email" id="new-email" value="${document.getElementById('current-email').textContent}" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500">
+                        </div>
                     </div>`;
                 showModal({
                     title: getTranslation('modal_change_email_title', 'Alterar E-mail'),
@@ -561,18 +565,18 @@
                     <div class="space-y-4 text-left">
                         <div>
                             <label for="current-password" class="block text-sm font-medium text-gray-700">${getTranslation('modal_current_password_label', 'Senha Atual')}</label>
-                            <input type="password" id="current-password" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                            <input type="password" id="current-password" placeholder="************" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label for="new-password" class="block text-sm font-medium text-gray-700">${getTranslation('modal_new_password_label', 'Nova Senha')}</label>
-                            <input type="password" id="new-password" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                            <input type="password" id="new-password" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label for="confirm-password" class="block text-sm font-medium text-gray-700">${getTranslation('modal_confirm_password_label', 'Confirmar Nova Senha')}</label>
-                            <input type="password" id="confirm-password" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                            <input type="password" id="confirm-password" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500">
                         </div>
                     </div>
-                    <div class="text-right mt-2">
+                    <div class="text-center mt-4">
                         <button id="forgot-password-btn" class="text-sm font-medium text-blue-600 hover:underline">${getTranslation('modal_forgot_password_button', 'Esqueceu a senha?')}</button>
                     </div>`;
                 showModal({
@@ -592,9 +596,15 @@
 
             document.getElementById('change-phone-btn').addEventListener('click', () => {
                 const modalContent = `
-                    <div class="space-y-2">
-                        <label for="new-phone" class="block text-sm font-medium text-gray-700">${getTranslation('modal_change_phone_label', 'Novo Número de Telefone')}</label>
-                        <input type="tel" id="new-phone" value="${document.getElementById('current-phone').textContent}" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500">
+                     <div class="space-y-4 text-left">
+                        <div>
+                            <label for="current-password-phone" class="block text-sm font-medium text-gray-700">${getTranslation('modal_current_password_label', 'Senha Atual')}</label>
+                            <input type="password" id="current-password-phone" placeholder="************" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="new-phone" class="block text-sm font-medium text-gray-700">${getTranslation('modal_change_phone_label', 'Novo Número de Telefone')}</label>
+                            <input type="tel" id="new-phone" value="${document.getElementById('current-phone').textContent}" class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500">
+                        </div>
                     </div>`;
                 showModal({
                     title: getTranslation('modal_change_phone_title', 'Alterar Telefone'),
@@ -651,4 +661,3 @@
     </script>
 </body>
 </html>
-
