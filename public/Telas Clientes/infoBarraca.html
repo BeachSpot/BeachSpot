@@ -25,6 +25,29 @@
             fill: #ef4444; /* Cor vermelha para o coração preenchido */
             color: #ef4444; /* Cor vermelha para la borda */
         }
+        /* Melhora a aparência dos popups do mapa */
+        .maplibregl-popup-content {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .map-directions-link {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 5px 12px;
+            background-color: #0138b4;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .map-directions-link:hover {
+            background-color: #002a8c;
+        }
     </style>
 </head>
 <body class="text-white">
@@ -56,7 +79,7 @@
             
             <section class="flex flex-col md:flex-row items-center gap-8 border-b border-gray-200 pb-8">
                 <div class="w-full md:w-1/3 text-center">
-                    <img src="https://placehold.co/400x300/0138b4/FFFFFF?text=Oassis" alt="Barraca Oassis do Oceano" class="w-full h-auto rounded-xl object-cover shadow-md">
+                    <img src="https://placehold.co/400x300/0138b4/FFFFFF?text=Ax%C3%A9" alt="Barraca Axé Bahia" class="w-full h-auto rounded-xl object-cover shadow-md">
                     <a href="perfilGestor.html" class="inline-flex items-center justify-center gap-2 text-gray-500 hover:text-blue-600 text-sm transition-colors mt-2">
                         <i data-lucide="user-circle" class="w-4 h-4"></i>
                         <span>Ver perfil do gestor</span>
@@ -65,7 +88,7 @@
                 <div class="flex-1 text-center md:text-left w-full">
                     <div class="flex items-start justify-between">
                           <div>
-                              <h1 class="text-4xl font-bold text-gray-900">Oassis do Oceano</h1>
+                              <h1 class="text-4xl font-bold text-gray-900">Barraca Axé Bahia</h1>
                               <div class="flex items-center justify-center md:justify-start my-2">
                                   <div class="flex text-yellow-500">
                                       <i data-lucide="star" class="w-5 h-5 fill-current"></i>
@@ -84,9 +107,9 @@
                       </div>
                     </div>
                     
-                    <button id="location-btn" class="mt-4 inline-flex items-center gap-2 bg-blue-50 text-blue-700 font-semibold py-2 px-4 rounded-full hover:bg-blue-100 transition-colors">
-                        <i data-lucide="map-pin" class="w-4 h-4"></i>
-                        Ver Localização
+                    <button id="location-btn" class="mt-4 inline-flex items-center gap-2 bg-blue-50 text-blue-700 font-semibold py-2 px-4 rounded-full hover:bg-blue-100 transition-colors text-left">
+                        <i data-lucide="map-pin" class="w-4 h-4 flex-shrink-0"></i>
+                        <span id="location-text">Carregando localização...</span>
                     </button>
 
                     <section class="bg-gray-50 p-3 rounded-lg text-left mt-3 max-w-xs mx-auto md:mx-0">
@@ -109,7 +132,7 @@
                     <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
                         <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Sobre a Barraca</h2>
                         <div class="space-y-4 text-gray-600 leading-relaxed pb-4">
-                            <p>Uma das barracas mais tradicionais da Praia de Copacabana, oferecendo serviços de primeira qualidade há mais de 15 anos. Ambiente familiar com vista privilegiada para o mar.</p>
+                            <p>Uma das barracas mais animadas da Praia do Porto da Barra, oferecendo o melhor do acarajé e da música baiana. Ambiente descontraído com vista privilegiada para o mar.</p>
                         </div>
                     </section>
 
@@ -225,15 +248,15 @@
         </div>
     </main>
 
+        <!-- Footer Branco -->
     <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
         <div class="container mx-auto max-w-6xl px-6">
-            <div class="flex flex-wrap justify-between items-center text-left">
+            <div class="flex flex-wrap justify-between items-start text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="inicio.html" class="flex items-center">
-                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
                     </a>
                 </div>
-
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
@@ -245,13 +268,15 @@
                 </div>
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
-                    <div class="flex space-x-3"> <a href="https://www.instagram.com/empresa_beachspot" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://twitter.com/BeachSpotpraias" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
-                        </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="facebook"></i></a>
+                    </div>
                 </div>
             </div>
             <div class="text-center mt-12 border-t border-gray-200 pt-6">
-                <p>© 2024 Beachspot. Todos os direitos reservados.</p>
+                <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
@@ -263,11 +288,36 @@
         <img id="modal-image" src="" alt="Imagem da galeria em tamanho maior" class="max-w-[90vw] max-h-[90vh] rounded-lg">
     </div>
 
+    <!-- Modal do Mapa com Informações -->
     <div id="map-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl h-[80vh] p-4 relative flex flex-col">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Localização da Barraca</h2>
-            <button id="map-modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
-            <div id='map' class="w-full h-full rounded-md"></div>
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-6xl h-[90vh] flex overflow-hidden relative text-gray-800">
+             <!-- Botão de Fechar -->
+            <button id="map-modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl leading-none z-10 bg-white/70 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm">&times;</button>
+            
+            <!-- Painel de Informações (Esquerda) -->
+            <div id="location-info-panel" class="w-full md:w-1/3 bg-gray-50 p-6 overflow-y-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2" id="info-nome"></h2>
+                <p class="text-gray-600 mb-6 pb-6 border-b" id="info-endereco"></p>
+
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-semibold text-xl text-gray-700 mb-4">Pontos Turísticos</h3>
+                        <div id="info-turisticos" class="space-y-3">
+                            <!-- Pontos turísticos serão inseridos aqui via JS -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-xl text-gray-700 mb-4">Nas Proximidades</h3>
+                        <div id="info-proximos">
+                            <!-- Categorias e lugares próximos serão inseridos aqui via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa (Direita) -->
+            <div id='map' class="w-full md:w-2/3 h-full"></div>
         </div>
     </div>
 
@@ -296,51 +346,210 @@
                 }
             });
 
-            // --- CÓDIGO DO MAPA ADICIONADO ---
+            // --- CÓDIGO DO MAPA E INFORMAÇÕES ---
             
-            // --- Modal do Mapa ---
+            // --- Dados da Localização (simulação de dados do backend) ---
+            const locationData = {
+                nome: "Barraca Axé Bahia",
+                endereco: "Praia do Porto da Barra, Barra, Salvador - BA",
+                coordenadas: {
+                    lng: -38.5230,
+                    lat: -12.9985
+                },
+                pontosTuristicos: [
+                    {
+                        nome: "Farol da Barra",
+                        tipo: "Ponto Turístico",
+                        coordenadas: { lng: -38.5328, lat: -13.0105 }
+                    },
+                    {
+                        nome: "Morro do Cristo",
+                        tipo: "Monumento",
+                        coordenadas: { lng: -38.5126, lat: -13.0044 }
+                    }
+                ],
+                lugaresProximos: [
+                     {
+                         nome: "Yacht Clube da Bahia",
+                         tipo: "Clube",
+                         categoria: "Clubes",
+                         coordenadas: { lng: -38.5222, lat: -12.9932 }
+                    },
+                    {
+                        nome: "Restaurante Acarajé Dourado",
+                        tipo: "Culinária Baiana",
+                        categoria: "Restaurantes",
+                        coordenadas: { lng: -38.5200, lat: -12.9980 }
+                    },
+                     {
+                        nome: "Monte Pascoal Praia Hotel",
+                        tipo: "Hospedagem",
+                        categoria: "Hotéis",
+                        coordenadas: { lng: -38.5273, lat: -13.0078 }
+                    },
+                    {
+                        nome: "Shopping Barra",
+                        tipo: "Centro Comercial",
+                        categoria: "Compras",
+                        coordenadas: { lng: -38.5085, lat: -12.9967 }
+                    },
+                    {
+                        nome: "Bompreço Supermercado",
+                        tipo: "Supermercado",
+                        categoria: "Mercados",
+                        coordenadas: { lng: -38.5147, lat: -12.9996 }
+                    },
+                    {
+                        nome: "Estação Lapa",
+                        tipo: "Transporte Público",
+                        categoria: "Metrô",
+                        coordenadas: { lng: -38.5097, lat: -12.9818 }
+                    }
+                ]
+            };
+            
+            // --- Atualiza o texto do botão de localização ---
+            document.getElementById('location-text').textContent = locationData.endereco;
+
+
+            // --- Elementos do Modal do Mapa ---
             const locationBtn = document.getElementById('location-btn');
             const mapModal = document.getElementById('map-modal');
             const mapModalClose = document.getElementById('map-modal-close');
             let map; // Variável para guardar a instância do mapa
 
-            // Coordenadas da barraca (exemplo: Praia de Copacabana)
-            // **IMPORTANTE**: Estas coordenadas virão do seu banco de dados no futuro.
-            const barracaLongitude = -43.1822;
-            const barracaLatitude = -22.9698;
-
             locationBtn.addEventListener('click', () => {
                 mapModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Impede o scroll do fundo
 
+                // --- Popular informações da localização no painel ---
+                document.getElementById('info-nome').textContent = locationData.nome;
+                document.getElementById('info-endereco').textContent = locationData.endereco;
+                
+                const turisticosContainer = document.getElementById('info-turisticos');
+                const proximosContainer = document.getElementById('info-proximos');
+                turisticosContainer.innerHTML = ''; // Limpa antes de adicionar
+                proximosContainer.innerHTML = ''; // Limpa antes de adicionar
+
+                const createAndAppendLugar = (lugar, container) => {
+                    const lugarEl = document.createElement('div');
+                    lugarEl.className = 'p-3 bg-white rounded-lg border hover:shadow-md hover:border-blue-500 cursor-pointer transition-all';
+                    lugarEl.innerHTML = `
+                        <p class="font-semibold text-blue-700">${lugar.nome}</p>
+                        <p class="text-sm text-gray-500">${lugar.tipo}</p>
+                    `;
+                    // Adiciona evento de clique para mover o mapa
+                    lugarEl.addEventListener('click', () => {
+                        if(map) {
+                            map.flyTo({
+                                center: [lugar.coordenadas.lng, lugar.coordenadas.lat],
+                                zoom: 16,
+                                essential: true
+                            });
+                        }
+                    });
+                    container.appendChild(lugarEl);
+                };
+
+                // Popula pontos turísticos
+                locationData.pontosTuristicos.forEach(lugar => {
+                    createAndAppendLugar(lugar, turisticosContainer);
+                });
+                
+                // Popula lugares próximos, agrupados por categoria
+                const lugaresAgrupados = locationData.lugaresProximos.reduce((acc, lugar) => {
+                    const categoria = lugar.categoria || 'Outros';
+                    if (!acc[categoria]) {
+                        acc[categoria] = [];
+                    }
+                    acc[categoria].push(lugar);
+                    return acc;
+                }, {});
+
+                for (const categoria in lugaresAgrupados) {
+                    const categoriaWrapper = document.createElement('div');
+                    categoriaWrapper.className = 'mb-5';
+
+                    const categoriaTitle = document.createElement('h4');
+                    categoriaTitle.className = 'font-semibold text-lg text-gray-600 mb-3';
+                    categoriaTitle.textContent = categoria;
+                    categoriaWrapper.appendChild(categoriaTitle);
+
+                    const listaLugares = document.createElement('div');
+                    listaLugares.className = 'space-y-3';
+                    
+                    lugaresAgrupados[categoria].forEach(lugar => {
+                        createAndAppendLugar(lugar, listaLugares);
+                    });
+
+                    categoriaWrapper.appendChild(listaLugares);
+                    proximosContainer.appendChild(categoriaWrapper);
+                }
+                
                 // Inicializa o mapa apenas se ele ainda não foi criado
                 if (!map) {
-                    // **IMPORTANTE**: Substitua 'SUA_CHAVE_DE_API_AQUI' pela sua chave do Maptiler
                     const apiKey = 'fQkLRhuKNXOuJ7C7hE32'; 
                     
                     map = new maplibregl.Map({
-                        container: 'map', // ID do container do mapa
-                        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`, // Estilo do mapa
-                        center: [barracaLongitude, barracaLatitude], // Posição inicial [longitude, latitude]
-                        zoom: 15 // Nível de zoom inicial
+                        container: 'map',
+                        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`,
+                        center: [locationData.coordenadas.lng, locationData.coordenadas.lat],
+                        zoom: 15
                     });
 
-                    // Adiciona um marcador na localização da barraca
-                    new maplibregl.Marker({color: "#FF0000"}) // Cor vermelha para o marcador
-                        .setLngLat([barracaLongitude, barracaLatitude])
-                        .addTo(map);
+                    map.on('load', () => {
+                        // Adiciona marcador da barraca principal (azul)
+                        const barracaPopupContent = `
+                            <div class="text-center">
+                                <strong class="text-gray-800">${locationData.nome}</strong><br>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${locationData.coordenadas.lat},${locationData.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">
+                                    Ver Rotas
+                                </a>
+                            </div>`;
+                        const popupBarraca = new maplibregl.Popup({ offset: 25 }).setHTML(barracaPopupContent);
+
+                        new maplibregl.Marker({color: "#0138b4", scale: 1.2})
+                            .setLngLat([locationData.coordenadas.lng, locationData.coordenadas.lat])
+                            .setPopup(popupBarraca)
+                            .addTo(map);
+
+                        // Combina todos os lugares para adicionar marcadores
+                        const todosOsLugares = [...locationData.pontosTuristicos, ...locationData.lugaresProximos];
+
+                        // Adiciona marcadores dos lugares próximos (vermelho)
+                        todosOsLugares.forEach(lugar => {
+                            const lugarPopupContent = `
+                                <div class="text-center">
+                                    <strong class="text-gray-800">${lugar.nome}</strong><br>
+                                    <a href="https://www.google.com/maps/dir/?api=1&destination=${lugar.coordenadas.lat},${lugar.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">
+                                        Ver Rotas
+                                    </a>
+                                </div>`;
+                            const lugarPopup = new maplibregl.Popup({ offset: 25 }).setHTML(lugarPopupContent);
+                            new maplibregl.Marker({color: "#ef4444"})
+                                .setLngLat([lugar.coordenadas.lng, lugar.coordenadas.lat])
+                                .setPopup(lugarPopup)
+                                .addTo(map);
+                        });
+                    });
+
                 } else {
-                    // Se o mapa já existe, apenas garante que ele seja redimensionado corretamente
+                    // Se o mapa já existe, apenas garante que ele seja redimensionado e centralizado
                     map.resize();
+                    map.flyTo({
+                        center: [locationData.coordenadas.lng, locationData.coordenadas.lat],
+                        zoom: 15
+                    });
                 }
             });
 
             function closeMapModal() {
                 mapModal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restaura o scroll do fundo
             }
 
             mapModalClose.addEventListener('click', closeMapModal);
 
-            // Fecha o modal se o usuário clicar fora da área do conteúdo
             mapModal.addEventListener('click', (e) => {
                 if (e.target === mapModal) {
                     closeMapModal();
@@ -351,8 +560,6 @@
 
             // --- Botão de Reservar ---
             document.getElementById('reserve-btn').addEventListener('click', () => {
-                // Aqui você pode redirecionar para a página de reserva
-                // window.location.href = 'pagina-de-reserva.html';
                 showToast('Redirecionando para a página de reserva...');
             });
             
@@ -381,7 +588,7 @@
 
             // --- Sistema de Avaliação por Estrelas ---
             const starsContainer = document.getElementById('rating-stars');
-            const stars = starsContainer.querySelectorAll('svg'); // Seleciona os SVGs criados pelo Lucide
+            const stars = starsContainer.querySelectorAll('svg');
             let currentRating = 0;
 
             function updateStars(rating) {
@@ -401,7 +608,7 @@
                     updateStars(index + 1);
                 });
                 star.addEventListener('mouseout', () => {
-                    updateStars(currentRating); // Volta para a avaliação clicada
+                    updateStars(currentRating);
                 });
                 star.addEventListener('click', () => {
                     currentRating = index + 1;
@@ -424,7 +631,6 @@
                 }
                 showToast('Avaliação enviada com sucesso! Obrigado.');
                 
-                // Limpar campos após o envio
                 currentRating = 0;
                 updateStars(0);
                 reviewTextarea.value = '';
@@ -441,7 +647,7 @@
                 
                 [filterAllBtn, filterMediaBtn].forEach(btn => {
                     btn.classList.remove(...activeClasses);
-                    btn.classList.add(...inactiveClasses);
+                    btn.classList.add(...activeClasses);
                 });
                 
                 activeBtn.classList.remove(...inactiveClasses);
@@ -468,7 +674,6 @@
                 setActiveFilter(filterMediaBtn);
             });
 
-            // Seta o filtro inicial para 'Todas'
             setActiveFilter(filterAllBtn);
         });
     </script>

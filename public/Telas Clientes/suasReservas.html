@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BeachSpot</title>
+    <title>BeachSpot - Suas Reservas</title>
     <link rel="icon" type="image/png" href="/public/assets/icons/Logo BeachSpot.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,33 +16,64 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Link para o arquivo CSS externo -->
-    <link rel="stylesheet" href="/public/assets/css/suasReservas.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex-grow: 1;
+        }
+        .tab-button {
+            color: #dbeafe; /* blue-100 */
+            transition: all 0.3s ease;
+        }
+        .tab-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .tab-button.active {
+            background-color: white;
+            color: #0138b4; /* Dark blue text for active */
+            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+        }
+        .tab-button.active:hover {
+             background-color: white;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .reserva-card {
+            transition: all 0.3s ease;
+        }
+        .reserva-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
 
 </head>
-<body class="text-white">
+<body>
 
-    <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
+    <!-- Header Fixo Branco -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-            <!-- Logo -->
-            <a href="inicio.html" class="flex items-center">
-                 <!-- Imagem do logo trocada por um placeholder para garantir que funcione -->
-                <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+             <a href="inicio.html" class="flex items-center">
+                <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
             </a>
-            
-            <!-- Navegação e Perfil do Usuário -->
             <div class="flex items-center space-x-6">
-                <!-- Links de Navegação -->
                 <a href="inicio.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="#" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
-    
-                <!-- Ícone de Configurações Adicionado -->
+                <a href="suasReservas.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
                 <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
-    
-                <!-- Avatar do Cliente -->
                 <a href="perfilCliente.html">
                     <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
@@ -50,123 +81,109 @@
         </nav>
     </header>
 
-    <!-- Conteúdo principal -->
-    <main class="pt-28 md:pt-32 container mx-auto max-w-6xl px-6">
-        <!-- Abas de Navegação -->
-        <div class="flex justify-center border-b border-white/20 mb-10">
-            <button id="tab-reservas" class="tab-button text-lg py-3 px-6 border-b-2 border-transparent transition-colors active">Suas Reservas</button>
-            <button id="tab-favoritos" class="tab-button text-lg py-3 px-6 border-b-2 border-transparent transition-colors">Favoritos</button>
-        </div>
+    <main class="pt-[72px]">
+        <!-- Seção Principal -->
+        <section class="py-16 md:py-24">
+            <div class="container mx-auto max-w-4xl px-6">
 
-        <!-- Conteúdo das Reservas -->
-        <div id="content-reservas">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="reservas-grid">
-                
-                <!-- Card de Reserva 1 -->
-                <div class="reserva-card bg-white text-gray-800 rounded-xl shadow-lg overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 relative" data-id="reserva-1">
-                    <button class="btn-favorite absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all transform hover:scale-110 z-10" title="Favoritar">
-                        <i data-lucide="heart" class="w-5 h-5 text-gray-700"></i>
+                <!-- Título -->
+                 <div class="text-center mb-10">
+                     <h1 class="text-4xl md:text-5xl font-bold text-white">Suas Reservas e Favoritos</h1>
+                     <p class="text-lg text-blue-200 mt-2">Gerencie suas visitas e locais preferidos.</p>
+                </div>
+
+                <!-- Navegação por Abas -->
+                <div class="bg-black/10 backdrop-blur-sm p-2 rounded-xl flex items-center justify-center space-x-2 mb-10 max-w-sm mx-auto">
+                    <button data-tab="reservas" class="tab-button flex-1 flex items-center justify-center gap-2 font-semibold py-3 px-4 rounded-lg text-sm md:text-base">
+                        <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                        <span>Reservas</span>
                     </button>
-                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Oásis+do+Oceano" alt="Imagem da barraca Oásis do Oceano" class="w-full h-48 object-cover">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="reserva-title text-2xl font-bold mb-2">Oásis do Oceano</h3>
-                        <div class="reserva-location flex items-center text-gray-600 mb-4">
-                            <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
-                            <span>Barra, Salvador (BA)</span>
-                        </div>
-                        <div class="flex justify-between text-gray-800 font-medium mb-4">
-                            <div class="reserva-date flex items-center">
-                                <i data-lucide="calendar" class="w-4 h-4 mr-2 text-blue-500"></i>
-                                <span>05/11/2024</span>
+                    <button data-tab="favoritos" class="tab-button flex-1 flex items-center justify-center gap-2 font-semibold py-3 px-4 rounded-lg text-sm md:text-base">
+                        <i data-lucide="heart" class="w-5 h-5"></i>
+                        <span>Favoritos</span>
+                    </button>
+                </div>
+
+                <!-- Conteúdo das Abas -->
+                <div>
+                    <!-- Minhas Reservas -->
+                    <div id="reservas" class="tab-content">
+                        <div class="space-y-6">
+                            <!-- Reserva Futura -->
+                            <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden" data-id="reserva1" data-location="Praia do Futuro">
+                                <div class="flex flex-col md:flex-row">
+                                    <img class="h-48 w-full object-cover md:h-auto md:w-48" src="https://placehold.co/200x200/0138b4/FFFFFF?text=Quiosque+do+Sol" alt="Quiosque do Sol">
+                                    <div class="p-4 flex flex-col justify-between flex-1 text-gray-800">
+                                        <div>
+                                            <p class="text-sm font-semibold text-yellow-800 bg-yellow-100 inline-block px-2 py-0.5 rounded-md mb-2">Pendente</p>
+                                            <h3 class="text-xl font-bold text-gray-900 reserva-title">Quiosque do Sol</h3>
+                                            <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                                <p><strong class="font-semibold">Início:</strong> 05/10/2025, 14:00</p>
+                                                <p><strong class="font-semibold">Fim:</strong> 05/10/2025, 18:00</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-end space-x-2 mt-4">
+                                            <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                                <i data-lucide="heart" class="w-5 h-5"></i>
+                                            </button>
+                                            <button title="Detalhes da Barraca" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                                <i data-lucide="info" class="w-5 h-5"></i>
+                                            </button>
+                                            <button title="Cancelar Reserva" class="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                                <i data-lucide="x" class="w-6 h-6"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="reserva-time flex items-center">
-                                <i data-lucide="clock" class="w-4 h-4 mr-2 text-blue-500"></i>
-                                <span>14:30</span>
+                            
+                            <!-- Reserva Passada -->
+                             <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden" data-id="reserva2" data-location="Praia de Iracema">
+                                <div class="flex flex-col md:flex-row">
+                                    <img class="h-48 w-full object-cover md:h-auto md:w-48" src="https://placehold.co/200x200/3b82f6/FFFFFF?text=Barraca+da+Praia" alt="Barraca da Praia">
+                                    <div class="p-4 flex flex-col justify-between flex-1 text-gray-800">
+                                        <div>
+                                            <p class="text-sm font-semibold text-green-800 bg-green-100 inline-block px-2 py-0.5 rounded-md mb-2">Confirmada</p>
+                                            <h3 class="text-xl font-bold text-gray-900 reserva-title">Barraca da Praia</h3>
+                                            <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                                <p><strong class="font-semibold">Início:</strong> 12/08/2025, 11:30</p>
+                                                <p><strong class="font-semibold">Fim:</strong> 12/08/2025, 16:00</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-end space-x-2 mt-4">
+                                             <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                                <i data-lucide="heart" class="w-5 h-5"></i>
+                                            </button>
+                                            <button title="Detalhes da Barraca" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                                <i data-lucide="info" class="w-5 h-5"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mt-auto">
-                            <button class="btn-cancelar w-full py-2 px-4 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105">
-                                Cancelar Reserva
-                            </button>
                         </div>
                     </div>
-                </div>
 
-                <!-- Card de Reserva 2 -->
-                <div class="reserva-card bg-white text-gray-800 rounded-xl shadow-lg overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 relative" data-id="reserva-2">
-                    <button class="btn-favorite absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all transform hover:scale-110 z-10" title="Favoritar">
-                        <i data-lucide="heart" class="w-5 h-5 text-gray-700"></i>
-                    </button>
-                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Sombra+&+Mar" alt="Imagem da barraca Sombra & Mar" class="w-full h-48 object-cover">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="reserva-title text-2xl font-bold mb-2">Sombra & Mar</h3>
-                        <div class="reserva-location flex items-center text-gray-600 mb-4">
-                            <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
-                            <span>Itapuã, Salvador (BA)</span>
-                        </div>
-                        <div class="flex justify-between text-gray-800 font-medium mb-4">
-                            <div class="reserva-date flex items-center">
-                                <i data-lucide="calendar" class="w-4 h-4 mr-2 text-blue-500"></i>
-                                <span>16/12/2024</span>
-                            </div>
-                            <div class="reserva-time flex items-center">
-                                <i data-lucide="clock" class="w-4 h-4 mr-2 text-blue-500"></i>
-                                <span>11:45</span>
-                            </div>
-                        </div>
-                        <div class="mt-auto">
-                            <button class="btn-cancelar w-full py-2 px-4 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105">
-                                Cancelar Reserva
-                            </button>
-                        </div>
+                    <!-- Meus Favoritos -->
+                    <div id="favoritos" class="tab-content">
+                       <div id="favorites-list" class="space-y-6">
+                           <p class="text-blue-200 text-center py-8">Você ainda não tem locais favoritos. Clique no coração para adicioná-los!</p>
+                       </div>
                     </div>
                 </div>
-
-                <!-- Card para Nova Reserva -->
-                <a href="#" class="border-2 border-dashed border-white/50 rounded-xl flex flex-col justify-center items-center text-center p-6 hover:bg-white/10 hover:border-white transition-colors">
-                    <i data-lucide="plus-circle" class="w-16 h-16 mb-4 text-white/80"></i>
-                    <p class="text-lg font-semibold">Faça uma nova reserva<br>e aproveite a praia!</p>
-                </a>
             </div>
-        </div>
-
-        <!-- Conteúdo dos Favoritos -->
-        <div id="content-favoritos" class="hidden">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="favoritos-grid">
-                 <!-- Cards de favoritos serão inseridos aqui pelo JavaScript -->
-                 <div id="empty-favorites-message" class="col-span-full border-2 border-dashed border-white/50 rounded-xl flex flex-col justify-center items-center text-center p-12 min-h-[300px]">
-                    <i data-lucide="heart-crack" class="w-16 h-16 mb-4 text-white/80"></i>
-                    <p class="text-lg font-semibold">Você ainda não tem barracas favoritas.</p>
-                    <p class="text-white/70 mt-2">Clique no coração de uma barraca para adicioná-la aqui!</p>
-                </div>
-            </div>
-        </div>
+        </section>
     </main>
 
-    <!-- Modal de Confirmação -->
-    <div id="cancelModal" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white text-gray-800 p-8 rounded-2xl shadow-2xl max-w-sm w-full mx-auto transform transition-transform duration-300 scale-95">
-            <h2 class="text-2xl font-bold text-center mb-4">Cancelar Reserva</h2>
-            <p id="modalMessage" class="text-center text-gray-600 mb-8">Tem certeza que quer cancelar esta reserva?</p>
-            <div class="flex justify-center gap-4">
-                <button id="btnYes" class="w-full py-2 px-6 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full transition-transform transform hover:scale-105">Sim</button>
-                <button id="btnNo" class="w-full py-2 px-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-full transition-transform transform hover:scale-105">Não</button>
-            </div>
-        </div>
-    </div>
-
-        <!-- Footer Branco Modificado -->
-    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+    <!-- Footer Branco -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12">
         <div class="container mx-auto max-w-6xl px-6">
-            <div class="flex flex-wrap justify-between items-center text-left">
-                <!-- Coluna 1: Logo -->
+            <div class="flex flex-wrap justify-between items-start text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="inicio.html" class="flex items-center">
-                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
                     </a>
                 </div>
-
-                <!-- Coluna 2: Navegação -->
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
@@ -176,12 +193,13 @@
                         <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
-                <!-- Coluna 3: Social -->
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
-                    <div class="flex space-x-3"> <a href="https://www.instagram.com/empresa_beachspot" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://twitter.com/BeachSpotpraias" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
-                        </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="hover:text-blue-600 transition-colors"><i data-lucide="facebook"></i></a>
+                    </div>
                 </div>
             </div>
             <div class="text-center mt-12 border-t border-gray-200 pt-6">
@@ -190,187 +208,150 @@
         </div>
     </footer>
 
-    <!-- O SCRIPT AGORA ESTÁ NO LUGAR CORRETO -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- CÓDIGO ORIGINAL MANTIDO (Ícones, Abas, Modal) ---
+    document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
 
-        const tabReservas = document.getElementById('tab-reservas');
-        const tabFavoritos = document.getElementById('tab-favoritos');
-        const contentReservas = document.getElementById('content-reservas');
-        const contentFavoritos = document.getElementById('content-favoritos');
+        const tabs = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
 
-        tabReservas.addEventListener('click', () => {
-            contentReservas.classList.remove('hidden');
-            contentFavoritos.classList.add('hidden');
-            tabReservas.classList.add('active');
-            tabFavoritos.classList.remove('active');
-        });
-
-        tabFavoritos.addEventListener('click', () => {
-            contentReservas.classList.add('hidden');
-            contentFavoritos.classList.remove('hidden');
-            tabReservas.classList.remove('active');
-            tabFavoritos.classList.add('active');
-            // Renderiza os favoritos sempre que a aba é clicada para garantir que está atualizada
-            renderFavorites();
-        });
-
-        let currentReservationCard = null;
-        const modal = document.getElementById('cancelModal');
-        const modalContent = modal.querySelector('div');
-
-        function openCancelModal(card) {
-            currentReservationCard = card;
-            const title = card.querySelector('.reserva-title').textContent;
-            const message = document.getElementById('modalMessage');
-            message.innerHTML = `Tem certeza que quer cancelar a reserva em <strong>${title}</strong>?`;
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            modalContent.classList.remove('scale-95');
+        const firstTab = tabs[0];
+        firstTab.classList.add('active'); // Activate first tab
+        const firstTabContent = document.getElementById(firstTab.dataset.tab);
+        if (firstTabContent) {
+            firstTabContent.style.display = 'block';
         }
 
-        function closeCancelModal() {
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            modalContent.classList.add('scale-95');
-            currentReservationCard = null;
-        }
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(item => item.classList.remove('active'));
+                tab.classList.add('active');
 
-        function cancelReservation() {
-            if (currentReservationCard) {
-                // Ao cancelar, também remove dos favoritos se estiver lá
-                const cardId = currentReservationCard.dataset.id;
-                let favorites = getFavorites();
-                const updatedFavorites = favorites.filter(fav => fav.id !== cardId);
-                saveFavorites(updatedFavorites);
+                tabContents.forEach(content => {
+                    content.style.display = 'none';
+                });
 
-                currentReservationCard.remove();
-            }
-            closeCancelModal();
-        }
-        
-        document.querySelectorAll('.btn-cancelar').forEach(btn => {
-            btn.addEventListener('click', function() {
-                openCancelModal(this.closest('.reserva-card'));
+                const activeTabContent = document.getElementById(tab.dataset.tab);
+                if(activeTabContent) {
+                    activeTabContent.style.display = 'block';
+                }
+                
+                if (tab.dataset.tab === 'favoritos') {
+                    renderFavorites();
+                }
             });
         });
 
-        document.getElementById('btnYes').addEventListener('click', cancelReservation);
-        document.getElementById('btnNo').addEventListener('click', closeCancelModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeCancelModal(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCancelModal(); });
-        // --- FIM DO CÓDIGO ORIGINAL ---
+        const favoritesList = document.getElementById('favorites-list');
+        const initialFavoriteMessage = favoritesList.innerHTML;
 
+        function getFavorites() {
+            return JSON.parse(localStorage.getItem('beachspot_favorites')) || [];
+        }
 
-        // ===== INÍCIO DA FUNCIONALIDADE DE FAVORITOS INTEGRADA E CORRIGIDA =====
-        const storageKey = 'beachspotFavorites';
-        const favoritosGrid = document.getElementById('favoritos-grid');
-        const emptyFavoritesMessage = document.getElementById('empty-favorites-message');
+        function saveFavorites(favorites) {
+            localStorage.setItem('beachspot_favorites', JSON.stringify(favorites));
+        }
 
-        const getFavorites = () => JSON.parse(localStorage.getItem(storageKey)) || [];
-        const saveFavorites = (favorites) => localStorage.setItem(storageKey, JSON.stringify(favorites));
-
-        // --- FUNÇÕES PARA A ABA DE FAVORITOS ---
         function renderFavorites() {
             const favorites = getFavorites();
-            // Limpa apenas os cards, não a mensagem de "vazio"
-            favoritosGrid.querySelectorAll('.favorite-card').forEach(card => card.remove());
+            favoritesList.innerHTML = ''; 
 
             if (favorites.length === 0) {
-                emptyFavoritesMessage.style.display = 'flex';
-            } else {
-                emptyFavoritesMessage.style.display = 'none';
-                favorites.forEach(fav => {
-                    const cardHTML = `
-                        <div class="favorite-card bg-white text-gray-800 rounded-xl shadow-lg overflow-hidden flex flex-col relative" data-id="${fav.id}">
-                            <button class="btn-favorite favorited absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full hover:bg-white z-10" title="Remover dos Favoritos">
-                                <i data-lucide="heart" class="w-5 h-5 text-gray-700 pointer-events-none"></i>
-                            </button>
-                            <img src="${fav.image}" alt="Imagem da barraca ${fav.title}" class="w-full h-48 object-cover">
-                            <div class="p-6 flex flex-col flex-grow">
-                                <h3 class="text-2xl font-bold mb-2">${fav.title}</h3>
-                                <div class="flex items-center text-gray-600">
-                                  <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>
-                                  <span>${fav.description}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    // Insere o novo card antes da mensagem de "vazio"
-                    emptyFavoritesMessage.insertAdjacentHTML('beforebegin', cardHTML);
-                });
+                favoritesList.innerHTML = initialFavoriteMessage;
+                lucide.createIcons();
+                return;
             }
-            
+
+            favorites.forEach(fav => {
+                const favoriteCard = `
+                    <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden" data-id="${fav.id}">
+                        <div class="flex flex-col md:flex-row">
+                             <img class="h-48 w-full object-cover md:h-auto md:w-48" src="${fav.image}" alt="${fav.title}">
+                             <div class="p-4 flex flex-col justify-between flex-1 text-gray-800">
+                                 <div>
+                                     <h3 class="text-xl font-bold text-gray-900">${fav.title}</h3>
+                                     <p class="text-sm text-gray-600">Localização: ${fav.location}</p>
+                                 </div>
+                                 <div class="flex items-center justify-end space-x-2 mt-4">
+                                     <a href="cardapio.html" title="Ver Cardápio" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                                     </a>
+                                     <button title="Remover dos Favoritos" class="remove-favorite-btn text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors" data-id="${fav.id}">
+                                         <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                     </button>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                `;
+                favoritesList.insertAdjacentHTML('beforeend', favoriteCard);
+            });
             lucide.createIcons();
             addRemoveFavoriteListeners();
         }
-
+        
         function addRemoveFavoriteListeners() {
-            document.querySelectorAll('#favoritos-grid .btn-favorite').forEach(button => {
-                // Previne adicionar o mesmo listener múltiplas vezes
-                if (button.dataset.listenerAttached) return;
-                button.dataset.listenerAttached = 'true';
-
-                button.addEventListener('click', function() {
-                    const card = this.closest('.favorite-card');
-                    const cardId = card.dataset.id;
+            document.querySelectorAll('.remove-favorite-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const idToRemove = e.currentTarget.dataset.id;
                     let favorites = getFavorites();
-                    
-                    const updatedFavorites = favorites.filter(fav => fav.id !== cardId);
-                    saveFavorites(updatedFavorites);
-
+                    favorites = favorites.filter(fav => fav.id !== idToRemove);
+                    saveFavorites(favorites);
                     renderFavorites();
                     updateReservationFavoriteButtons();
                 });
             });
         }
 
-        // --- FUNÇÕES PARA A ABA DE RESERVAS ---
         function updateReservationFavoriteButtons() {
             const favorites = getFavorites();
-            document.querySelectorAll('#reservas-grid .btn-favorite').forEach(button => {
+            document.querySelectorAll('.favorite-btn').forEach(button => {
                 const card = button.closest('.reserva-card');
                 if (!card) return;
                 const cardId = card.dataset.id;
                 const isFavorited = favorites.some(fav => fav.id === cardId);
-                button.classList.toggle('favorited', isFavorited);
-            });
-        }
 
+                if (isFavorited) {
+                    button.classList.add('text-red-500');
+                    button.innerHTML = '<i data-lucide="heart" class="w-5 h-5 fill-current"></i>';
+                } else {
+                    button.classList.remove('text-red-500');
+                    button.innerHTML = '<i data-lucide="heart" class="w-5 h-5"></i>';
+                }
+            });
+            lucide.createIcons();
+        }
+        
         function addFavoriteListenersToReservations() {
-            document.querySelectorAll('#reservas-grid .btn-favorite').forEach(button => {
-                button.addEventListener('click', function() {
-                    const card = this.closest('.reserva-card');
+            document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const card = e.currentTarget.closest('.reserva-card');
                     if (!card) return;
 
                     const cardId = card.dataset.id;
                     let favorites = getFavorites();
                     const favoriteIndex = favorites.findIndex(fav => fav.id === cardId);
 
-                    if (favoriteIndex > -1) { // Já é favorito, então remove
+                    if (favoriteIndex > -1) { 
                         favorites.splice(favoriteIndex, 1);
-                    } else { // Não é favorito, então adiciona
+                    } else { 
                         const favoriteData = {
                             id: cardId,
                             title: card.querySelector('.reserva-title').textContent.trim(),
-                            description: card.querySelector('.reserva-location span').textContent.trim(),
+                            location: card.dataset.location,
                             image: card.querySelector('img').src
                         };
                         favorites.push(favoriteData);
                     }
                     saveFavorites(favorites);
-                    
                     updateReservationFavoriteButtons();
-                    // Opcional: renderizar favoritos em tempo real, mesmo com a aba escondida
-                    // renderFavorites(); 
                 });
             });
         }
 
-        // --- INICIALIZAÇÃO DE TODAS AS FUNÇÕES ---
         addFavoriteListenersToReservations();
         updateReservationFavoriteButtons();
-        // A primeira renderização dos favoritos acontece quando o usuário clica na aba
     });
     </script>
 </body>
