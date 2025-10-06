@@ -108,56 +108,56 @@
                 <div>
                     <!-- Minhas Reservas -->
                     <div id="reservas" class="tab-content">
-                        <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Reserva Futura -->
-                            <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden" data-id="reserva1" data-location="Praia do Futuro">
-                                <div class="flex flex-col md:flex-row">
-                                    <img class="h-48 w-full object-cover md:h-auto md:w-48" src="https://placehold.co/200x200/0138b4/FFFFFF?text=Quiosque+do+Sol" alt="Quiosque do Sol">
-                                    <div class="p-4 flex flex-col justify-between flex-1 text-gray-800">
-                                        <div>
-                                            <p class="text-sm font-semibold text-yellow-800 bg-yellow-100 inline-block px-2 py-0.5 rounded-md mb-2">Pendente</p>
+                            <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="reserva1" data-location="Praia do Futuro">
+                                <img class="w-full h-48 object-cover" src="https://placehold.co/400x200/0138b4/FFFFFF?text=Quiosque+do+Sol" alt="Quiosque do Sol">
+                                <div class="p-5 flex flex-col flex-grow">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-start mb-2">
                                             <h3 class="text-xl font-bold text-gray-900 reserva-title">Quiosque do Sol</h3>
-                                            <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                                <p><strong class="font-semibold">Início:</strong> 05/10/2025, 14:00</p>
-                                                <p><strong class="font-semibold">Fim:</strong> 05/10/2025, 18:00</p>
-                                            </div>
+                                            <p class="text-xs font-semibold text-yellow-800 bg-yellow-100 inline-block px-2 py-1 rounded-full whitespace-nowrap">Pendente</p>
                                         </div>
-                                        <div class="flex items-center justify-end space-x-2 mt-4">
-                                            <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="heart" class="w-5 h-5"></i>
-                                            </button>
-                                            <button title="Detalhes da Barraca" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </button>
-                                            <button title="Cancelar Reserva" class="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="x" class="w-6 h-6"></i>
-                                            </button>
+                                        <div class="text-sm text-gray-600 space-y-1">
+                                            <p><strong class="font-semibold">Início:</strong> 05/10/2025, 14:00</p>
+                                            <p><strong class="font-semibold">Fim:</strong> 05/10/2025, 18:00</p>
                                         </div>
+                                    </div>
+                                    <div class="flex items-center justify-end space-x-1 border-t border-gray-100 pt-4 mt-4">
+                                        <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                            <i data-lucide="heart" class="w-5 h-5"></i>
+                                        </button>
+                                        <button title="Mais Informações" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                            <i data-lucide="info" class="w-5 h-5"></i>
+                                        </button>
+                                        <button title="Excluir Reserva" class="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Reserva Passada -->
-                             <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden" data-id="reserva2" data-location="Praia de Iracema">
-                                <div class="flex flex-col md:flex-row">
-                                    <img class="h-48 w-full object-cover md:h-auto md:w-48" src="https://placehold.co/200x200/3b82f6/FFFFFF?text=Barraca+da+Praia" alt="Barraca da Praia">
-                                    <div class="p-4 flex flex-col justify-between flex-1 text-gray-800">
-                                        <div>
-                                            <p class="text-sm font-semibold text-green-800 bg-green-100 inline-block px-2 py-0.5 rounded-md mb-2">Confirmada</p>
+                            <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="reserva2" data-location="Praia de Iracema">
+                                <img class="w-full h-48 object-cover" src="https://placehold.co/400x200/3b82f6/FFFFFF?text=Barraca+da+Praia" alt="Barraca da Praia">
+                                <div class="p-5 flex flex-col flex-grow">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-start mb-2">
                                             <h3 class="text-xl font-bold text-gray-900 reserva-title">Barraca da Praia</h3>
-                                            <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                                <p><strong class="font-semibold">Início:</strong> 12/08/2025, 11:30</p>
-                                                <p><strong class="font-semibold">Fim:</strong> 12/08/2025, 16:00</p>
-                                            </div>
+                                            <p class="text-xs font-semibold text-green-800 bg-green-100 inline-block px-2 py-1 rounded-full whitespace-nowrap">Confirmada</p>
                                         </div>
-                                        <div class="flex items-center justify-end space-x-2 mt-4">
-                                             <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="heart" class="w-5 h-5"></i>
-                                            </button>
-                                            <button title="Detalhes da Barraca" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </button>
+                                        <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                            <p><strong class="font-semibold">Início:</strong> 12/08/2025, 11:30</p>
+                                            <p><strong class="font-semibold">Fim:</strong> 12/08/2025, 16:00</p>
                                         </div>
+                                    </div>
+                                    <div class="flex items-center justify-end space-x-1 border-t border-gray-100 pt-4 mt-4">
+                                        <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                            <i data-lucide="heart" class="w-5 h-5"></i>
+                                        </button>
+                                        <button title="Mais Informações" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                            <i data-lucide="info" class="w-5 h-5"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -166,11 +166,20 @@
 
                     <!-- Meus Favoritos -->
                     <div id="favoritos" class="tab-content">
-                       <div id="favorites-list" class="space-y-6">
-                           <p class="text-blue-200 text-center py-8">Você ainda não tem locais favoritos. Clique no coração para adicioná-los!</p>
+                       <div id="favorites-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                           <p class="text-blue-200 text-center py-8 col-span-full">Você ainda não tem locais favoritos. Clique no coração para adicioná-los!</p>
                        </div>
                     </div>
                 </div>
+
+                <!-- Botão para Novas Reservas -->
+                <div class="mt-12 text-center">
+                    <a href="inicio.html" class="inline-flex items-center gap-2 bg-white text-blue-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 hover:scale-105 transition-transform transform">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                        <span>Fazer mais reservas</span>
+                    </a>
+                </div>
+
             </div>
         </section>
     </main>
@@ -266,23 +275,21 @@
 
             favorites.forEach(fav => {
                 const favoriteCard = `
-                    <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden" data-id="${fav.id}">
-                        <div class="flex flex-col md:flex-row">
-                             <img class="h-48 w-full object-cover md:h-auto md:w-48" src="${fav.image}" alt="${fav.title}">
-                             <div class="p-4 flex flex-col justify-between flex-1 text-gray-800">
-                                 <div>
-                                     <h3 class="text-xl font-bold text-gray-900">${fav.title}</h3>
-                                     <p class="text-sm text-gray-600">Localização: ${fav.location}</p>
-                                 </div>
-                                 <div class="flex items-center justify-end space-x-2 mt-4">
-                                     <a href="cardapio.html" title="Ver Cardápio" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                        <i data-lucide="book-open" class="w-5 h-5"></i>
-                                     </a>
-                                     <button title="Remover dos Favoritos" class="remove-favorite-btn text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors" data-id="${fav.id}">
-                                         <i data-lucide="trash-2" class="w-5 h-5"></i>
-                                     </button>
-                                 </div>
-                             </div>
+                    <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="${fav.id}">
+                        <img class="w-full h-48 object-cover" src="${fav.image}" alt="${fav.title}">
+                        <div class="p-5 flex flex-col flex-grow">
+                            <div class="flex-grow">
+                                <h3 class="text-xl font-bold text-gray-900">${fav.title}</h3>
+                                <p class="text-sm text-gray-600 mt-1">Localização: ${fav.location}</p>
+                            </div>
+                            <div class="flex items-center justify-end space-x-1 border-t border-gray-100 pt-4 mt-4">
+                                <a href="cardapio.html" title="Mais Informações" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                   <i data-lucide="info" class="w-5 h-5"></i>
+                                </a>
+                                <button title="Excluir Favorito" class="remove-favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors" data-id="${fav.id}">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
