@@ -112,17 +112,28 @@
                         <span id="location-text">Carregando localização...</span>
                     </button>
 
-                    <section class="bg-gray-50 p-3 rounded-lg text-left mt-3 max-w-xs mx-auto md:mx-0">
-                        <div class="flex items-center justify-between">
-                             <div class="flex items-center gap-3">
-                                 <i data-lucide="sun" class="w-8 h-8 text-yellow-500"></i>
+                    <!-- SEÇÃO DE PREVISÃO DO TEMPO INTERATIVA -->
+                    <section id="weather-section" class="bg-gray-50 p-4 rounded-lg text-left mt-4 max-w-md mx-auto md:mx-0 cursor-pointer hover:bg-gray-100 transition-colors duration-300">
+                        <!-- Parte Clicável (Sempre visível) -->
+                        <div id="current-weather-clickable" class="flex items-center justify-between">
+                             <div class="flex items-center gap-4">
+                                 <img id="weather-icon" src="https://placehold.co/48x48/ccc/FFFFFF?text=..." alt="Ícone do tempo" class="w-12 h-12">
                                  <div>
-                                     <p class="font-bold text-gray-800 text-lg">29°C</p>
-                                     <p class="text-gray-600 text-sm">Ensolarado</p>
+                                     <p class="font-bold text-gray-800 text-2xl" id="weather-temp">--°C</p>
+                                     <p class="text-gray-600" id="weather-condition">Carregando...</p>
                                  </div>
                              </div>
+                             <div class="text-right">
+                                <i data-lucide="chevron-down" id="weather-chevron" class="w-6 h-6 text-gray-500 transition-transform duration-300"></i>
+                             </div>
+                        </div>
+
+                        <!-- Parte Expansível (Previsão para próximos dias) -->
+                        <div id="forecast-container" class="hidden pt-4 mt-4 border-t border-gray-200 flex justify-around text-center">
+                            <!-- O conteúdo da previsão será inserido aqui pelo JavaScript -->
                         </div>
                     </section>
+                    <!-- FIM DA SEÇÃO -->
                 </div>
             </section>
 
@@ -276,7 +287,7 @@
                 </div>
             </div>
             <div class="text-center mt-12 border-t border-gray-200 pt-6">
-                <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+                <p>© 2024 Beachspot. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
@@ -292,7 +303,7 @@
     <div id="map-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-6xl h-[90vh] flex overflow-hidden relative text-gray-800">
              <!-- Botão de Fechar -->
-            <button id="map-modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl leading-none z-10 bg-white/70 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm">&times;</button>
+            <button id="map-modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl leading-none z-10 bg-white/70 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm">×</button>
             
             <!-- Painel de Informações (Esquerda) -->
             <div id="location-info-panel" class="w-full md:w-1/3 bg-gray-50 p-6 overflow-y-auto">
@@ -324,29 +335,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-
-            // --- Sistema de Toast (Notificação) ---
-            const toast = document.getElementById('toast');
-            function showToast(message) {
-                toast.textContent = message;
-                toast.classList.remove('opacity-0', 'translate-y-3');
-                setTimeout(() => {
-                    toast.classList.add('opacity-0', 'translate-y-3');
-                }, 3000);
-            }
-
-            // --- Botão de Favorito ---
-            const favoriteBtn = document.getElementById('favorite-btn');
-            favoriteBtn.addEventListener('click', () => {
-                const isFavorited = favoriteBtn.classList.toggle('is-favorited');
-                if (isFavorited) {
-                    showToast('Adicionado aos seus favoritos!');
-                } else {
-                    showToast('Removido dos favoritos.');
-                }
-            });
-
-            // --- CÓDIGO DO MAPA E INFORMAÇÕES ---
             
             // --- Dados da Localização (simulação de dados do backend) ---
             const locationData = {
@@ -408,6 +396,100 @@
                 ]
             };
             
+            // --- CÓDIGO DA API DE PREVISÃO DO TEMPO (ATUAL E PRÓXIMOS DIAS) ---
+            async function buscarPrevisaoTempo() {
+                // **IMPORTANTE**: Substitua pela sua chave de API da WeatherAPI
+                const apiKey = ' ee1c7addcc374cafbd0194317250610'; 
+                const locationQuery = `${locationData.coordenadas.lat},${locationData.coordenadas.lng}`;
+                const days = 3; 
+                const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${locationQuery}&days=${days}&lang=pt`;
+
+                const tempElement = document.getElementById('weather-temp');
+                const conditionElement = document.getElementById('weather-condition');
+                const iconElement = document.getElementById('weather-icon');
+                const forecastContainer = document.getElementById('forecast-container');
+                
+                // Limpa o container da previsão para exibir mensagem de carregamento
+                forecastContainer.innerHTML = `<p class="text-sm text-gray-500 w-full">Carregando previsão...</p>`;
+
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error('Falha na resposta da API do tempo');
+                    }
+                    const data = await response.json();
+                    
+                    // 1. ATUALIZA O TEMPO ATUAL
+                    const current = data.current;
+                    tempElement.textContent = `${Math.round(current.temp_c)}°C`;
+                    conditionElement.textContent = current.condition.text;
+                    iconElement.src = `https:${current.condition.icon}`;
+                    iconElement.alt = current.condition.text;
+
+                    // 2. ATUALIZA A PREVISÃO PARA OS PRÓXIMOS DIAS
+                    const forecastDays = data.forecast.forecastday;
+                    forecastContainer.innerHTML = ''; // Limpa a mensagem "carregando"
+
+                    forecastDays.forEach(dayData => {
+                        const date = new Date(dayData.date + 'T00:00:00');
+                        const dayOfWeek = date.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3);
+                        
+                        const dayElement = document.createElement('div');
+                        dayElement.className = 'flex flex-col items-center space-y-1';
+                        
+                        dayElement.innerHTML = `
+                            <p class="font-semibold text-sm text-gray-700">${dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)}</p>
+                            <img src="https:${dayData.day.condition.icon}" alt="${dayData.day.condition.text}" class="w-8 h-8">
+                            <p class="text-sm text-gray-600">
+                                <span class="font-bold text-gray-800">${Math.round(dayData.day.maxtemp_c)}°</span>
+                                <span>${Math.round(dayData.day.mintemp_c)}°</span>
+                            </p>
+                        `;
+                        forecastContainer.appendChild(dayElement);
+                    });
+
+                } catch (error) {
+                    console.error("Erro ao buscar previsão do tempo:", error);
+                    conditionElement.textContent = 'Erro ao carregar';
+                    forecastContainer.innerHTML = '<p class="text-sm text-red-500 w-full">Não foi possível carregar a previsão.</p>';
+                }
+            }
+
+            buscarPrevisaoTempo();
+
+            // --- LÓGICA PARA EXPANDIR/RECOLHER PREVISÃO ---
+            const weatherSection = document.getElementById('weather-section');
+            const forecastContainer = document.getElementById('forecast-container');
+            const weatherChevron = document.getElementById('weather-chevron');
+
+            weatherSection.addEventListener('click', () => {
+                forecastContainer.classList.toggle('hidden');
+                weatherChevron.classList.toggle('rotate-180');
+            });
+
+
+            // --- Sistema de Toast (Notificação) ---
+            const toast = document.getElementById('toast');
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.remove('opacity-0', 'translate-y-3');
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-y-3');
+                }, 3000);
+            }
+
+            // --- Botão de Favorito ---
+            const favoriteBtn = document.getElementById('favorite-btn');
+            favoriteBtn.addEventListener('click', () => {
+                const isFavorited = favoriteBtn.classList.toggle('is-favorited');
+                if (isFavorited) {
+                    showToast('Adicionado aos seus favoritos!');
+                } else {
+                    showToast('Removido dos favoritos.');
+                }
+            });
+
             // --- Atualiza o texto do botão de localização ---
             document.getElementById('location-text').textContent = locationData.endereco;
 
@@ -416,20 +498,19 @@
             const locationBtn = document.getElementById('location-btn');
             const mapModal = document.getElementById('map-modal');
             const mapModalClose = document.getElementById('map-modal-close');
-            let map; // Variável para guardar a instância do mapa
+            let map; 
 
             locationBtn.addEventListener('click', () => {
                 mapModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Impede o scroll do fundo
+                document.body.style.overflow = 'hidden'; 
 
-                // --- Popular informações da localização no painel ---
                 document.getElementById('info-nome').textContent = locationData.nome;
                 document.getElementById('info-endereco').textContent = locationData.endereco;
                 
                 const turisticosContainer = document.getElementById('info-turisticos');
                 const proximosContainer = document.getElementById('info-proximos');
-                turisticosContainer.innerHTML = ''; // Limpa antes de adicionar
-                proximosContainer.innerHTML = ''; // Limpa antes de adicionar
+                turisticosContainer.innerHTML = ''; 
+                proximosContainer.innerHTML = '';
 
                 const createAndAppendLugar = (lugar, container) => {
                     const lugarEl = document.createElement('div');
@@ -438,7 +519,6 @@
                         <p class="font-semibold text-blue-700">${lugar.nome}</p>
                         <p class="text-sm text-gray-500">${lugar.tipo}</p>
                     `;
-                    // Adiciona evento de clique para mover o mapa
                     lugarEl.addEventListener('click', () => {
                         if(map) {
                             map.flyTo({
@@ -451,12 +531,10 @@
                     container.appendChild(lugarEl);
                 };
 
-                // Popula pontos turísticos
                 locationData.pontosTuristicos.forEach(lugar => {
                     createAndAppendLugar(lugar, turisticosContainer);
                 });
                 
-                // Popula lugares próximos, agrupados por categoria
                 const lugaresAgrupados = locationData.lugaresProximos.reduce((acc, lugar) => {
                     const categoria = lugar.categoria || 'Outros';
                     if (!acc[categoria]) {
@@ -486,7 +564,6 @@
                     proximosContainer.appendChild(categoriaWrapper);
                 }
                 
-                // Inicializa o mapa apenas se ele ainda não foi criado
                 if (!map) {
                     const apiKey = 'fQkLRhuKNXOuJ7C7hE32'; 
                     
@@ -498,11 +575,10 @@
                     });
 
                     map.on('load', () => {
-                        // Adiciona marcador da barraca principal (azul)
                         const barracaPopupContent = `
                             <div class="text-center">
                                 <strong class="text-gray-800">${locationData.nome}</strong><br>
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=${locationData.coordenadas.lat},${locationData.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">
+                                <a href="https://maps.google.com/?q=${locationData.coordenadas.lat},${locationData.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">
                                     Ver Rotas
                                 </a>
                             </div>`;
@@ -513,15 +589,13 @@
                             .setPopup(popupBarraca)
                             .addTo(map);
 
-                        // Combina todos os lugares para adicionar marcadores
                         const todosOsLugares = [...locationData.pontosTuristicos, ...locationData.lugaresProximos];
 
-                        // Adiciona marcadores dos lugares próximos (vermelho)
                         todosOsLugares.forEach(lugar => {
                             const lugarPopupContent = `
                                 <div class="text-center">
                                     <strong class="text-gray-800">${lugar.nome}</strong><br>
-                                    <a href="https://www.google.com/maps/dir/?api=1&destination=${lugar.coordenadas.lat},${lugar.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">
+                                    <a href="https://maps.google.com/?q=${lugar.coordenadas.lat},${lugar.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">
                                         Ver Rotas
                                     </a>
                                 </div>`;
@@ -534,7 +608,6 @@
                     });
 
                 } else {
-                    // Se o mapa já existe, apenas garante que ele seja redimensionado e centralizado
                     map.resize();
                     map.flyTo({
                         center: [locationData.coordenadas.lng, locationData.coordenadas.lat],
@@ -545,7 +618,7 @@
 
             function closeMapModal() {
                 mapModal.classList.add('hidden');
-                document.body.style.overflow = ''; // Restaura o scroll do fundo
+                document.body.style.overflow = '';
             }
 
             mapModalClose.addEventListener('click', closeMapModal);
@@ -647,7 +720,7 @@
                 
                 [filterAllBtn, filterMediaBtn].forEach(btn => {
                     btn.classList.remove(...activeClasses);
-                    btn.classList.add(...activeClasses);
+                    btn.classList.add(...inactiveClasses);
                 });
                 
                 activeBtn.classList.remove(...inactiveClasses);
