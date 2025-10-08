@@ -11,6 +11,8 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Adicionando o CSS do seletor de data/hora -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <style>
         :root {
@@ -38,6 +40,9 @@
             color: var(--text-dark);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         
         .notification {
@@ -58,32 +63,15 @@
             top: 90px; /* Ajustado para não sobrepor o header */
         }
 
-        .page-title-banner {
-            background: transparent;
-            padding: 40px 20px;
-            text-align: center;
-            color: var(--white);
-        }
-        .page-title-banner h1 {
-            font-size: 40px;
-            font-weight: 700;
-            margin: 0;
-            animation: fadeInDown 0.8s both;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .booking-card {
             width: 100%;
-            max-width: 720px;
+            max-width: 920px;
             background: var(--white);
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-            padding: 32px;
-            margin: -40px auto 60px auto;
+            padding: 60px;
+            /* Alteração: Aumentada a margem inferior para criar mais espaço antes do rodapé */
+            margin: 60px auto 100px auto;
             position: relative;
             z-index: 10;
             animation: popIn 0.6s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) both;
@@ -92,6 +80,14 @@
         @keyframes popIn {
             from { opacity: 0; transform: translateY(20px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 8px;
         }
 
         .form-intro { text-align: center; margin-bottom: 24px; }
@@ -105,12 +101,12 @@
         .form-input {
             width: 100%; height: 52px; background-color: var(--background-color); border: 1px solid var(--border-color);
             border-radius: 12px; padding: 0 16px 0 50px; font-size: 16px; font-family: 'Poppins', sans-serif;
-            color: var(--text-dark); transition: all 0.2s ease-in-out; appearance: none; -webkit-appearance: none;
+            color: var(--text-dark); transition: all 0.2s ease-in-out;
         }
+
         .form-input:focus { outline: none; background-color: var(--white); border-color: var(--brand-blue); box-shadow: 0 0 0 3px rgba(1, 56, 180, 0.15); }
         .form-input:focus ~ .lucide { color: var(--brand-blue); }
         .form-input::placeholder { color: #9ca3af; }
-        input[type="date"]::-webkit-calendar-picker-indicator, input[type="time"]::-webkit-calendar-picker-indicator { opacity: 0; }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
@@ -131,14 +127,31 @@
         .success-view h2 { font-size: 24px; color: var(--text-dark); margin: 0 0 8px 0; }
         .success-view p { color: var(--text-light); margin: 0 0 32px 0; max-width: 350px; margin-left: auto; margin-right: auto; line-height: 1.6; }
 
+        /* Estilos personalizados para o seletor de data/hora */
+        .flatpickr-day.selected, .flatpickr-day.selected:hover {
+            background: var(--brand-blue);
+            border-color: var(--brand-blue);
+        }
+        .flatpickr-time .numInputWrapper span.arrowUp:after {
+            border-bottom-color: var(--brand-blue);
+        }
+        .flatpickr-time .numInputWrapper span.arrowDown:after {
+            border-top-color: var(--brand-blue);
+        }
+        .flatpickr-calendar {
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            width: 320px;
+        }
+
         @media (max-width: 768px) {
-            .page-title-banner h1 { font-size: 32px; }
-            .booking-card { padding: 24px; margin-left: 20px; margin-right: 20px; width: auto; }
+            .booking-card { padding: 32px; margin-left: 20px; margin-right: 20px; width: auto; }
         }
 
         @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
-            .booking-card { padding: 20px;}
+            .booking-card { padding: 24px;}
         }
     </style>
 </head>
@@ -172,72 +185,72 @@
         </nav>
     </header>
 
-    <div class="page-title-banner">
-        <h1>Faça sua Reserva</h1>
+    <div style="flex-grow: 1;">
+        <main class="booking-card">
+            <div id="booking-form-view">
+                <h1 class="form-title">Faça sua Reserva</h1>
+                <div class="form-intro">
+                    <p>Garanta seu lugar ao sol com conforto e praticidade.</p>
+                </div>
+                <hr>
+                <form id="reservationForm" novalidate>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="reservationDate">Data</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="reservationDate" class="form-input" placeholder="Selecione a data" required>
+                                <i data-lucide="calendar" class="lucide"></i>
+                            </div>
+                            <small class="input-hint">Formato: dd/mm/aaaa</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="reservationTime">Horário</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="reservationTime" class="form-input" placeholder="Selecione o horário" required>
+                                <i data-lucide="clock" class="lucide"></i>
+                            </div>
+                            <small class="input-hint">Formato: hh:mm</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Pessoas</label>
+                        <div class="stepper">
+                            <button type="button" id="decreaseBtn">-</button>
+                            <span id="peopleCount">1</span>
+                            <button type="button" id="increaseBtn">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-medium">Nome dos Participantes</label>
+                        <div id="namesContainer" class="space-y-3">
+                            <div class="input-wrapper relative">
+                                <input type="text" name="participantName[]" class="form-input name-input" placeholder="Seu nome (Ex: Maria da Silva)" required>
+                                <i data-lucide="user" class="lucide"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p id="validation-message" class="validation-error">Por favor, preencha todos os campos.</p>
+                        <button type="submit" class="submit-btn">
+                            <i data-lucide="check-circle" style="width:20px; height:20px;"></i>
+                            Confirmar Reserva
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="success-view" class="success-view">
+                <div class="success-icon">
+                    <i data-lucide="check" style="width: 40px; height: 40px;"></i>
+                </div>
+                <h2>Reserva Confirmada!</h2>
+                <p id="success-message"></p>
+                <button id="new-reservation-btn" class="submit-btn">Fazer Nova Reserva</button>
+            </div>
+        </main>
     </div>
 
-    <main class="booking-card">
-        <div id="booking-form-view">
-            <div class="form-intro">
-                <p>Garanta seu lugar ao sol com conforto e praticidade.</p>
-            </div>
-            <hr>
-            <form id="reservationForm" novalidate>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="reservationDate">Data</label>
-                        <div class="input-wrapper">
-                            <input type="date" id="reservationDate" class="form-input" required>
-                            <i data-lucide="calendar" class="lucide"></i>
-                        </div>
-                        <small class="input-hint">Formato: dd/mm/aaaa</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="reservationTime">Horário</label>
-                        <div class="input-wrapper">
-                            <input type="time" id="reservationTime" class="form-input" required>
-                            <i data-lucide="clock" class="lucide"></i>
-                        </div>
-                        <small class="input-hint">Formato: hh:mm</small>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Número de Pessoas</label>
-                    <div class="stepper">
-                        <button type="button" id="decreaseBtn">-</button>
-                        <span id="peopleCount">1</span>
-                        <button type="button" id="increaseBtn">+</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="fullName">Nome Completo</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="fullName" class="form-input" placeholder="Ex: Maria da Silva" required>
-                        <i data-lucide="user" class="lucide"></i>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <p id="validation-message" class="validation-error">Por favor, preencha todos os campos.</p>
-                    <button type="submit" class="submit-btn">
-                        <i data-lucide="check-circle" style="width:20px; height:20px;"></i>
-                        Confirmar Reserva
-                    </button>
-                </div>
-            </form>
-        </div>
-        
-        <div id="success-view" class="success-view">
-            <div class="success-icon">
-                <i data-lucide="check" style="width: 40px; height: 40px;"></i>
-            </div>
-            <h2>Reserva Confirmada!</h2>
-            <p id="success-message"></p>
-            <button id="new-reservation-btn" class="submit-btn">Fazer Nova Reserva</button>
-        </div>
-    </main>
-
-    <!-- Footer Branco Modificado -->
-    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-auto">
+    <footer class="w-full bg-white text-gray-800 z-10 py-12">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-start text-left">
                 <!-- Coluna 1: Logo -->
@@ -271,32 +284,29 @@
         </div>
     </footer>
 
+    <!-- Adicionando o JS do seletor de data/hora -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 
-    <script type="module">
-        // Importações do Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // ************************************************************************************
-        // PASSO 1: CRIE SEU PROJETO NO FIREBASE E COLE SUA CONFIGURAÇÃO AQUI
-        // ************************************************************************************
-        const firebaseConfig = {
-            apiKey: "COLE_SUA_API_KEY_AQUI",
-            authDomain: "COLE_SEU_AUTH_DOMAIN_AQUI",
-            projectId: "COLE_SEU_PROJECT_ID_AQUI",
-            storageBucket: "COLE_SEU_STORAGE_BUCKET_AQUI",
-            messagingSenderId: "COLE_SEU_MESSAGING_SENDER_ID_AQUI",
-            appId: "COLE_SEU_APP_ID_AQUI"
-        };
-        
-        // Inicialização do Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        async function main() {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+
+            // Configuração dos seletores de data e hora
+            flatpickr("#reservationDate", {
+                dateFormat: "d/m/Y",
+                minDate: "today",
+                locale: "pt",
+            });
+
+            flatpickr("#reservationTime", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                minuteIncrement: 15,
+                locale: "pt"
+            });
             
             const notification = document.getElementById('notification');
             let notificationTimeout;
@@ -310,19 +320,6 @@
                 }, 5000);
             }
 
-            if (firebaseConfig.apiKey === "COLE_SUA_API_KEY_AQUI") {
-                showNotification("Por favor, configure suas chaves do Firebase no código.", true);
-                return;
-            }
-
-            try {
-                await signInAnonymously(auth);
-            } catch (error) {
-                console.error("Erro na autenticação anônima:", error);
-                showNotification("Erro ao conectar com o backend.", true);
-                return;
-            }
-            
             const bookingFormView = document.getElementById('booking-form-view');
             const successView = document.getElementById('success-view');
             const form = document.getElementById('reservationForm');
@@ -332,25 +329,62 @@
             const decreaseBtn = document.getElementById('decreaseBtn');
             const increaseBtn = document.getElementById('increaseBtn');
             const peopleCountSpan = document.getElementById('peopleCount');
+            const namesContainer = document.getElementById('namesContainer');
             let peopleCount = 1;
 
-            decreaseBtn.addEventListener('click', () => { if (peopleCount > 1) { peopleCount--; peopleCountSpan.textContent = peopleCount; } });
-            increaseBtn.addEventListener('click', () => { peopleCount++; peopleCountSpan.textContent = peopleCount; });
-            
-            const dateInput = document.getElementById('reservationDate');
-            const today = new Date();
-            const offset = today.getTimezoneOffset();
-            const todayLocal = new Date(today.getTime() - (offset*60*1000));
-            const minDate = todayLocal.toISOString().split('T')[0];
-            dateInput.setAttribute('min', minDate);
+            const addNameToForm = () => {
+                const newNameField = document.createElement('div');
+                newNameField.className = 'input-wrapper relative dynamic-name-field';
+                newNameField.innerHTML = `
+                    <input type="text" name="participantName[]" class="form-input name-input" placeholder="Nome do acompanhante" required>
+                    <i data-lucide="user" class="lucide"></i>
+                    <button type="button" title="Remover nome" class="removeNameBtn absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors">
+                        <i data-lucide="x-circle" class="w-5 h-5 pointer-events-none"></i>
+                    </button>
+                `;
+                namesContainer.appendChild(newNameField);
+                lucide.createIcons();
+            };
 
-            form.addEventListener('submit', async function(event) {
+            const removeLastDynamicName = () => {
+                const dynamicFields = namesContainer.querySelectorAll('.dynamic-name-field');
+                if (dynamicFields.length > 0) {
+                    dynamicFields[dynamicFields.length - 1].remove();
+                }
+            };
+
+            decreaseBtn.addEventListener('click', () => {
+                if (peopleCount > 1) {
+                    peopleCount--;
+                    peopleCountSpan.textContent = peopleCount;
+                    removeLastDynamicName();
+                }
+            });
+
+            increaseBtn.addEventListener('click', () => {
+                peopleCount++;
+                peopleCountSpan.textContent = peopleCount;
+                addNameToForm();
+            });
+
+            namesContainer.addEventListener('click', (event) => {
+                const removeButton = event.target.closest('.removeNameBtn');
+                if (removeButton) {
+                    removeButton.closest('.dynamic-name-field').remove();
+                    if (peopleCount > 1) {
+                        peopleCount--;
+                        peopleCountSpan.textContent = peopleCount;
+                    }
+                }
+            });
+
+            form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 
                 let isValid = true;
                 validationMessage.style.display = 'none';
                 form.querySelectorAll('[required]').forEach(input => {
-                    if (!input.value) {
+                    if (!input.value.trim()) {
                         isValid = false;
                         input.style.borderColor = 'var(--error-red)';
                     } else {
@@ -367,56 +401,44 @@
                 submitButton.disabled = true;
                 submitButton.innerHTML = 'Enviando...';
                 
-                try {
-                    const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous_local';
-                    const reservationsCol = collection(db, "reservations");
+                setTimeout(() => {
+                    try {
+                        const formData = {
+                            date: document.getElementById('reservationDate').value,
+                            people: peopleCountSpan.textContent,
+                        };
+                        
+                        document.getElementById('success-message').textContent = `Sua reserva para ${formData.people} pessoa(s) no dia ${formData.date} foi confirmada com sucesso!`;
 
-                    await addDoc(reservationsCol, {
-                        userId: userId,
-                        fullName: document.getElementById('fullName').value,
-                        reservationDate: document.getElementById('reservationDate').value,
-                        reservationTime: document.getElementById('reservationTime').value,
-                        peopleCount: parseInt(peopleCountSpan.textContent, 10),
-                        createdAt: serverTimestamp()
-                    });
+                        bookingFormView.style.display = 'none';
+                        successView.style.display = 'block';
 
-                    const formData = {
-                        date: dateInput.value,
-                        people: peopleCountSpan.textContent,
-                    };
-                    
-                    const formattedDate = new Date(formData.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-                    document.getElementById('success-message').textContent = `Sua reserva para ${formData.people} pessoa(s) no dia ${formattedDate} foi confirmada com sucesso!`;
-
-                    bookingFormView.style.display = 'none';
-                    successView.style.display = 'block';
-
-                } catch (error) {
-                    console.error("Erro ao salvar no Firestore: ", error);
-                    showNotification("Erro ao salvar. Verifique o console para mais detalhes.", true);
-                } finally {
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = '<i data-lucide="check-circle" style="width:20px; height:20px;"></i> Confirmar Reserva';
-                    lucide.createIcons();
-                }
+                    } catch (error) {
+                        console.error("Erro ao processar a reserva: ", error);
+                        showNotification("Ocorreu um erro ao processar sua reserva. Tente novamente.", true);
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '<i data-lucide="check-circle" style="width:20px; height:20px;"></i> Confirmar Reserva';
+                        lucide.createIcons();
+                    }
+                }, 1000); 
             });
 
             newReservationBtn.addEventListener('click', () => {
                 successView.style.display = 'none';
                 bookingFormView.style.display = 'block';
                 form.reset();
+                
+                document.querySelectorAll('.dynamic-name-field').forEach(field => field.remove());
+
                 form.querySelectorAll('[required]').forEach(input => {
                     input.style.borderColor = '';
                 });
                 peopleCount = 1;
                 peopleCountSpan.textContent = '1';
-                dateInput.setAttribute('min', minDate);
             });
-        }
-
-        document.addEventListener('DOMContentLoaded', main);
+        });
     </script>
 </body>
 </html>
-
 
