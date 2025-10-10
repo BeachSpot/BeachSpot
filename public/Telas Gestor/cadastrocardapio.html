@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Cardápio - BEACHSPOT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+   
+    <style>
+        :root {
+            --beachspot-blue-dark: #0D47A1;
+            --beachspot-blue-medium: #1565C0;
+            --beachspot-blue-light: #2196F3;
+            --text-color: #222;
+            --header-element-color: #000;
+            --border-color: #eee;
+            --card-bg: #fff;
+            --header-height: 75px;
+            --header-padding-x: 60px;
+            --base-font-size: 17px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, var(--beachspot-blue-light), var(--beachspot-blue-dark));
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: var(--base-font-size);
+        }
+
+        .header {
+            background-color: white;
+            color: var(--header-element-color);
+            padding: 0 var(--header-padding-x);
+            height: var(--header-height);
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.9em;
+            letter-spacing: 1px;
+            color: var(--header-element-color);
+            padding-left: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-right: 15px;
+        }
+       
+        .header-controls a {
+            color: var(--header-element-color);
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .header-controls a:hover {
+            color: var(--beachspot-blue-medium);
+        }
+
+        .header-controls .icon-button {
+            background: none;
+            border: none;
+            color: var(--header-element-color);
+            font-size: 1.4em;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0;
+            margin-right: 5px;
+        }
+       
+        .header-controls .icon-button:hover {
+            color: var(--beachspot-blue-medium);
+        }
+
+        .profile-icon {
+            background-color: var(--beachspot-blue-dark);
+            color: white;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            border: 2px solid var(--beachspot-blue-dark);
+        }
+
+        .content-wrapper {
+            /* Espaçamento aumentado para 35px */
+            padding-top: calc(var(--header-height) + 35px);
+            padding-bottom: 40px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .card-container {
+            background-color: var(--card-bg);
+            padding: 50px 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 850px;
+            margin: 0 auto 20px auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            font-weight: 800;
+            font-size: 2.6em;
+        }
+
+        .h1-icon {
+            display: block;
+            margin: 10px auto 20px;
+            color: var(--beachspot-blue-dark);
+            font-size: 2em;
+            width: fit-content;
+        }
+       
+        .card-container > p {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #666;
+            font-style: italic;
+            font-weight: 400;
+            font-size: 1.2em;
+        }
+       
+        .tabs {
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .tab-button {
+            background-color: transparent;
+            border: none;
+            padding: 10px 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #666;
+            transition: color 0.3s, background-color 0.3s;
+        }
+
+        .tab-button.active {
+            background-color: var(--beachspot-blue-dark);
+            color: white;
+            border-radius: 4px;
+        }
+        .tab-button:not(.active) {
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-content { display: none; padding: 20px 0; }
+        .tab-content.active { display: block; }
+       
+        h2 {
+            font-size: 1.5em;
+            color: var(--beachspot-blue-dark);
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 8px;
+            margin-top: 35px;
+            font-weight: 700;
+        }
+       
+        .add-item-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 25px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+       
+        .add-item-form > input[type="text"]:nth-child(1),
+        .add-item-form > textarea {
+            grid-column: 1 / 3;
+        }
+
+        .add-item-form input,
+        .add-item-form textarea {
+            padding: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1.05em;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: var(--beachspot-blue-dark);
+            color: white;
+            border: none;
+            padding: 14px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.15em;
+            font-weight: 600;
+            grid-column: 2 / 3;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--beachspot-blue-medium);
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .item-details { flex-grow: 1; padding-right: 20px; }
+
+        .item-name {
+            font-weight: 700;
+            font-size: 1.25em;
+            display: block;
+            color: var(--text-color);
+        }
+       
+        .item-label {
+            display: inline-block;
+            background-color: var(--beachspot-blue-dark);
+            color: white;
+            padding: 3px 6px;
+            margin-right: 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 400;
+            vertical-align: top;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--beachspot-blue-dark);
+            font-size: 1.3em;
+        }
+
+        .item-description {
+            font-size: 1em;
+            color: #888;
+            margin-top: 5px;
+            font-weight: 400;
+            padding-left: 0;
+            margin-top: 8px;
+        }
+
+        .item-actions { display: flex; gap: 12px; }
+
+        .action-btn {
+            background: none; border: none;
+            color: var(--beachspot-blue-dark);
+            padding: 5px; cursor: pointer; font-size: 1.3em;
+            transition: color 0.2s;
+        }
+
+        .delete-btn { color: #D32F2F; }
+        .action-btn:hover { opacity: 0.7; }
+
+        .footer {
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1000px;
+            flex-wrap: wrap;
+        }
+
+        .footer-section { padding: 0 20px; }
+       
+        .footer-section h3 {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .footer-links a {
+            display: block;
+            text-decoration: none;
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+            font-weight: 400;
+        }
+
+        .social-icons a {
+            color: #666;
+            margin-right: 18px;
+            font-size: 1.6em;
+            transition: color 0.2s;
+        }
+
+        .social-icons a:hover {
+            color: var(--beachspot-blue-dark);
+        }
+
+        .copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+            font-size: 1em;
+            color: #999;
+        }
+
+        @media (max-width: 992px) {
+            :root {
+                --header-padding-x: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --header-height: 65px;
+                --header-padding-x: 15px;
+                --base-font-size: 15px;
+            }
+            body {
+                font-size: var(--base-font-size);
+            }
+            .header {
+                padding: 0 var(--header-padding-x);
+            }
+            .logo {
+                font-size: 1.5em;
+            }
+            .header-controls {
+                gap: 12px;
+                margin-right: 0;
+            }
+            .header-controls a {
+                font-size: 0.95em;
+            }
+            .content-wrapper {
+                padding-top: calc(var(--header-height) + 10px);
+            }
+            .card-container {
+                padding: 30px 20px;
+                max-width: 95%;
+                margin: 0 10px 20px 10px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .h1-icon {
+                font-size: 1.7em;
+            }
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .footer-section {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .add-item-form {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 15px;
+            }
+            .add-item-form > input[type="text"]:nth-child(1),
+            .add-item-form > textarea,
+            .btn-primary {
+                grid-column: 1 / 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">BEACHSPOT</div>
+        <div class="header-controls">
+            <a href="#">Início</a>
+            <a href="#">Suas Reservas</a>
+            <button class="icon-button" title="Configurações"><i class="fas fa-cog"></i></button>
+            <a href="#" class="profile-icon">C</a>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="card-container">
+            <h1>Nosso Cardápio</h1>
+            <i class="fas fa-utensils h1-icon"></i>
+            <p>Sabores frescos e pratos deliciosos para a sua experiência na praia.</p>
+           
+            <div class="tabs">
+                <button class="tab-button active" data-tab="comidas">Comidas & Petiscos</button>
+                <button class="tab-button" data-tab="bebidas">Bebidas</button>
+                <button class="tab-button" data-tab="outros">Outros</button>
+            </div>
+
+            <div id="comidas" class="tab-content active">
+               
+                <h2>Adicionar Item ao Cardápio</h2>
+                <div class="add-item-form">
+                    <input type="text" placeholder="Nome do Item (Ex: Moqueca de Peixe)">
+                    <textarea placeholder="Descrição detalhada do item..."></textarea>
+                    <input type="number" placeholder="Preço (Ex: 89.90)">
+                    <button class="btn-primary" data-category="comidas">Adicionar Item</button>
+                </div>
+               
+                <h2>Itens Atuais Cadastrados</h2>
+                <div class="item-list">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <span class="item-label" style="background-color: #0D47A1;">Moqueca</span>
+                            <span class="item-name">Moqueca de Peixe</span>
+                            <p class="item-description">Peixe fresco, azeite de dendê, leite de coco e pimentões.</p>
+                        </div>
+                        <span class="item-price">R$ 89,90</span>
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <span class="item-label" style="background-color: #0D47A1;">Pastel</span>
+                            <span class="item-name">Pastel de Camarão</span>
+                            <p class="item-description">Unidade do nosso famoso pastel crocante e recheado.</p>
+                        </div>
+                        <span class="item-price">R$ 12,00</span>
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="bebidas" class="tab-content">
+                <h2>Adicionar Item ao Cardápio</h2>
+                <div class="add-item-form">
+                    <input type="text" placeholder="Nome do Item (Ex: Caipirinha de Limão)">
+                    <textarea placeholder="Descrição detalhada do item..."></textarea>
+                    <input type="number" placeholder="Preço (Ex: 18.00)">
+                    <button class="btn-primary" data-category="bebidas">Adicionar Item</button>
+                </div>
+               
+                <h2>Itens Atuais Cadastrados</h2>
+                <div class="item-list">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <span class="item-label" style="background-color: #0D47A1;">Caipirinha</span>
+                            <span class="item-name">Caipirinha de Limão</span>
+                            <p class="item-description">Cachaça de qualidade, limão fresco, açúcar e gelo.</p>
+                        </div>
+                        <span class="item-price">R$ 18,00</span>
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <span class="item-label" style="background-color: #0D47A1;">Coco</span>
+                            <span class="item-name">Água de Coco</span>
+                            <p class="item-description">Refrescante e natural, servida diretamente do coco.</p>
+                        </div>
+                        <span class="item-price">R$ 12,00</span>
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <span class="item-label" style="background-color: #0D47A1;">Laranja</span>
+                            <span class="item-name">Suco de Laranja</span>
+                            <p class="item-description">Suco natural feito com laranjas frescas espremidas na hora.</p>
+                        </div>
+                        <span class="item-price">R$ 14,00</span>
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="outros" class="tab-content">
+                <h2>Adicionar Item ao Cardápio</h2>
+                <div class="add-item-form">
+                    <input type="text" placeholder="Nome do Item (Ex: Protetor Solar)">
+                    <textarea placeholder="Descrição detalhada do item..."></textarea>
+                    <input type="number" placeholder="Preço (Ex: 35.00)">
+                    <button class="btn-primary" data-category="outros">Adicionar Item</button>
+                </div>
+               
+                <h2>Itens Atuais Cadastrados</h2>
+                <div class="item-list">
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <span class="item-label" style="background-color: #0D47A1;">Óculos</span>
+                            <span class="item-name">Óculos de Sol</span>
+                            <p class="item-description">Modelos variados com proteção UV400.</p>
+                        </div>
+                        <span class="item-price">R$ 75,00</span>
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-details">
+                            <span class="item-label" style="background-color: #0D47A1;">Protetor</span>
+                            <span class="item-name">Protetor Solar (FPS 50)</span>
+                            <p class="item-description">Resistente à água, ideal para toda a família.</
