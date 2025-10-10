@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Beachspot</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Adiciona uma barra de rolagem estilizada à area de mensagens */
+        #message-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        #message-area::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        #message-area::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        #message-area::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-[#0138b4] to-[#73bff6]">
+
+    <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center">
+                 <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x25/000000/FFFFFF?text=BEACHSPOT&font=poppins';">
+            </a>
+            
+            <!-- Navegação e Perfil do Usuário -->
+            <div class="flex items-center space-x-6">
+                <!-- Links de Navegação -->
+                <a href="#" class="hidden md:block text-gray-600 hover:text-[#0138b4] transition duration-300 font-medium">Início</a>
+                <a href="#" class="hidden md:block text-gray-600 hover:text-[#0138b4] transition duration-300 font-medium">Suas Reservas</a>
+    
+                <!-- Ícone de Configurações Adicionado -->
+                <a href="#" class="text-gray-600 hover:text-[#0138b4] transition duration-300">
+                    <i data-lucide="settings" class="w-6 h-6"></i>
+                </a>
+    
+                <!-- Avatar do Cliente -->
+                <a href="#">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-[#0138b4] hover:opacity-90 transition-opacity">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="pt-28 pb-16 container mx-auto max-w-2xl px-4 flex flex-col items-center">
+        <!-- Componente de Chat -->
+        <div class="w-full h-[calc(100vh-220px)] min-h-[500px] max-h-[700px] bg-white/95 rounded-2xl shadow-2xl flex flex-col backdrop-blur-sm border border-white/20">
+            
+            <!-- Header do Chat -->
+            <div class="flex items-center p-4 border-b border-gray-200/80 shrink-0">
+                <div class="relative">
+                    <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/0138b4/FFFFFF?text=J" alt="Foto do Usuário">
+                    <span class="absolute bottom-0 right-0 block h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-lg font-bold text-gray-800">Suporte Beachspot</h2>
+                    <p class="text-sm text-gray-500">Online</p>
+                </div>
+                <div class="ml-auto flex items-center space-x-2 text-gray-500">
+                    <button class="hover:text-[#0138b4] p-2 rounded-full transition-colors duration-200">
+                        <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Área de Mensagens -->
+            <div id="message-area" class="flex-1 p-6 space-y-4 overflow-y-auto text-gray-800">
+                <!-- As mensagens serão carregadas aqui pelo JavaScript -->
+                 <div class="flex items-end max-w-lg">
+                    <img class="w-8 h-8 rounded-full mr-3 shrink-0" src="https://placehold.co/100x100/0138b4/FFFFFF?text=S" alt="Foto do Suporte">
+                    <div class="bg-gray-200 p-3 rounded-2xl rounded-bl-none">
+                        <p class="text-sm">Olá! Bem-vindo ao chat do Beachspot. Como posso ajudar?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input de Mensagem -->
+            <div class="p-4 bg-white/80 border-t border-gray-200/80 shrink-0">
+                <div class="flex items-center space-x-3">
+                     <button class="text-gray-500 hover:text-[#0138b4] p-2 rounded-full transition-colors duration-200">
+                        <i data-lucide="paperclip" class="w-5 h-5"></i>
+                     </button>
+                    <input id="message-input" type="text" placeholder="Digite sua mensagem..." class="w-full bg-gray-100 rounded-full py-3 px-5 text-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0138b4] transition-shadow duration-200">
+                    <button id="send-button" class="bg-[#0138b4] text-white rounded-full p-3 hover:bg-[#012a8c] transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#0138b4] focus:ring-offset-2">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Branco -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <div class="w-full md:w-auto mb-8 md:mb-0">
+                    <a href="#" class="flex items-center">
+                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x25/000000/FFFFFF?text=BEACHSPOT&font=poppins';">
+                    </a>
+                </div>
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold mb-3">Navegação</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-[#0138b4] transition-colors">Início</a></li>
+                        <li><a href="#" class="hover:text-[#0138b4] transition-colors">Suas Reservas</a></li>
+                        <li><a href="#" class="hover:text-[#0138b4] transition-colors">Configurações</a></li>
+                        <li><a href="#" class="hover:text-[#0138b4] transition-colors">Perfil</a></li>
+                    </ul>
+                </div>
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold mb-3">Redes Sociais</h3>
+                    <div class="flex space-x-4 text-gray-600">
+                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-sm text-gray-500 mt-12 border-t border-gray-200 pt-6">
+                <p>&copy; 2025 Beachspot. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Inicializa os ícones do Lucide
+        lucide.createIcons();
+
+        // --- Configuração do Supabase ---
+        const { createClient } = supabase;
+        
+        // IMPORTANTE: Substitua com os seus dados do Supabase!
+        // 1. Vá para o seu projeto no Supabase -> Project Settings -> API
+        // 2. Copie a URL do Projeto e a chave pública (anon key) e cole abaixo.
+        const SUPABASE_URL = 'SUA_URL_DO_SUPABASE_AQUI'; 
+        const SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON_DO_SUPABASE_AQUI';
+
+        let supabaseClient = null;
+
+        // Verificação para evitar erros se as chaves não forem preenchidas
+        if (SUPABASE_URL === 'SUA_URL_DO_SUPABASE_AQUI' || SUPABASE_ANON_KEY === 'SUA_CHAVE_ANON_DO_SUPABASE_AQUI') {
+            console.warn("Supabase não configurado. Preencha a URL e a Chave Anon no código.");
+            document.getElementById('message-input').disabled = true;
+            document.getElementById('send-button').disabled = true;
+            document.getElementById('message-input').placeholder = "Configure o Supabase para habilitar o chat.";
+        } else {
+             supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        // --- Fim da Configuração do Supabase ---
+
+
+        // Para simplificar, estamos gerando um ID de usuário único por sessão.
+        // Numa aplicação real, você integraria com o Supabase Auth.
+        let userId = sessionStorage.getItem('chat_user_id');
+        if (!userId) {
+            userId = crypto.randomUUID();
+            sessionStorage.setItem('chat_user_id', userId);
+        }
+
+        // Elementos do DOM
+        const messageArea = document.getElementById('message-area');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        
+        // Função para exibir mensagens na tela
+        function displayMessage(msgData) {
+            if (!msgData || !msgData.text) return;
+
+            const isCurrentUser = msgData.uid === userId;
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `flex items-end max-w-lg ${isCurrentUser ? 'justify-end ml-auto' : ''}`;
+            
+            const time = msgData.created_at ? new Date(msgData.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+
+            if (isCurrentUser) {
+                messageWrapper.innerHTML = `
+                    <div class="bg-[#0138b4] text-white p-3 rounded-2xl rounded-br-none">
+                        <p class="text-sm">${msgData.text}</p>
+                        <span class="text-xs text-blue-100/70 mt-1 block text-right">${time}</span>
+                    </div>
+                `;
+            } else {
+                 messageWrapper.innerHTML = `
+                    <img class="w-8 h-8 rounded-full mr-3 shrink-0" src="https://placehold.co/100x100/0138b4/FFFFFF?text=S" alt="Foto do Suporte">
+                    <div class="bg-gray-200 text-gray-800 p-3 rounded-2xl rounded-bl-none">
+                        <p class="text-sm">${msgData.text}</p>
+                        <span class="text-xs text-gray-500 mt-1 block text-right">${time}</span>
+                    </div>
+                `;
+            }
+            messageArea.appendChild(messageWrapper);
+        }
+
+        // Função para carregar mensagens iniciais
+        async function fetchInitialMessages() {
+            try {
+                const { data: messages, error } = await supabaseClient
+                    .from('chat_messages') // O nome da sua tabela no Supabase
+                    .select('*')
+                    .order('created_at', { ascending: true });
+                
+                if (error) throw error;
+                if (!messages) return;
+
+                messages.forEach(msg => displayMessage(msg));
+                messageArea.scrollTop = messageArea.scrollHeight;
+            } catch (error) {
+                console.error("Erro ao buscar mensagens:", error.message);
+            }
+        }
+        
+        // Função para ouvir novas mensagens em tempo real
+        function listenForNewMessages() {
+            supabaseClient
+                .channel('public:chat_messages')
+                .on(
+                    'postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'chat_messages' }, 
+                    (payload) => {
+                        displayMessage(payload.new);
+                        messageArea.scrollTop = messageArea.scrollHeight;
+                    }
+                )
+                .subscribe();
+        }
+
+        // Função para enviar mensagem
+        async function sendMessage() {
+            const messageText = messageInput.value.trim();
+            if (messageText === '' || !userId) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('chat_messages') // O nome da sua tabela
+                    .insert([{ text: messageText, uid: userId }]);
+                
+                if (error) throw error;
+
+                messageInput.value = '';
+                messageInput.focus();
+            } catch (error) {
+                console.error("Erro ao enviar mensagem:", error.message);
+            }
+        }
+        
+        // Event Listeners
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Inicialização do Chat
+        window.onload = () => {
+             if (supabaseClient) {
+                fetchInitialMessages();
+                listenForNewMessages();
+             }
+             messageArea.scrollTop = messageArea.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+
