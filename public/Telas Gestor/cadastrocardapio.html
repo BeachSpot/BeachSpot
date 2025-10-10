@@ -1,557 +1,399 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>  
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Cardápio - BEACHSPOT</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-   
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeachSpot - Gerenciar Cardápio</title>
+    <link rel="icon" type="image/png" href="/public/assets/icons/Logo BeachSpot.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-   
-    <style>
-        :root {
-            --beachspot-blue-dark: #0D47A1;
-            --beachspot-blue-medium: #1565C0;
-            --beachspot-blue-light: #2196F3;
-            --text-color: #222;
-            --header-element-color: #000;
-            --border-color: #eee;
-            --card-bg: #fff;
-            --header-height: 75px;
-            --header-padding-x: 60px;
-            --base-font-size: 17px;
-        }
 
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Estilos base e fundo */
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to bottom right, var(--beachspot-blue-light), var(--beachspot-blue-dark));
+            background: linear-gradient(135deg, #0138b4, #73bff6);
             background-attachment: fixed;
             min-height: 100vh;
-            color: var(--text-color);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            font-size: var(--base-font-size);
         }
-
-        .header {
-            background-color: white;
-            color: var(--header-element-color);
-            padding: 0 var(--header-padding-x);
-            height: var(--header-height);
-            width: 100%;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .logo {
-            font-weight: 800;
-            font-size: 1.9em;
-            letter-spacing: 1px;
-            color: var(--header-element-color);
-            padding-left: 10px;
-        }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            margin-right: 15px;
-        }
-       
-        .header-controls a {
-            color: var(--header-element-color);
-            text-decoration: none;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-
-        .header-controls a:hover {
-            color: var(--beachspot-blue-medium);
-        }
-
-        .header-controls .icon-button {
-            background: none;
-            border: none;
-            color: var(--header-element-color);
-            font-size: 1.4em;
-            cursor: pointer;
-            transition: color 0.2s;
-            padding: 0;
-            margin-right: 5px;
-        }
-       
-        .header-controls .icon-button:hover {
-            color: var(--beachspot-blue-medium);
-        }
-
-        .profile-icon {
-            background-color: var(--beachspot-blue-dark);
-            color: white;
-            border-radius: 50%;
-            width: 34px;
-            height: 34px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 700;
-            font-size: 1em;
-            cursor: pointer;
-            border: 2px solid var(--beachspot-blue-dark);
-        }
-
-        .content-wrapper {
-            /* Espaçamento aumentado para 35px */
-            padding-top: calc(var(--header-height) + 35px);
-            padding-bottom: 40px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
+        main {
             flex-grow: 1;
         }
-
-        .card-container {
-            background-color: var(--card-bg);
-            padding: 50px 50px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            width: 90%;
-            max-width: 850px;
-            margin: 0 auto 20px auto;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        h1 {
-            text-align: center;
-            color: var(--text-color);
-            margin-bottom: 5px;
-            font-weight: 800;
-            font-size: 2.6em;
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
         }
-
-        .h1-icon {
-            display: block;
-            margin: 10px auto 20px;
-            color: var(--beachspot-blue-dark);
-            font-size: 2em;
-            width: fit-content;
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
         }
-       
-        .card-container > p {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #666;
-            font-style: italic;
-            font-weight: 400;
-            font-size: 1.2em;
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.6);
         }
-       
-        .tabs {
-            display: flex;
-            justify-content: center;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 40px;
-        }
-
+        /* Estilos das abas */
         .tab-button {
-            background-color: transparent;
-            border: none;
-            padding: 10px 25px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #666;
-            transition: color 0.3s, background-color 0.3s;
+            transition: all 0.3s ease;
+            border-radius: 6px 6px 0 0;
         }
-
         .tab-button.active {
-            background-color: var(--beachspot-blue-dark);
+            background-color: #0138b4;
             color: white;
-            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
-        .tab-button:not(.active) {
-            border-bottom: 3px solid transparent;
+        .tab-content {
+            display: none;
         }
-
-        .tab-content { display: none; padding: 20px 0; }
-        .tab-content.active { display: block; }
-       
-        h2 {
-            font-size: 1.5em;
-            color: var(--beachspot-blue-dark);
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 8px;
-            margin-top: 35px;
-            font-weight: 700;
-        }
-       
-        .add-item-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            padding: 25px;
-            background-color: #f9f9f9;
-            border-radius: 6px;
-            margin-bottom: 30px;
-        }
-       
-        .add-item-form > input[type="text"]:nth-child(1),
-        .add-item-form > textarea {
-            grid-column: 1 / 3;
-        }
-
-        .add-item-form input,
-        .add-item-form textarea {
-            padding: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1.05em;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .btn-primary {
-            background-color: var(--beachspot-blue-dark);
-            color: white;
-            border: none;
-            padding: 14px 15px;
-            border-radius: 4px;
+        /* Estilo para input de arquivo customizado */
+        .custom-file-input-button {
             cursor: pointer;
-            font-size: 1.15em;
-            font-weight: 600;
-            grid-column: 2 / 3;
-            transition: background-color 0.2s;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--beachspot-blue-medium);
-        }
-
-        .menu-item {
-            display: flex;
-            justify-content: space-between;
+            display: inline-flex;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #f0f0f0;
+            gap: 0.5rem;
+            padding: 0.65rem 1rem;
+            border-radius: 9999px;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            border: 1px solid #d1d5db;
         }
-
-        .item-details { flex-grow: 1; padding-right: 20px; }
-
-        .item-name {
-            font-weight: 700;
-            font-size: 1.25em;
-            display: block;
-            color: var(--text-color);
-        }
-       
-        .item-label {
-            display: inline-block;
-            background-color: var(--beachspot-blue-dark);
-            color: white;
-            padding: 3px 6px;
-            margin-right: 15px;
-            border-radius: 4px;
-            font-size: 0.9em;
-            font-weight: 400;
-            vertical-align: top;
-        }
-
-        .item-price {
-            font-weight: 700;
-            color: var(--beachspot-blue-dark);
-            font-size: 1.3em;
-        }
-
-        .item-description {
-            font-size: 1em;
-            color: #888;
-            margin-top: 5px;
-            font-weight: 400;
-            padding-left: 0;
-            margin-top: 8px;
-        }
-
-        .item-actions { display: flex; gap: 12px; }
-
-        .action-btn {
-            background: none; border: none;
-            color: var(--beachspot-blue-dark);
-            padding: 5px; cursor: pointer; font-size: 1.3em;
-            transition: color 0.2s;
-        }
-
-        .delete-btn { color: #D32F2F; }
-        .action-btn:hover { opacity: 0.7; }
-
-        .footer {
-            background-color: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            width: 100%;
-            padding: 40px 0;
-            display: flex;
-            justify-content: center;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            width: 90%;
-            max-width: 1000px;
-            flex-wrap: wrap;
-        }
-
-        .footer-section { padding: 0 20px; }
-       
-        .footer-section h3 {
-            font-size: 1.2em;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-color);
-        }
-
-        .footer-links a {
-            display: block;
-            text-decoration: none;
-            color: #666;
-            margin-bottom: 10px;
-            font-size: 1.05em;
-            font-weight: 400;
-        }
-
-        .social-icons a {
-            color: #666;
-            margin-right: 18px;
-            font-size: 1.6em;
-            transition: color 0.2s;
-        }
-
-        .social-icons a:hover {
-            color: var(--beachspot-blue-dark);
-        }
-
-        .copyright {
-            width: 100%;
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 25px;
-            border-top: 1px solid var(--border-color);
-            font-size: 1em;
-            color: #999;
-        }
-
-        @media (max-width: 992px) {
-            :root {
-                --header-padding-x: 40px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            :root {
-                --header-height: 65px;
-                --header-padding-x: 15px;
-                --base-font-size: 15px;
-            }
-            body {
-                font-size: var(--base-font-size);
-            }
-            .header {
-                padding: 0 var(--header-padding-x);
-            }
-            .logo {
-                font-size: 1.5em;
-            }
-            .header-controls {
-                gap: 12px;
-                margin-right: 0;
-            }
-            .header-controls a {
-                font-size: 0.95em;
-            }
-            .content-wrapper {
-                padding-top: calc(var(--header-height) + 10px);
-            }
-            .card-container {
-                padding: 30px 20px;
-                max-width: 95%;
-                margin: 0 10px 20px 10px;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .h1-icon {
-                font-size: 1.7em;
-            }
-            .footer-content {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-            .footer-section {
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            .add-item-form {
-                grid-template-columns: 1fr;
-                gap: 10px;
-                padding: 15px;
-            }
-            .add-item-form > input[type="text"]:nth-child(1),
-            .add-item-form > textarea,
-            .btn-primary {
-                grid-column: 1 / 2;
-            }
+        .custom-file-input-button:hover {
+            background-color: #e5e7eb;
         }
     </style>
 </head>
-<body>
-    <div class="header">
-        <div class="logo">BEACHSPOT</div>
-        <div class="header-controls">
-            <a href="#">Início</a>
-            <a href="#">Suas Reservas</a>
-            <button class="icon-button" title="Configurações"><i class="fas fa-cog"></i></button>
-            <a href="#" class="profile-icon">C</a>
+<body class="text-white">
+
+    <!-- Header Fixo Branco (IDÊNTICO AO CADASTRO) -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center">
+                <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+            </a>
+            <div class="flex items-center space-x-6">
+                <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
+                <a href="#" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
+                <a href="/public/Telas Gestor/configuracoesgestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="settings" class="w-6 h-6"></i>
+                </a>
+                <a href="perfilGestor.html">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="pt-28 md:pt-32 container mx-auto max-w-4xl px-6">
+        
+        <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
+            
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-900">Gerenciar Cardápio</h1>
+                <p class="text-gray-600 mt-2">Adicione e organize os produtos da sua barraca.</p>
+            </div>
+            
+            <div class="space-y-8">
+                
+                <!-- Seção para Adicionar/Editar Item -->
+                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                    <h2 id="form-title" class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Adicionar Novo Item</h2>
+                    <form id="item-form" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                        <input type="hidden" id="editing-item-id">
+                        <!-- Nome do Produto -->
+                        <div>
+                            <label for="nome-produto" class="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
+                            <input type="text" id="nome-produto" placeholder="Ex: Porção de Fritas" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <!-- Valor -->
+                        <div>
+                            <label for="valor-produto" class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                            <input type="number" id="valor-produto" placeholder="29.90" step="0.01" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <!-- Categoria -->
+                        <div class="md:col-span-1">
+                            <label for="categoria-produto" class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                            <select id="categoria-produto" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="comidas">Comidas e Petiscos</option>
+                                <option value="bebidas">Bebidas</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                        <!-- Imagem -->
+                        <div>
+                           <label for="imagem-produto" class="block text-sm font-medium text-gray-700 mb-1">Imagem</label>
+                           <input type="file" id="imagem-produto" class="hidden" accept="image/*">
+                           <label for="imagem-produto" class="custom-file-input-button">
+                                <i data-lucide="upload" class="w-5 h-5"></i>
+                                <span>Escolher Imagem</span>
+                           </label>
+                           <span id="file-name" class="text-sm text-gray-500 ml-3"></span>
+                        </div>
+                         <!-- Botão Adicionar/Salvar -->
+                        <div class="md:col-span-2 text-center">
+                            <button id="submit-button" type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-full transition-all transform hover:scale-105 shadow-md flex items-center gap-2 mx-auto">
+                                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                                <span>Adicionar Item</span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Seção de Itens Cadastrados -->
+                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Itens Cadastrados</h2>
+                    
+                    <div class="border-b border-gray-200 mb-6">
+                        <nav class="-mb-px flex space-x-2 sm:space-x-6" aria-label="Tabs">
+                            <button data-tab="comidas" class="tab-button active font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Comidas e Petiscos</button>
+                            <button data-tab="bebidas" class="tab-button font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Bebidas</button>
+                            <button data-tab="outros" class="tab-button font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Outros</button>
+                        </nav>
+                    </div>
+
+                    <div>
+                        <div id="comidas" class="tab-content border rounded-lg p-4" style="display: block;">
+                            <div id="comidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Itens de exemplo serão adicionados aqui -->
+                            </div>
+                             <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                        </div>
+                        <div id="bebidas" class="tab-content border rounded-lg p-4">
+                            <div id="bebidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                             <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                        </div>
+                        <div id="outros" class="tab-content border rounded-lg p-4">
+                            <div id="outros-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                             <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="text-center">
+                    <button type="button" class="bg-blue-600 text-white font-bold py-4 px-12 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg text-lg">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Branco (IDÊNTICO AO CADASTRO) -->
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+        <!-- ... (código do footer mantido idêntico) ... -->
+    </footer>
+    
+    <!-- Modal de Confirmação para Apagar -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 shadow-xl max-w-sm w-full">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar Exclusão</h3>
+            <p class="text-gray-600 mb-6">Tem certeza de que deseja apagar este item do cardápio?</p>
+            <div class="flex justify-end gap-4">
+                <button id="cancel-delete" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">Cancelar</button>
+                <button id="confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Apagar</button>
+            </div>
         </div>
     </div>
 
-    <div class="content-wrapper">
-        <div class="card-container">
-            <h1>Nosso Cardápio</h1>
-            <i class="fas fa-utensils h1-icon"></i>
-            <p>Sabores frescos e pratos deliciosos para a sua experiência na praia.</p>
-           
-            <div class="tabs">
-                <button class="tab-button active" data-tab="comidas">Comidas & Petiscos</button>
-                <button class="tab-button" data-tab="bebidas">Bebidas</button>
-                <button class="tab-button" data-tab="outros">Outros</button>
-            </div>
+    <script>
+        lucide.createIcons();
 
-            <div id="comidas" class="tab-content active">
-               
-                <h2>Adicionar Item ao Cardápio</h2>
-                <div class="add-item-form">
-                    <input type="text" placeholder="Nome do Item (Ex: Moqueca de Peixe)">
-                    <textarea placeholder="Descrição detalhada do item..."></textarea>
-                    <input type="number" placeholder="Preço (Ex: 89.90)">
-                    <button class="btn-primary" data-category="comidas">Adicionar Item</button>
-                </div>
-               
-                <h2>Itens Atuais Cadastrados</h2>
-                <div class="item-list">
-                    <div class="menu-item">
-                        <div class="item-details">
-                            <span class="item-label" style="background-color: #0D47A1;">Moqueca</span>
-                            <span class="item-name">Moqueca de Peixe</span>
-                            <p class="item-description">Peixe fresco, azeite de dendê, leite de coco e pimentões.</p>
-                        </div>
-                        <span class="item-price">R$ 89,90</span>
-                        <div class="item-actions">
-                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementos do Formulário
+            const itemForm = document.getElementById('item-form');
+            const formTitle = document.getElementById('form-title');
+            const submitButton = document.getElementById('submit-button');
+            const editingItemIdInput = document.getElementById('editing-item-id');
+            const nomeInput = document.getElementById('nome-produto');
+            const valorInput = document.getElementById('valor-produto');
+            const categoriaInput = document.getElementById('categoria-produto');
+            const imagemInput = document.getElementById('imagem-produto');
+            const fileNameSpan = document.getElementById('file-name');
 
-                    <div class="menu-item">
-                        <div class="item-details">
-                            <span class="item-label" style="background-color: #0D47A1;">Pastel</span>
-                            <span class="item-name">Pastel de Camarão</span>
-                            <p class="item-description">Unidade do nosso famoso pastel crocante e recheado.</p>
-                        </div>
-                        <span class="item-price">R$ 12,00</span>
-                        <div class="item-actions">
-                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            // Abas
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
 
-            <div id="bebidas" class="tab-content">
-                <h2>Adicionar Item ao Cardápio</h2>
-                <div class="add-item-form">
-                    <input type="text" placeholder="Nome do Item (Ex: Caipirinha de Limão)">
-                    <textarea placeholder="Descrição detalhada do item..."></textarea>
-                    <input type="number" placeholder="Preço (Ex: 18.00)">
-                    <button class="btn-primary" data-category="bebidas">Adicionar Item</button>
-                </div>
-               
-                <h2>Itens Atuais Cadastrados</h2>
-                <div class="item-list">
-                    <div class="menu-item">
-                        <div class="item-details">
-                            <span class="item-label" style="background-color: #0D47A1;">Caipirinha</span>
-                            <span class="item-name">Caipirinha de Limão</span>
-                            <p class="item-description">Cachaça de qualidade, limão fresco, açúcar e gelo.</p>
-                        </div>
-                        <span class="item-price">R$ 18,00</span>
-                        <div class="item-actions">
-                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-details">
-                            <span class="item-label" style="background-color: #0D47A1;">Coco</span>
-                            <span class="item-name">Água de Coco</span>
-                            <p class="item-description">Refrescante e natural, servida diretamente do coco.</p>
-                        </div>
-                        <span class="item-price">R$ 12,00</span>
-                        <div class="item-actions">
-                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <div class="menu-item">
-                        <div class="item-details">
-                            <span class="item-label" style="background-color: #0D47A1;">Laranja</span>
-                            <span class="item-name">Suco de Laranja</span>
-                            <p class="item-description">Suco natural feito com laranjas frescas espremidas na hora.</p>
-                        </div>
-                        <span class="item-price">R$ 14,00</span>
-                        <div class="item-actions">
-                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            // Modal
+            const deleteModal = document.getElementById('delete-modal');
+            const cancelDeleteBtn = document.getElementById('cancel-delete');
+            const confirmDeleteBtn = document.getElementById('confirm-delete');
+            let itemToDelete = null;
 
-            <div id="outros" class="tab-content">
-                <h2>Adicionar Item ao Cardápio</h2>
-                <div class="add-item-form">
-                    <input type="text" placeholder="Nome do Item (Ex: Protetor Solar)">
-                    <textarea placeholder="Descrição detalhada do item..."></textarea>
-                    <input type="number" placeholder="Preço (Ex: 35.00)">
-                    <button class="btn-primary" data-category="outros">Adicionar Item</button>
-                </div>
-               
-                <h2>Itens Atuais Cadastrados</h2>
-                <div class="item-list">
-                    <div class="menu-item">
-                        <div class="item-details">
-                            <span class="item-label" style="background-color: #0D47A1;">Óculos</span>
-                            <span class="item-name">Óculos de Sol</span>
-                            <p class="item-description">Modelos variados com proteção UV400.</p>
+            // Função para gerenciar visibilidade da mensagem "Nenhum item"
+            function updateNoItemsMessage(category) {
+                const list = document.getElementById(`${category}-list`);
+                const message = list.parentElement.querySelector('.no-items-message');
+                if (list.children.length > 0) {
+                    message.style.display = 'none';
+                } else {
+                    message.style.display = 'block';
+                }
+            }
+
+            // Função para criar o HTML de um item
+            function createItemElement(item) {
+                return `
+                    <div class="flex items-center bg-gray-50 p-3 rounded-lg border" data-id="${item.id}">
+                        <img src="${item.imagem}" alt="${item.nome}" class="w-20 h-20 rounded-md object-cover">
+                        <div class="flex-grow ml-4">
+                            <p class="font-bold text-gray-800 item-name">${item.nome}</p>
+                            <p class="text-green-600 font-semibold item-price">R$ ${item.valor.toFixed(2).replace('.', ',')}</p>
                         </div>
-                        <span class="item-price">R$ 75,00</span>
-                        <div class="item-actions">
-                            <button class="action-btn edit-btn" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="action-btn delete-btn" title="Remover"><i class="fas fa-trash"></i></button>
+                        <div class="flex items-center space-x-2">
+                            <button class="edit-btn text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-200"><i data-lucide="pencil" class="w-5 h-5 pointer-events-none"></i></button>
+                            <button class="delete-btn text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-200"><i data-lucide="trash-2" class="w-5 h-5 pointer-events-none"></i></button>
                         </div>
                     </div>
-                    <div class="menu-item">
-                        <div class="item-details">
-                            <span class="item-label" style="background-color: #0D47A1;">Protetor</span>
-                            <span class="item-name">Protetor Solar (FPS 50)</span>
-                            <p class="item-description">Resistente à água, ideal para toda a família.</
+                `;
+            }
+
+            // Manipulação do Formulário (Adicionar e Editar)
+            itemForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const itemData = {
+                    id: editingItemIdInput.value || `item-${Date.now()}`,
+                    nome: nomeInput.value,
+                    valor: parseFloat(valorInput.value),
+                    categoria: categoriaInput.value,
+                };
+
+                const reader = new FileReader();
+                if (imagemInput.files[0]) {
+                    reader.onload = function(event) {
+                        itemData.imagem = event.target.result;
+                        saveItem(itemData);
+                    }
+                    reader.readAsDataURL(imagemInput.files[0]);
+                } else if (!editingItemIdInput.value) {
+                    // Se for um novo item, a imagem é "obrigatória" (ou usamos placeholder)
+                    itemData.imagem = `https://placehold.co/80x80/cccccc/444444?text=${itemData.nome.charAt(0)}`;
+                    saveItem(itemData);
+                } else {
+                    // Mantém a imagem existente se não for alterada na edição
+                    const existingItem = document.querySelector(`[data-id="${itemData.id}"]`);
+                    itemData.imagem = existingItem.querySelector('img').src;
+                    saveItem(itemData);
+                }
+            });
+
+            function saveItem(itemData) {
+                if (editingItemIdInput.value) {
+                    // Editando
+                    const itemElement = document.querySelector(`[data-id="${itemData.id}"]`);
+                    itemElement.querySelector('.item-name').textContent = itemData.nome;
+                    itemElement.querySelector('.item-price').textContent = `R$ ${itemData.valor.toFixed(2).replace('.', ',')}`;
+                    itemElement.querySelector('img').src = itemData.imagem;
+                    itemElement.querySelector('img').alt = itemData.nome;
+
+                    // Mover o elemento se a categoria mudou
+                    const oldCategory = itemElement.closest('.tab-content').id;
+                    if(oldCategory !== itemData.categoria){
+                        document.getElementById(`${itemData.categoria}-list`).appendChild(itemElement);
+                        updateNoItemsMessage(oldCategory);
+                    }
+
+                } else {
+                    // Adicionando
+                    const itemHtml = createItemElement(itemData);
+                    document.getElementById(`${itemData.categoria}-list`).insertAdjacentHTML('beforeend', itemHtml);
+                }
+
+                updateNoItemsMessage(itemData.categoria);
+                resetForm();
+                lucide.createIcons(); // Recria ícones
+            }
+
+            function resetForm() {
+                itemForm.reset();
+                editingItemIdInput.value = '';
+                fileNameSpan.textContent = '';
+                formTitle.textContent = 'Adicionar Novo Item';
+                submitButton.innerHTML = '<i data-lucide="plus-circle" class="w-5 h-5"></i><span>Adicionar Item</span>';
+                submitButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                submitButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                lucide.createIcons();
+            }
+            
+            // Lógica de Editar e Apagar com delegação de eventos
+            document.querySelector('main').addEventListener('click', (e) => {
+                const editBtn = e.target.closest('.edit-btn');
+                const deleteBtn = e.target.closest('.delete-btn');
+
+                if (editBtn) {
+                    const itemElement = editBtn.closest('[data-id]');
+                    const itemId = itemElement.dataset.id;
+                    
+                    nomeInput.value = itemElement.querySelector('.item-name').textContent;
+                    valorInput.value = parseFloat(itemElement.querySelector('.item-price').textContent.replace('R$ ', '').replace(',', '.')).toFixed(2);
+                    const categoryId = itemElement.closest('.tab-content').id;
+                    categoriaInput.value = categoryId;
+                    
+                    editingItemIdInput.value = itemId;
+                    formTitle.textContent = 'Editar Item';
+                    submitButton.innerHTML = '<i data-lucide="save" class="w-5 h-5"></i><span>Salvar Alteração</span>';
+                    submitButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    submitButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    lucide.createIcons();
+                    
+                    itemForm.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                if (deleteBtn) {
+                    itemToDelete = deleteBtn.closest('[data-id]');
+                    deleteModal.classList.remove('hidden');
+                }
+            });
+
+            // Lógica do Modal
+            cancelDeleteBtn.addEventListener('click', () => {
+                deleteModal.classList.add('hidden');
+                itemToDelete = null;
+            });
+
+            confirmDeleteBtn.addEventListener('click', () => {
+                if (itemToDelete) {
+                    const category = itemToDelete.closest('.tab-content').id;
+                    itemToDelete.remove();
+                    updateNoItemsMessage(category);
+                }
+                deleteModal.classList.add('hidden');
+                itemToDelete = null;
+            });
+            
+            // Lógica das Abas
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(item => item.classList.remove('active'));
+                    tab.classList.add('active');
+                    tabContents.forEach(content => content.style.display = 'none');
+                    document.getElementById(tab.dataset.tab).style.display = 'block';
+                });
+            });
+
+            // Input de Imagem Customizado
+            imagemInput.addEventListener('change', function() {
+                fileNameSpan.textContent = this.files[0] ? this.files[0].name : '';
+            });
+
+            // Inicialização
+            ['comidas', 'bebidas', 'outros'].forEach(updateNoItemsMessage);
+        });
+    </script>
+</body>
+</html>
