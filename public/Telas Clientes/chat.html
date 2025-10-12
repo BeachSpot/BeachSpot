@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat - Beachspot</title>
+    <title>BeachSpot</title>
+    <link rel="icon" type="image/png" href="/public/assets/icons/Logo BeachSpot.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -15,278 +16,402 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8; /* Cor de fundo mais suave */
         }
-        /* Adiciona uma barra de rolagem estilizada à area de mensagens */
+
+        /* Fundo com gradiente e um padrão sutil de ondas */
+        .body-bg {
+            background-color: #73bff6;
+            background-image: 
+                linear-gradient(to bottom right, #0138b4, #73bff6),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0V5h6zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9H6v-1h9v-9H6v-1h9v-9H6v-1h9v-9H6v-1h9v-9H6v-1h9v-9H6v-1h9v-9H6v-1h9v-9H6V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9H16v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9H26v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9H36v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9V5zm10 0h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9H46v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9H56v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9H66v-1h9v-9h-9v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9H76v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9h-9v9h-1v-9H86v-1h9v-9h-9v-1h9v-9h-9V5zm10 0h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h-v-9h-9v9h-1v-9h-9v9h-1v-9H96v-1h4v-9h-4v-1h4v-9h-4V5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Estilo customizado para a barra de rolagem */
         #message-area::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         #message-area::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+            background: transparent;
         }
         #message-area::-webkit-scrollbar-thumb {
-            background: #888;
+            background: #cbd5e1;
             border-radius: 10px;
         }
         #message-area::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: #a0aec0;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-animation {
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
         }
     </style>
 </head>
-<body class="bg-gradient-to-r from-[#0138b4] to-[#73bff6]">
+<body class="body-bg flex flex-col min-h-screen">
 
-    <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
-    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+         <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-            <!-- Logo -->
-            <a href="#" class="flex items-center">
-                 <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x25/000000/FFFFFF?text=BEACHSPOT&font=poppins';">
+            <a href="inicio.html" class="flex items-center">
+                <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
             
-            <!-- Navegação e Perfil do Usuário -->
             <div class="flex items-center space-x-6">
-                <!-- Links de Navegação -->
-                <a href="#" class="hidden md:block text-gray-600 hover:text-[#0138b4] transition duration-300 font-medium">Início</a>
-                <a href="#" class="hidden md:block text-gray-600 hover:text-[#0138b4] transition duration-300 font-medium">Suas Reservas</a>
+                <a href="inicio.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="suasReservas.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
     
-                <!-- Ícone de Configurações Adicionado -->
-                <a href="#" class="text-gray-600 hover:text-[#0138b4] transition duration-300">
+                <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
     
-                <!-- Avatar do Cliente -->
-                <a href="#">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-[#0138b4] hover:opacity-90 transition-opacity">
+                <a href="perfilCliente.html">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
             </div>
         </nav>
     </header>
 
     <!-- Conteúdo principal -->
-    <main class="pt-28 pb-16 container mx-auto max-w-2xl px-4 flex flex-col items-center">
+    <main class="flex-grow pt-28 pb-16 container mx-auto max-w-2xl w-full px-4 flex flex-col items-center">
         <!-- Componente de Chat -->
-        <div class="w-full h-[calc(100vh-220px)] min-h-[500px] max-h-[700px] bg-white/95 rounded-2xl shadow-2xl flex flex-col backdrop-blur-sm border border-white/20">
+        <div class="w-full h-[70vh] bg-white/90 rounded-2xl shadow-2xl flex flex-col backdrop-blur-md border border-white/20" style="box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.1);">
             
             <!-- Header do Chat -->
-            <div class="flex items-center p-4 border-b border-gray-200/80 shrink-0">
+            <div id="chat-header" class="flex items-center p-4 border-b border-gray-200/80 shrink-0">
                 <div class="relative">
-                    <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/0138b4/FFFFFF?text=J" alt="Foto do Usuário">
-                    <span class="absolute bottom-0 right-0 block h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span>
+                    <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/73bff6/FFFFFF?text=A" alt="Foto da Ana">
+                    <span class="absolute bottom-0 right-0 block h-3.5 w-3.5 bg-green-500 rounded-full border-2 border-white"></span>
                 </div>
                 <div class="ml-4">
-                    <h2 class="text-lg font-bold text-gray-800">Suporte Beachspot</h2>
+                    <h2 class="text-lg font-bold text-gray-800">Ana - Barraca do Sol</h2>
                     <p class="text-sm text-gray-500">Online</p>
                 </div>
-                <div class="ml-auto flex items-center space-x-2 text-gray-500">
-                    <button class="hover:text-[#0138b4] p-2 rounded-full transition-colors duration-200">
+                <div class="ml-auto relative">
+                    <button id="options-button" class="text-gray-500 hover:text-[#0138b4] p-2 rounded-full transition-colors duration-200">
                         <i data-lucide="more-vertical" class="w-5 h-5"></i>
                     </button>
+                    <!-- Dropdown Menu -->
+                    <div id="options-menu" class="hidden absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200/80 z-10 origin-top-right menu-animation">
+                        <a href="#" id="search-menu-button" class="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                            <i data-lucide="search" class="w-4 h-4 mr-3 text-gray-500"></i>
+                            Pesquisar na conversa
+                        </a>
+                        <a href="#" id="mute-button" class="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                            <i data-lucide="bell-off" class="w-4 h-4 mr-3 text-gray-500"></i>
+                            Silenciar notificações
+                        </a>
+                        <div class="border-t border-gray-200/80 my-1"></div>
+                        <a href="#" id="clear-button" class="flex items-center w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4 mr-3"></i>
+                            Limpar histórico
+                        </a>
+                    </div>
                 </div>
+            </div>
+            
+            <!-- Barra de Pesquisa -->
+            <div id="search-bar" class="hidden items-center p-4 border-b border-gray-200/80 shrink-0">
+                <i data-lucide="search" class="w-5 h-5 text-gray-500 mr-3"></i>
+                <input id="search-input" type="text" placeholder="Pesquisar..." class="w-full bg-transparent focus:outline-none text-gray-800 placeholder-gray-500">
+                <button id="close-search-button" class="text-gray-500 hover:text-[#0138b4] p-2 rounded-full">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
 
             <!-- Área de Mensagens -->
-            <div id="message-area" class="flex-1 p-6 space-y-4 overflow-y-auto text-gray-800">
-                <!-- As mensagens serão carregadas aqui pelo JavaScript -->
-                 <div class="flex items-end max-w-lg">
-                    <img class="w-8 h-8 rounded-full mr-3 shrink-0" src="https://placehold.co/100x100/0138b4/FFFFFF?text=S" alt="Foto do Suporte">
-                    <div class="bg-gray-200 p-3 rounded-2xl rounded-bl-none">
-                        <p class="text-sm">Olá! Bem-vindo ao chat do Beachspot. Como posso ajudar?</p>
-                    </div>
+            <div id="message-area" class="flex-1 p-6 space-y-4 overflow-y-auto text-gray-800 flex flex-col">
+                <!-- Estado de Carregamento -->
+                <div id="loader" class="m-auto text-center hidden">
+                     <i data-lucide="loader-2" class="w-8 h-8 text-[#0138b4] animate-spin mx-auto"></i>
+                     <p class="text-sm text-gray-500 mt-2">Carregando mensagens...</p>
+                </div>
+                <!-- Estado Vazio -->
+                <div id="empty-state" class="m-auto text-center hidden">
+                    <i data-lucide="message-circle" class="w-12 h-12 text-gray-300 mx-auto"></i>
+                    <p class="text-gray-500 mt-2">Nenhuma mensagem por aqui.</p>
+                    <p class="text-sm text-gray-400">Envie uma mensagem para começar!</p>
+                </div>
+                 <!-- Mensagem de "Nenhum resultado" para a busca -->
+                <div id="no-results-state" class="m-auto text-center hidden">
+                    <i data-lucide="search-x" class="w-12 h-12 text-gray-300 mx-auto"></i>
+                    <p class="text-gray-500 mt-2">Nenhum resultado encontrado.</p>
+                    <p class="text-sm text-gray-400">Tente uma busca diferente.</p>
                 </div>
             </div>
 
             <!-- Input de Mensagem -->
-            <div class="p-4 bg-white/80 border-t border-gray-200/80 shrink-0">
+            <div class="p-4 bg-white/80 border-t border-gray-200/80 shrink-0 rounded-b-2xl">
                 <div class="flex items-center space-x-3">
-                     <button class="text-gray-500 hover:text-[#0138b4] p-2 rounded-full transition-colors duration-200">
+                     <button id="attach-button" class="text-gray-500 hover:text-[#0138b4] p-2 rounded-full transition-colors duration-200">
                         <i data-lucide="paperclip" class="w-5 h-5"></i>
                      </button>
-                    <input id="message-input" type="text" placeholder="Digite sua mensagem..." class="w-full bg-gray-100 rounded-full py-3 px-5 text-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0138b4] transition-shadow duration-200">
-                    <button id="send-button" class="bg-[#0138b4] text-white rounded-full p-3 hover:bg-[#012a8c] transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#0138b4] focus:ring-offset-2">
+                     <input type="file" id="file-input" class="hidden" accept="image/*,video/*">
+                    <input id="message-input" type="text" placeholder="Digite sua mensagem..." class="w-full bg-gray-100 rounded-full py-3 px-5 text-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0138b4] focus:ring-offset-2 transition-all duration-200">
+                    <button id="send-button" class="bg-gradient-to-br from-[#0138b4] to-[#0a4dcc] text-white rounded-full p-3 hover:opacity-90 transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#0138b4] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
                         <i data-lucide="send" class="w-5 h-5"></i>
                     </button>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <!-- Footer Branco -->
-    <footer class="w-full bg-white text-gray-800 z-10 py-12">
+        <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-auto">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-start text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
-                    <a href="#" class="flex items-center">
-                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x25/000000/FFFFFF?text=BEACHSPOT&font=poppins';">
+                    <a href="inicio.html" class="flex items-center">
+                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
                     </a>
                 </div>
+
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
-                    <ul class="space-y-2 text-sm text-gray-600">
-                        <li><a href="#" class="hover:text-[#0138b4] transition-colors">Início</a></li>
-                        <li><a href="#" class="hover:text-[#0138b4] transition-colors">Suas Reservas</a></li>
-                        <li><a href="#" class="hover:text-[#0138b4] transition-colors">Configurações</a></li>
-                        <li><a href="#" class="hover:text-[#0138b4] transition-colors">Perfil</a></li>
+                    <ul class="space-y-2">
+                        <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                        <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
-                    <div class="flex space-x-4 text-gray-600">
+                    <div class="flex space-x-3">
                         <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
                         <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="text-center text-sm text-gray-500 mt-12 border-t border-gray-200 pt-6">
+            <div class="text-center mt-12 border-t border-gray-200 pt-6">
                 <p>&copy; 2025 Beachspot. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
+
     <script type="module">
-        // Inicializa os ícones do Lucide
         lucide.createIcons();
 
-        // --- Configuração do Supabase ---
-        const { createClient } = supabase;
-        
-        // IMPORTANTE: Substitua com os seus dados do Supabase!
-        // 1. Vá para o seu projeto no Supabase -> Project Settings -> API
-        // 2. Copie a URL do Projeto e a chave pública (anon key) e cole abaixo.
-        const SUPABASE_URL = 'SUA_URL_DO_SUPABASE_AQUI'; 
-        const SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON_DO_SUPABASE_AQUI';
+        // --- Geração de ID de Usuário (simplificado) ---
+        const userId = 'user-123';
+        const supportId = 'support-ana-456';
 
-        let supabaseClient = null;
+        // --- Dados Falsos (Mock Data) para a simulação ---
+        let mockMessages = [
+            {
+                uid: supportId,
+                text: "Olá! Bem-vindo(a) à Barraca do Sol. Meu nome é Ana. O que vai ser hoje?",
+                created_at: new Date(Date.now() - 60000 * 2).toISOString(),
+                type: 'text'
+            },
+            {
+                uid: userId,
+                text: "Oi, Ana! Queria ver o cardápio.",
+                created_at: new Date(Date.now() - 60000 * 1).toISOString(),
+                type: 'text'
+            }
+        ];
 
-        // Verificação para evitar erros se as chaves não forem preenchidas
-        if (SUPABASE_URL === 'SUA_URL_DO_SUPABASE_AQUI' || SUPABASE_ANON_KEY === 'SUA_CHAVE_ANON_DO_SUPABASE_AQUI') {
-            console.warn("Supabase não configurado. Preencha a URL e a Chave Anon no código.");
-            document.getElementById('message-input').disabled = true;
-            document.getElementById('send-button').disabled = true;
-            document.getElementById('message-input').placeholder = "Configure o Supabase para habilitar o chat.";
-        } else {
-             supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
-        // --- Fim da Configuração do Supabase ---
-
-
-        // Para simplificar, estamos gerando um ID de usuário único por sessão.
-        // Numa aplicação real, você integraria com o Supabase Auth.
-        let userId = sessionStorage.getItem('chat_user_id');
-        if (!userId) {
-            userId = crypto.randomUUID();
-            sessionStorage.setItem('chat_user_id', userId);
-        }
-
-        // Elementos do DOM
+        // --- Elementos do DOM ---
         const messageArea = document.getElementById('message-area');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
+        const loader = document.getElementById('loader');
+        const emptyState = document.getElementById('empty-state');
+        const noResultsState = document.getElementById('no-results-state');
+        const optionsButton = document.getElementById('options-button');
+        const optionsMenu = document.getElementById('options-menu');
+        const searchMenuButton = document.getElementById('search-menu-button');
+        const muteButton = document.getElementById('mute-button');
+        const clearButton = document.getElementById('clear-button');
+        const attachButton = document.getElementById('attach-button');
+        const fileInput = document.getElementById('file-input');
+        const chatHeader = document.getElementById('chat-header');
+        const searchBar = document.getElementById('search-bar');
+        const searchInput = document.getElementById('search-input');
+        const closeSearchButton = document.getElementById('close-search-button');
         
-        // Função para exibir mensagens na tela
-        function displayMessage(msgData) {
-            if (!msgData || !msgData.text) return;
+        // --- Funções Utilitárias ---
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg fade-in z-[100]';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 2500);
+        }
+
+        // --- Funções do Chat ---
+
+        function displayMessage(msgData, isNew = false) {
+            if (!msgData || (!msgData.text && !msgData.fileURL)) return;
+            
+            loader.classList.add('hidden');
+            emptyState.classList.add('hidden');
 
             const isCurrentUser = msgData.uid === userId;
             const messageWrapper = document.createElement('div');
-            messageWrapper.className = `flex items-end max-w-lg ${isCurrentUser ? 'justify-end ml-auto' : ''}`;
+            messageWrapper.className = `flex items-end max-w-lg message-container ${isCurrentUser ? 'self-end' : 'self-start'}`;
+            if (isNew) {
+                messageWrapper.classList.add('fade-in');
+            }
             
             const time = msgData.created_at ? new Date(msgData.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+            
+            let messageContentHTML = '';
+            let bubblePaddingClass = 'p-3'; // Padding padrão
+
+            switch (msgData.type) {
+                case 'image':
+                    bubblePaddingClass = 'p-1.5'; // Padding menor para mídias
+                    messageContentHTML = `<a href="${msgData.fileURL}" target="_blank" rel="noopener noreferrer"><img src="${msgData.fileURL}" alt="${msgData.text}" class="max-w-xs w-full rounded-xl block"></a>`;
+                    break;
+                case 'video':
+                    bubblePaddingClass = 'p-1.5'; // Padding menor para mídias
+                    messageContentHTML = `<video controls class="max-w-xs w-full rounded-xl block"><source src="${msgData.fileURL}" type="${msgData.mimeType}">Seu navegador não suporta a tag de vídeo.</video>`;
+                    break;
+                case 'file':
+                    messageContentHTML = `<a href="${msgData.fileURL}" target="_blank" rel="noopener noreferrer" class="flex items-center hover:underline"><i data-lucide="file" class="w-4 h-4 inline-block mr-2 shrink-0"></i><span>${msgData.text}</span></a>`;
+                    break;
+                default: // 'text'
+                    messageContentHTML = msgData.text;
+            }
+
+            const timeHTML = `<span class="text-xs ${isCurrentUser ? 'text-blue-100/70' : 'text-gray-500'} mt-1 block text-right">${time}</span>`;
 
             if (isCurrentUser) {
                 messageWrapper.innerHTML = `
-                    <div class="bg-[#0138b4] text-white p-3 rounded-2xl rounded-br-none">
-                        <p class="text-sm">${msgData.text}</p>
-                        <span class="text-xs text-blue-100/70 mt-1 block text-right">${time}</span>
+                    <div class="bg-gradient-to-br from-[#0138b4] to-[#0a4dcc] text-white ${bubblePaddingClass} rounded-2xl rounded-br-none shadow-md">
+                        <div class="text-sm message-text-content" data-original-text="${msgData.text}">${messageContentHTML}</div>
+                        ${timeHTML}
                     </div>
                 `;
             } else {
                  messageWrapper.innerHTML = `
-                    <img class="w-8 h-8 rounded-full mr-3 shrink-0" src="https://placehold.co/100x100/0138b4/FFFFFF?text=S" alt="Foto do Suporte">
-                    <div class="bg-gray-200 text-gray-800 p-3 rounded-2xl rounded-bl-none">
-                        <p class="text-sm">${msgData.text}</p>
-                        <span class="text-xs text-gray-500 mt-1 block text-right">${time}</span>
+                    <img class="w-8 h-8 rounded-full mr-3 shrink-0 self-start" src="https://placehold.co/100x100/73bff6/FFFFFF?text=A" alt="Foto da Ana">
+                    <div class="bg-white text-gray-800 ${bubblePaddingClass} rounded-2xl rounded-bl-none border border-gray-200/80 shadow-sm">
+                        <div class="text-sm message-text-content" data-original-text="${msgData.text}">${messageContentHTML}</div>
+                        ${timeHTML}
                     </div>
                 `;
             }
             messageArea.appendChild(messageWrapper);
+            
+            if (msgData.type === 'file') {
+                 const iconElement = messageWrapper.querySelector('[data-lucide="file"]');
+                if (iconElement) lucide.createIcons({ nodes: [iconElement] });
+            }
+            messageArea.scrollTop = messageArea.scrollHeight;
         }
 
-        // Função para carregar mensagens iniciais
-        async function fetchInitialMessages() {
-            try {
-                const { data: messages, error } = await supabaseClient
-                    .from('chat_messages') // O nome da sua tabela no Supabase
-                    .select('*')
-                    .order('created_at', { ascending: true });
-                
-                if (error) throw error;
-                if (!messages) return;
+        function fetchInitialMessages() {
+            loader.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                if (!mockMessages || mockMessages.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    mockMessages.forEach(msg => displayMessage(msg, false));
+                }
+            }, 1000);
+        }
 
-                messages.forEach(msg => displayMessage(msg));
-                messageArea.scrollTop = messageArea.scrollHeight;
-            } catch (error) {
-                console.error("Erro ao buscar mensagens:", error.message);
-            }
+        function simulateSupportReply() {
+             const replies = [
+                "Anotado! Só um momento, já estou preparando seu pedido.",
+                "Claro! O que vai ser? Temos peixe frito, cerveja gelada e muito mais.",
+                "Obrigado por aguardar. Seu pedido está quase pronto!",
+                "Para fechar a conta, você pode pagar com PIX ou cartão, ok?",
+                "Se precisar de mais alguma coisa, é só chamar!"
+            ];
+             const randomReply = replies[Math.floor(Math.random() * replies.length)];
+             const replyMessage = { uid: supportId, text: randomReply, created_at: new Date().toISOString(), type: 'text' };
+             setTimeout(() => { mockMessages.push(replyMessage); displayMessage(replyMessage, true); }, 1500);
         }
         
-        // Função para ouvir novas mensagens em tempo real
-        function listenForNewMessages() {
-            supabaseClient
-                .channel('public:chat_messages')
-                .on(
-                    'postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'chat_messages' }, 
-                    (payload) => {
-                        displayMessage(payload.new);
-                        messageArea.scrollTop = messageArea.scrollHeight;
-                    }
-                )
-                .subscribe();
-        }
-
-        // Função para enviar mensagem
-        async function sendMessage() {
+        function sendMessage() {
             const messageText = messageInput.value.trim();
-            if (messageText === '' || !userId) return;
+            if (messageText === '') return;
+            const newMessage = { text: messageText, uid: userId, created_at: new Date().toISOString(), type: 'text' };
+            mockMessages.push(newMessage);
+            displayMessage(newMessage, true);
+            messageInput.value = '';
+            messageInput.focus();
+            simulateSupportReply();
+        }
 
-            try {
-                const { error } = await supabaseClient
-                    .from('chat_messages') // O nome da sua tabela
-                    .insert([{ text: messageText, uid: userId }]);
-                
-                if (error) throw error;
-
-                messageInput.value = '';
-                messageInput.focus();
-            } catch (error) {
-                console.error("Erro ao enviar mensagem:", error.message);
+        function sendFile(file) {
+            if (!file) return;
+            if (file.size > 50 * 1024 * 1024) { // Limite de 50MB
+                showToast("Arquivo muito grande. O limite é de 50MB.");
+                return;
             }
+            const fileURL = URL.createObjectURL(file);
+            const fileType = file.type.split('/')[0];
+            let messageType = 'file';
+            if (fileType === 'image') messageType = 'image';
+            else if (fileType === 'video') messageType = 'video';
+            
+            const newFileMessage = { text: file.name, uid: userId, created_at: new Date().toISOString(), type: messageType, fileURL: fileURL, mimeType: file.type };
+            mockMessages.push(newFileMessage);
+            displayMessage(newFileMessage, true);
+            showToast(`Arquivo "${file.name}" enviado.`);
         }
         
-        // Event Listeners
+        function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            const messageWrappers = messageArea.querySelectorAll('.message-container');
+            let matchesFound = false;
+            messageWrappers.forEach(wrapper => {
+                const contentElement = wrapper.querySelector('.message-text-content');
+                const originalText = contentElement.dataset.originalText || '';
+                const isMediaOrFile = contentElement.querySelector('a, img, video');
+                const textMatches = searchTerm && originalText.toLowerCase().includes(searchTerm);
+                if (!searchTerm) {
+                    wrapper.style.display = 'flex';
+                    if (!isMediaOrFile) contentElement.innerHTML = originalText;
+                } else {
+                    if (textMatches) {
+                        wrapper.style.display = 'flex';
+                        matchesFound = true;
+                        if (!isMediaOrFile) {
+                            const regex = new RegExp(searchTerm, 'gi');
+                            contentElement.innerHTML = originalText.replace(regex, match => `<mark class="bg-yellow-300 rounded">${match}</mark>`);
+                        }
+                    } else {
+                        wrapper.style.display = 'none';
+                    }
+                }
+            });
+            noResultsState.classList.toggle('hidden', !searchTerm || matchesFound);
+        }
+        
+        // --- Event Listeners ---
         sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
+        messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+        attachButton.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) { sendFile(e.target.files[0]); } e.target.value = null; });
+        optionsButton.addEventListener('click', (e) => { e.stopPropagation(); optionsMenu.classList.toggle('hidden'); });
+        document.addEventListener('click', () => { if (!optionsMenu.classList.contains('hidden')) { optionsMenu.classList.add('hidden'); } });
+        searchMenuButton.addEventListener('click', (e) => { e.preventDefault(); chatHeader.classList.add('hidden'); searchBar.classList.remove('hidden'); searchBar.classList.add('flex'); searchInput.focus(); optionsMenu.classList.add('hidden'); });
+        closeSearchButton.addEventListener('click', () => { chatHeader.classList.remove('hidden'); searchBar.classList.add('hidden'); searchBar.classList.remove('flex'); searchInput.value = ''; performSearch(); });
+        searchInput.addEventListener('input', performSearch);
+        muteButton.addEventListener('click', (e) => { e.preventDefault(); showToast('Notificações silenciadas (simulação).'); optionsMenu.classList.add('hidden'); });
+        clearButton.addEventListener('click', (e) => { e.preventDefault(); messageArea.innerHTML = ''; mockMessages = []; emptyState.classList.remove('hidden'); noResultsState.classList.add('hidden'); showToast('Histórico da conversa limpo.'); optionsMenu.classList.add('hidden'); });
         
-        // Inicialização do Chat
-        window.onload = () => {
-             if (supabaseClient) {
-                fetchInitialMessages();
-                listenForNewMessages();
-             }
-             messageArea.scrollTop = messageArea.scrollHeight;
-        }
+        window.onload = () => { fetchInitialMessages(); }
     </script>
 </body>
 </html>
-

@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -48,6 +48,15 @@
         .map-directions-link:hover {
             background-color: #002a8c;
         }
+        /* Para garantir que as imagens da galeria tenham o mesmo tamanho */
+        .gallery-item {
+            height: 200px; /* Altura fixa para todos os itens da galeria */
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Garante que a imagem cubra a área sem distorcer */
+        }
     </style>
 </head>
 <body class="text-white">
@@ -73,7 +82,7 @@
         </nav>
     </header>
 
-    <main class="pt-28 md:pt-32 container mx-auto max-w-7xl px-6">
+    <main class="pt-28 md:pt-32 container mx-auto max-w-7xl px-6 pb-28">
         
         <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
             
@@ -89,7 +98,7 @@
                     <div class="flex items-start justify-between">
                           <div>
                               <h1 class="text-4xl font-bold text-gray-900">Barraca Axé Bahia</h1>
-                              <div class="flex items-center justify-center md:justify-start my-2">
+                              <div id="review-summary" class="flex items-center justify-center md:justify-start my-2">
                                   <div class="flex text-yellow-500">
                                       <i data-lucide="star" class="w-5 h-5 fill-current"></i>
                                       <i data-lucide="star" class="w-5 h-5 fill-current"></i>
@@ -97,8 +106,12 @@
                                       <i data-lucide="star" class="w-5 h-5 fill-current"></i>
                                       <i data-lucide="star" class="w-5 h-5"></i>
                                   </div>
-                                  <span class="ml-2 text-gray-600">4.2 (156 avaliações)</span>
+                                  <span id="review-summary-text" class="ml-2 text-gray-600">4.3 (3 avaliações)</span>
                               </div>
+                               <div class="flex items-center justify-center md:justify-start mt-2 text-gray-700 font-semibold">
+                                <i data-lucide="dollar-sign" class="w-5 h-5 mr-2 text-green-600"></i>
+                                <span>Preço médio: R$ 80 por pessoa</span>
+                            </div>
                         </div>
                          <div class="flex items-center gap-2">
                               <button id="favorite-btn" class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full">
@@ -136,130 +149,165 @@
                     <!-- FIM DA SEÇÃO -->
                 </div>
             </section>
+             <!-- Botões de Ação -->
+            <section class="py-8">
+                 <div class="flex flex-col sm:flex-row gap-4">
+                     <button id="reserve-btn" class="flex-1 bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg">Reservar</button>
+                     <a href="cardapio.html" class="flex-1 text-center bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-900 transition-all transform hover:scale-105">Cardápio</a>
+                 </div>
+            </section>
 
-            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mt-8">
-                
-                <div class="lg:col-span-3 space-y-8">
-                    <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
-                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Sobre a Barraca</h2>
-                        <div class="space-y-4 text-gray-600 leading-relaxed pb-4">
-                            <p>Uma das barracas mais animadas da Praia do Porto da Barra, oferecendo o melhor do acarajé e da música baiana. Ambiente descontraído com vista privilegiada para o mar.</p>
-                        </div>
-                    </section>
-
-                    <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
-                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Galeria de Fotos</h2>
-                        <div id="gallery" class="max-h-[400px] overflow-y-auto pr-2 grid grid-cols-2 md:grid-cols-3 gap-4 grid-flow-dense">
-                            
-                            <div class="md:col-span-3 overflow-hidden rounded-lg shadow-md cursor-pointer">
-                                <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" alt="Vista da barraca" class="w-full h-40 object-cover hover:scale-105 transition-transform duration-300">
-                            </div>
-                            
-                            <div class="overflow-hidden rounded-lg shadow-md cursor-pointer">
-                                <img src="https://simonde.com.br/wp-content/uploads/2017/12/uxua-quadrado-trancoso-bahia-hoteis-de-luxo-critica-review-1100-36-1024x682.jpg.webp" alt="Área de mesas" class="w-full h-40 object-cover hover:scale-105 transition-transform duration-300">
-                            </div>
-                            
-                            <div class="md:row-span-2 overflow-hidden rounded-lg shadow-md cursor-pointer">
-                                <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" alt="Pratos servidos" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
-                            </div>
-                            
-                            <div class="overflow-hidden rounded-lg shadow-md cursor-pointer">
-                                <img src="https://media-cdn.tripadvisor.com/media/photo-s/04/32/53/44/barraca-marguerita.jpg" alt="Vista do mar" class="w-full h-40 object-cover hover:scale-105 transition-transform duration-300">
-                            </div>
-                            
-                            <div class="overflow-hidden rounded-lg shadow-md cursor-pointer">
-                                <img src="https://images.squarespace-cdn.com/content/v1/5a9860afe2ccd11b71a53b86/1609959600114-1110UXW0CEBF3021575D/Top+10+melhores+barracas+de+praia+em+Trancoso.jpg" alt="Detalhe" class="w-full h-40 object-cover hover:scale-105 transition-transform duration-300">
-                            </div>
-                            
-                             <div class="overflow-hidden rounded-lg shadow-md cursor-pointer">
-                                <img src="https://media-cdn.tripadvisor.com/media/photo-s/17/5a/09/5c/a-barraca-do-luiz-fica.jpg" alt="Comida na praia" class="w-full h-40 object-cover hover:scale-105 transition-transform duration-300">
-                            </div>
-                        
-                        </div>
-                    </section>
-
-                    <section>
-                         <div class="flex flex-col sm:flex-row gap-4">
-                             <button id="reserve-btn" class="flex-1 bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg">Reservar</button>
-                             <a href="cardapio.html" class="flex-1 text-center bg-gray-200 text-gray-800 font-bold py-3 px-8 rounded-full hover:bg-gray-300 transition-all transform hover:scale-105">Cardápio</a>
-                         </div>
-                    </section>
+            <!-- Nova Seção de Abas -->
+            <div class="mt-2">
+                <!-- Navegação das Abas -->
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex justify-center md:justify-start space-x-4 md:space-x-8" aria-label="Tabs">
+                        <button data-tab-target="sobre" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-base md:text-lg border-blue-600 text-blue-600">
+                            Sobre
+                        </button>
+                        <button data-tab-target="galeria" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-base md:text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            Galeria
+                        </button>
+                        <button data-tab-target="avaliacoes" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-base md:text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                            Avaliações
+                        </button>
+                    </nav>
                 </div>
 
-                <aside class="lg:col-span-2 space-y-6">
-                    <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
-                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Deixe sua Avaliação</h2>
-                        <div class="flex items-center justify-center mb-4">
-                            <span class="mr-4 text-gray-700 font-semibold">Sua nota:</span>
-                            <div class="flex text-gray-300 space-x-1" id="rating-stars">
-                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
-                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
-                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
-                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
-                                <i data-lucide="star" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                <!-- Conteúdo das Abas -->
+                <div class="py-8">
+                    <!-- Painel Sobre -->
+                    <div id="tab-content-sobre" class="tab-content">
+                        <section>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Sobre a Barraca</h2>
+                            <div class="space-y-4 text-gray-600 leading-relaxed">
+                                <p>Uma das barracas mais animadas da Praia do Porto da Barra, oferecendo o melhor do acarajé e da música baiana. Ambiente descontraído com vista privilegiada para o mar.</p>
                             </div>
+                            <div class="mt-6 pt-6 border-t border-gray-200">
+                                <h3 class="text-xl font-bold text-gray-800 mb-3">Categorias</h3>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i data-lucide="music" class="w-4 h-4 mr-1.5"></i>Música ao Vivo</span>
+                                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i data-lucide="zap" class="w-4 h-4 mr-1.5"></i>Ambiente Agitado</span>
+                                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i data-lucide="users" class="w-4 h-4 mr-1.5"></i>Bom para Grupos</span>
+                                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i data-lucide="waves" class="w-4 h-4 mr-1.5"></i>Vista para o Mar</span>
+                                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i data-lucide="accessibility" class="w-4 h-4 mr-1.5"></i>Acessível</span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Painel Galeria -->
+                    <div id="tab-content-galeria" class="tab-content hidden">
+                         <section>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Galeria de Fotos</h2>
+                            <div id="gallery" class="max-h-[600px] overflow-y-auto pr-2 grid grid-cols-2 md:grid-cols-3 gap-4">
+                                
+                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
+                                    <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" alt="Vista da barraca" class="hover:scale-105 transition-transform duration-300">
+                                </div>
+                                
+                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
+                                    <img src="https://simonde.com.br/wp-content/uploads/2017/12/uxua-quadrado-trancoso-bahia-hoteis-de-luxo-critica-review-1100-36-1024x682.jpg.webp" alt="Área de mesas" class="hover:scale-105 transition-transform duration-300">
+                                </div>
+                                
+                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
+                                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" alt="Pratos servidos" class="hover:scale-105 transition-transform duration-300">
+                                </div>
+                                
+                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
+                                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/04/32/53/44/barraca-marguerita.jpg" alt="Vista do mar" class="hover:scale-105 transition-transform duration-300">
+                                </div>
+                                
+                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
+                                    <img src="https://images.squarespace-cdn.com/content/v1/5a9860afe2ccd11b71a53b86/1609959600114-1110UXW0CEBF3021575D/Top+10+melhores+barracas+de+praia+em+Trancoso.jpg" alt="Detalhe" class="hover:scale-105 transition-transform duration-300">
+                                </div>
+                                
+                                 <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
+                                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/17/5a/09/5c/a-barraca-do-luiz-fica.jpg" alt="Comida na praia" class="hover:scale-105 transition-transform duration-300">
+                                </div>
+                            
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Painel Avaliações -->
+                    <div id="tab-content-avaliacoes" class="tab-content hidden">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                            <section>
+                                 <h2 class="text-2xl font-bold text-gray-800 mb-4">O que dizem os clientes</h2>
+                                 
+                                 <div class="flex justify-center gap-2 mb-4">
+                                     <button id="filter-all" class="filter-btn flex-1 bg-blue-500 text-white font-semibold py-2 px-4 rounded-full transition-colors">Todas</button>
+                                     <button id="filter-media" class="filter-btn flex-1 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-full hover:bg-gray-300 transition-colors">Com Mídia</button>
+                                 </div>
+        
+                                 <div id="reviews-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                                     <div class="review-card has-media p-4 border rounded-lg bg-gray-50" data-rating="5">
+                                         <div class="flex items-center mb-2">
+                                             <img src="https://placehold.co/40x40/FFC107/FFFFFF?text=J" class="w-10 h-10 rounded-full mr-3" alt="Foto de João P.">
+                                             <div>
+                                                 <p class="font-bold">João P.</p>
+                                                 <div class="flex text-yellow-500">
+                                                     <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                         <p class="text-gray-600 mb-2">Atendimento sensacional e a comida estava divina! Recomendo a moqueca.</p>
+                                         <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" class="rounded-lg w-full h-auto object-cover" alt="Foto da avaliação de João P.">
+                                     </div>
+        
+                                     <div class="review-card p-4 border rounded-lg bg-gray-50" data-rating="4">
+                                         <div class="flex items-center mb-2">
+                                             <img src="https://placehold.co/40x40/4CAF50/FFFFFF?text=M" class="w-10 h-10 rounded-full mr-3" alt="Foto de Maria S.">
+                                             <div>
+                                                 <p class="font-bold">Maria S.</p>
+                                                 <div class="flex text-yellow-500">
+                                                     <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4"></i>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                         <p class="text-gray-600">Lugar muito agradável e cadeiras confortáveis. A cerveja estava bem gelada. Voltarei com certeza!</p>
+                                     </div>
+        
+                                      <div class="review-card has-media p-4 border rounded-lg bg-gray-50" data-rating="4">
+                                         <div class="flex items-center mb-2">
+                                             <img src="https://placehold.co/40x40/F44336/FFFFFF?text=C" class="w-10 h-10 rounded-full mr-3" alt="Foto de Carlos F.">
+                                             <div>
+                                                 <p class="font-bold">Carlos F.</p>
+                                                 <div class="flex text-yellow-500">
+                                                     <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4"></i>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                         <p class="text-gray-600 mb-2">Vista incrível. Ótimo para passar o dia com a família.</p>
+                                         <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" class="rounded-lg w-full h-auto object-cover" alt="Foto da avaliação de Carlos F.">
+                                     </div>
+                                 </div>
+                            </section>
+                            <section>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-4">Deixe sua Avaliação</h2>
+                                <div class="flex items-center justify-center mb-4">
+                                    <span class="mr-4 text-gray-700 font-semibold">Sua nota:</span>
+                                    <div class="flex text-gray-300 space-x-1" id="rating-stars">
+                                        <i data-lucide="star" data-value="1" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                        <i data-lucide="star" data-value="2" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                        <i data-lucide="star" data-value="3" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                        <i data-lucide="star" data-value="4" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                        <i data-lucide="star" data-value="5" class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                    </div>
+                                </div>
+                                <textarea id="review-textarea" placeholder="Escreva seu comentário aqui..." rows="3" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
+                                <button id="submit-review-btn" class="mt-4 w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-colors shadow-lg">Enviar Avaliação</button>
+                            </section>
                         </div>
-                        <textarea id="review-textarea" placeholder="Escreva seu comentário aqui..." rows="3" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
-                        <button id="submit-review-btn" class="mt-4 w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-colors shadow-lg">Enviar Avaliação</button>
-                    </section>
-
-                    <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
-                         <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">O que dizem os clientes</h2>
-                         
-                         <div class="flex justify-center gap-2 mb-4">
-                             <button id="filter-all" class="flex-1 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white transition-colors">Todas</button>
-                             <button id="filter-media" class="flex-1 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white transition-colors">Com Mídia</button>
-                         </div>
-
-                         <div id="reviews-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                             <div class="review-card has-media p-4 border rounded-lg bg-gray-50">
-                                 <div class="flex items-center mb-2">
-                                     <img src="https://placehold.co/40x40/FFC107/FFFFFF?text=J" class="w-10 h-10 rounded-full mr-3" alt="Foto de João P.">
-                                     <div>
-                                         <p class="font-bold">João P.</p>
-                                         <div class="flex text-yellow-500">
-                                             <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <p class="text-gray-600 mb-2">Atendimento sensacional e a comida estava divina! Recomendo a moqueca.</p>
-                                 <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg" class="rounded-lg w-full h-auto object-cover" alt="Foto da avaliação de João P.">
-                             </div>
-
-                             <div class="review-card p-4 border rounded-lg bg-gray-50">
-                                 <div class="flex items-center mb-2">
-                                     <img src="https://placehold.co/40x40/4CAF50/FFFFFF?text=M" class="w-10 h-10 rounded-full mr-3" alt="Foto de Maria S.">
-                                     <div>
-                                         <p class="font-bold">Maria S.</p>
-                                         <div class="flex text-yellow-500">
-                                             <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4"></i>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <p class="text-gray-600">Lugar muito agradável e cadeiras confortáveis. A cerveja estava bem gelada. Voltarei com certeza!</p>
-                             </div>
-
-                              <div class="review-card has-media p-4 border rounded-lg bg-gray-50">
-                                 <div class="flex items-center mb-2">
-                                     <img src="https://placehold.co/40x40/F44336/FFFFFF?text=C" class="w-10 h-10 rounded-full mr-3" alt="Foto de Carlos F.">
-                                     <div>
-                                         <p class="font-bold">Carlos F.</p>
-                                         <div class="flex text-yellow-500">
-                                             <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4"></i>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 <p class="text-gray-600 mb-2">Vista incrível. Ótimo para passar o dia com a família.</p>
-                                 <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg" class="rounded-lg w-full h-auto object-cover" alt="Foto da avaliação de Carlos F.">
-                             </div>
-                         </div>
-                    </section>
-                </aside>
+                    </div>
+                </div>
             </div>
+
         </div>
     </main>
 
-        <!-- Footer Branco -->
+    <!-- Footer Branco -->
     <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-start text-left">
@@ -331,145 +379,56 @@
         </div>
     </div>
 
+    <script src="/public/assets/js/infoBarraca.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             
-            // --- Dados da Localização (simulação de dados do backend) ---
-            const locationData = {
-                nome: "Barraca Axé Bahia",
-                endereco: "Praia do Porto da Barra, Barra, Salvador - BA",
-                coordenadas: {
-                    lng: -38.5230,
-                    lat: -12.9985
-                },
-                pontosTuristicos: [
-                    {
-                        nome: "Farol da Barra",
-                        tipo: "Ponto Turístico",
-                        coordenadas: { lng: -38.5328, lat: -13.0105 }
-                    },
-                    {
-                        nome: "Morro do Cristo",
-                        tipo: "Monumento",
-                        coordenadas: { lng: -38.5126, lat: -13.0044 }
-                    }
-                ],
-                lugaresProximos: [
-                     {
-                         nome: "Yacht Clube da Bahia",
-                         tipo: "Clube",
-                         categoria: "Clubes",
-                         coordenadas: { lng: -38.5222, lat: -12.9932 }
-                    },
-                    {
-                        nome: "Restaurante Acarajé Dourado",
-                        tipo: "Culinária Baiana",
-                        categoria: "Restaurantes",
-                        coordenadas: { lng: -38.5200, lat: -12.9980 }
-                    },
-                     {
-                        nome: "Monte Pascoal Praia Hotel",
-                        tipo: "Hospedagem",
-                        categoria: "Hotéis",
-                        coordenadas: { lng: -38.5273, lat: -13.0078 }
-                    },
-                    {
-                        nome: "Shopping Barra",
-                        tipo: "Centro Comercial",
-                        categoria: "Compras",
-                        coordenadas: { lng: -38.5085, lat: -12.9967 }
-                    },
-                    {
-                        nome: "Bompreço Supermercado",
-                        tipo: "Supermercado",
-                        categoria: "Mercados",
-                        coordenadas: { lng: -38.5147, lat: -12.9996 }
-                    },
-                    {
-                        nome: "Estação Lapa",
-                        tipo: "Transporte Público",
-                        categoria: "Metrô",
-                        coordenadas: { lng: -38.5097, lat: -12.9818 }
-                    }
-                ]
-            };
-            
-            // --- CÓDIGO DA API DE PREVISÃO DO TEMPO (ATUAL E PRÓXIMOS DIAS) ---
-            async function buscarPrevisaoTempo() {
-                // **IMPORTANTE**: Substitua pela sua chave de API da WeatherAPI
-                const apiKey = ' ee1c7addcc374cafbd0194317250610'; 
-                const locationQuery = `${locationData.coordenadas.lat},${locationData.coordenadas.lng}`;
-                const days = 3; 
-                const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${locationQuery}&days=${days}&lang=pt`;
+            // Lógica para controle das abas
+            const tabs = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
 
-                const tempElement = document.getElementById('weather-temp');
-                const conditionElement = document.getElementById('weather-condition');
-                const iconElement = document.getElementById('weather-icon');
-                const forecastContainer = document.getElementById('forecast-container');
-                
-                // Limpa o container da previsão para exibir mensagem de carregamento
-                forecastContainer.innerHTML = `<p class="text-sm text-gray-500 w-full">Carregando previsão...</p>`;
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.tabTarget;
 
-
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error('Falha na resposta da API do tempo');
-                    }
-                    const data = await response.json();
-                    
-                    // 1. ATUALIZA O TEMPO ATUAL
-                    const current = data.current;
-                    tempElement.textContent = `${Math.round(current.temp_c)}°C`;
-                    conditionElement.textContent = current.condition.text;
-                    iconElement.src = `https:${current.condition.icon}`;
-                    iconElement.alt = current.condition.text;
-
-                    // 2. ATUALIZA A PREVISÃO PARA OS PRÓXIMOS DIAS
-                    const forecastDays = data.forecast.forecastday;
-                    forecastContainer.innerHTML = ''; // Limpa a mensagem "carregando"
-
-                    forecastDays.forEach(dayData => {
-                        const date = new Date(dayData.date + 'T00:00:00');
-                        const dayOfWeek = date.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3);
-                        
-                        const dayElement = document.createElement('div');
-                        dayElement.className = 'flex flex-col items-center space-y-1';
-                        
-                        dayElement.innerHTML = `
-                            <p class="font-semibold text-sm text-gray-700">${dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)}</p>
-                            <img src="https:${dayData.day.condition.icon}" alt="${dayData.day.condition.text}" class="w-8 h-8">
-                            <p class="text-sm text-gray-600">
-                                <span class="font-bold text-gray-800">${Math.round(dayData.day.maxtemp_c)}°</span>
-                                <span>${Math.round(dayData.day.mintemp_c)}°</span>
-                            </p>
-                        `;
-                        forecastContainer.appendChild(dayElement);
+                    tabs.forEach(t => {
+                        t.classList.remove('border-blue-600', 'text-blue-600');
+                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
                     });
+                    tab.classList.add('border-blue-600', 'text-blue-600');
+                    tab.classList.remove('border-transparent', 'text-gray-500');
 
-                } catch (error) {
-                    console.error("Erro ao buscar previsão do tempo:", error);
-                    conditionElement.textContent = 'Erro ao carregar';
-                    forecastContainer.innerHTML = '<p class="text-sm text-red-500 w-full">Não foi possível carregar a previsão.</p>';
-                }
-            }
-
-            buscarPrevisaoTempo();
-
-            // --- LÓGICA PARA EXPANDIR/RECOLHER PREVISÃO ---
-            const weatherSection = document.getElementById('weather-section');
-            const forecastContainer = document.getElementById('forecast-container');
-            const weatherChevron = document.getElementById('weather-chevron');
-
-            weatherSection.addEventListener('click', () => {
-                forecastContainer.classList.toggle('hidden');
-                weatherChevron.classList.toggle('rotate-180');
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                        if (content.id === `tab-content-${target}`) {
+                            content.classList.remove('hidden');
+                        }
+                    });
+                });
             });
 
+            // --- LÓGICA DA SEÇÃO DE AVALIAÇÃO ---
 
-            // --- Sistema de Toast (Notificação) ---
+            const ratingStarsContainer = document.getElementById('rating-stars');
+            const ratingStars = [...ratingStarsContainer.children];
+            const submitReviewBtn = document.getElementById('submit-review-btn');
+            const reviewTextarea = document.getElementById('review-textarea');
+            const reviewsList = document.getElementById('reviews-list');
             const toast = document.getElementById('toast');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const reviewSummaryText = document.getElementById('review-summary-text');
+            const reviewSummaryStars = document.querySelector('#review-summary .flex');
+
+            let currentRating = 0;
+
+            // Dados iniciais baseados nas 3 avaliações existentes
+            let totalReviews = 3;
+            // Soma das notas das avaliações hardcoded (5 + 4 + 4)
+            let totalRatingScore = 13;
+
+            // Função para mostrar notificação (toast)
             function showToast(message) {
                 toast.textContent = message;
                 toast.classList.remove('opacity-0', 'translate-y-3');
@@ -478,196 +437,12 @@
                 }, 3000);
             }
 
-            // --- Botão de Favorito ---
-            const favoriteBtn = document.getElementById('favorite-btn');
-            favoriteBtn.addEventListener('click', () => {
-                const isFavorited = favoriteBtn.classList.toggle('is-favorited');
-                if (isFavorited) {
-                    showToast('Adicionado aos seus favoritos!');
-                } else {
-                    showToast('Removido dos favoritos.');
-                }
-            });
-
-            // --- Atualiza o texto do botão de localização ---
-            document.getElementById('location-text').textContent = locationData.endereco;
-
-
-            // --- Elementos do Modal do Mapa ---
-            const locationBtn = document.getElementById('location-btn');
-            const mapModal = document.getElementById('map-modal');
-            const mapModalClose = document.getElementById('map-modal-close');
-            let map; 
-
-            locationBtn.addEventListener('click', () => {
-                mapModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; 
-
-                document.getElementById('info-nome').textContent = locationData.nome;
-                document.getElementById('info-endereco').textContent = locationData.endereco;
-                
-                const turisticosContainer = document.getElementById('info-turisticos');
-                const proximosContainer = document.getElementById('info-proximos');
-                turisticosContainer.innerHTML = ''; 
-                proximosContainer.innerHTML = '';
-
-                const createAndAppendLugar = (lugar, container) => {
-                    const lugarEl = document.createElement('div');
-                    lugarEl.className = 'p-3 bg-white rounded-lg border hover:shadow-md hover:border-blue-500 cursor-pointer transition-all';
-                    lugarEl.innerHTML = `
-                        <p class="font-semibold text-blue-700">${lugar.nome}</p>
-                        <p class="text-sm text-gray-500">${lugar.tipo}</p>
-                    `;
-                    lugarEl.addEventListener('click', () => {
-                        if(map) {
-                            map.flyTo({
-                                center: [lugar.coordenadas.lng, lugar.coordenadas.lat],
-                                zoom: 16,
-                                essential: true
-                            });
-                        }
-                    });
-                    container.appendChild(lugarEl);
-                };
-
-                locationData.pontosTuristicos.forEach(lugar => {
-                    createAndAppendLugar(lugar, turisticosContainer);
-                });
-                
-                const lugaresAgrupados = locationData.lugaresProximos.reduce((acc, lugar) => {
-                    const categoria = lugar.categoria || 'Outros';
-                    if (!acc[categoria]) {
-                        acc[categoria] = [];
-                    }
-                    acc[categoria].push(lugar);
-                    return acc;
-                }, {});
-
-                for (const categoria in lugaresAgrupados) {
-                    const categoriaWrapper = document.createElement('div');
-                    categoriaWrapper.className = 'mb-5';
-
-                    const categoriaTitle = document.createElement('h4');
-                    categoriaTitle.className = 'font-semibold text-lg text-gray-600 mb-3';
-                    categoriaTitle.textContent = categoria;
-                    categoriaWrapper.appendChild(categoriaTitle);
-
-                    const listaLugares = document.createElement('div');
-                    listaLugares.className = 'space-y-3';
-                    
-                    lugaresAgrupados[categoria].forEach(lugar => {
-                        createAndAppendLugar(lugar, listaLugares);
-                    });
-
-                    categoriaWrapper.appendChild(listaLugares);
-                    proximosContainer.appendChild(categoriaWrapper);
-                }
-                
-                if (!map) {
-                    const apiKey = 'fQkLRhuKNXOuJ7C7hE32'; 
-                    
-                    map = new maplibregl.Map({
-                        container: 'map',
-                        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`,
-                        center: [locationData.coordenadas.lng, locationData.coordenadas.lat],
-                        zoom: 15
-                    });
-
-                    map.on('load', () => {
-                        const barracaPopupContent = `
-                            <div class="text-center">
-                                <strong class="text-gray-800">${locationData.nome}</strong><br>
-                                <a href="https://maps.google.com/?q=${locationData.coordenadas.lat},${locationData.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">
-                                    Ver Rotas
-                                </a>
-                            </div>`;
-                        const popupBarraca = new maplibregl.Popup({ offset: 25 }).setHTML(barracaPopupContent);
-
-                        new maplibregl.Marker({color: "#0138b4", scale: 1.2})
-                            .setLngLat([locationData.coordenadas.lng, locationData.coordenadas.lat])
-                            .setPopup(popupBarraca)
-                            .addTo(map);
-
-                        const todosOsLugares = [...locationData.pontosTuristicos, ...locationData.lugaresProximos];
-
-                        todosOsLugares.forEach(lugar => {
-                            const lugarPopupContent = `
-                                <div class="text-center">
-                                    <strong class="text-gray-800">${lugar.nome}</strong><br>
-                                    <a href="https://maps.google.com/?q=${lugar.coordenadas.lat},${lugar.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">
-                                        Ver Rotas
-                                    </a>
-                                </div>`;
-                            const lugarPopup = new maplibregl.Popup({ offset: 25 }).setHTML(lugarPopupContent);
-                            new maplibregl.Marker({color: "#ef4444"})
-                                .setLngLat([lugar.coordenadas.lng, lugar.coordenadas.lat])
-                                .setPopup(lugarPopup)
-                                .addTo(map);
-                        });
-                    });
-
-                } else {
-                    map.resize();
-                    map.flyTo({
-                        center: [locationData.coordenadas.lng, locationData.coordenadas.lat],
-                        zoom: 15
-                    });
-                }
-            });
-
-            function closeMapModal() {
-                mapModal.classList.add('hidden');
-                document.body.style.overflow = '';
-            }
-
-            mapModalClose.addEventListener('click', closeMapModal);
-
-            mapModal.addEventListener('click', (e) => {
-                if (e.target === mapModal) {
-                    closeMapModal();
-                }
-            });
-            // --- FIM DO CÓDIGO DO MAPA ---
-
-
-            // --- Botão de Reservar ---
-            document.getElementById('reserve-btn').addEventListener('click', () => {
-                showToast('Redirecionando para a página de reserva...');
-            });
-            
-            // --- Galeria de Fotos Modal ---
-            const galleryModal = document.getElementById('gallery-modal');
-            const modalImage = document.getElementById('modal-image');
-            const modalClose = document.getElementById('modal-close');
-            const galleryImages = document.querySelectorAll('#gallery img');
-
-            galleryImages.forEach(img => {
-                img.addEventListener('click', () => {
-                    modalImage.src = img.src;
-                    galleryModal.classList.remove('hidden');
-                });
-            });
-
-            function closeModal() {
-                galleryModal.classList.add('hidden');
-            }
-            modalClose.addEventListener('click', closeModal);
-            galleryModal.addEventListener('click', (e) => {
-                if (e.target === galleryModal) {
-                    closeModal();
-                }
-            });
-
-            // --- Sistema de Avaliação por Estrelas ---
-            const starsContainer = document.getElementById('rating-stars');
-            const stars = starsContainer.querySelectorAll('svg');
-            let currentRating = 0;
-
+            // Função para atualizar a aparência das estrelas de avaliação
             function updateStars(rating) {
-                stars.forEach((star, index) => {
-                    if (index < rating) {
-                        star.classList.add('text-yellow-400', 'fill-current');
+                ratingStars.forEach(star => {
+                    if (parseInt(star.dataset.value) <= rating) {
                         star.classList.remove('text-gray-300');
+                        star.classList.add('text-yellow-400', 'fill-current');
                     } else {
                         star.classList.remove('text-yellow-400', 'fill-current');
                         star.classList.add('text-gray-300');
@@ -675,79 +450,121 @@
                 });
             }
 
-            stars.forEach((star, index) => {
-                star.addEventListener('mouseover', () => {
-                    updateStars(index + 1);
-                });
-                star.addEventListener('mouseout', () => {
-                    updateStars(currentRating);
-                });
-                star.addEventListener('click', () => {
-                    currentRating = index + 1;
-                    updateStars(currentRating);
-                });
-            });
-            
-            // --- Botão de Enviar Avaliação ---
-            const submitReviewBtn = document.getElementById('submit-review-btn');
-            const reviewTextarea = document.getElementById('review-textarea');
-            
-            submitReviewBtn.addEventListener('click', () => {
-                if (currentRating === 0) {
-                    showToast('Por favor, selecione uma nota (estrelas).');
-                    return;
-                }
-                if (reviewTextarea.value.trim() === '') {
-                    showToast('Por favor, escreva um comentário.');
-                    return;
-                }
-                showToast('Avaliação enviada com sucesso! Obrigado.');
-                
-                currentRating = 0;
-                updateStars(0);
-                reviewTextarea.value = '';
-            });
+            // Função para atualizar o resumo geral das avaliações
+            function updateReviewSummary() {
+                 if (totalReviews === 0) return; // Evita divisão por zero
+                const averageRating = totalRatingScore / totalReviews;
+                reviewSummaryText.textContent = `${averageRating.toFixed(1)} (${totalReviews} avaliações)`;
 
-            // --- Filtros de Avaliações ---
-            const filterAllBtn = document.getElementById('filter-all');
-            const filterMediaBtn = document.getElementById('filter-media');
-            const allReviews = document.querySelectorAll('#reviews-list .review-card');
-
-            function setActiveFilter(activeBtn) {
-                const inactiveClasses = ['bg-gray-200', 'text-gray-800'];
-                const activeClasses = ['bg-blue-500', 'text-white'];
-                
-                [filterAllBtn, filterMediaBtn].forEach(btn => {
-                    btn.classList.remove(...activeClasses);
-                    btn.classList.add(...inactiveClasses);
-                });
-                
-                activeBtn.classList.remove(...inactiveClasses);
-                activeBtn.classList.add(...activeClasses);
-            }
-
-            function applyFilter(filterType) {
-                allReviews.forEach(review => {
-                    if (filterType === 'media' && !review.classList.contains('has-media')) {
-                        review.classList.add('hidden');
+                // Atualiza as estrelas do resumo
+                const summaryStars = [...reviewSummaryStars.children];
+                const roundedAverage = Math.round(averageRating);
+                summaryStars.forEach((star, index) => {
+                    if (index < roundedAverage) {
+                        star.classList.add('fill-current');
                     } else {
-                        review.classList.remove('hidden');
+                        star.classList.remove('fill-current');
                     }
                 });
             }
 
-            filterAllBtn.addEventListener('click', () => {
-                applyFilter('all');
-                setActiveFilter(filterAllBtn);
+            // Event Listeners para as estrelas
+            ratingStarsContainer.addEventListener('mouseover', (e) => {
+                const starValue = e.target.dataset.value;
+                if (starValue) {
+                    updateStars(starValue);
+                }
             });
 
-            filterMediaBtn.addEventListener('click', () => {
-                applyFilter('media');
-                setActiveFilter(filterMediaBtn);
+            ratingStarsContainer.addEventListener('mouseout', () => {
+                updateStars(currentRating);
             });
 
-            setActiveFilter(filterAllBtn);
+            ratingStarsContainer.addEventListener('click', (e) => {
+                const starValue = e.target.dataset.value;
+                if (starValue) {
+                    currentRating = parseInt(starValue);
+                    updateStars(currentRating);
+                }
+            });
+
+            // Event Listener para enviar avaliação
+            submitReviewBtn.addEventListener('click', () => {
+                const reviewText = reviewTextarea.value.trim();
+
+                if (currentRating === 0) {
+                    showToast('Por favor, selecione uma nota.');
+                    return;
+                }
+                if (reviewText === '') {
+                    showToast('Por favor, escreva um comentário.');
+                    return;
+                }
+
+                // Atualiza os dados gerais
+                totalReviews++;
+                totalRatingScore += currentRating;
+                updateReviewSummary();
+
+                // Cria o HTML da nova avaliação
+                const newReview = document.createElement('div');
+                newReview.className = 'review-card p-4 border rounded-lg bg-gray-50';
+                newReview.dataset.rating = currentRating;
+                
+                let starsHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    starsHTML += `<i data-lucide="star" class="w-4 h-4 ${i <= currentRating ? 'fill-current' : ''}"></i>`;
+                }
+
+                newReview.innerHTML = `
+                    <div class="flex items-center mb-2">
+                        <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" class="w-10 h-10 rounded-full mr-3" alt="Foto do Cliente">
+                        <div>
+                            <p class="font-bold">Você</p>
+                            <div class="flex text-yellow-500">${starsHTML}</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">${reviewText}</p>
+                `;
+
+                reviewsList.prepend(newReview);
+                lucide.createIcons();
+
+                // Limpa o formulário
+                reviewTextarea.value = '';
+                currentRating = 0;
+                updateStars(0);
+                showToast('Avaliação enviada com sucesso!');
+            });
+            
+             // Event Listeners para os filtros
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-500', 'text-white');
+                        btn.classList.add('bg-gray-200', 'text-gray-800', 'hover:bg-gray-300');
+                    });
+                    button.classList.add('bg-blue-500', 'text-white');
+                    button.classList.remove('bg-gray-200', 'text-gray-800');
+
+                    const filterType = button.id;
+                    const allReviews = reviewsList.querySelectorAll('.review-card');
+
+                    allReviews.forEach(review => {
+                        if (filterType === 'filter-media' && !review.classList.contains('has-media')) {
+                            review.style.display = 'none';
+                        } else {
+                            review.style.display = 'block';
+                        }
+                    });
+                });
+            });
+            
+            // Inicia o resumo com os valores corretos
+            updateReviewSummary();
+
         });
     </script>
 </body>
 </html>
+
