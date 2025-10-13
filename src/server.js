@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import apiRoutes from './routes.js'; // Importa as rotas
+import apiRoutes from './routes.js';// Importa as rotas
 
 // Define o caminho do diretório atual.
 const __filename = fileURLToPath(import.meta.url);
@@ -16,13 +16,20 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
-// Serve arquivos estáticos da pasta 'client'.
-app.use(express.static(path.join(__dirname, 'client')));
+// CORREÇÃO: Serve toda a pasta 'public' como raiz
+// Isso permite acessar /assets/js/cadastro.js diretamente
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Usa as rotas importadas para os endpoints da API.
 app.use('/api', apiRoutes);
 
+// Rota raiz - redireciona para cadastro
+app.get('/', (req, res) => {
+    res.redirect('/cadastro.html');
+});
+
 // Inicia o servidor.
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Pasta public servida em: ${path.join(__dirname, 'public')}`);
 });

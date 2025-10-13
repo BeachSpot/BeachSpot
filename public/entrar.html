@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeachSpot</title>
-    <link rel="stylesheet" href="/public/assets/css/entrar.css">
-    <link rel="icon" type="image/png" href="/public/assets/icons/Logo BeachSpot.png">
+    <title>BeachSpot - Entrar</title>
+    <link rel="stylesheet" href="assets/css/entrar.css">
+    <link rel="icon" type="image/png" href="assets/icons/Logo BeachSpot.png">
 </head>
 <body>
     <div class="container">
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="logo">
-                <img src="/public/assets/icons/Logo Branca.png" alt="BeachSpot Logo">
+                <img src="assets/icons/Logo Branca.png" alt="BeachSpot Logo">
             </div>
         </div>
 
@@ -63,10 +63,7 @@
                 </form>
                 <div class="divider"><span>ou entre com</span></div>
                 <div class="social-buttons">
-                    <button class="btn-social">
-                        <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg> Facebook
-                    </button>
-                    <button class="btn-social">
+                    <button id="google-btn" class="btn-social">
                         <svg viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -88,6 +85,8 @@
         </div>
     </div>
 
-    <script src="/public/assets/js/entrar.js"></script>
+    <!-- Scripts do Supabase e da página -->
+    <script type="module" src="assets/js/supabaseClient.js"></script>
+    <script type="module" src="assets/js/entrar.js"></script>
 </body>
 </html>

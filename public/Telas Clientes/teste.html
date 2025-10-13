@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início do Gestor - Beachspot</title>
+    <link rel="icon" type="image/png" href="/public/assets/icons/Logo BeachSpot.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #0f172a;
+            font-family: 'Poppins', sans-serif;
+        }
+        .barraca-card {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        /* Estilos para o carrossel */
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-item {
+            min-width: 100%;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center">
+                <img src="https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans" alt="Logo Beachspot" class="h-5 w-auto">
+            </a>
+            
+            <div class="flex items-center space-x-6">
+                <a href="#" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
+                <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
+    
+                <a href="/public/Telas Gestor/configuracoesgestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="settings" class="w-6 h-6"></i>
+                </a>
+    
+                <a href="perfilGestor.html">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="pt-24 container mx-auto max-w-6xl px-6">
+        
+        <section class="text-center py-12 md:py-16">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
+                Gerencie suas Barracas
+            </h1>
+            <p class="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+                Visualize, edite e adicione suas barracas de praia de forma simples e rápida.
+            </p>
+        </section>
+
+        <!-- NOVO: CARROSSEL DE IMAGENS -->
+        <section class="mb-16">
+            <div id="image-carousel" class="relative w-full max-w-5xl mx-auto rounded-lg overflow-hidden shadow-2xl" style="height: 450px;">
+                <!-- Slides container -->
+                <div class="carousel-inner h-full">
+                    <div class="carousel-item h-full">
+                        <img src="https://placehold.co/1200x450/0138b4/FFFFFF?text=Destaque+do+Mês" alt="Imagem Destaque 1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="carousel-item h-full">
+                        <img src="https://placehold.co/1200x450/f59e0b/FFFFFF?text=Promoção+Imperdível" alt="Imagem Destaque 2" class="w-full h-full object-cover">
+                    </div>
+                    <div class="carousel-item h-full">
+                        <img src="https://placehold.co/1200x450/16a34a/FFFFFF?text=Novo+Prato+no+Cardápio" alt="Imagem Destaque 3" class="w-full h-full object-cover">
+                    </div>
+                </div>
+    
+                <!-- Botões de Navegação -->
+                <button id="prev-btn" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/40 text-white p-3 rounded-full hover:bg-black/60 transition-colors duration-300 z-10">
+                    <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                </button>
+                <button id="next-btn" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/40 text-white p-3 rounded-full hover:bg-black/60 transition-colors duration-300 z-10">
+                    <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                </button>
+    
+                <!-- Pontos de Navegação (Dots) -->
+                <div id="carousel-dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-3 z-10">
+                </div>
+            </div>
+        </section>
+        
+        <section class="mb-12">
+            <div class="max-w-3xl mx-auto">
+                <div class="relative">
+                    <input type="search" id="search-barracas" placeholder="Buscar barraca pelo nome..." class="w-full bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 py-4 pl-6 pr-12 rounded-full border-2 border-transparent focus:outline-none focus:border-cyan-400 focus:ring-0 transition-all duration-300 text-lg">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-6 pointer-events-none">
+                        <i data-lucide="search" class="w-6 h-6 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-3xl font-bold mb-8">Minhas Barracas</h2>
+            <div id="barracas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="barraca-card w-full max-w-sm mx-auto">
+                    <div class="bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full transform transition-transform hover:scale-105 shadow-lg">
+                        <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Axé+Bahia" alt="Imagem da barraca Axé Bahia" class="w-full h-48 object-cover">
+                        <div class="p-5 flex flex-col justify-between" style="min-height: 14rem;">
+                            <div>
+                                <h3 class="barraca-nome text-2xl font-bold text-center mb-2">Axé Bahia</h3>
+                                <p class="text-sm text-gray-600 mb-4 text-center">A moqueca mais famosa da orla, com música ao vivo e ambiente familiar.</p>
+                            </div>
+                            <a href="gestaoBarraca.html" class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition text-lg mt-2">
+                                Gerenciar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="barraca-card w-full max-w-sm mx-auto">
+                    <div class="bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full transform transition-transform hover:scale-105 shadow-lg">
+                        <img src="https://placehold.co/600x400/f59e0b/FFFFFF?text=Sol+Dourado" alt="Imagem da barraca Sol Dourado" class="w-full h-48 object-cover">
+                        <div class="p-5 flex flex-col justify-between" style="min-height: 14rem;">
+                            <div>
+                                <h3 class="barraca-nome text-2xl font-bold text-center mb-2">Sol Dourado</h3>
+                                <p class="text-sm text-gray-600 mb-4 text-center">Petiscos deliciosos e o melhor pôr do sol da cidade.</p>
+                            </div>
+                            <a href="gestaoBarraca.html" class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition text-lg mt-2">
+                                Gerenciar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="cadastroBarraca.html" class="w-full max-w-sm mx-auto group flex flex-col items-center justify-center min-h-[24rem] bg-white/5 border-2 border-dashed border-gray-500 rounded-xl hover:bg-white/10 hover:border-cyan-400 transition-all duration-300">
+                    <div class="text-center">
+                        <i data-lucide="plus-circle" class="w-16 h-16 text-gray-400 group-hover:text-cyan-400 mb-4 transition-colors duration-300"></i>
+                        <h3 class="text-2xl font-bold text-white">Adicionar Barraca</h3>
+                        <p class="text-gray-300 mt-1">Clique para cadastrar</p>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-24">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <div class="w-full md:w-auto mb-8 md:mb-0">
+                    <a href="inicio.html" class="flex items-center">
+                        <img src="https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans" alt="Logo Beachspot" class="h-5 w-auto">
+                    </a>
+                </div>
+
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold mb-3">Navegação do Gestor</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
+                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
+                        <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                    </ul>
+                </div>
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold mb-3">Redes Sociais</h3>
+                    <div class="flex space-x-3">
+                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12 border-t border-gray-200 pt-6">
+                <p>&copy; 2025 Beachspot. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Lógica para a barra de pesquisa
+        const searchInput = document.getElementById('search-barracas');
+        const barracasGrid = document.getElementById('barracas-grid');
+        const barracaCards = barracasGrid.querySelectorAll('.barraca-card');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+
+            barracaCards.forEach(card => {
+                const barracaNome = card.querySelector('.barraca-nome').textContent.toLowerCase();
+                
+                if (barracaNome.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                         card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+
+        // --- LÓGICA DO CARROSSEL ---
+        const carousel = document.getElementById('image-carousel');
+        const inner = carousel.querySelector('.carousel-inner');
+        const items = carousel.querySelectorAll('.carousel-item');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const dotsContainer = document.getElementById('carousel-dots');
+        const totalItems = items.length;
+        let currentIndex = 0;
+        let autoPlayInterval;
+
+        // Cria os 'dots' de navegação
+        for (let i = 0; i < totalItems; i++) {
+            const dot = document.createElement('button');
+            dot.classList.add('carousel-dot', 'w-3', 'h-3', 'bg-white/50', 'rounded-full', 'transition', 'duration-300', 'hover:bg-white');
+            dot.addEventListener('click', () => {
+                goToSlide(i);
+                resetAutoPlay();
+            });
+            dotsContainer.appendChild(dot);
+        }
+        const dots = dotsContainer.querySelectorAll('.carousel-dot');
+
+        function updateDots() {
+            dots.forEach((dot, index) => {
+                if (index === currentIndex) {
+                    dot.classList.add('bg-white', 'scale-125');
+                    dot.classList.remove('bg-white/50');
+                } else {
+                    dot.classList.remove('bg-white', 'scale-125');
+                    dot.classList.add('bg-white/50');
+                }
+            });
+        }
+
+        function goToSlide(index) {
+            if (index < 0) {
+                index = totalItems - 1;
+            } else if (index >= totalItems) {
+                index = 0;
+            }
+            currentIndex = index;
+            inner.style.transform = `translateX(-${currentIndex * 100}%)`;
+            updateDots();
+        }
+
+        function nextSlide() {
+            goToSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentIndex - 1);
+        }
+
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextSlide, 5000); // Muda a cada 5 segundos
+        }
+
+        function resetAutoPlay() {
+            clearInterval(autoPlayInterval);
+            startAutoPlay();
+        }
+
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            resetAutoPlay();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            resetAutoPlay();
+        });
+
+        // Inicializa o carrossel
+        goToSlide(0);
+        startAutoPlay();
+
+        // Inicializa todos os ícones do Lucide na página
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
