@@ -10,7 +10,6 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 
         if (pendingType) {
             try {
-                // 1. Buscar o perfil atual
                 const { data: profile, error: fetchError } = await supabase
                     .from('usuarios')
                     .select('tipo_conta')
@@ -20,11 +19,9 @@ supabase.auth.onAuthStateChange(async (event, session) => {
                 console.log('[DEBUG] Perfil encontrado:', profile);
                 console.log('[DEBUG] Erro na busca:', fetchError);
 
-                // 2. Se não existe perfil OU se tipo_conta está null/vazio
                 if (fetchError?.code === 'PGRST116' || !profile || !profile.tipo_conta) {
                     console.log('[DEBUG] Criando/atualizando perfil...');
                     
-                    // Atualizar tipo_conta na tabela usuarios
                     const { error: updateError } = await supabase
                         .from('usuarios')
                         .update({ tipo_conta: pendingType })
@@ -36,13 +33,11 @@ supabase.auth.onAuthStateChange(async (event, session) => {
                         return;
                     }
 
-                    // Nome do usuário (prioriza full_name, depois name, depois email)
                     const nomeUsuario = session.user.user_metadata.full_name || 
                                        session.user.user_metadata.name || 
                                        session.user.email?.split('@')[0] || 
                                        'Usuário';
 
-                    // Inserir na tabela específica (cliente ou gestor)
                     const profileData = {
                         [`id_${pendingType}`]: session.user.id,
                         nome: nomeUsuario
@@ -52,29 +47,28 @@ supabase.auth.onAuthStateChange(async (event, session) => {
                         .from(pendingType)
                         .insert(profileData);
 
-                    if (insertError) {
+                    if (insertError && insertError.code !== '23505') {
                         console.error(`[ERRO] Ao inserir em ${pendingType}:`, insertError);
-                        // Se o erro for de duplicação, não é crítico
-                        if (insertError.code !== '23505') {
-                            showAlert('Erro', 'Não foi possível criar o perfil completo.', 'error');
-                            return;
-                        }
+                        showAlert('Erro', 'Não foi possível criar o perfil completo.', 'error');
+                        return;
                     }
 
                     console.log('[DEBUG] Perfil criado com sucesso!');
                 }
 
-                // 3. Limpar localStorage e redirecionar
                 localStorage.removeItem('pending_account_type');
                 console.log('[DEBUG] Redirecionando para a página inicial...');
-                window.location.href = '/Telas Clientes/inicio.html';
+                if (pendingType === 'gestor') {
+                    window.location.href = '/Telas Gestor/inicioGestor.html';
+                } else {
+                    window.location.href = '/Telas Clientes/inicio.html';
+                }
 
             } catch (error) {
                 console.error('[ERRO GERAL]', error);
                 showAlert('Erro', 'Ocorreu um erro ao processar seu login.', 'error');
             }
         } else {
-            // Se não há tipo pendente, mas usuário está logado, só redireciona
             console.log('[DEBUG] Sem tipo pendente, redirecionando...');
             window.location.href = '/Telas Clientes/inicio.html';
         }
@@ -97,7 +91,6 @@ function showAlert(title, message, type) {
     if (alertModal) alertModal.classList.add('visible');
 }
 
-// Toggle de senha no escopo global
 window.togglePassword = function() {
     const passwordInput = document.getElementById('password');
     const eyeIcon = document.getElementById('eye-icon');
@@ -114,19 +107,14 @@ window.togglePassword = function() {
     }
 }
 
-// Código da página
 document.addEventListener('DOMContentLoaded', () => {
     const featureCards = document.querySelectorAll('.feature-card');
     const tipoContaInput = document.getElementById('tipo-conta'); 
     const registrationForm = document.getElementById('registration-form');
     const googleBtn = document.getElementById('google-btn');
     const facebookBtn = document.getElementById('facebook-btn');
-    
     const alertModal = document.getElementById('alert-modal');
-    const alertTitle = document.getElementById('alert-title');
-    const alertMessage = document.getElementById('alert-message');
     const alertCloseBtn = document.getElementById('alert-close'); 
-    const alertBox = alertModal?.querySelector('.alert-box');
 
     featureCards.forEach(card => {
         card.addEventListener('click', () => {
@@ -134,9 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.classList.add('selected');
             const tipoConta = card.getAttribute('data-tipo-conta');
             tipoContaInput.value = tipoConta;
-            
             console.log('[SELEÇÃO] Tipo de conta:', tipoConta);
-
             if (googleBtn) googleBtn.disabled = false;
             if (facebookBtn) facebookBtn.disabled = true;
         });
@@ -149,17 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 showAlert('Atenção', 'Por favor, selecione um tipo de perfil (Cliente ou Gestor) antes de continuar.', 'error');
                 return;
             }
-            
-            console.log('[GOOGLE] Salvando tipo no localStorage:', tipoConta);
             localStorage.setItem('pending_account_type', tipoConta);
-
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: window.location.origin + '/cadastro.html'
                 }
             });
-            
             if (error) {
                 console.error('[ERRO GOOGLE]', error);
                 showAlert('Erro no Login', `Erro ao tentar logar com o Google: ${error.message}`, 'error');
@@ -207,7 +189,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     showAlert('Sucesso!', 'Usuário registrado com sucesso!', 'success');
                     registrationForm.reset();
                     setTimeout(() => {
-                        window.location.href = '/Telas Clientes/inicio.html';
+                        if (userData.tipo_conta === 'gestor') {
+                            window.location.href = '/Telas Gestor/inicioGestor.html';
+                        } else {
+                            window.location.href = '/Telas Clientes/inicio.html';
+                        }
                     }, 1500);
                 } else {
                     showAlert('Erro', `Erro: ${result.error || 'Ocorreu um erro desconhecido.'}`, 'error');
@@ -219,11 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function hideAlert() {
-        if (alertModal) alertModal.classList.remove('visible');
-    }
-
     if (alertCloseBtn) {
-        alertCloseBtn.addEventListener('click', hideAlert);
+        alertCloseBtn.addEventListener('click', () => {
+            if (alertModal) alertModal.classList.remove('visible');
+        });
     }
 });

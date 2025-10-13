@@ -68,7 +68,11 @@ supabase.auth.onAuthStateChange(async (event, session) => {
             
             // Redirecionar após delay
             setTimeout(() => {
-                window.location.href = '/Telas Clientes/inicio.html';
+                if (userData.tipo_conta === 'gestor') {
+                    window.location.href = '/Telas Gestor/inicioGestor.html';
+                } else {
+                    window.location.href = '/Telas Clientes/inicio.html';
+                }
             }, 1500);
 
         } catch (error) {
@@ -174,7 +178,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Redirecionar após delay
                     setTimeout(() => {
-                        window.location.href = '/Telas Clientes/inicio.html';
+                        if (result.tipo_conta === 'gestor') {
+                            window.location.href = '/Telas Gestor/inicioGestor.html';
+                        } else {
+                            window.location.href = '/Telas Clientes/inicio.html';
+                        }
                         hideAlert();
                     }, 1500);
 
