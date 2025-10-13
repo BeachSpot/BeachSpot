@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeachSpot - Cardápio</title>
+    <link rel="icon" type="image/png" href="https://placehold.co/32x32/01020a/FFFFFF?text=B&font=sans">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #01020a;
+            background-image: linear-gradient(to bottom, #01020a, #032a6b);
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #032a6b;
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(3, 42, 107, 0.38);
+        }
+        .tab-button.active:hover {
+            background-color: #043a8a;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .menu-item {
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Header Fixo Dark -->
+    <header class="bg-[#01020a] fixed top-0 left-0 right-0 z-50 shadow-md border-b border-white/10">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+             <a href="inicio.html" class="flex items-center space-x-2">
+                <img src="https://placehold.co/40x40/FFFFFF/01020a?text=B&font=sans" alt="Logo Beachspot" class="h-8 w-8 rounded-full">
+                <span class="font-bold text-xl text-white">Beachspot</span>
+            </a>
+            <div class="flex items-center space-x-6">
+                <a href="inicio.html" class="hidden md:block text-white hover:text-blue-300 transition duration-300 font-medium">Início</a>
+                <a href="suasReservas.html" class="hidden md:block text-white hover:text-blue-300 transition duration-300 font-medium">Suas Reservas</a>
+                <a href="configuracoes.html" class="text-white hover:text-blue-300 transition duration-300">
+                    <i data-lucide="settings" class="w-6 h-6"></i>
+                </a>
+                <a href="perfilCliente.html">
+                    <img src="https://placehold.co/40x40/032a6b/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-400 hover:opacity-90 transition-opacity">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="pt-[88px]">
+        <!-- Seção do Cardápio -->
+        <section class="py-16 md:py-24">
+            <div class="container mx-auto max-w-4xl px-6">
+
+                <!-- Card Principal do Menu -->
+                <div class="bg-[#020d24] rounded-xl shadow-2xl p-6 md:p-10 border border-white/10">
+                    <!-- Título e Subtítulo -->
+                     <div class="text-center mb-10">
+                         <h1 class="text-4xl md:text-5xl font-bold text-white">Nosso Cardápio</h1>
+                         <div class="flex justify-center items-center my-4">
+                            <div class="flex-grow border-t border-white/10"></div>
+                            <span class="px-4 text-blue-300">
+                                <i data-lucide="utensils-crossed"></i>
+                            </span>
+                            <div class="flex-grow border-t border-white/10"></div>
+                        </div>
+                         <p class="text-lg md:text-xl text-blue-200">Sabores frescos e pratos deliciosos para a sua experiência na praia.</p>
+                    </div>
+
+                    <!-- Navegação por Abas -->
+                    <div class="flex justify-center border-b border-white/10 mb-8">
+                        <div class="flex flex-wrap justify-center space-x-2 md:space-x-4">
+                            <button data-tab="comidas" class="tab-button active font-semibold py-3 px-4 md:px-6 rounded-t-lg text-sm md:text-base">Comidas & Petiscos</button>
+                            <button data-tab="bebidas" class="tab-button font-semibold py-3 px-4 md:px-6 rounded-t-lg text-blue-200 hover:bg-white/5 text-sm md:text-base">Bebidas</button>
+                            <button data-tab="outros" class="tab-button font-semibold py-3 px-4 md:px-6 rounded-t-lg text-blue-200 hover:bg-white/5 text-sm md:text-base">Outros</button>
+                        </div>
+                    </div>
+
+                    <!-- Conteúdo das Abas -->
+                    <div>
+                        <!-- Comidas/Petiscos -->
+                        <div id="comidas" class="tab-content">
+                            <div class="grid grid-cols-1 gap-x-12 gap-y-6">
+                                
+                                <div class="menu-item py-4 flex items-center space-x-4">
+                                    <img src="https://placehold.co/80x80/032a6b/FFFFFF?text=Moqueca" alt="Imagem de Moqueca de Peixe" class="w-20 h-20 rounded-md object-cover flex-shrink-0">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-lg font-semibold text-white">Moqueca de Peixe</h3>
+                                            <p class="text-lg font-semibold text-blue-300">R$ 89,90</p>
+                                        </div>
+                                        <p class="text-blue-200 text-sm mt-1">Peixe fresco, azeite de dendê, leite de coco e pimentões.</p>
+                                    </div>
+                                </div>
+                                <div class="menu-item py-4 flex items-center space-x-4">
+                                     <img src="https://placehold.co/80x80/032a6b/FFFFFF?text=Camarão" alt="Imagem de Camarão na Moranga" class="w-20 h-20 rounded-md object-cover flex-shrink-0">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-lg font-semibold text-white">Camarão na Moranga</h3>
+                                            <p class="text-lg font-semibold text-blue-300">R$ 99,90</p>
+                                        </div>
+                                        <p class="text-blue-200 text-sm mt-1">Purê de abóbora com camarões salteados e catupiry.</p>
+                                    </div>
+                                </div>
+                                <div class="menu-item py-4 flex items-center space-x-4">
+                                    <img src="https://placehold.co/80x80/032a6b/FFFFFF?text=Isca+de+Peixe" alt="Imagem de Isca de Peixe" class="w-20 h-20 rounded-md object-cover flex-shrink-0">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-lg font-semibold text-white">Isca de Peixe</h3>
+                                            <p class="text-lg font-semibold text-blue-300">R$ 45,00</p>
+                                        </div>
+                                        <p class="text-blue-200 text-sm mt-1">Tiras de peixe empanadas, acompanha molho tártaro.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bebidas -->
+                        <div id="bebidas" class="tab-content">
+                             <div class="grid grid-cols-1 gap-x-12 gap-y-6">
+                                <div class="menu-item py-4 flex items-center space-x-4">
+                                    <img src="https://placehold.co/80x80/032a6b/FFFFFF?text=Caipirinha" alt="Imagem de Caipirinha de Limão" class="w-20 h-20 rounded-md object-cover flex-shrink-0">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-lg font-semibold text-white">Caipirinha de Limão</h3>
+                                            <p class="text-lg font-semibold text-blue-300">R$ 18,00</p>
+                                        </div>
+                                        <p class="text-blue-200 text-sm mt-1">Cachaça de qualidade, limão fresco, açúcar e gelo.</p>
+                                    </div>
+                                </div>
+                                <div class="menu-item py-4 flex items-center space-x-4">
+                                    <img src="https://placehold.co/80x80/032a6b/FFFFFF?text=Coco" alt="Imagem de Água de Coco" class="w-20 h-20 rounded-md object-cover flex-shrink-0">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-lg font-semibold text-white">Água de Coco</h3>
+                                            <p class="text-lg font-semibold text-blue-300">R$ 12,00</p>
+                                        </div>
+                                        <p class="text-blue-200 text-sm mt-1">Refrescante e natural, servida diretamente do coco.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Outros -->
+                        <div id="outros" class="tab-content">
+                            <div class="grid grid-cols-1 gap-x-12 gap-y-6">
+                                <div class="menu-item py-4 flex items-center space-x-4">
+                                    <img src="https://placehold.co/80x80/032a6b/FFFFFF?text=Óculos" alt="Imagem de Óculos de Sol" class="w-20 h-20 rounded-md object-cover flex-shrink-0">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-lg font-semibold text-white">Óculos de Sol</h3>
+                                            <p class="text-lg font-semibold text-blue-300">R$ 75,00</p>
+                                        </div>
+                                        <p class="text-blue-200 text-sm mt-1">Modelos variados com proteção UV400.</p>
+                                    </div>
+                                </div>
+                                <div class="menu-item py-4 flex items-center space-x-4">
+                                    <img src="https://placehold.co/80x80/032a6b/FFFFFF?text=Protetor" alt="Imagem de Protetor Solar" class="w-20 h-20 rounded-md object-cover flex-shrink-0">
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-lg font-semibold text-white">Protetor Solar (FPS 50)</h3>
+                                            <p class="text-lg font-semibold text-blue-300">R$ 55,00</p>
+                                        </div>
+                                        <p class="text-blue-200 text-sm mt-1">Resistente à água, ideal para toda a família.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Dark -->
+    <footer class="w-full bg-[#01020a] z-10 py-12 mt-auto">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <div class="w-full md:w-auto mb-8 md:mb-0">
+                    <a href="inicio.html" class="flex items-center space-x-2">
+                        <img src="https://placehold.co/40x40/FFFFFF/01020a?text=B&font=sans" alt="Logo Beachspot" class="h-8 w-8 rounded-full">
+                         <span class="font-bold text-xl text-white">Beachspot</span>
+                    </a>
+                </div>
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold text-white mb-3">Navegação</h3>
+                    <ul class="space-y-2 text-blue-200">
+                        <li><a href="inicio.html" class="hover:text-white transition-colors">Início</a></li>
+                        <li><a href="suasReservas.html" class="hover:text-white transition-colors">Suas Reservas</a></li>
+                        <li><a href="configuracoes.html" class="hover:text-white transition-colors">Configurações</a></li>
+                        <li><a href="perfilCliente.html" class="hover:text-white transition-colors">Perfil</a></li>
+                    </ul>
+                </div>
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold text-white mb-3">Redes Sociais</h3>
+                    <div class="flex space-x-4 text-blue-200">
+                        <a href="#" class="hover:text-white transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="hover:text-white transition-colors"><i data-lucide="twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-blue-200 mt-12 border-t border-white/10 pt-6">
+                <p>&copy; 2025 Beachspot. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // Mostrar o primeiro conteúdo por padrão
+            const firstTab = tabs[0];
+            const firstTabContent = document.getElementById(firstTab.dataset.tab);
+            if (firstTabContent) {
+                 firstTabContent.style.display = 'block';
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remover classe ativa de todos os botões
+                    tabs.forEach(item => {
+                        item.classList.remove('active', 'text-gray-600', 'hover:bg-gray-100');
+                        item.classList.add('text-blue-200', 'hover:bg-white/5');
+                    });
+                    
+                    // Adicionar classe ativa ao botão clicado
+                    tab.classList.add('active');
+                    tab.classList.remove('text-blue-200', 'hover:bg-white/5');
+
+                    // Esconder todos os conteúdos
+                    tabContents.forEach(content => {
+                        content.style.display = 'none';
+                    });
+
+                    // Mostrar o conteúdo correspondente
+                    const activeTabContent = document.getElementById(tab.dataset.tab);
+                    if(activeTabContent) {
+                        activeTabContent.style.display = 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
