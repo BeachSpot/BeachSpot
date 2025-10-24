@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BeachSpot</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -62,7 +59,6 @@
 </head>
 <body>
 
-    <!-- Header Fixo Branco -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
              <a href="inicio.html" class="flex items-center">
@@ -82,17 +78,14 @@
     </header>
 
     <main class="pt-[72px]">
-        <!-- Seção Principal -->
         <section class="py-16 md:py-24">
             <div class="container mx-auto max-w-4xl px-6">
 
-                <!-- Título -->
-                 <div class="text-center mb-10">
+                <div class="text-center mb-10">
                      <h1 class="text-4xl md:text-5xl font-bold text-white">Suas Reservas e Favoritos</h1>
                      <p class="text-lg text-blue-200 mt-2">Gerencie suas visitas e locais preferidos.</p>
                 </div>
 
-                <!-- Navegação por Abas -->
                 <div class="bg-black/10 backdrop-blur-sm p-2 rounded-xl flex items-center justify-center space-x-2 mb-10 max-w-sm mx-auto">
                     <button data-tab="reservas" class="tab-button flex-1 flex items-center justify-center gap-2 font-semibold py-3 px-4 rounded-lg text-sm md:text-base">
                         <i data-lucide="calendar-check" class="w-5 h-5"></i>
@@ -104,12 +97,9 @@
                     </button>
                 </div>
 
-                <!-- Conteúdo das Abas -->
                 <div>
-                    <!-- Minhas Reservas -->
                     <div id="reservas" class="tab-content">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Reserva Futura -->
                             <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="reserva1" data-location="Praia do Futuro">
                                 <img class="w-full h-48 object-cover" src="https://placehold.co/400x200/0138b4/FFFFFF?text=Quiosque+do+Sol" alt="Quiosque do Sol">
                                 <div class="p-5 flex flex-col flex-grow">
@@ -123,21 +113,24 @@
                                             <p><strong class="font-semibold">Fim:</strong> 05/10/2025, 18:00</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center justify-end space-x-1 border-t border-gray-100 pt-4 mt-4">
+                                    <div class="flex items-center justify-end space-x-2 border-t border-gray-100 pt-4 mt-4">
                                         <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
                                             <i data-lucide="heart" class="w-5 h-5"></i>
                                         </button>
-                                        <button title="Mais Informações" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                            <i data-lucide="info" class="w-5 h-5"></i>
+                                        
+                                        <a href="#" class="text-xs font-medium text-blue-600 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-blue-50 transition-colors">Ver Barraca</a>
+
+                                        <button title="Editar Reserva" class="text-xs font-medium text-gray-700 hover:text-black px-3 py-1.5 rounded-md hover:bg-gray-100 transition-colors">
+                                            Editar Reserva
                                         </button>
-                                        <button title="Excluir Reserva" class="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+
+                                        <button title="Excluir Reserva" class="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors" onclick="return confirm('Tem certeza que deseja excluir esta reserva?');">
                                             <i data-lucide="trash-2" class="w-5 h-5"></i>
                                         </button>
                                     </div>
-                                </div>
+                                    </div>
                             </div>
                             
-                            <!-- Reserva Passada -->
                             <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="reserva2" data-location="Praia de Iracema">
                                 <img class="w-full h-48 object-cover" src="https://placehold.co/400x200/3b82f6/FFFFFF?text=Barraca+da+Praia" alt="Barraca da Praia">
                                 <div class="p-5 flex flex-col flex-grow">
@@ -151,20 +144,26 @@
                                             <p><strong class="font-semibold">Fim:</strong> 12/08/2025, 16:00</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center justify-end space-x-1 border-t border-gray-100 pt-4 mt-4">
+                                    <div class="flex items-center justify-end space-x-2 border-t border-gray-100 pt-4 mt-4">
                                         <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
                                             <i data-lucide="heart" class="w-5 h-5"></i>
                                         </button>
-                                        <button title="Mais Informações" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                            <i data-lucide="info" class="w-5 h-5"></i>
+                                        
+                                        <a href="#" class="text-xs font-medium text-blue-600 hover:text-blue-800 px-3 py-1.5 rounded-md hover:bg-blue-50 transition-colors">Ver Barraca</a>
+
+                                        <button title="Editar Reserva" class="text-xs font-medium text-gray-700 hover:text-black px-3 py-1.5 rounded-md hover:bg-gray-100 transition-colors">
+                                            Editar Reserva
+                                        </button>
+
+                                        <button title="Excluir Reserva" class="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors" onclick="return confirm('Tem certeza que deseja excluir esta reserva?');">
+                                            <i data-lucide="trash-2" class="w-5 h-5"></i>
                                         </button>
                                     </div>
-                                </div>
+                                    </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Meus Favoritos -->
                     <div id="favoritos" class="tab-content">
                        <div id="favorites-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                            <p class="text-blue-200 text-center py-8 col-span-full">Você ainda não tem locais favoritos. Clique no coração para adicioná-los!</p>
@@ -172,7 +171,6 @@
                     </div>
                 </div>
 
-                <!-- Botão para Novas Reservas -->
                 <div class="mt-12 text-center">
                     <a href="inicio.html" class="inline-flex items-center gap-2 bg-white text-blue-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 hover:scale-105 transition-transform transform">
                         <i data-lucide="plus-circle" class="w-5 h-5"></i>
@@ -184,7 +182,6 @@
         </section>
     </main>
 
-    <!-- Footer Branco -->
     <footer class="w-full bg-white text-gray-800 z-10 py-12">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-start text-left">
@@ -365,4 +362,3 @@
     </script>
 </body>
 </html>
-
