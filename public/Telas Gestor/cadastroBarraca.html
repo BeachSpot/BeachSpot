@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BeachSpot</title>
-    <link rel="icon" type="image/png" href="/public/assets/icons/Logo BeachSpot.png">
+    <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -55,9 +55,15 @@
             color: #1f2937;
             font-weight: 600;
             transition: background-color 0.2s;
+            border: 1px solid #d1d5db;
         }
         .file-input-label:hover {
             background-color: #e5e7eb;
+        }
+        /* Estilo para labels de características selecionadas */
+        label:has(input[type="checkbox"]:checked) {
+            background-color: #eff6ff; /* Tailwind blue-50 */
+            border-color: #3b82f6; /* Tailwind blue-500 */
         }
     </style>
 </head>
@@ -67,8 +73,8 @@
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
             <!-- Logo -->
-            <a href="#" class="flex items-center">
-                <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+            <a href="inicioGestor.html" class="flex items-center">
+                <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
             
             <!-- Navegação e Perfil do Usuário -->
@@ -76,10 +82,10 @@
                 <!-- Links de Navegação -->
                 <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
                 <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
-                <a href="#" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
+                <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
     
                 <!-- Ícone de Configurações Adicionado -->
-                <a href="/public/Telas Gestor/configuracoesgestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                <a href="configuracoesGestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
     
@@ -100,13 +106,14 @@
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-bold text-gray-900">Cadastre sua Barraca</h1>
                 <p class="text-gray-600 mt-2">Preencha as informações abaixo para que os clientes encontrem você.</p>
+                <br>
             </div>
             
             <!-- Formulário de Cadastro -->
             <form action="#" method="POST" class="space-y-8">
                 
                 <!-- Seção de Informações Básicas -->
-                <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
+                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Informações Básicas</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Nome da Barraca -->
@@ -121,48 +128,122 @@
                             <textarea id="descricao" name="descricao" rows="4" placeholder="Conte um pouco sobre o seu estabelecimento, seus diferenciais, etc." required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
                         </div>
                         
-                        <!-- Endereço -->
-                        <div>
+                        <!-- Endereço e Mapa -->
+                        <div class="md:col-span-2">
                             <label for="endereco" class="block text-sm font-medium text-gray-700 mb-1">Endereço / Localização</label>
-                            <input type="text" id="endereco" name="endereco" placeholder="Ex: Av. Atlântica, em frente ao posto 5" required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                        </div>
-                        
-                        <!-- Link do Cardápio -->
-                        <div>
-                            <label for="link-cardapio" class="block text-sm font-medium text-gray-700 mb-1">Link para o Cardápio <span class="text-gray-500">(Opcional)</span></label>
-                            <input type="url" id="link-cardapio" name="link-cardapio" placeholder="https://seusite.com/cardapio" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                                <input type="text" id="endereco" name="endereco" placeholder="Ex: Av. Atlântica, em frente ao posto 5" required class="flex-grow w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                <button type="button" title="Marque o local exato da barraca no mapa para que seus clientes se localizem mais rápido" class="flex-shrink-0 w-full sm:w-auto bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                                    <span>Marcar no mapa</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </section>
-
-                <!-- Seção de Mídia -->
-                <section class="relative border border-gray-200 rounded-xl p-6 pt-8">
-                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Fotos do Local</h2>
-                    <div class="space-y-6">
-                        <!-- Imagem de Destaque -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Imagem de Destaque</label>
-                            <label for="imagem-destaque" class="file-input-label">
-                                <i data-lucide="upload-cloud" class="w-5 h-5"></i>
-                                <span>Escolher imagem principal</span>
-                            </label>
-                            <input type="file" id="imagem-destaque" name="imagem-destaque" class="hidden" accept="image/*">
-                            <div id="preview-destaque" class="mt-4">
-                                <!-- A pré-visualização da imagem aparecerá aqui -->
+<br>
+                <!-- Seção de Cardápio -->
+                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Cardápio</h2>
+                    <div class="space-y-4">
+                         <label for="link-cardapio" class="block text-sm font-medium text-gray-700 mb-1 text-left">Link do Cardápio Digital <span class="text-gray-500">(Opcional)</span></label>
+                         <input type="url" id="link-cardapio" name="link-cardapio" placeholder="https://seusite.com/cardapio" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        
+                        <div class="relative py-2">
+                            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                <div class="w-full border-t border-gray-300"></div>
+                            </div>
+                            <div class="relative flex justify-center">
+                                <span class="bg-white px-2 text-sm text-gray-500">ou</span>
                             </div>
                         </div>
 
-                        <!-- Galeria de Fotos -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Galeria de Fotos <span class="text-gray-500">(selecione várias)</span></label>
-                             <label for="galeria-fotos" class="file-input-label">
-                                <i data-lucide="image-plus" class="w-5 h-5"></i>
-                                <span>Adicionar mais fotos</span>
-                            </label>
-                            <input type="file" id="galeria-fotos" name="galeria-fotos[]" class="hidden" accept="image/*" multiple>
-                            <div id="preview-galeria" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                <!-- As pré-visualizações da galeria aparecerão aqui -->
+                        <div class="text-center">
+                            <button type="button" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-md flex items-center gap-2 mx-auto">
+                                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                                <a href="cadastrocardapio.html">
+                                <span>Cadastre seu Cardápio</span>
+                            </button>
+                            <p class="text-xs text-gray-500 mt-2">Crie um cardápio digital diretamente na nossa plataforma.</p>
+                        </div>
+                    </div>
+                </section>
+<br>
+<br>
+                <!-- Seção de Características -->
+                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Características</h2>
+                    <p class="text-sm text-gray-500 mb-6">Selecione as opções que melhor descrevem o ambiente da sua barraca.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        
+                        <label for="familia" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="familia" name="caracteristicas[]" value="familia" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                            <span class="ml-3 text-sm font-medium text-gray-800">Ideal para Famílias</span>
+                        </label>
+                        
+                        <label for="musica" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="musica" name="caracteristicas[]" value="musica" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                            <span class="ml-3 text-sm font-medium text-gray-800">Música ao Vivo</span>
+                        </label>
+
+                        <label for="agitado" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="agitado" name="caracteristicas[]" value="agitado" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                            <span class="ml-3 text-sm font-medium text-gray-800">Ambiente Agitado</span>
+                        </label>
+
+                        <label for="relax" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="relax" name="caracteristicas[]" value="relax" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                            <span class="ml-3 text-sm font-medium text-gray-800">Relax & Tranquilo</span>
+                        </label>
+
+                        <label for="pet-friendly" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="pet-friendly" name="caracteristicas[]" value="pet-friendly" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                            <span class="ml-3 text-sm font-medium text-gray-800">Pet Friendly</span>
+                        </label>
+
+                        <label for="esportes" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="esportes" name="caracteristicas[]" value="esportes" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                            <span class="ml-3 text-sm font-medium text-gray-800">Esportes</span>
+                        </label>
+                    </div>
+                </section>
+<br>
+<br>
+                <!-- Seção de Mídia -->
+                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Fotos do Local</h2>
+                    <div class="space-y-6">
+                        <!-- Container para os botões de upload -->
+                        <div class="flex flex-col sm:flex-row gap-6">
+                            <!-- Imagem de Destaque -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Imagem de Destaque</label>
+                                <label for="imagem-destaque" class="file-input-label">
+                                    <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+                                    <span>Escolher imagem principal</span>
+                                </label>
+                                <input type="file" id="imagem-destaque" name="imagem-destaque" class="hidden" accept="image/*">
                             </div>
+
+                            <!-- Galeria de Fotos -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Galeria de Fotos <span class="text-gray-500">(selecione várias)</span></label>
+                                 <label for="galeria-fotos" class="file-input-label">
+                                    <i data-lucide="image-plus" class="w-5 h-5"></i>
+                                    <span>Adicionar mais fotos</span>
+                                </label>
+                                <input type="file" id="galeria-fotos" name="galeria-fotos[]" class="hidden" accept="image/*" multiple>
+                            </div>
+                        </div>
+
+                        <!-- Pré-visualização da Imagem de Destaque -->
+                        <div id="preview-destaque" class="mt-4">
+                            <!-- A pré-visualização da imagem aparecerá aqui -->
+                        </div>
+
+                        <!-- Pré-visualização da Galeria de Fotos -->
+                        <div id="preview-galeria" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            <!-- As pré-visualizações da galeria aparecerão aqui -->
                         </div>
                     </div>
                 </section>
@@ -184,7 +265,7 @@
                 <!-- Coluna 1: Logo -->
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="index.html" class="flex items-center">
-                        <img src="/public/assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+                        <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
                     </a>
                 </div>
 
@@ -194,21 +275,22 @@
                     <ul class="space-y-2">
                         <li><a href="iniciogestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
                         <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
-                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
-                        <li><a href="/public/Telas Gestor/configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="#" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
+                        <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
                         <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
                 <!-- Coluna 3: Social -->
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
-                    <div class="flex space-x-3"> <a href="https://www.instagram.com/empresa_beachspot" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://twitter.com/BeachSpotpraias" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
-                        </div>
+                    <div class="flex space-x-3">
+                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                    </div>
                 </div>
             </div>
             <div class="text-center mt-12 border-t border-gray-200 pt-6">
-                <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+                <p>&copy; 2025 Beachspot. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
@@ -274,5 +356,3 @@
     </script>
 </body>
 </html>
-
-

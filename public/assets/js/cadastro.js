@@ -1,8 +1,97 @@
-// Importa o cliente Supabase que acabamos de configurar.
 import { supabase } from './supabaseClient.js';
 
-// Função para alternar a visibilidade da senha (seu código original)
-function togglePassword() {
+// --- LÓGICA DE LOGIN COM GOOGLE (SUPABASE) ---
+supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log('[DEBUG] Evento de autenticação:', event);
+    
+    if (event === 'SIGNED_IN' && session?.user) {
+        const pendingType = localStorage.getItem('pending_account_type');
+        console.log('[DEBUG] Tipo pendente recuperado:', pendingType);
+
+        if (pendingType) {
+            try {
+                const { data: profile, error: fetchError } = await supabase
+                    .from('usuarios')
+                    .select('tipo_conta')
+                    .eq('id_usuario', session.user.id)
+                    .single();
+
+                console.log('[DEBUG] Perfil encontrado:', profile);
+                console.log('[DEBUG] Erro na busca:', fetchError);
+
+                if (fetchError?.code === 'PGRST116' || !profile || !profile.tipo_conta) {
+                    console.log('[DEBUG] Criando/atualizando perfil...');
+                    
+                    const { error: updateError } = await supabase
+                        .from('usuarios')
+                        .update({ tipo_conta: pendingType })
+                        .eq('id_usuario', session.user.id);
+
+                    if (updateError) {
+                        console.error('[ERRO] Ao atualizar usuarios:', updateError);
+                        showAlert('Erro', 'Não foi possível completar o cadastro.', 'error');
+                        return;
+                    }
+
+                    const nomeUsuario = session.user.user_metadata.full_name || 
+                                       session.user.user_metadata.name || 
+                                       session.user.email?.split('@')[0] || 
+                                       'Usuário';
+
+                    const profileData = {
+                        [`id_${pendingType}`]: session.user.id,
+                        nome: nomeUsuario
+                    };
+
+                    const { error: insertError } = await supabase
+                        .from(pendingType)
+                        .insert(profileData);
+
+                    if (insertError && insertError.code !== '23505') {
+                        console.error(`[ERRO] Ao inserir em ${pendingType}:`, insertError);
+                        showAlert('Erro', 'Não foi possível criar o perfil completo.', 'error');
+                        return;
+                    }
+
+                    console.log('[DEBUG] Perfil criado com sucesso!');
+                }
+
+                localStorage.removeItem('pending_account_type');
+                console.log('[DEBUG] Redirecionando para a página inicial...');
+                if (pendingType === 'gestor') {
+                    window.location.href = '/Telas Gestor/inicioGestor.html';
+                } else {
+                    window.location.href = '/Telas Clientes/inicio.html';
+                }
+
+            } catch (error) {
+                console.error('[ERRO GERAL]', error);
+                showAlert('Erro', 'Ocorreu um erro ao processar seu login.', 'error');
+            }
+        } else {
+            console.log('[DEBUG] Sem tipo pendente, redirecionando...');
+            window.location.href = '/Telas Clientes/inicio.html';
+        }
+    }
+});
+
+// Função para mostrar alertas
+function showAlert(title, message, type) {
+    const alertModal = document.getElementById('alert-modal');
+    const alertTitle = document.getElementById('alert-title');
+    const alertMessage = document.getElementById('alert-message');
+    const alertBox = alertModal?.querySelector('.alert-box');
+    
+    if (alertTitle) alertTitle.textContent = title;
+    if (alertMessage) alertMessage.textContent = message;
+    if (alertBox) {
+        alertBox.className = 'alert-box';
+        alertBox.classList.add(type);
+    }
+    if (alertModal) alertModal.classList.add('visible');
+}
+
+window.togglePassword = function() {
     const passwordInput = document.getElementById('password');
     const eyeIcon = document.getElementById('eye-icon');
     const eyeOffIcon = document.getElementById('eye-off-icon');
@@ -18,115 +107,107 @@ function togglePassword() {
     }
 }
 
-// Função para mostrar o modal de alerta (seu código original)
-function showAlert(title, message, type) {
-    const modal = document.getElementById('alert-modal');
-    const box = modal.querySelector('.alert-box');
-    const titleElement = document.getElementById('alert-title');
-    const messageElement = document.getElementById('alert-message');
-    
-    titleElement.textContent = title;
-    messageElement.textContent = message;
-
-    box.classList.remove('success', 'error');
-    box.classList.add(type);
-    
-    modal.classList.add('visible');
-}
-
-// Função para esconder o modal de alerta (seu código original)
-function hideAlert() {
-    const modal = document.getElementById('alert-modal');
-    modal.classList.remove('visible');
-}
-
-// --- NOVA FUNÇÃO PARA LOGIN SOCIAL ---
-async function signInWithProvider(provider) {
-    
-    // Pede ao Supabase para iniciar o login com Google ou Facebook.
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: provider, // 'google' ou 'facebook'
-        options: {
-            // Importante: para onde o usuário deve ser redirecionado APÓS o login.
-            // Troque para a URL da sua página de perfil ou dashboard.
-            redirectTo: window.location.origin + '/perfil-pessoal/inicio.html', 
-        },
-    });
-
-    if (error) {
-        console.error('Erro ao fazer login social:', error);
-        showAlert('Erro de Login', 'Não foi possível autenticar com o provedor. Tente novamente.', 'error');
-    }
-}
-
-// --- LÓGICA PRINCIPAL ---
 document.addEventListener('DOMContentLoaded', () => {
     const featureCards = document.querySelectorAll('.feature-card');
+    const tipoContaInput = document.getElementById('tipo-conta'); 
     const registrationForm = document.getElementById('registration-form');
-    const tipoContaInput = document.getElementById('tipo-conta');
-    const alertCloseBtn = document.getElementById('alert-close-btn');
-    
-    // Adiciona os eventos aos botões sociais
-    const googleButton = document.getElementById('google-btn');
-    const facebookButton = document.getElementById('facebook-btn');
+    const googleBtn = document.getElementById('google-btn');
+    const facebookBtn = document.getElementById('facebook-btn');
+    const alertModal = document.getElementById('alert-modal');
+    const alertCloseBtn = document.getElementById('alert-close'); 
 
-    googleButton.addEventListener('click', () => signInWithProvider('google'));
-    facebookButton.addEventListener('click', () => signInWithProvider('facebook'));
-
-    // --- SEU CÓDIGO ORIGINAL PARA CADASTRO COM E-MAIL ---
-    // (Pode ser mantido ou adaptado para usar supabase.auth.signUp())
     featureCards.forEach(card => {
         card.addEventListener('click', () => {
             featureCards.forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
-            const accountType = card.getAttribute('data-tipo-conta');
-            tipoContaInput.value = accountType;
+            const tipoConta = card.getAttribute('data-tipo-conta');
+            tipoContaInput.value = tipoConta;
+            console.log('[SELEÇÃO] Tipo de conta:', tipoConta);
+            if (googleBtn) googleBtn.disabled = false;
+            if (facebookBtn) facebookBtn.disabled = true;
         });
     });
 
-    alertCloseBtn.addEventListener('click', hideAlert);
-
-    registrationForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        if (!tipoContaInput.value) {
-            showAlert('Erro', 'Por favor, selecione um tipo de perfil para continuar.', 'error');
-            return;
-        }
-
-        const userData = {
-            email: document.getElementById('email').value,
-            senha: document.getElementById('password').value,
-            nome: document.getElementById('name').value,
-            tipo_conta: tipoContaInput.value
-        };
-
-        showAlert('Processando...', 'Estamos registrando sua conta...', 'success');
-
-        try {
-            // AINDA USA SUA API ANTIGA! O ideal seria migrar para o Supabase também.
-            const response = await fetch('http://localhost:3001/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData)
-            });
-
-            const result = await response.json();
-            
-            if (response.ok) {
-                showAlert('Sucesso!', 'Usuário registrado com sucesso!', 'success');
-                registrationForm.reset();
-                setTimeout(() => {
-                    window.location.href = '/perfil-pessoal/inicio.html';
-                }, 1500);
-            } else {
-                showAlert('Erro', `Erro: ${result.error || 'Ocorreu um erro desconhecido.'}`, 'error');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', async () => {
+            const tipoConta = tipoContaInput.value;
+            if (!tipoConta) {
+                showAlert('Atenção', 'Por favor, selecione um tipo de perfil (Cliente ou Gestor) antes de continuar.', 'error');
+                return;
             }
-        } catch (error) {
-            showAlert('Erro de Conexão', 'Falha na conexão. O servidor está offline?', 'error');
-        }
-    });
+            localStorage.setItem('pending_account_type', tipoConta);
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin + '/cadastro.html'
+                }
+            });
+            if (error) {
+                console.error('[ERRO GOOGLE]', error);
+                showAlert('Erro no Login', `Erro ao tentar logar com o Google: ${error.message}`, 'error');
+                localStorage.removeItem('pending_account_type');
+            }
+        });
+    }
 
-    // Disponibiliza a função togglePassword globalmente para o onclick no HTML
-    window.togglePassword = togglePassword;
+    if (facebookBtn) {
+        facebookBtn.addEventListener('click', () => {
+            showAlert('Indisponível', 'O login com Facebook não está habilitado no momento.', 'error');
+        });
+    }
+
+    if (registrationForm) {
+        registrationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!tipoContaInput.value) {
+                showAlert('Atenção', 'Por favor, selecione um tipo de perfil (Cliente ou Gestor).', 'error');
+                return;
+            }
+            
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            const userData = {
+                nome: nameInput.value,
+                email: emailInput.value,
+                senha: passwordInput.value,
+                tipo_conta: tipoContaInput.value
+            };
+
+            showAlert('Processando...', 'Estamos registrando sua conta...', 'success');
+
+            try {
+                const response = await fetch('http://localhost:3001/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showAlert('Sucesso!', 'Usuário registrado com sucesso!', 'success');
+                    registrationForm.reset();
+                    setTimeout(() => {
+                        if (userData.tipo_conta === 'gestor') {
+                            window.location.href = '/Telas Gestor/inicioGestor.html';
+                        } else {
+                            window.location.href = '/Telas Clientes/inicio.html';
+                        }
+                    }, 1500);
+                } else {
+                    showAlert('Erro', `Erro: ${result.error || 'Ocorreu um erro desconhecido.'}`, 'error');
+                }
+            } catch (error) {
+                console.error('[ERRO CADASTRO]', error);
+                showAlert('Erro de Conexão', 'Falha na conexão. O servidor está offline?', 'error');
+            }
+        });
+    }
+
+    if (alertCloseBtn) {
+        alertCloseBtn.addEventListener('click', () => {
+            if (alertModal) alertModal.classList.remove('visible');
+        });
+    }
 });

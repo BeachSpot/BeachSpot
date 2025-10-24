@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BeachSpot</title>
+    <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Estilos base e fundo */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex-grow: 1;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+        /* Estilos das abas */
+        .tab-button {
+            transition: all 0.3s ease;
+            border-radius: 6px 6px 0 0;
+        }
+        .tab-button.active {
+            background-color: #0138b4;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .tab-content {
+            display: none;
+        }
+        /* Estilo para input de arquivo customizado */
+        .custom-file-input-button {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1rem;
+            border-radius: 9999px;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            border: 1px solid #d1d5db;
+        }
+        .custom-file-input-button:hover {
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- Header Fixo Branco (IDÊNTICO AO CADASTRO) -->
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center">
+                <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+            </a>
+            <div class="flex items-center space-x-6">
+                <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
+                <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
+                <a href="configuracoesGestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="settings" class="w-6 h-6"></i>
+                </a>
+                <a href="perfilGestor.html">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="pt-28 md:pt-32 container mx-auto max-w-4xl px-6">
+        
+        <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
+            
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-900">Gerenciar Cardápio</h1>
+                <p class="text-gray-600 mt-2">Adicione e organize os produtos da sua barraca.</p>
+            </div>
+            
+            <div class="space-y-8">
+                
+                <!-- Seção para Adicionar/Editar Item -->
+                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                    <h2 id="form-title" class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Adicionar Novo Item</h2>
+                    <form id="item-form" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                        <input type="hidden" id="editing-item-id">
+                        <!-- Nome do Produto -->
+                        <div>
+                            <label for="nome-produto" class="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
+                            <input type="text" id="nome-produto" placeholder="Ex: Porção de Fritas" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <!-- Valor -->
+                        <div>
+                            <label for="valor-produto" class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                            <input type="number" id="valor-produto" placeholder="29.90" step="0.01" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <!-- Categoria -->
+                        <div class="md:col-span-1">
+                            <label for="categoria-produto" class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                            <select id="categoria-produto" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="comidas">Comidas e Petiscos</option>
+                                <option value="bebidas">Bebidas</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                        <!-- Imagem -->
+                        <div>
+                           <label for="imagem-produto" class="block text-sm font-medium text-gray-700 mb-1">Imagem</label>
+                           <input type="file" id="imagem-produto" class="hidden" accept="image/*">
+                           <label for="imagem-produto" class="custom-file-input-button">
+                                <i data-lucide="upload" class="w-5 h-5"></i>
+                                <span>Escolher Imagem</span>
+                           </label>
+                           <span id="file-name" class="text-sm text-gray-500 ml-3"></span>
+                        </div>
+                         <!-- Botão Adicionar/Salvar -->
+                        <div class="md:col-span-2 text-center">
+                            <button id="submit-button" type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-full transition-all transform hover:scale-105 shadow-md flex items-center gap-2 mx-auto">
+                                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                                <span>Adicionar Item</span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Seção de Itens Cadastrados -->
+                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Itens Cadastrados</h2>
+                    
+                    <div class="border-b border-gray-200 mb-6">
+                        <nav class="-mb-px flex space-x-2 sm:space-x-6" aria-label="Tabs">
+                            <button data-tab="comidas" class="tab-button active font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Comidas e Petiscos</button>
+                            <button data-tab="bebidas" class="tab-button font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Bebidas</button>
+                            <button data-tab="outros" class="tab-button font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Outros</button>
+                        </nav>
+                    </div>
+
+                    <div>
+                        <div id="comidas" class="tab-content border rounded-lg p-4" style="display: block;">
+                            <div id="comidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Itens de exemplo serão adicionados aqui -->
+                            </div>
+                             <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                        </div>
+                        <div id="bebidas" class="tab-content border rounded-lg p-4">
+                            <div id="bebidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                             <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                        </div>
+                        <div id="outros" class="tab-content border rounded-lg p-4">
+                            <div id="outros-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                             <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="text-center">
+                    <button type="button" class="bg-blue-600 text-white font-bold py-4 px-12 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg text-lg">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+        <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-wrap justify-between items-start text-left">
+                <div class="w-full md:w-auto mb-8 md:mb-0">
+                    <a href="inicioGestor.html" class="flex items-center">
+                        <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
+                    </a>
+                </div>
+
+                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                    <h3 class="font-bold mb-3">Navegação do Gestor</h3>
+                    <ul class="space-y-2">
+                        <li><a href="inicioGestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
+                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
+                        <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                    </ul>
+                </div>
+                <div class="w-1/2 md:w-auto">
+                    <h3 class="font-bold mb-3">Redes Sociais</h3>
+                    <div class="flex space-x-3">
+                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                        </div>
+                </div>
+            </div>
+            <div class="text-center mt-12 border-t border-gray-200 pt-6">
+                <p>&copy; 2025 Beachspot. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Modal de Confirmação para Apagar -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 shadow-xl max-w-sm w-full">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar Exclusão</h3>
+            <p class="text-gray-600 mb-6">Tem certeza de que deseja apagar este item do cardápio?</p>
+            <div class="flex justify-end gap-4">
+                <button id="cancel-delete" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">Cancelar</button>
+                <button id="confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Apagar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementos do Formulário
+            const itemForm = document.getElementById('item-form');
+            const formTitle = document.getElementById('form-title');
+            const submitButton = document.getElementById('submit-button');
+            const editingItemIdInput = document.getElementById('editing-item-id');
+            const nomeInput = document.getElementById('nome-produto');
+            const valorInput = document.getElementById('valor-produto');
+            const categoriaInput = document.getElementById('categoria-produto');
+            const imagemInput = document.getElementById('imagem-produto');
+            const fileNameSpan = document.getElementById('file-name');
+
+            // Abas
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // Modal
+            const deleteModal = document.getElementById('delete-modal');
+            const cancelDeleteBtn = document.getElementById('cancel-delete');
+            const confirmDeleteBtn = document.getElementById('confirm-delete');
+            let itemToDelete = null;
+
+            // Função para gerenciar visibilidade da mensagem "Nenhum item"
+            function updateNoItemsMessage(category) {
+                const list = document.getElementById(`${category}-list`);
+                const message = list.parentElement.querySelector('.no-items-message');
+                if (list.children.length > 0) {
+                    message.style.display = 'none';
+                } else {
+                    message.style.display = 'block';
+                }
+            }
+
+            // Função para criar o HTML de um item
+            function createItemElement(item) {
+                return `
+                    <div class="flex items-center bg-gray-50 p-3 rounded-lg border" data-id="${item.id}">
+                        <img src="${item.imagem}" alt="${item.nome}" class="w-20 h-20 rounded-md object-cover">
+                        <div class="flex-grow ml-4">
+                            <p class="font-bold text-gray-800 item-name">${item.nome}</p>
+                            <p class="text-green-600 font-semibold item-price">R$ ${item.valor.toFixed(2).replace('.', ',')}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="edit-btn text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-200"><i data-lucide="pencil" class="w-5 h-5 pointer-events-none"></i></button>
+                            <button class="delete-btn text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-200"><i data-lucide="trash-2" class="w-5 h-5 pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Manipulação do Formulário (Adicionar e Editar)
+            itemForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const itemData = {
+                    id: editingItemIdInput.value || `item-${Date.now()}`,
+                    nome: nomeInput.value,
+                    valor: parseFloat(valorInput.value),
+                    categoria: categoriaInput.value,
+                };
+
+                const reader = new FileReader();
+                if (imagemInput.files[0]) {
+                    reader.onload = function(event) {
+                        itemData.imagem = event.target.result;
+                        saveItem(itemData);
+                    }
+                    reader.readAsDataURL(imagemInput.files[0]);
+                } else if (!editingItemIdInput.value) {
+                    // Se for um novo item, a imagem é "obrigatória" (ou usamos placeholder)
+                    itemData.imagem = `https://placehold.co/80x80/cccccc/444444?text=${itemData.nome.charAt(0)}`;
+                    saveItem(itemData);
+                } else {
+                    // Mantém a imagem existente se não for alterada na edição
+                    const existingItem = document.querySelector(`[data-id="${itemData.id}"]`);
+                    itemData.imagem = existingItem.querySelector('img').src;
+                    saveItem(itemData);
+                }
+            });
+
+            function saveItem(itemData) {
+                if (editingItemIdInput.value) {
+                    // Editando
+                    const itemElement = document.querySelector(`[data-id="${itemData.id}"]`);
+                    itemElement.querySelector('.item-name').textContent = itemData.nome;
+                    itemElement.querySelector('.item-price').textContent = `R$ ${itemData.valor.toFixed(2).replace('.', ',')}`;
+                    itemElement.querySelector('img').src = itemData.imagem;
+                    itemElement.querySelector('img').alt = itemData.nome;
+
+                    // Mover o elemento se a categoria mudou
+                    const oldCategory = itemElement.closest('.tab-content').id;
+                    if(oldCategory !== itemData.categoria){
+                        document.getElementById(`${itemData.categoria}-list`).appendChild(itemElement);
+                        updateNoItemsMessage(oldCategory);
+                    }
+
+                } else {
+                    // Adicionando
+                    const itemHtml = createItemElement(itemData);
+                    document.getElementById(`${itemData.categoria}-list`).insertAdjacentHTML('beforeend', itemHtml);
+                }
+
+                updateNoItemsMessage(itemData.categoria);
+                resetForm();
+                lucide.createIcons(); // Recria ícones
+            }
+
+            function resetForm() {
+                itemForm.reset();
+                editingItemIdInput.value = '';
+                fileNameSpan.textContent = '';
+                formTitle.textContent = 'Adicionar Novo Item';
+                submitButton.innerHTML = '<i data-lucide="plus-circle" class="w-5 h-5"></i><span>Adicionar Item</span>';
+                submitButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                submitButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                lucide.createIcons();
+            }
+            
+            // Lógica de Editar e Apagar com delegação de eventos
+            document.querySelector('main').addEventListener('click', (e) => {
+                const editBtn = e.target.closest('.edit-btn');
+                const deleteBtn = e.target.closest('.delete-btn');
+
+                if (editBtn) {
+                    const itemElement = editBtn.closest('[data-id]');
+                    const itemId = itemElement.dataset.id;
+                    
+                    nomeInput.value = itemElement.querySelector('.item-name').textContent;
+                    valorInput.value = parseFloat(itemElement.querySelector('.item-price').textContent.replace('R$ ', '').replace(',', '.')).toFixed(2);
+                    const categoryId = itemElement.closest('.tab-content').id;
+                    categoriaInput.value = categoryId;
+                    
+                    editingItemIdInput.value = itemId;
+                    formTitle.textContent = 'Editar Item';
+                    submitButton.innerHTML = '<i data-lucide="save" class="w-5 h-5"></i><span>Salvar Alteração</span>';
+                    submitButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    submitButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    lucide.createIcons();
+                    
+                    itemForm.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                if (deleteBtn) {
+                    itemToDelete = deleteBtn.closest('[data-id]');
+                    deleteModal.classList.remove('hidden');
+                }
+            });
+
+            // Lógica do Modal
+            cancelDeleteBtn.addEventListener('click', () => {
+                deleteModal.classList.add('hidden');
+                itemToDelete = null;
+            });
+
+            confirmDeleteBtn.addEventListener('click', () => {
+                if (itemToDelete) {
+                    const category = itemToDelete.closest('.tab-content').id;
+                    itemToDelete.remove();
+                    updateNoItemsMessage(category);
+                }
+                deleteModal.classList.add('hidden');
+                itemToDelete = null;
+            });
+            
+            // Lógica das Abas
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(item => item.classList.remove('active'));
+                    tab.classList.add('active');
+                    tabContents.forEach(content => content.style.display = 'none');
+                    document.getElementById(tab.dataset.tab).style.display = 'block';
+                });
+            });
+
+            // Input de Imagem Customizado
+            imagemInput.addEventListener('change', function() {
+                fileNameSpan.textContent = this.files[0] ? this.files[0].name : '';
+            });
+
+            // Inicialização
+            ['comidas', 'bebidas', 'outros'].forEach(updateNoItemsMessage);
+        });
+    </script>
+</body>
+</html>

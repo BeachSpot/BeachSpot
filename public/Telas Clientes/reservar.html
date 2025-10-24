@@ -201,7 +201,7 @@
                                 <input type="text" id="reservationDate" class="form-input" placeholder="Selecione a data" required>
                                 <i data-lucide="calendar" class="lucide"></i>
                             </div>
-                            <small class="input-hint">Formato: dd/mm/aaaa</small>
+                            
                         </div>
                         <div class="form-group">
                             <label for="reservationTime">Horário</label>
@@ -209,7 +209,10 @@
                                 <input type="text" id="reservationTime" class="form-input" placeholder="Selecione o horário" required>
                                 <i data-lucide="clock" class="lucide"></i>
                             </div>
-                            <small class="input-hint">Formato: hh:mm</small>
+                            <!-- MENSAGEM DE TOLERÂNCIA ADICIONADA AQUI -->
+                            <p class="input-hint">
+                                A tolerância de chegada é de 40 minutos após o horário reservado.
+                            </p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -279,7 +282,7 @@
                 </div>
             </div>
             <div class="text-center mt-12 border-t border-gray-200 pt-6">
-                <p>&copy; 2024 Beachspot. Todos os direitos reservados.</p>
+                <p>&copy; 2025 Beachspot. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
@@ -339,7 +342,7 @@
                     <input type="text" name="participantName[]" class="form-input name-input" placeholder="Nome do acompanhante" required>
                     <i data-lucide="user" class="lucide"></i>
                     <button type="button" title="Remover nome" class="removeNameBtn absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors">
-                        <i data-lucide="x-circle" class="w-5 h-5 pointer-events-none"></i>
+                       
                     </button>
                 `;
                 namesContainer.appendChild(newNameField);
@@ -441,4 +444,3 @@
     </script>
 </body>
 </html>
-
