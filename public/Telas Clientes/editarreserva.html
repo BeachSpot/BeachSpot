@@ -124,15 +124,19 @@
         .submit-btn:hover { transform: translateY(-3px); background-color: var(--brand-blue-dark); box-shadow: 0 10px 20px rgba(1, 56, 180, 0.25); }
         .submit-btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(1, 56, 180, 0.2); }
 
+        /* Botão Cancelar com cor sólida */
         .cancel-btn {
             width: 100%; height: 52px; border: none; border-radius: 12px; 
-            background-color: transparent; color: var(--text-light); 
+            background-color: #e5e7eb; /* Cor sólida cinza */
+            color: var(--text-dark);   /* Texto escuro */
             font-size: 16px; font-weight: 600; cursor: pointer; 
             transition: all 0.2s ease; margin-top: 8px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .cancel-btn:hover { background-color: #f3f4f6; color: var(--text-dark); }
-
+        .cancel-btn:hover { 
+            background-color: #d1d5db; /* Cinza um pouco mais escuro */
+            color: var(--text-dark); 
+        }
 
         .input-hint { display: block; margin-top: 6px; font-size: 12px; color: var(--text-light); font-weight: 400; }
         .validation-error { color: var(--error-red); font-size: 14px; margin-top: 8px; text-align: center; display: none; }
@@ -199,10 +203,7 @@
                                 <input type="text" id="reservationTime" class="form-input" placeholder="Selecione o horário" required value="14:00">
                                 <i data-lucide="clock" class="lucide"></i>
                             </div>
-                            <p class="input-hint">
-                                A tolerância de chegada é de 40 minutos.
-                            </p>
-                        </div>
+                            </div>
                     </div>
                     <div class="form-group">
                         <label>Número de Pessoas</label>
@@ -312,15 +313,14 @@
             // Carregar dados da reserva (simulado)
             let peopleCount = parseInt(peopleCountSpan.textContent) || 1;
 
+            // --- MODIFICADO ---
+            // Botão 'x' removido do template
             const addNameToForm = (nameValue = "") => {
                 const newNameField = document.createElement('div');
                 newNameField.className = 'input-wrapper relative dynamic-name-field';
                 newNameField.innerHTML = `
                     <input type="text" name="participantName[]" class="form-input name-input" placeholder="Nome do acompanhante" required value="${nameValue}">
                     <i data-lucide="user" class="lucide"></i>
-                    <button type="button" title="Remover nome" class="removeNameBtn absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors">
-                        <i data-lucide="x-circle" class="w-5 h-5"></i>
-                    </button>
                 `;
                 namesContainer.appendChild(newNameField);
                 lucide.createIcons();
@@ -358,16 +358,8 @@
                 addNameToForm(); // Adiciona um campo vazio
             });
 
-            namesContainer.addEventListener('click', (event) => {
-                const removeButton = event.target.closest('.removeNameBtn');
-                if (removeButton) {
-                    removeButton.closest('.dynamic-name-field').remove();
-                    if (peopleCount > 1) {
-                        peopleCount--;
-                        peopleCountSpan.textContent = peopleCount;
-                    }
-                }
-            });
+            // --- MODIFICADO ---
+            // Event listener para o botão 'x' removido, pois o botão não existe mais.
 
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
