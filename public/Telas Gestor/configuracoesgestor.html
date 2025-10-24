@@ -13,7 +13,103 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
 
-        <link rel="stylesheet" href="/public/assets/css/configuracoes.css">
+    <style>
+        /* Estilos base e fundo */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0138b4, #73bff6);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex-grow: 1;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(1, 56, 180, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Estilos para os títulos das seções dentro do card */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937; /* Cor escura para texto */
+        }
+
+        /* Estilos para as descrições dentro do card */
+        .setting-description {
+            font-size: 0.875rem;
+            color: #4b5563; /* Cor cinza para texto */
+        }
+
+        /* --- Estilos para o Switch de Notificação --- */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 50px;
+          height: 28px;
+        }
+
+        .switch input { 
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #e5e7eb; /* Cinza claro */
+          transition: .4s;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 20px;
+          width: 20px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          transition: .4s;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        input:checked + .slider {
+          background-color: #3b82f6; /* Azul */
+        }
+
+        input:checked + .slider:before {
+          transform: translateX(22px);
+        }
+
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+
+    </style>
 </head>
 <body class="text-white">
 
@@ -28,18 +124,17 @@
             <!-- Navegação e Perfil do Usuário -->
             <div class="flex items-center space-x-6">
                 <!-- Links de Navegação -->
-                <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
-                <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
+                <a href="inicio.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="suasReservas.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
     
                 <!-- Ícone de Configurações Adicionado -->
-                <a href="configuracoesgestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
     
-                <!-- Avatar do Gestor -->
-                <a href="perfilGestor.html">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                <!-- Avatar do Cliente -->
+                <a href="perfilCliente.html">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
             </div>
         </nav>
@@ -98,35 +193,50 @@
                     <hr class="border-gray-200 mt-4">
                 </div>
 
+                <!-- SEÇÃO DE NOTIFICAÇÕES ATUALIZADA -->
                 <div>
                     <h3 class="section-title flex items-center space-x-2 mb-4">
                         <i data-lucide="bell" class="text-blue-500"></i>
                         <span data-translate="notifications_title">Notificações</span>
                     </h3>
                     <div class="space-y-4">
+                        <!-- Novas Reservas -->
                         <div class="flex items-center justify-between">
                             <div>
-                                <label for="promotional-offers" class="font-medium text-gray-900" data-translate="promo_offers_label">Ofertas Promocionais</label>
-                                <p class="setting-description" data-translate="promo_offers_desc">Receba e-mails sobre promoções e ofertas especiais.</p>
+                                <label for="new-bookings" class="font-medium text-gray-900" data-translate="new_bookings_label">Novas Reservas</label>
+                                <p class="setting-description" data-translate="new_bookings_desc">Receber alertas quando alguém reservar.</p>
                             </div>
                             <label class="switch">
-                                <input type="checkbox" id="promotional-offers" checked>
+                                <input type="checkbox" id="new-bookings" checked>
                                 <span class="slider round"></span>
                             </label>
                         </div>
+                        <!-- Cancelamentos -->
                         <div class="flex items-center justify-between">
                             <div>
-                                <label for="booking-reminders" class="font-medium text-gray-900" data-translate="booking_reminders_label">Lembretes de Reserva</label>
-                                <p class="setting-description" data-translate="booking_reminders_desc">Seja notificado sobre suas próximas reservas.</p>
+                                <label for="cancellations" class="font-medium text-gray-900" data-translate="cancellations_label">Cancelamentos</label>
+                                <p class="setting-description" data-translate="cancellations_desc">Ser notificado de cancelamentos.</p>
                             </div>
                             <label class="switch">
-                                <input type="checkbox" id="booking-reminders" checked>
+                                <input type="checkbox" id="cancellations" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <!-- Avaliação de Clientes -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label for="customer-reviews" class="font-medium text-gray-900" data-translate="customer_reviews_label">Avaliação de Clientes</label>
+                                <p class="setting-description" data-translate="customer_reviews_desc">Receber notificações quando um cliente deixar uma avaliação.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="customer-reviews" checked>
                                 <span class="slider round"></span>
                             </label>
                         </div>
                     </div>
                     <hr class="border-gray-200 mt-6">
                 </div>
+                <!-- FIM DA SEÇÃO DE NOTIFICAÇÕES -->
 
                 <div>
                     <h3 class="section-title flex items-center space-x-2 mb-1">
@@ -210,11 +320,10 @@
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
-                        <li><a href="iniciogestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
-                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
-                        <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
-                        <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
+                        <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
+                        <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
+                        <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
                 <div class="w-1/2 md:w-auto">
@@ -251,10 +360,14 @@
                 phone_label: "Phone Number",
                 change_button: "Change",
                 notifications_title: "Notifications",
-                promo_offers_label: "Promotional Offers",
-                promo_offers_desc: "Receive emails about promotions and special offers.",
-                booking_reminders_label: "Booking Reminders",
-                booking_reminders_desc: "Get notified about your upcoming reservations.",
+                // Traduções de notificação atualizadas
+                new_bookings_label: "New Bookings",
+                new_bookings_desc: "Receive alerts when someone books.",
+                cancellations_label: "Cancellations",
+                cancellations_desc: "Be notified of cancellations.",
+                customer_reviews_label: "Customer Reviews",
+                customer_reviews_desc: "Get notified when a customer leaves a review.",
+                // Fim das traduções atualizadas
                 add_account_title: "Add Account",
                 add_account_desc: "Connect to save your preferences and reservations.",
                 login_button: "Log in to existing account",
@@ -306,10 +419,14 @@
                 phone_label: "Número de Teléfono",
                 change_button: "Cambiar",
                 notifications_title: "Notificaciones",
-                promo_offers_label: "Ofertas Promocionales",
-                promo_offers_desc: "Reciba correos electrónicos sobre promociones y ofertas especiales.",
-                booking_reminders_label: "Recordatorios de Reserva",
-                booking_reminders_desc: "Reciba notificaciones sobre sus próximas reservas.",
+                // Traduções de notificação atualizadas
+                new_bookings_label: "Nuevas Reservas",
+                new_bookings_desc: "Recibir alertas cuando alguien reserve.",
+                cancellations_label: "Cancelaciones",
+                cancellations_desc: "Ser notificado de cancelaciones.",
+                customer_reviews_label: "Reseñas de Clientes",
+                customer_reviews_desc: "Recibir notificaciones cuando un cliente deje una reseña.",
+                // Fim das traduções atualizadas
                 add_account_title: "Añadir Cuenta",
                 add_account_desc: "Conéctese para guardar sus preferencias y reservas.",
                 login_button: "Iniciar sesión en cuenta existente",
