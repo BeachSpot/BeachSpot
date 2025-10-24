@@ -125,7 +125,7 @@
                                             <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
                                                 <i data-lucide="heart" class="w-5 h-5"></i>
                                             </button>
-                                            <button title="Excluir Reserva" class="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors" onclick="return confirm('Tem certeza que deseja excluir esta reserva?');">
+                                            <button title="Excluir Reserva" class="delete-reserva-btn text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
                                                 <i data-lucide="trash-2" class="w-5 h-5"></i>
                                             </button>
                                         </div>
@@ -158,7 +158,7 @@
                                             <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
                                                 <i data-lucide="heart" class="w-5 h-5"></i>
                                             </button>
-                                            <button title="Excluir Reserva" class="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors" onclick="return confirm('Tem certeza que deseja excluir esta reserva?');">
+                                            <button title="Excluir Reserva" class="delete-reserva-btn text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
                                                 <i data-lucide="trash-2" class="w-5 h-5"></i>
                                             </button>
                                         </div>
@@ -220,6 +220,20 @@
         </div>
     </footer>
 
+    <div id="delete-modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[1000] hidden">
+        <div id="delete-modal" class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4 transform transition-all opacity-0 scale-95">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Confirmar Exclusão</h3>
+            <p class="text-gray-600 mb-6">Tem certeza que deseja excluir esta reserva?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="modal-cancel-delete" class="px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    Não
+                </button>
+                <button id="modal-confirm-delete" class="px-4 py-2 rounded-md text-sm font-medium bg-red-600 text-white hover:bg-red-700 transition-colors">
+                    Sim, Excluir
+                </button>
+            </div>
+        </div>
+    </div>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
@@ -276,7 +290,6 @@
             }
 
             favorites.forEach(fav => {
-                // Template do Card de Favoritos Modificado
                 const favoriteCard = `
                     <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="${fav.id}">
                         <img class="w-full h-48 object-cover" src="${fav.image}" alt="${fav.title}">
@@ -306,21 +319,19 @@
         }
         
         function addRemoveFavoriteListeners() {
-            // Esta função agora lida com os botões de coração na aba 'Favoritos'
             document.querySelectorAll('#favoritos .remove-favorite-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const idToRemove = e.currentTarget.dataset.id;
                     let favorites = getFavorites();
                     favorites = favorites.filter(fav => fav.id !== idToRemove);
                     saveFavorites(favorites);
-                    renderFavorites(); // Re-renderiza a lista de favoritos (removendo o item)
-                    updateReservationFavoriteButtons(); // Atualiza os ícones na aba 'Reservas'
+                    renderFavorites(); 
+                    updateReservationFavoriteButtons(); 
                 });
             });
         }
 
         function updateReservationFavoriteButtons() {
-            // Atualiza os ícones de coração na aba 'Reservas'
             const favorites = getFavorites();
             document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
                 const card = button.closest('.reserva-card');
@@ -340,7 +351,6 @@
         }
         
         function addFavoriteListenersToReservations() {
-            // Adiciona/Remove favoritos a partir da aba 'Reservas'
             document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const card = e.currentTarget.closest('.reserva-card');
@@ -369,6 +379,67 @@
 
         addFavoriteListenersToReservations();
         updateReservationFavoriteButtons();
+
+        // --- Lógica do Modal de Exclusão ---
+        const modalOverlay = document.getElementById('delete-modal-overlay');
+        const modal = document.getElementById('delete-modal');
+        const modalCancel = document.getElementById('modal-cancel-delete');
+        const modalConfirm = document.getElementById('modal-confirm-delete');
+        const deleteButtons = document.querySelectorAll('#reservas .delete-reserva-btn');
+        
+        let cardToDelete = null;
+
+        const showModal = () => {
+            modalOverlay.classList.remove('hidden');
+            setTimeout(() => { // Adiciona uma pequena animação de entrada
+                modal.classList.remove('opacity-0', 'scale-95');
+                modal.classList.add('opacity-100', 'scale-100');
+            }, 10);
+        };
+
+        const hideModal = () => {
+            modal.classList.add('opacity-0', 'scale-95');
+            modal.classList.remove('opacity-100', 'scale-100');
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+                cardToDelete = null;
+            }, 200); // Espera a transição de saída terminar
+        };
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                cardToDelete = e.currentTarget.closest('.reserva-card');
+                if (cardToDelete) {
+                    showModal();
+                }
+            });
+        });
+
+        modalCancel.addEventListener('click', hideModal);
+        
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                hideModal();
+            }
+        });
+
+        modalConfirm.addEventListener('click', () => {
+            if (cardToDelete) {
+                // Animação de saída do card
+                cardToDelete.style.transition = 'opacity 0.3s ease, transform 0.3s ease, margin 0.3s ease';
+                cardToDelete.style.opacity = '0';
+                cardToDelete.style.transform = 'scale(0.95)';
+                cardToDelete.style.marginBottom = `-${cardToDelete.offsetHeight}px`; // Puxa o conteúdo abaixo
+                
+                // Remove o card após a animação
+                setTimeout(() => {
+                    cardToDelete.remove();
+                    cardToDelete = null;
+                }, 300);
+            }
+            hideModal();
+        });
+        // --- Fim da Lógica do Modal ---
     });
     </script>
 </body>
