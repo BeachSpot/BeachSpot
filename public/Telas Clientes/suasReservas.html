@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-4">
                                         <div class="flex space-x-2">
-                                            <a href="#" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-md transition-colors">Ver Barraca</a>
+                                            <a href="infobarraca.html" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-md transition-colors">Ver Barraca</a>
                                             <button title="Editar Reserva" class="text-sm font-medium text-gray-800 bg-gray-200 hover:bg-gray-300 px-3 py-1.5 rounded-md transition-colors">
                                                 Editar Reserva
                                             </button>
@@ -139,7 +139,7 @@
                                     <div class="flex-grow">
                                         <div class="flex justify-between items-start mb-2">
                                             <h3 class="text-xl font-bold text-gray-900 reserva-title">Barraca da Praia</h3>
-                                            <p class="text-xs font-semibold text-green-800 bg-green-100 inline-block px-2 py-1 rounded-full whitespace-nowrap">Confirmada</p>
+                                            <p class="text-xs font-semibold text-green-800 bg-green-100 inline-block px-2 py-1 rounded-full whitespace-nowNrap">Confirmada</p>
                                         </div>
                                         <div class="mt-2 text-sm text-gray-600 space-y-1">
                                             <p><strong class="font-semibold">Dia:</strong> 12/08/2025</p>
@@ -148,7 +148,7 @@
                                     </div>
                                     <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-4">
                                         <div class="flex space-x-2">
-                                            <a href="#" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-md transition-colors">Ver Barraca</a>
+                                            <a href="infobarraca.html" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-md transition-colors">Ver Barraca</a>
                                             <button title="Editar Reserva" class="text-sm font-medium text-gray-800 bg-gray-200 hover:bg-gray-300 px-3 py-1.5 rounded-md transition-colors">
                                                 Editar Reserva
                                             </button>
@@ -276,6 +276,7 @@
             }
 
             favorites.forEach(fav => {
+                // Template do Card de Favoritos Modificado
                 const favoriteCard = `
                     <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="${fav.id}">
                         <img class="w-full h-48 object-cover" src="${fav.image}" alt="${fav.title}">
@@ -284,13 +285,16 @@
                                 <h3 class="text-xl font-bold text-gray-900">${fav.title}</h3>
                                 <p class="text-sm text-gray-600 mt-1">Localização: ${fav.location}</p>
                             </div>
-                            <div class="flex items-center justify-end space-x-1 border-t border-gray-100 pt-4 mt-4">
-                                <a href="cardapio.html" title="Mais Informações" class="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                   <i data-lucide="info" class="w-5 h-5"></i>
-                                </a>
-                                <button title="Excluir Favorito" class="remove-favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors" data-id="${fav.id}">
-                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
-                                </button>
+                            <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-4">
+                                <div class="flex space-x-2">
+                                    <a href="infobarraca.html" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-md transition-colors">Ver Barraca</a>
+                                </div>
+                                
+                                <div class="flex space-x-1">
+                                    <button title="Remover dos Favoritos" class="remove-favorite-btn text-red-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors" data-id="${fav.id}">
+                                        <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -302,21 +306,23 @@
         }
         
         function addRemoveFavoriteListeners() {
-            document.querySelectorAll('.remove-favorite-btn').forEach(button => {
+            // Esta função agora lida com os botões de coração na aba 'Favoritos'
+            document.querySelectorAll('#favoritos .remove-favorite-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const idToRemove = e.currentTarget.dataset.id;
                     let favorites = getFavorites();
                     favorites = favorites.filter(fav => fav.id !== idToRemove);
                     saveFavorites(favorites);
-                    renderFavorites();
-                    updateReservationFavoriteButtons();
+                    renderFavorites(); // Re-renderiza a lista de favoritos (removendo o item)
+                    updateReservationFavoriteButtons(); // Atualiza os ícones na aba 'Reservas'
                 });
             });
         }
 
         function updateReservationFavoriteButtons() {
+            // Atualiza os ícones de coração na aba 'Reservas'
             const favorites = getFavorites();
-            document.querySelectorAll('.favorite-btn').forEach(button => {
+            document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
                 const card = button.closest('.reserva-card');
                 if (!card) return;
                 const cardId = card.dataset.id;
@@ -334,6 +340,7 @@
         }
         
         function addFavoriteListenersToReservations() {
+            // Adiciona/Remove favoritos a partir da aba 'Reservas'
             document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const card = e.currentTarget.closest('.reserva-card');
