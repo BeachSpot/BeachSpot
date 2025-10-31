@@ -95,10 +95,11 @@
                     </a>
                 </div>
                 
-                <div class="flex-1 md:text-left w-full"> <div class="flex items-start justify-between">
+                <div class="flex-1 md:text-left w-full"> 
+                    <div class="flex items-start justify-between">
                           <div>
-                              <h1 class="text-4xl font-bold text-gray-900 text-center md:text-left">Barraca Axé Bahia</h1>
-                              <div id="review-summary" class="flex items-center justify-center md:justify-start my-2">
+                              <h1 class="text-4xl font-bold text-gray-900 text-left">Barraca Axé Bahia</h1>
+                              <div id="review-summary" class="flex items-center justify-start my-2">
                                   <div class="flex text-yellow-500">
                                       <i data-lucide="star" class="w-5 h-5 fill-current"></i>
                                       <i data-lucide="star" class="w-5 h-5 fill-current"></i>
@@ -108,7 +109,7 @@
                                   </div>
                                   <span id="review-summary-text" class="ml-2 text-gray-600">4.3 (3 avaliações)</span>
                               </div>
-                               <div class="flex items-center justify-center md:justify-start mt-2 text-gray-700 font-semibold">
+                               <div class="flex items-center justify-start mt-2 text-gray-700 font-semibold">
                                 <i data-lucide="dollar-sign" class="w-5 h-5 mr-2 text-green-600"></i>
                                 <span>Preço médio: R$ 80 por pessoa</span>
                             </div>
@@ -154,15 +155,13 @@
             <section class="pt-8 mt-8 border-t border-gray-200">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">Promoções do Dia</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-blue-600 p-4 rounded-xl shadow-lg flex items-center gap-4">
-                        <i data-lucide="beer" class="w-8 h-8 text-white flex-shrink-0"></i>
+                    <div class="bg-blue-800 p-3 rounded-xl shadow-lg">
                         <div>
                             <h3 class="font-bold text-lg text-white">Happy Hour!</h3>
                             <p class="text-blue-100">Dose dupla de cerveja long neck das 16h às 18h.</p>
                         </div>
                     </div>
-                    <div class="bg-blue-600 p-4 rounded-xl shadow-lg flex items-center gap-4">
-                        <i data-lucide="fish" class="w-8 h-8 text-white flex-shrink-0"></i>
+                    <div class="bg-blue-800 p-3 rounded-xl shadow-lg">
                         <div>
                             <h3 class="font-bold text-lg text-white">Moqueca Especial</h3>
                             <p class="text-blue-100">20% de desconto na Moqueca de Peixe para duas pessoas.</p>
@@ -731,8 +730,8 @@
 
                 // Limpa o formulário
                 reviewTextarea.value = '';
-                currentRating = 0;
-                updateStars(0);
+                // currentRating = 0; // Não precisa resetar aqui, pois já será escondido
+                // updateStars(0);
                 showToast('Avaliação enviada com sucesso!');
 
                 // Esconde o formulário e mostra o botão de apagar
@@ -753,6 +752,11 @@
                     // Reseta
                     userReviewElement = null;
                     userReviewRating = 0;
+
+                    // *** INÍCIO DO BUGFIX ***
+                    currentRating = 0; // Reseta a nota atual
+                    updateStars(0); // Limpa as estrelas visualmente
+                    // *** FIM DO BUGFIX ***
 
                     // Mostra o formulário novamente
                     reviewFormContainer.classList.remove('hidden');
