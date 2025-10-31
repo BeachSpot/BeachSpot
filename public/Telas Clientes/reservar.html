@@ -1,67 +1,162 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BeachSpot</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeachSpot - Detalhes da Reserva</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <style>
+        :root {
+            --brand-blue: #0138b4;
+            --brand-blue-light: #3b82f6;
+            --brand-blue-dark: #012a8c;
+            --text-dark: #111827;
+            --text-light: #6B7280;
+            --border-color: #E5E7EB;
+            --background-color: #F9FAFB;
+            --white: #FFFFFF;
+            --success-green: #059669;
+            --error-red: #ef4444;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
+            /* Fundo gradiente de suasReservas.html */
             background: linear-gradient(135deg, #0138b4, #73bff6);
+            margin: 0;
+            padding-top: 72px; /* Espaçamento para o header fixo */
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
-        main {
-            flex-grow: 1;
+        
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--text-dark);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
         }
-        .tab-button {
-            color: #dbeafe; /* blue-100 */
-            transition: all 0.3s ease;
+        .notification.show {
+            top: 90px;
         }
-        .tab-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+
+        /* Estilo do card de reservar.html */
+        .booking-card {
+            width: 100%;
+            max-width: 920px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+            padding: 60px;
+            margin: 60px auto 100px auto;
+            position: relative;
+            z-index: 10;
+            animation: popIn 0.6s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) both;
         }
-        .tab-button.active {
-            background-color: white;
-            color: #0138b4; /* Dark blue text for active */
-            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+        
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .tab-button.active:hover {
-             background-color: white;
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 8px;
         }
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
+
+        .form-intro { text-align: center; margin-bottom: 24px; }
+        .form-intro p { margin: 0; color: var(--text-light); font-size: 16px; line-height: 1.6; }
+        hr { border: none; height: 1px; background-color: var(--border-color); margin: 0 0 32px 0; }
+        .form-group { margin-bottom: 24px; position: relative; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 8px; }
+        .input-wrapper { position: relative; }
+        .input-wrapper .lucide { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; transition: color 0.2s; pointer-events: none; }
+        
+        .form-input {
+            width: 100%; height: 52px; background-color: var(--background-color); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 0 16px 0 50px; font-size: 16px; font-family: 'Poppins', sans-serif;
+            color: var(--text-dark); transition: all 0.2s ease-in-out;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .form-input:disabled {
+            background-color: #e5e7eb; /* Cor de fundo cinza para desabilitado */
+            color: #6b7280; /* Cor de texto mais clara */
+            cursor: not-allowed;
         }
-        .reserva-card {
-            transition: all 0.3s ease;
+
+        .form-input:focus { outline: none; background-color: var(--white); border-color: var(--brand-blue); box-shadow: 0 0 0 3px rgba(1, 56, 180, 0.15); }
+        .form-input:focus ~ .lucide { color: var(--brand-blue); }
+        .form-input::placeholder { color: #9ca3af; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        .stepper { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; background-color: var(--background-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 6px; }
+        .stepper button { background-color: var(--white); border: 1px solid var(--border-color); border-radius: 8px; width: 40px; height: 40px; font-size: 24px; font-weight: 400; color: var(--brand-blue); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .stepper button:hover { background-color: var(--brand-blue); color: var(--white); }
+        .stepper #peopleCount { font-size: 18px; font-weight: 600; color: var(--text-dark); min-width: 50px; text-align: center; }
+
+        .submit-btn { width: 100%; height: 52px; border: none; border-radius: 12px; background-color: var(--brand-blue); color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .submit-btn:hover { transform: translateY(-3px); background-color: var(--brand-blue-dark); box-shadow: 0 10px 20px rgba(1, 56, 180, 0.25); }
+        .submit-btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(1, 56, 180, 0.2); }
+
+        /* Botão Cancelar com cor sólida */
+        .cancel-btn {
+            width: 100%; height: 52px; border: none; border-radius: 12px; 
+            background-color: #e5e7eb; /* Cor sólida cinza */
+            color: var(--text-dark);   /* Texto escuro */
+            font-size: 16px; font-weight: 600; cursor: pointer; 
+            transition: all 0.2s ease; margin-top: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .reserva-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        .cancel-btn:hover { 
+            background-color: #d1d5db; /* Cinza um pouco mais escuro */
+            color: var(--text-dark); 
+        }
+
+        .input-hint { display: block; margin-top: 6px; font-size: 12px; color: var(--text-light); font-weight: 400; }
+        .validation-error { color: var(--error-red); font-size: 14px; margin-top: 8px; text-align: center; display: none; }
+        
+        @media (max-width: 768px) {
+            .booking-card { padding: 32px; margin-left: 20px; margin-right: 20px; width: auto; }
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .booking-card { padding: 24px;}
         }
     </style>
-
 </head>
 <body>
+    <div id="notification" class="notification"></div>
 
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-             <a href="inicio.html" class="flex items-center">
+            <a href="inicio.html" class="flex items-center">
                 <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
             </a>
             <div class="flex items-center space-x-6">
@@ -77,114 +172,71 @@
         </nav>
     </header>
 
-    <main class="pt-[72px]">
-        <section class="py-16 md:py-24">
-            <div class="container mx-auto max-w-4xl px-6">
-
-                <div class="text-center mb-10">
-                     <h1 class="text-4xl md:text-5xl font-bold text-white">Suas Reservas e Favoritos</h1>
-                     <p class="text-lg text-blue-200 mt-2">Gerencie suas visitas e locais preferidos.</p>
+    <div style="flex-grow: 1;">
+        <main class="booking-card">
+            <div id="booking-form-view">
+                <h1 class="form-title">Editar Reserva</h1>
+                <div class="form-intro">
+                    <p>Revise e atualize os detalhes da sua reserva.</p>
                 </div>
-
-                <div class="bg-black/10 backdrop-blur-sm p-2 rounded-xl flex items-center justify-center space-x-2 mb-10 max-w-sm mx-auto">
-                    <button data-tab="reservas" class="tab-button flex-1 flex items-center justify-center gap-2 font-semibold py-3 px-4 rounded-lg text-sm md:text-base">
-                        <i data-lucide="calendar-check" class="w-5 h-5"></i>
-                        <span>Reservas</span>
-                    </button>
-                    <button data-tab="favoritos" class="tab-button flex-1 flex items-center justify-center gap-2 font-semibold py-3 px-4 rounded-lg text-sm md:text-base">
-                        <i data-lucide="heart" class="w-5 h-5"></i>
-                        <span>Favoritos</span>
-                    </button>
-                </div>
-
-                <div>
-                    <div id="reservas" class="tab-content">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="reserva1" data-location="Praia do Futuro">
-                                <img class="w-full h-48 object-cover" src="https://placehold.co/400x200/0138b4/FFFFFF?text=Quiosque+do+Sol" alt="Quiosque do Sol">
-                                <div class="p-5 flex flex-col flex-grow">
-                                    <div class="flex-grow">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <h3 class="text-xl font-bold text-gray-900 reserva-title">Quiosque do Sol</h3>
-                                            <p class="text-xs font-semibold text-yellow-800 bg-yellow-100 inline-block px-2 py-1 rounded-full whitespace-nowrap">Pendente</p>
-                                        </div>
-                                        <div class="text-sm text-gray-600 space-y-1">
-                                            <p><strong class="font-semibold">Dia:</strong> 05/10/2025</p>
-                                            <p><strong class="font-semibold">Horário de chegada:</strong> 14:00</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-4">
-                                        <div class="flex space-x-2">
-                                            <a href="infobarraca.html" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-md transition-colors">Ver Barraca</a>
-                                            <a href="editarreserva.html" title="Editar Reserva" class="text-sm font-medium text-gray-800 bg-gray-200 hover:bg-gray-300 px-3 py-1.5 rounded-md transition-colors">
-                                                Editar Reserva
-                                            </a>
-                                        </div>
-                                        
-                                        <div class="flex space-x-1">
-                                            <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="heart" class="w-5 h-5"></i>
-                                            </button>
-                                            <button title="Excluir Reserva" class="delete-reserva-btn text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="trash-2" class="w-5 h-5"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    </div>
-                            </div>
-                            
-                            <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="reserva2" data-location="Praia de Iracema">
-                                <img class="w-full h-48 object-cover" src="https://placehold.co/400x200/3b82f6/FFFFFF?text=Barraca+da+Praia" alt="Barraca da Praia">
-                                <div class="p-5 flex flex-col flex-grow">
-                                    <div class="flex-grow">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <h3 class="text-xl font-bold text-gray-900 reserva-title">Barraca da Praia</h3>
-                                            <p class="text-xs font-semibold text-green-800 bg-green-100 inline-block px-2 py-1 rounded-full whitespace-nowNrap">Confirmada</p>
-                                        </div>
-                                        <div class="mt-2 text-sm text-gray-600 space-y-1">
-                                            <p><strong class="font-semibold">Dia:</strong> 12/08/2025</p>
-                                            <p><strong class="font-semibold">Horário de chegada:</strong> 11:30</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-4">
-                                        <div class="flex space-x-2">
-                                            <a href="infobarraca.html" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-md transition-colors">Ver Barraca</a>
-                                            <a href="editarreserva.html" title="Editar Reserva" class="text-sm font-medium text-gray-800 bg-gray-200 hover:bg-gray-300 px-3 py-1.5 rounded-md transition-colors">
-                                                Editar Reserva
-                                            </a>
-                                        </div>
-                                        
-                                        <div class="flex space-x-1">
-                                            <button title="Adicionar aos Favoritos" class="favorite-btn text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="heart" class="w-5 h-5"></i>
-                                            </button>
-                                            <button title="Excluir Reserva" class="delete-reserva-btn text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                                <i data-lucide="trash-2" class="w-5 h-5"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    </div>
-                            </div>
+                <hr>
+                <form id="reservationForm" novalidate>
+                    <div class="form-group">
+                        <label for="barracaName">Barraca</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="barracaName" class="form-input" value="Quiosque do Sol" disabled>
+                            <i data-lucide="map-pin" class="lucide"></i>
                         </div>
                     </div>
 
-                    <div id="favoritos" class="tab-content">
-                       <div id="favorites-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                           <p class="text-blue-200 text-center py-8 col-span-full">Você ainda não tem locais favoritos. Clique no coração para adicioná-los!</p>
-                       </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="reservationDate">Data</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="reservationDate" class="form-input" placeholder="Selecione a data" required value="05/10/2025">
+                                <i data-lucide="calendar" class="lucide"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reservationTime">Horário de Chegada</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="reservationTime" class="form-input" placeholder="Selecione o horário" required value="14:00">
+                                <i data-lucide="clock" class="lucide"></i>
+                            </div>
+                            </div>
                     </div>
-                </div>
-
-                <div class="mt-12 text-center">
-                    <a href="inicio.html" class="inline-flex items-center gap-2 bg-white text-blue-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 hover:scale-105 transition-transform transform">
-                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                        <span>Fazer mais reservas</span>
-                    </a>
-                </div>
-
+                    <div class="form-group">
+                        <label>Número de Pessoas</label>
+                        <div class="stepper">
+                            <button type="button" id="decreaseBtn">-</button>
+                            <span id="peopleCount">2</span>
+                            <button type="button" id="increaseBtn">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-medium">Nome dos Participantes</label>
+                        <div id="namesContainer" class="space-y-3">
+                            <div class="input-wrapper relative">
+                                <input type="text" name="participantName[]" class="form-input name-input" placeholder="Seu nome" required value="Maria da Silva">
+                                <i data-lucide="user" class="lucide"></i>
+                            </div>
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <p id="validation-message" class="validation-error">Por favor, preencha todos os campos.</p>
+                        <button type="submit" class="submit-btn">
+                            <i data-lucide="save" style="width:20px; height:20px;"></i>
+                            Salvar Alterações
+                        </button>
+                        <a href="suasReservas.html" class="cancel-btn">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
             </div>
-        </section>
-    </main>
+            
+            </main>
+    </div>
 
     <footer class="w-full bg-white text-gray-800 z-10 py-12">
         <div class="container mx-auto max-w-6xl px-6">
@@ -205,12 +257,9 @@
                 </div>
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
-                    <div class="flex space-x-4">
-                       <div class="flex space-x-3"> 
-                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
-                        </div>
-                        
+                    <div class="flex space-x-3"> 
+                        <a href="https://www.instagram.com/empresa_beachspot" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://twitter.com/BeachSpotpraias" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
                     </div>
                 </div>
             </div>
@@ -220,227 +269,141 @@
         </div>
     </footer>
 
-    <div id="delete-modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[1000] hidden">
-        <div id="delete-modal" class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4 transform transition-all opacity-0 scale-95">
-            <h3 class="text-xl font-bold text-gray-900 mb-3">Confirmar Exclusão</h3>
-            <p class="text-gray-600 mb-6">Tem certeza que deseja excluir esta reserva?</p>
-            <div class="flex justify-end space-x-3">
-                <button id="modal-cancel-delete" class="px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-                    Não
-                </button>
-                <button id="modal-confirm-delete" class="px-4 py-2 rounded-md text-sm font-medium bg-red-600 text-white hover:bg-red-700 transition-colors">
-                    Sim, Excluir
-                </button>
-            </div>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
 
-        const tabs = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        const firstTab = tabs[0];
-        firstTab.classList.add('active'); // Activate first tab
-        const firstTabContent = document.getElementById(firstTab.dataset.tab);
-        if (firstTabContent) {
-            firstTabContent.style.display = 'block';
-        }
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(item => item.classList.remove('active'));
-                tab.classList.add('active');
-
-                tabContents.forEach(content => {
-                    content.style.display = 'none';
-                });
-
-                const activeTabContent = document.getElementById(tab.dataset.tab);
-                if(activeTabContent) {
-                    activeTabContent.style.display = 'block';
-                }
-                
-                if (tab.dataset.tab === 'favoritos') {
-                    renderFavorites();
-                }
+            flatpickr("#reservationDate", {
+                dateFormat: "d/m/Y",
+                minDate: "today",
+                locale: "pt",
             });
-        });
 
-        const favoritesList = document.getElementById('favorites-list');
-        const initialFavoriteMessage = favoritesList.innerHTML;
-
-        function getFavorites() {
-            return JSON.parse(localStorage.getItem('beachspot_favorites')) || [];
-        }
-
-        function saveFavorites(favorites) {
-            localStorage.setItem('beachspot_favorites', JSON.stringify(favorites));
-        }
-
-        function renderFavorites() {
-            const favorites = getFavorites();
-            favoritesList.innerHTML = ''; 
-
-            if (favorites.length === 0) {
-                favoritesList.innerHTML = initialFavoriteMessage;
-                lucide.createIcons();
-                return;
+            flatpickr("#reservationTime", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                minuteIncrement: 15,
+                locale: "pt"
+            });
+            
+            const notification = document.getElementById('notification');
+            let notificationTimeout;
+            function showNotification(message, isError = false) {
+                clearTimeout(notificationTimeout);
+                notification.textContent = message;
+                notification.style.backgroundColor = isError ? 'var(--error-red)' : 'var(--text-dark)';
+                notification.classList.add('show');
+                notificationTimeout = setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000); // 3 segundos
             }
 
-            favorites.forEach(fav => {
-                const favoriteCard = `
-                    <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="${fav.id}">
-                        <img class="w-full h-48 object-cover" src="${fav.image}" alt="${fav.title}">
-                        <div class="p-5 flex flex-col flex-grow">
-                            <div class="flex-grow">
-                                <h3 class="text-xl font-bold text-gray-900">${fav.title}</h3>
-                                <p class="text-sm text-gray-600 mt-1">Localização: ${fav.location}</p>
-                            </div>
-                            <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-4">
-                                <div class="flex space-x-2">
-                                    <a href="infobarraca.html" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-md transition-colors">Ver Barraca</a>
-                                </div>
-                                
-                                <div class="flex space-x-1">
-                                    <button title="Remover dos Favoritos" class="remove-favorite-btn text-red-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors" data-id="${fav.id}">
-                                        <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            const form = document.getElementById('reservationForm');
+            const validationMessage = document.getElementById('validation-message');
+            const decreaseBtn = document.getElementById('decreaseBtn');
+            const increaseBtn = document.getElementById('increaseBtn');
+            const peopleCountSpan = document.getElementById('peopleCount');
+            const namesContainer = document.getElementById('namesContainer');
+            
+            // Carregar dados da reserva (simulado)
+            let peopleCount = parseInt(peopleCountSpan.textContent) || 1;
+
+            // --- MODIFICADO ---
+            // Botão 'x' removido do template
+            const addNameToForm = (nameValue = "") => {
+                const newNameField = document.createElement('div');
+                newNameField.className = 'input-wrapper relative dynamic-name-field';
+                newNameField.innerHTML = `
+                    <input type="text" name="participantName[]" class="form-input name-input" placeholder="Nome do acompanhante" required value="${nameValue}">
+                    <i data-lucide="user" class="lucide"></i>
                 `;
-                favoritesList.insertAdjacentHTML('beforeend', favoriteCard);
-            });
-            lucide.createIcons();
-            addRemoveFavoriteListeners();
-        }
-        
-        function addRemoveFavoriteListeners() {
-            document.querySelectorAll('#favoritos .remove-favorite-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const idToRemove = e.currentTarget.dataset.id;
-                    let favorites = getFavorites();
-                    favorites = favorites.filter(fav => fav.id !== idToRemove);
-                    saveFavorites(favorites);
-                    renderFavorites(); 
-                    updateReservationFavoriteButtons(); 
-                });
-            });
-        }
+                namesContainer.appendChild(newNameField);
+                lucide.createIcons();
+            };
 
-        function updateReservationFavoriteButtons() {
-            const favorites = getFavorites();
-            document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
-                const card = button.closest('.reserva-card');
-                if (!card) return;
-                const cardId = card.dataset.id;
-                const isFavorited = favorites.some(fav => fav.id === cardId);
-
-                if (isFavorited) {
-                    button.classList.add('text-red-500');
-                    button.innerHTML = '<i data-lucide="heart" class="w-5 h-5 fill-current"></i>';
-                } else {
-                    button.classList.remove('text-red-500');
-                    button.innerHTML = '<i data-lucide="heart" class="w-5 h-5"></i>';
+            // Simulação: Carregar o segundo participante
+            if (peopleCount > 1) {
+                // Adiciona os campos extras (exceto o primeiro, que já está no HTML)
+                for (let i = 1; i < peopleCount; i++) {
+                    // Simulação de nome
+                    const name = (i === 1) ? "João Almeida" : ""; 
+                    addNameToForm(name);
                 }
-            });
-            lucide.createIcons();
-        }
-        
-        function addFavoriteListenersToReservations() {
-            document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const card = e.currentTarget.closest('.reserva-card');
-                    if (!card) return;
-
-                    const cardId = card.dataset.id;
-                    let favorites = getFavorites();
-                    const favoriteIndex = favorites.findIndex(fav => fav.id === cardId);
-
-                    if (favoriteIndex > -1) { 
-                        favorites.splice(favoriteIndex, 1);
-                    } else { 
-                        const favoriteData = {
-                            id: cardId,
-                            title: card.querySelector('.reserva-title').textContent.trim(),
-                            location: card.dataset.location,
-                            image: card.querySelector('img').src
-                        };
-                        favorites.push(favoriteData);
-                    }
-                    saveFavorites(favorites);
-                    updateReservationFavoriteButtons();
-                });
-            });
-        }
-
-        addFavoriteListenersToReservations();
-        updateReservationFavoriteButtons();
-
-        // --- Lógica do Modal de Exclusão ---
-        const modalOverlay = document.getElementById('delete-modal-overlay');
-        const modal = document.getElementById('delete-modal');
-        const modalCancel = document.getElementById('modal-cancel-delete');
-        const modalConfirm = document.getElementById('modal-confirm-delete');
-        const deleteButtons = document.querySelectorAll('#reservas .delete-reserva-btn');
-        
-        let cardToDelete = null;
-
-        const showModal = () => {
-            modalOverlay.classList.remove('hidden');
-            setTimeout(() => { // Adiciona uma pequena animação de entrada
-                modal.classList.remove('opacity-0', 'scale-95');
-                modal.classList.add('opacity-100', 'scale-100');
-            }, 10);
-        };
-
-        const hideModal = () => {
-            modal.classList.add('opacity-0', 'scale-95');
-            modal.classList.remove('opacity-100', 'scale-100');
-            setTimeout(() => {
-                modalOverlay.classList.add('hidden');
-                cardToDelete = null;
-            }, 200); // Espera a transição de saída terminar
-        };
-
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                cardToDelete = e.currentTarget.closest('.reserva-card');
-                if (cardToDelete) {
-                    showModal();
-                }
-            });
-        });
-
-        modalCancel.addEventListener('click', hideModal);
-        
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                hideModal();
             }
-        });
 
-        modalConfirm.addEventListener('click', () => {
-            if (cardToDelete) {
-                // Animação de saída do card
-                cardToDelete.style.transition = 'opacity 0.3s ease, transform 0.3s ease, margin 0.3s ease';
-                cardToDelete.style.opacity = '0';
-                cardToDelete.style.transform = 'scale(0.95)';
-                cardToDelete.style.marginBottom = `-${cardToDelete.offsetHeight}px`; // Puxa o conteúdo abaixo
+
+            const removeLastDynamicName = () => {
+                const dynamicFields = namesContainer.querySelectorAll('.dynamic-name-field');
+                if (dynamicFields.length > 0) {
+                    dynamicFields[dynamicFields.length - 1].remove();
+                }
+            };
+
+            decreaseBtn.addEventListener('click', () => {
+                if (peopleCount > 1) {
+                    peopleCount--;
+                    peopleCountSpan.textContent = peopleCount;
+                    removeLastDynamicName();
+                }
+            });
+
+            increaseBtn.addEventListener('click', () => {
+                peopleCount++;
+                peopleCountSpan.textContent = peopleCount;
+                addNameToForm(); // Adiciona um campo vazio
+            });
+
+            // --- MODIFICADO ---
+            // Event listener para o botão 'x' removido, pois o botão não existe mais.
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
                 
-                // Remove o card após a animação
+                let isValid = true;
+                validationMessage.style.display = 'none';
+                form.querySelectorAll('[required]').forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.style.borderColor = 'var(--error-red)';
+                    } else {
+                        input.style.borderColor = '';
+                    }
+                });
+
+                if (!isValid) {
+                    validationMessage.style.display = 'block';
+                    return;
+                }
+
+                const submitButton = form.querySelector('.submit-btn');
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Salvando...';
+                
+                // Simula o salvamento
                 setTimeout(() => {
-                    cardToDelete.remove();
-                    cardToDelete = null;
-                }, 300);
-            }
-            hideModal();
+                    try {
+                        // Mensagem de sucesso flutuante
+                        showNotification("Reserva atualizada com sucesso!");
+
+                        // Redireciona de volta para "Suas Reservas" após 2 segundos
+                        setTimeout(() => {
+                            window.location.href = "suasReservas.html";
+                        }, 2000);
+
+                    } catch (error) {
+                        showNotification("Ocorreu um erro ao atualizar sua reserva.", true);
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '<i data-lucide="save" style="width:20px; height:20px;"></i> Salvar Alterações';
+                        lucide.createIcons();
+                    }
+                }, 1000); 
+            });
         });
-        // --- Fim da Lógica do Modal ---
-    });
     </script>
 </body>
 </html>
