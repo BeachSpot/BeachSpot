@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeachSpot - Detalhes da Reserva</title>
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <title>BeachSpot - Fazer Reserva</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -175,9 +175,9 @@
     <div style="flex-grow: 1;">
         <main class="booking-card">
             <div id="booking-form-view">
-                <h1 class="form-title">Editar Reserva</h1>
+                <h1 class="form-title">Fazer Reserva</h1>
                 <div class="form-intro">
-                    <p>Revise e atualize os detalhes da sua reserva.</p>
+                    <p>Preencha os detalhes abaixo para completar sua reserva.</p>
                 </div>
                 <hr>
                 <form id="reservationForm" novalidate>
@@ -193,14 +193,14 @@
                         <div class="form-group">
                             <label for="reservationDate">Data</label>
                             <div class="input-wrapper">
-                                <input type="text" id="reservationDate" class="form-input" placeholder="Selecione a data" required value="05/10/2025">
+                                <input type="text" id="reservationDate" class="form-input" placeholder="Selecione a data" required value="">
                                 <i data-lucide="calendar" class="lucide"></i>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="reservationTime">Horário de Chegada</label>
                             <div class="input-wrapper">
-                                <input type="text" id="reservationTime" class="form-input" placeholder="Selecione o horário" required value="14:00">
+                                <input type="text" id="reservationTime" class="form-input" placeholder="Selecione o horário" required value="">
                                 <i data-lucide="clock" class="lucide"></i>
                             </div>
                             </div>
@@ -209,7 +209,7 @@
                         <label>Número de Pessoas</label>
                         <div class="stepper">
                             <button type="button" id="decreaseBtn">-</button>
-                            <span id="peopleCount">2</span>
+                            <span id="peopleCount">1</span>
                             <button type="button" id="increaseBtn">+</button>
                         </div>
                     </div>
@@ -217,7 +217,7 @@
                         <label class="font-medium">Nome dos Participantes</label>
                         <div id="namesContainer" class="space-y-3">
                             <div class="input-wrapper relative">
-                                <input type="text" name="participantName[]" class="form-input name-input" placeholder="Seu nome" required value="Maria da Silva">
+                                <input type="text" name="participantName[]" class="form-input name-input" placeholder="Seu nome" required value="">
                                 <i data-lucide="user" class="lucide"></i>
                             </div>
                             </div>
@@ -225,8 +225,8 @@
                     <div class="form-group">
                         <p id="validation-message" class="validation-error">Por favor, preencha todos os campos.</p>
                         <button type="submit" class="submit-btn">
-                            <i data-lucide="save" style="width:20px; height:20px;"></i>
-                            Salvar Alterações
+                            <i data-lucide="check-circle" style="width:20px; height:20px;"></i>
+                            Fazer Reserva
                         </button>
                         <a href="suasReservas.html" class="cancel-btn">
                             Cancelar
@@ -310,11 +310,8 @@
             const peopleCountSpan = document.getElementById('peopleCount');
             const namesContainer = document.getElementById('namesContainer');
             
-            // Carregar dados da reserva (simulado)
             let peopleCount = parseInt(peopleCountSpan.textContent) || 1;
 
-            // --- MODIFICADO ---
-            // Botão 'x' removido do template
             const addNameToForm = (nameValue = "") => {
                 const newNameField = document.createElement('div');
                 newNameField.className = 'input-wrapper relative dynamic-name-field';
@@ -326,16 +323,7 @@
                 lucide.createIcons();
             };
 
-            // Simulação: Carregar o segundo participante
-            if (peopleCount > 1) {
-                // Adiciona os campos extras (exceto o primeiro, que já está no HTML)
-                for (let i = 1; i < peopleCount; i++) {
-                    // Simulação de nome
-                    const name = (i === 1) ? "João Almeida" : ""; 
-                    addNameToForm(name);
-                }
-            }
-
+            // Bloco de carregamento de nomes removido, pois é uma nova reserva
 
             const removeLastDynamicName = () => {
                 const dynamicFields = namesContainer.querySelectorAll('.dynamic-name-field');
@@ -358,9 +346,6 @@
                 addNameToForm(); // Adiciona um campo vazio
             });
 
-            // --- MODIFICADO ---
-            // Event listener para o botão 'x' removido, pois o botão não existe mais.
-
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
                 
@@ -382,13 +367,14 @@
 
                 const submitButton = form.querySelector('.submit-btn');
                 submitButton.disabled = true;
-                submitButton.innerHTML = 'Salvando...';
+                // Texto de carregamento alterado
+                submitButton.innerHTML = 'Reservando...';
                 
                 // Simula o salvamento
                 setTimeout(() => {
                     try {
-                        // Mensagem de sucesso flutuante
-                        showNotification("Reserva atualizada com sucesso!");
+                        // Mensagem de sucesso alterada
+                        showNotification("Reserva realizada com sucesso!");
 
                         // Redireciona de volta para "Suas Reservas" após 2 segundos
                         setTimeout(() => {
@@ -396,9 +382,10 @@
                         }, 2000);
 
                     } catch (error) {
-                        showNotification("Ocorreu um erro ao atualizar sua reserva.", true);
+                        showNotification("Ocorreu um erro ao fazer sua reserva.", true);
                         submitButton.disabled = false;
-                        submitButton.innerHTML = '<i data-lucide="save" style="width:20px; height:20px;"></i> Salvar Alterações';
+                        // Botão de erro alterado
+                        submitButton.innerHTML = '<i data-lucide="check-circle" style="width:20px; height:20px;"></i> Fazer Reserva';
                         lucide.createIcons();
                     }
                 }, 1000); 
