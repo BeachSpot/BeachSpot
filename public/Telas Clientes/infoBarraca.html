@@ -169,7 +169,6 @@
                     </div>
                 </div>
             </section>
-            
             <div class="mt-8">
                 <div class="border-b border-gray-200">
                     <nav class="-mb-px flex justify-center md:justify-start space-x-4 md:space-x-8" aria-label="Tabs">
@@ -188,7 +187,7 @@
                 <div class="py-8">
                     <div id="tab-content-geral" class="tab-content">
                         <section>
-                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Sobre</h2>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Informações Gerais</h2>
                             <div class="space-y-4 text-gray-600 leading-relaxed">
                                 <p>Uma das barracas mais animadas da Praia do Porto da Barra, oferecendo o melhor do acarajé e da música baiana. Ambiente descontraído com vista privilegiada para o mar.</p>
                             </div>
@@ -204,6 +203,7 @@
                             </div>
                         </section>
                     </div>
+
                     <div id="tab-content-galeria" class="tab-content hidden">
                          <section>
                             <h2 class="text-2xl font-bold text-gray-800 mb-4">Galeria de Fotos</h2>
@@ -730,13 +730,8 @@
 
                 // Limpa o formulário
                 reviewTextarea.value = '';
-                
-                // *** INÍCIO DO BUGFIX VISUAL ***
-                // Reseta o currentRating para 0 IMEDIATAMENTE após o envio
-                currentRating = 0; 
-                updateStars(0); // Limpa as estrelas (mesmo escondidas)
-                // *** FIM DO BUGFIX VISUAL ***
-                
+                // currentRating = 0; // Não precisa resetar aqui, pois já será escondido
+                // updateStars(0);
                 showToast('Avaliação enviada com sucesso!');
 
                 // Esconde o formulário e mostra o botão de apagar
@@ -757,9 +752,12 @@
                     // Reseta
                     userReviewElement = null;
                     userReviewRating = 0;
-                    currentRating = 0; // Garante que a nota atual é 0
+
+                    // *** INÍCIO DO BUGFIX ***
+                    currentRating = 0; // Reseta a nota atual
                     updateStars(0); // Limpa as estrelas visualmente
-                    
+                    // *** FIM DO BUGFIX ***
+
                     // Mostra o formulário novamente
                     reviewFormContainer.classList.remove('hidden');
                     userReviewPlaceholder.classList.add('hidden');
