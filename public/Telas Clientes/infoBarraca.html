@@ -334,11 +334,7 @@
                 </div>
             </div>
             <div class="text-center mt-12 border-t border-gray-200 pt-6">
-<<<<<<< HEAD
-                <p>© 2024 Beachspot. Todos os direitos reservados.</p>
-=======
                 <p>© 2025 Beachspot. Todos os direitos reservados.</p>
->>>>>>> 7219508e7201efb912ead9ac2a914213e454fcb8
             </div>
         </div>
     </footer>
@@ -389,7 +385,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             
-<<<<<<< HEAD
             // --- Dados da Localização (simulação de dados do backend) ---
             const locationData = {
                 nome: "Barraca Axé Bahia",
@@ -525,7 +520,6 @@
 
             // --- Sistema de Toast (Notificação) ---
             const toast = document.getElementById('toast');
-=======
             // Lógica para controle das abas
             const tabs = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
@@ -570,7 +564,6 @@
             let totalRatingScore = 13;
 
             // Função para mostrar notificação (toast)
->>>>>>> 7219508e7201efb912ead9ac2a914213e454fcb8
             function showToast(message) {
                 toast.textContent = message;
                 toast.classList.remove('opacity-0', 'translate-y-3');
@@ -579,7 +572,6 @@
                 }, 3000);
             }
 
-<<<<<<< HEAD
             // --- Botão de Favorito ---
             const favoriteBtn = document.getElementById('favorite-btn');
             favoriteBtn.addEventListener('click', () => {
@@ -765,9 +757,7 @@
             const stars = starsContainer.querySelectorAll('svg');
             let currentRating = 0;
 
-=======
             // Função para atualizar a aparência das estrelas de avaliação
->>>>>>> 7219508e7201efb912ead9ac2a914213e454fcb8
             function updateStars(rating) {
                 ratingStars.forEach(star => {
                     if (parseInt(star.dataset.value) <= rating) {
@@ -786,7 +776,6 @@
                 const averageRating = totalRatingScore / totalReviews;
                 reviewSummaryText.textContent = `${averageRating.toFixed(1)} (${totalReviews} avaliações)`;
 
-<<<<<<< HEAD
             // --- Filtros de Avaliações ---
             const filterAllBtn = document.getElementById('filter-all');
             const filterMediaBtn = document.getElementById('filter-media');
@@ -809,14 +798,12 @@
                 allReviews.forEach(review => {
                     if (filterType === 'media' && !review.classList.contains('has-media')) {
                         review.classList.add('hidden');
-=======
                 // Atualiza as estrelas do resumo
                 const summaryStars = [...reviewSummaryStars.children];
                 const roundedAverage = Math.round(averageRating);
                 summaryStars.forEach((star, index) => {
                     if (index < roundedAverage) {
                         star.classList.add('fill-current');
->>>>>>> 7219508e7201efb912ead9ac2a914213e454fcb8
                     } else {
                         star.classList.remove('fill-current');
                     }
@@ -922,4 +909,3 @@
     </script>
 </body>
 </html>
-
