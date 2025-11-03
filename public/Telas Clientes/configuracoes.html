@@ -113,7 +113,7 @@
 </head>
 <body class="text-white">
 
-        <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
+    <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
             <!-- Logo -->
@@ -123,19 +123,50 @@
             
             <!-- Navegação e Perfil do Usuário -->
             <div class="flex items-center space-x-6">
-                <!-- Links de Navegação -->
+                <!-- Links de Navegação (Apenas Desktop) -->
                 <a href="inicio.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
                 <a href="suasReservas.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
     
-                <!-- Ícone de Configurações Adicionado -->
-                <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
-                    <i data-lucide="settings" class="w-6 h-6"></i>
-                </a>
+                <!-- Links de Ícone (Apenas Desktop) -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <!-- Ícone de Configurações (Desktop) -->
+                    <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                        <i data-lucide="settings" class="w-6 h-6"></i>
+                    </a>
+        
+                    <!-- Avatar do Cliente (Desktop) -->
+                    <a href="perfilCliente.html">
+                        <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                    </a>
+                </div>
+
+                <!-- Menu Hamburger (Apenas Mobile) -->
+                <div class="md:hidden relative" id="mobile-menu-container">
+                    <!-- Ícone Hamburger (os três traços) -->
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                        <i data-lucide="menu" class="w-7 h-7"></i>
+                    </button>
     
-                <!-- Avatar do Cliente -->
-                <a href="perfilCliente.html">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
-                </a>
+                    <!-- Dropdown Menu (Escondido por padrão) -->
+                    <div id="mobile-menu-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl z-20 border border-gray-100">
+                        <a href="inicio.html" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg">
+                            <i data-lucide="home" class="w-5 h-5 inline-block mr-2"></i>
+                            Início
+                        </a>
+                        <a href="suasReservas.html" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                            <i data-lucide="calendar-check" class="w-5 h-5 inline-block mr-2"></i>
+                            Suas Reservas
+                        </a>
+                        <a href="configuracoes.html" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                            <i data-lucide="settings" class="w-5 h-5 inline-block mr-2"></i>
+                            Configurações
+                        </a>
+                        <a href="perfilCliente.html" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                            <i data-lucide="user-circle-2" class="w-5 h-5 inline-block mr-2"></i>
+                            Perfil
+                        </a>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -440,7 +471,7 @@
                 modal_disconnect_message: "¿Estás seguro de que quieres cerrar la sesión?",
                 toast_disconnect_success: "Has sido desconectado.",
                 modal_delete_title: "Eliminar Cuenta",
-                modal_delete_message: "Esta acción es permanente y todos sus datos se perderán. ¿Está absolutamente seguro?",
+                modal_delete_message: "Esta acción es permanente y todos sus datos se perderán. ¿Está absolutely seguro?",
                 toast_delete_success: "Cuenta eliminada con éxito."
             }
         };
@@ -615,11 +646,13 @@
             document.getElementById('login-btn').addEventListener('click', (e) => {
                 e.preventDefault();
                 showToast('Redirecionando para a página de login...');
+                // window.location.href = 'entrar.html'; // Descomente para redirecionar
             });
 
             document.getElementById('create-account-btn').addEventListener('click', (e) => {
                 e.preventDefault();
                 showToast('Redirecionando para a criação de conta...');
+                // window.location.href = 'cadastro.html'; // Descomente para redirecionar
             });
 
             document.getElementById('disconnect-btn').addEventListener('click', () => {
@@ -651,7 +684,27 @@
                 showToast(getTranslation('contact_form_success', 'Mensagem enviada com sucesso!'));
                 this.reset(); 
             });
+
+            // --- LÓGICA DO MENU HAMBURGER (NOVO) ---
+            const menuContainer = document.getElementById('mobile-menu-container');
+            const menuButton = document.getElementById('mobile-menu-button');
+            const menuDropdown = document.getElementById('mobile-menu-dropdown');
+
+            if (menuButton && menuDropdown) {
+                menuButton.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Impede que o clique se propague para o window
+                    menuDropdown.classList.toggle('hidden');
+                });
+
+                // Fecha o menu se clicar fora dele
+                window.addEventListener('click', (event) => {
+                    if (menuContainer && !menuContainer.contains(event.target)) {
+                        menuDropdown.classList.add('hidden');
+                    }
+                });
+            }
         });
     </script>
 </body>
 </html>
+
