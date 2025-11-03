@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BeachSpot</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -69,38 +66,57 @@
 </head>
 <body class="text-white">
 
-    <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
-        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-            <!-- Logo -->
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
             <a href="inicioGestor.html" class="flex items-center">
                 <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
             
-            <!-- Navegação e Perfil do Usuário -->
             <div class="flex items-center space-x-6">
-                <!-- Links de Navegação -->
                 <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
                 <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
                 <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
     
-                <!-- Ícone de Configurações Adicionado -->
-                <a href="configuracoesGestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                <a href="configuracoesGestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
     
-                <!-- Avatar do Gestor -->
-                <a href="perfilGestor.html">
+                <a href="perfilGestor.html" class="hidden md:block">
                     <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                </a>
+
+                <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div id="mobile-menu" class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
+                <a href="iniciogestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span>Início</span>
+                </a>
+                <a href="gestaoBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                    <span>Gerenciar</span>
+                </a>
+                <a href="cadastroBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="configuracoesGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="perfilGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>Perfil</span>
                 </a>
             </div>
         </nav>
     </header>
 
-    <!-- Conteúdo principal -->
     <main class="pt-28 md:pt-32 container mx-auto max-w-4xl px-6">
         
-        <!-- Card Principal de Cadastro -->
         <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
             
             <div class="text-center mb-8">
@@ -109,26 +125,21 @@
                 <br>
             </div>
             
-            <!-- Formulário de Cadastro -->
             <form action="#" method="POST" class="space-y-8">
                 
-                <!-- Seção de Informações Básicas -->
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Informações Básicas</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Nome da Barraca -->
                         <div class="md:col-span-2">
                             <label for="nome-barraca" class="block text-sm font-medium text-gray-700 mb-1">Nome da Barraca</label>
                             <input type="text" id="nome-barraca" name="nome-barraca" placeholder="Ex: Barraca do Sol" required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         </div>
                         
-                        <!-- Descrição -->
                         <div class="md:col-span-2">
                             <label for="descricao" class="block text-sm font-medium text-gray-700 mb-1">Sobre a Barraca (Descrição)</label>
                             <textarea id="descricao" name="descricao" rows="4" placeholder="Conte um pouco sobre o seu estabelecimento, seus diferenciais, etc." required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
                         </div>
                         
-                        <!-- Endereço e Mapa -->
                         <div class="md:col-span-2">
                             <label for="endereco" class="block text-sm font-medium text-gray-700 mb-1">Endereço / Localização</label>
                             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -142,7 +153,6 @@
                     </div>
                 </section>
 <br>
-                <!-- Seção de Cardápio -->
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Cardápio</h2>
                     <div class="space-y-4">
@@ -170,7 +180,6 @@
                 </section>
 <br>
 <br>
-                <!-- Seção de Características -->
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Características</h2>
                     <p class="text-sm text-gray-500 mb-6">Selecione as opções que melhor descrevem o ambiente da sua barraca.</p>
@@ -209,13 +218,10 @@
                 </section>
 <br>
 <br>
-                <!-- Seção de Mídia -->
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Fotos do Local</h2>
                     <div class="space-y-6">
-                        <!-- Container para os botões de upload -->
                         <div class="flex flex-col sm:flex-row gap-6">
-                            <!-- Imagem de Destaque -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Imagem de Destaque</label>
                                 <label for="imagem-destaque" class="file-input-label">
@@ -225,7 +231,6 @@
                                 <input type="file" id="imagem-destaque" name="imagem-destaque" class="hidden" accept="image/*">
                             </div>
 
-                            <!-- Galeria de Fotos -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Galeria de Fotos <span class="text-gray-500">(selecione várias)</span></label>
                                  <label for="galeria-fotos" class="file-input-label">
@@ -236,19 +241,14 @@
                             </div>
                         </div>
 
-                        <!-- Pré-visualização da Imagem de Destaque -->
                         <div id="preview-destaque" class="mt-4">
-                            <!-- A pré-visualização da imagem aparecerá aqui -->
-                        </div>
+                            </div>
 
-                        <!-- Pré-visualização da Galeria de Fotos -->
                         <div id="preview-galeria" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                            <!-- As pré-visualizações da galeria aparecerão aqui -->
-                        </div>
+                            </div>
                     </div>
                 </section>
 
-                <!-- Botão de Envio -->
                 <div class="text-center">
                     <button type="submit" class="bg-blue-600 text-white font-bold py-4 px-12 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg text-lg">
                         Finalizar Cadastro
@@ -258,18 +258,15 @@
         </div>
     </main>
 
-       <!-- Footer Branco Modificado -->
-    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+       <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-center text-left">
-                <!-- Coluna 1: Logo -->
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="index.html" class="flex items-center">
                         <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
                     </a>
                 </div>
 
-                <!-- Coluna 2: Navegação -->
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
@@ -280,7 +277,6 @@
                         <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
-                <!-- Coluna 3: Social -->
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
                     <div class="flex space-x-3">
@@ -297,14 +293,25 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Lógica para o menu mobile
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', () => {
+            
+            // --- LÓGICA DO MENU MOBILE (SUBSTITUÍDA) ---
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn'); // ID Novo
+            const mobileMenu = document.getElementById('mobile-menu'); // ID Novo
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Impede que o clique no botão se propague para o document
                     mobileMenu.classList.toggle('hidden');
                 });
+
+                // Fecha o menu se clicar fora dele
+                document.addEventListener('click', (e) => {
+                    if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
             }
+            // --- FIM DA LÓGICA DO MENU MOBILE ---
 
             // Ativa os ícones do Lucide em toda a página.
             lucide.createIcons();

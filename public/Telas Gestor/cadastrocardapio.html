@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BeachSpot</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -77,27 +74,52 @@
 </head>
 <body class="text-white">
 
-    <!-- Header Fixo Branco (IDÊNTICO AO CADASTRO) -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
-        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-            <a href="#" class="flex items-center">
-                <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
+            <a href="inicioGestor.html" class="flex items-center"> <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
             <div class="flex items-center space-x-6">
                 <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
                 <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
                 <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
-                <a href="configuracoesGestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                
+                <a href="configuracoesGestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
-                <a href="perfilGestor.html">
+                <a href="perfilGestor.html" class="hidden md:block">
                     <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                </a>
+
+                <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div id="mobile-menu" class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
+                <a href="iniciogestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span>Início</span>
+                </a>
+                <a href="gestaoBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                    <span>Gerenciar</span>
+                </a>
+                <a href="cadastroBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="configuracoesGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="perfilGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>Perfil</span>
                 </a>
             </div>
         </nav>
     </header>
 
-    <!-- Conteúdo principal -->
     <main class="pt-28 md:pt-32 container mx-auto max-w-4xl px-6">
         
         <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
@@ -109,22 +131,18 @@
             
             <div class="space-y-8">
                 
-                <!-- Seção para Adicionar/Editar Item -->
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 id="form-title" class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Adicionar Novo Item</h2>
                     <form id="item-form" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                         <input type="hidden" id="editing-item-id">
-                        <!-- Nome do Produto -->
                         <div>
                             <label for="nome-produto" class="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
                             <input type="text" id="nome-produto" placeholder="Ex: Porção de Fritas" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         </div>
-                        <!-- Valor -->
                         <div>
                             <label for="valor-produto" class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
                             <input type="number" id="valor-produto" placeholder="29.90" step="0.01" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         </div>
-                        <!-- Categoria -->
                         <div class="md:col-span-1">
                             <label for="categoria-produto" class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
                             <select id="categoria-produto" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -133,7 +151,6 @@
                                 <option value="outros">Outros</option>
                             </select>
                         </div>
-                        <!-- Imagem -->
                         <div>
                            <label for="imagem-produto" class="block text-sm font-medium text-gray-700 mb-1">Imagem</label>
                            <input type="file" id="imagem-produto" class="hidden" accept="image/*">
@@ -143,8 +160,7 @@
                            </label>
                            <span id="file-name" class="text-sm text-gray-500 ml-3"></span>
                         </div>
-                         <!-- Botão Adicionar/Salvar -->
-                        <div class="md:col-span-2 text-center">
+                         <div class="md:col-span-2 text-center">
                             <button id="submit-button" type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-full transition-all transform hover:scale-105 shadow-md flex items-center gap-2 mx-auto">
                                 <i data-lucide="plus-circle" class="w-5 h-5"></i>
                                 <span>Adicionar Item</span>
@@ -153,7 +169,6 @@
                     </form>
                 </section>
 
-                <!-- Seção de Itens Cadastrados -->
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Itens Cadastrados</h2>
                     
@@ -168,8 +183,7 @@
                     <div>
                         <div id="comidas" class="tab-content border rounded-lg p-4" style="display: block;">
                             <div id="comidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Itens de exemplo serão adicionados aqui -->
-                            </div>
+                                </div>
                              <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
                         </div>
                         <div id="bebidas" class="tab-content border rounded-lg p-4">
@@ -225,7 +239,6 @@
         </div>
     </footer>
     
-    <!-- Modal de Confirmação para Apagar -->
     <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-lg p-8 shadow-xl max-w-sm w-full">
             <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar Exclusão</h3>
@@ -241,6 +254,26 @@
         lucide.createIcons();
 
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- LÓGICA DO MENU MOBILE (ADICIONADA) ---
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Impede que o clique no botão se propague para o document
+                    mobileMenu.classList.toggle('hidden');
+                });
+
+                // Fecha o menu se clicar fora dele
+                document.addEventListener('click', (e) => {
+                    if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            }
+            // --- FIM DA LÓGICA DO MENU MOBILE ---
+
             // Elementos do Formulário
             const itemForm = document.getElementById('item-form');
             const formTitle = document.getElementById('form-title');
