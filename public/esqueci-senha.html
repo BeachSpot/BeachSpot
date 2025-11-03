@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeachSpot</title>
+    <link rel="stylesheet" href="assets/css/entrar.css">
+    <!-- Caminho do ícone atualizado para consistência -->
+    <link rel="icon" type="image/png" href="./assets/icons/Logo BeachSpot.png">
+</head>
+<body>
+    <div class="container">
+        <!-- Lado Esquerdo -->
+        <div class="left-section">
+            <div class="left-content">
+                <h1 class="main-title">Recupere o acesso<br>ao seu lugar ao sol.</h1>
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <!-- Ícone SVG substituído por IMG para consistência com entrar.html -->
+                        <div class="feature-icon">
+                            <img src="https://img.icons8.com/ios-filled/50/ffffff/lock.png" alt="Ícone de Cadeado">
+                        </div>
+                        <h3 class="feature-title">Redefinir Senha</h3>
+                    </div>
+                    <p class="feature-description">
+                        Não se preocupe! Vamos enviar um link para redefinir sua senha por email.
+                    </p>
+                </div>
+            </div>
+            <div class="logo">
+                <!-- Caminho da logo atualizado para consistência -->
+                <img src="./assets/icons/Logo Branca.png" alt="BeachSpot Logo">
+            </div>
+        </div>
+
+        <!-- Lado Direito -->
+        <div class="right-section">
+            <div class="form-card">
+                <h2 class="form-title">Esqueceu sua senha?</h2>
+                <p class="form-subtitle">
+                    Lembrou? <a href="entrar.html">Voltar para login</a>
+                </p>
+                
+                <form id="reset-form">
+                    <div class="form-group">
+                        <label class="form-label" for="email">E-mail cadastrado</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            class="form-input" 
+                            placeholder="Digite seu e-mail" 
+                            required
+                        >
+                    </div>
+                    <p class="terms-text" style="margin-bottom: 20px;">
+                        Você receberá um email com instruções para redefinir sua senha.
+                    </p>
+                    <button type="submit" class="btn-primary">Enviar Link de Recuperação</button>
+                </form>
+
+                <div class="divider"><span>ou</span></div>
+                
+                <!-- Estilo inline removido para usar a folha de estilo entrar.css -->
+                <a href="cadastro.html" class="btn-secondary" style="color: #1976D2; font-weight: 500;">
+                    Criar nova conta
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Alerta -->
+    <div id="alert-modal" class="alert-modal">
+        <div class="alert-box">
+            <h3 id="alert-title" class="alert-header"></h3>
+            <p id="alert-message" class="alert-message"></p>
+            <button id="alert-close-btn" class="alert-close-btn">OK</button>
+        </div>
+    </div>
+
+    <!-- Caminhos dos scripts atualizados para consistência -->
+     <script type="module" src="assets/js/supabaseClient.js"></script>
+     <script type="module" src="assets/js/esqueci-senha.js"></script>
+</body>
+</html>

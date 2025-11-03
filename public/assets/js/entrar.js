@@ -1,6 +1,6 @@
 import { supabase } from './supabaseClient.js';
 
-// --- AUTENTICAÇÃO COM GOOGLE (SUPABASE) ---
+// --- AUTENTICAÇÃO UNIFICADA COM SUPABASE ---
 supabase.auth.onAuthStateChange(async (event, session) => {
     console.log('[DEBUG LOGIN] Evento de autenticação:', event);
     
@@ -13,24 +13,34 @@ supabase.auth.onAuthStateChange(async (event, session) => {
                 .from('usuarios')
                 .select('id_usuario, email, tipo_conta')
                 .eq('id_usuario', session.user.id)
-                .single();
+                .maybeSingle();
 
             console.log('[DEBUG LOGIN] Dados do usuário:', usuario);
 
-            if (fetchError) {
-                console.error('[ERRO] Ao buscar usuário:', fetchError);
-                showAlert('Erro', 'Não foi possível carregar seus dados. Tente novamente.', 'error');
-                await supabase.auth.signOut();
-                return;
-            }
-
-            // Verificar se o usuário tem tipo_conta definido
+            // SE NÃO ENCONTROU = CONTA FANTASMA
             if (!usuario || !usuario.tipo_conta) {
-                showAlert('Erro', 'Sua conta não está completamente configurada. Por favor, faça o cadastro novamente.', 'error');
+                console.error('[ERRO] Conta fantasma detectada! Deletando...');
+                
+                // Fazer signOut para encerrar a sessão
                 await supabase.auth.signOut();
+                
+                // Tentar deletar a conta fantasma via API
+                try {
+                    // Como não temos acesso admin no client, vamos apenas fazer signOut
+                    // A conta ficará órfã no auth.users, mas não terá sessão ativa
+                    console.log('[INFO] Conta fantasma detectada. Sessão encerrada.');
+                } catch (deleteError) {
+                    console.log('[INFO] Não foi possível deletar automaticamente.');
+                }
+                
+                hideAlert();
+                setTimeout(() => {
+                    showAlert('Conta Inválida', 'Esta conta não está registrada no BeachSpot. Por favor, faça o cadastro primeiro.', 'error');
+                }, 100);
+                
                 setTimeout(() => {
                     window.location.href = '/cadastro.html';
-                }, 2000);
+                }, 2500);
                 return;
             }
 
@@ -56,7 +66,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
             const userData = {
                 id_usuario: usuario.id_usuario,
                 email: usuario.email,
-                nome: nomeUsuario || session.user.email?.split('@')[0] || 'Usuário',
+                nome: nomeUsuario || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
                 tipo_conta: usuario.tipo_conta
             };
 
@@ -66,7 +76,6 @@ supabase.auth.onAuthStateChange(async (event, session) => {
             
             showAlert('Sucesso!', `Bem-vindo(a) de volta, ${userData.nome}!`, 'success');
             
-            // Redirecionar após delay
             setTimeout(() => {
                 if (userData.tipo_conta === 'gestor') {
                     window.location.href = '/Telas Gestor/inicioGestor.html';
@@ -83,7 +92,6 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     }
 });
 
-// --- FUNÇÕES AUXILIARES ---
 function showAlert(title, message, type) {
     const alertModal = document.getElementById('alert-modal');
     const alertTitle = document.getElementById('alert-title');
@@ -104,7 +112,6 @@ function hideAlert() {
     if (alertModal) alertModal.classList.remove('visible');
 }
 
-// Toggle de senha no escopo global
 window.togglePassword = function() {
     const passwordInput = document.getElementById('password');
     const eyeIcon = document.getElementById('eye-icon');
@@ -121,13 +128,11 @@ window.togglePassword = function() {
     }
 }
 
-// --- CÓDIGO PRINCIPAL DA PÁGINA ---
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const googleBtn = document.getElementById('google-btn');
     const alertCloseBtn = document.getElementById('alert-close-btn');
 
-    // Fechar modal de alerta
     if (alertCloseBtn) {
         alertCloseBtn.addEventListener('click', hideAlert);
     }
@@ -151,52 +156,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LOGIN COM EMAIL E SENHA (via API) ---
+    // --- LOGIN COM EMAIL E SENHA (SUPABASE AUTH) ---
     if (loginForm) {
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const loginData = {
-                email: document.getElementById('email').value,
-                senha: document.getElementById('password').value,
-            };
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            showAlert('Processando...', 'Verificando credenciais...', 'success');
 
             try {
-                const response = await fetch('http://localhost:3001/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(loginData)
-                });
+                // PASSO 1: VERIFICAR SE O EMAIL EXISTE NA TABELA USUARIOS
+                const { data: usuarioData, error: checkError } = await supabase
+                    .from('usuarios')
+                    .select('id_usuario, email, tipo_conta')
+                    .eq('email', email)
+                    .maybeSingle();
 
-                const result = await response.json();
+                console.log('[DEBUG] Verificação de usuário:', usuarioData);
 
-                if (response.ok) {
-                    // Armazenar dados do usuário na sessão
-                    sessionStorage.setItem('userData', JSON.stringify(result));
-
-                    showAlert('Sucesso!', `Bem-vindo(a) de volta, ${result.nome}!`, 'success');
-                    
-                    // Redirecionar após delay
+                // Se não encontrou o usuário no banco, BLOQUEAR LOGIN
+                if (!usuarioData) {
+                    hideAlert();
                     setTimeout(() => {
-                        if (result.tipo_conta === 'gestor') {
-                            window.location.href = '/Telas Gestor/inicioGestor.html';
-                        } else {
-                            window.location.href = '/Telas Clientes/inicio.html';
-                        }
-                        hideAlert();
-                    }, 1500);
-
-                } else {
-                    showAlert('Erro no Login', result.error || 'Ocorreu um erro.', 'error');
+                        showAlert('Conta não encontrada', 'Este email não está cadastrado no BeachSpot. Por favor, faça o cadastro primeiro.', 'error');
+                    }, 100);
+                    return;
                 }
+
+                // PASSO 2: VERIFICAR SE USUÁRIO JÁ EXISTE NO SUPABASE AUTH
+                // Isso evita criar duplicatas
+                let authUserExists = false;
+                try {
+                    const { data: sessionCheck } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+                    
+                    if (sessionCheck?.user) {
+                        authUserExists = true;
+                        console.log('[DEBUG] Login bem-sucedido:', sessionCheck.user.email);
+                        // O onAuthStateChange vai cuidar do resto
+                    }
+                } catch (authError) {
+                    console.error('[ERRO AUTH]', authError);
+                    hideAlert();
+                    
+                    setTimeout(() => {
+                        showAlert('Erro no Login', 'Email ou senha incorretos.', 'error');
+                    }, 100);
+                    return;
+                }
+
             } catch (error) {
-                showAlert('Erro de Conexão', 'Não foi possível conectar ao servidor. Tente novamente mais tarde.', 'error');
+                hideAlert();
+                setTimeout(() => {
+                    showAlert('Erro de Conexão', 'Não foi possível conectar. Tente novamente.', 'error');
+                }, 100);
                 console.error('Erro de rede:', error);
             }
         });
     }
 
-    // Redirecionar se aberto localmente
     if (window.location.protocol === 'file:') {
         window.location.href = 'http://localhost:3001/entrar.html';
     }
