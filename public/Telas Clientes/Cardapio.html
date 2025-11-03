@@ -56,9 +56,11 @@
              <a href="inicio.html" class="flex items-center">
                 <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
             </a>
-            <div class="flex items-center space-x-6">
-                <a href="inicio.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="suasReservas.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
+            
+            <!-- Menu Desktop (Visível em md e acima) -->
+            <div id="desktop-menu" class="hidden md:flex items-center space-x-6">
+                <a href="inicio.html" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="suasReservas.html" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
                 <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
@@ -66,7 +68,24 @@
                     <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
             </div>
+
+            <!-- Botão do Menu Mobile (Visível abaixo de md) -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
         </nav>
+
+        <!-- Menu Dropdown Mobile (Oculto por padrão) -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg border-t border-gray-200">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <a href="inicio.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Início</a>
+                <a href="suasReservas.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Suas Reservas</a>
+                <a href="configuracoes.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Configurações</a>
+                <a href="perfilCliente.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Perfil</a>
+            </div>
+        </div>
     </header>
 
     <main class="pt-[72px]">
@@ -321,6 +340,7 @@
         lucide.createIcons();
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Lógica das Abas (existente)
             const tabs = document.querySelectorAll('.tab-button');
             const tabContents = document.querySelectorAll('.tab-content');
 
@@ -350,6 +370,18 @@
                     }
                 });
             });
+
+            // --- NOVA LÓGICA DO MENU MOBILE ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    // Alterna a classe 'hidden' no menu dropdown
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+            // --- FIM DA NOVA LÓGICA ---
         });
     </script>
 </body>
