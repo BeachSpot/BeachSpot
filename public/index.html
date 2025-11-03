@@ -4,35 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BeachSpot</title>
-    <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
+    <link rel="icon" type="image/png" href="assets/icons/Logo BeachSpot.png">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="text-white">
 
-    <!-- Header Fixo Branco -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-            <a href="#inicio" class="flex items-center space-x-3">
-                <i data-lucide="anchor"></i>
-                <span class="text-xl font-bold">beachspot</span>
+            <a href="inicio.html" class="flex items-center">
+                <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
             <ul class="hidden md:flex items-center space-x-6">
-                <li><a href="#inicio" class="hover:text-blue-600 transition-colors">Início</a></li>
-                <li><a href="#sobre" class="hover:text-blue-600 transition-colors">Sobre</a></li>
-                <li><a href="#como-funciona" class="hover:text-blue-600 transition-colors">Como Funciona</a></li>
-                <li><a href="#contato" class="hover:text-blue-600 transition-colors">Contato</a></li>
+                <li><a href="#inicio" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a></li>
+                <li><a href="#como-funciona" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Como Funciona</a></li>
+                <li><a href="#contato" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Contato</a></li>
             </ul>
             <button class="md:hidden" id="mobile-menu-button">
                 <i data-lucide="menu"></i>
@@ -40,7 +34,6 @@
         </nav>
         <div id="mobile-menu" class="hidden md:hidden bg-white text-gray-800">
             <a href="#inicio" class="block py-2 px-6 hover:bg-gray-100">Início</a>
-            <a href="#sobre" class="block py-2 px-6 hover:bg-gray-100">Sobre</a>
             <a href="#como-funciona" class="block py-2 px-6 hover:bg-gray-100">Como Funciona</a>
             <a href="#contato" class="block py-2 px-6 hover:bg-gray-100">Contato</a>
         </div>
@@ -83,85 +76,38 @@
             </div>
         </section>
 
-        <div id="sobre" class="bg-gray-50 text-gray-800 py-16 md:py-20 scroll-mt-20">
-            <div class="container mx-auto max-w-4xl px-6">
-                <section>
-                    <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Nossa Missão</h2>
-                    <p class="text-lg text-gray-600 leading-relaxed text-center">
-                        O projeto busca otimizar a organização dos serviços oferecidos, como aluguel de cadeiras e guarda-sóis, e facilitar o acesso a informações como cardápios e promoções, oferecendo uma solução prática tanto para os proprietários quanto para os clientes. A iniciativa surge da necessidade de centralizar a comunicação e a gestão, que atualmente é realizada de forma descentralizada e ineficiente por meio de redes sociais e mensagens diretas, resultando em dificuldades operacionais e atrasos no atendimento.
-                    </p>
-                </section>
-            </div>
-        </div>
-        
-        <div class="py-16 md:py-20">
+        <div id="oferecemos" class="py-16 md:py-20 bg-white text-gray-800 scroll-mt-20">
              <div class="container mx-auto max-w-5xl px-6">
                  <section>
                      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">O que Oferecemos</h2>
                      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
-                         <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
-                             <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                         
+                         <div class="flex flex-col items-center bg-gray-50 p-6 rounded-xl shadow-lg">
+                             <div class="bg-blue-100 text-blue-600 rounded-full p-5 mb-4">
                                  <i data-lucide="clipboard-list" class="w-10 h-10"></i>
                              </div>
                              <h3 class="text-xl font-bold mb-2">Gestão Simplificada</h3>
-                             <p class="text-gray-200">Uma plataforma para gerenciar reservas, cardápios e promoções, otimizando suas operações diárias.</p>
+                             <p class="text-gray-600">Uma plataforma para gerenciar reservas, cardápios e promoções, otimizando suas operações diárias.</p>
                          </div>
-                         <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
-                             <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                         
+                         <div class="flex flex-col items-center bg-gray-50 p-6 rounded-xl shadow-lg">
+                             <div class="bg-blue-100 text-blue-600 rounded-full p-5 mb-4">
                                  <i data-lucide="calendar-check" class="w-10 h-10"></i>
                              </div>
                              <h3 class="text-xl font-bold mb-2">Reservas Fáceis</h3>
-                             <p class="text-gray-200">Clientes encontram e reservam um lugar na areia, com acesso a cardápios e avaliações.</p>
+                             <p class="text-gray-600">Clientes encontram e reservam um lugar na areia, com acesso a cardápios e avaliações.</p>
                          </div>
-                         <div class="flex flex-col items-center bg-white/10 p-6 rounded-xl">
-                             <div class="bg-white/20 text-white rounded-full p-5 mb-4">
+                         
+                         <div class="flex flex-col items-center bg-gray-50 p-6 rounded-xl shadow-lg">
+                             <div class="bg-blue-100 text-blue-600 rounded-full p-5 mb-4">
                                  <i data-lucide="message-square" class="w-10 h-10"></i>
                              </div>
                              <h3 class="text-xl font-bold mb-2">Comunicação Direta</h3>
-                             <p class="text-gray-200">Facilitamos o contato entre clientes e gestores para uma experiência transparente.</p>
+                             <p class="text-gray-600">Facilitamos o contato entre clientes e gestores para uma experiência transparente.</p>
                          </div>
                      </div>
                  </section>
              </div>
-        </div>
-
-        <div class="bg-white text-gray-800 py-16 md:py-20">
-            <div class="container mx-auto max-w-5xl px-6 text-center">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Nossa Equipe</h2>
-                <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Apaixonados por praia, dedicados a criar a melhor experiência para você.</p>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
-                    <div class="text-center">
-                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=AC" alt="Foto de Ana Carolina" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">Ana Carolina</h3>
-                        <p class="text-gray-500">Fundadora & CEO</p>
-                    </div>
-                    <div class="text-center">
-                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=IM" alt="Foto de Ivanilson Maia" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">Ivanilson Maia</h3>
-                        <p class="text-gray-500">CTO</p>
-                    </div>
-                    <div class="text-center">
-                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=JP" alt="Foto de João Pedro" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">João Pedro</h3>
-                        <p class="text-gray-500">Chefe de Operações</p>
-                    </div>
-                    <div class="text-center">
-                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=JS" alt="Foto de Júlia Simões" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">Júlia Simões</h3>
-                        <p class="text-gray-500">Designer UI/UX</p>
-                    </div>
-                    <div class="text-center">
-                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=NS" alt="Foto de Nicole Sales" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">Nicole Sales</h3>
-                        <p class="text-gray-500">Gerente de Marketing</p>
-                    </div>
-                    <div class="text-center">
-                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=SS" alt="Foto de Samuel Santos" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
-                        <h3 class="font-bold text-lg">Samuel Santos</h3>
-                        <p class="text-gray-500">Desenvolvedor Full-Stack</p>
-                    </div>
-                </div>
-            </div>
         </div>
         
         <section id="como-funciona" class="py-16 md:py-20 scroll-mt-20">
@@ -232,6 +178,45 @@
             </div>
         </section>
 
+        <div id="equipe" class="bg-white text-gray-800 py-16 md:py-20 scroll-mt-20">
+            <div class="container mx-auto max-w-5xl px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Nossa Equipe</h2>
+                <p class="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Apaixonados por praia, dedicados a criar a melhor experiência para você.</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=AC" alt="Foto de Ana Carolina" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Ana Carolina</h3>
+                        <p class="text-gray-500">Fundadora & CEO</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=IM" alt="Foto de Ivanilson Maia" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Ivanilson Maia</h3>
+                        <p class="text-gray-500">CTO</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=JP" alt="Foto de João Pedro" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">João Pedro</h3>
+                        <p class="text-gray-500">Chefe de Operações</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/0138B4/FFFFFF?text=JS" alt="Foto de Júlia Simões" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Júlia Simões</h3>
+                        <p class="text-gray-500">Designer UI/UX</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/73BFF6/FFFFFF?text=NS" alt="Foto de Nicole Sales" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Nicole Sales</h3>
+                        <p class="text-gray-500">Gerente de Marketing</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://placehold.co/120x120/1985D4/FFFFFF?text=SS" alt="Foto de Samuel Santos" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-md">
+                        <h3 class="font-bold text-lg">Samuel Santos</h3>
+                        <p class="text-gray-500">Desenvolvedor Full-Stack</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <section id="contato" class="scroll-mt-20">
             <div class="bg-white/10 backdrop-blur-md border-t border-b border-white/20 shadow-lg py-16 md:py-20">
                 <div class="container mx-auto max-w-4xl px-6 text-center">
@@ -274,7 +259,7 @@
                         <span class="text-xl font-bold">beachspot</span>
                     </div>
                 </div>
-                <div class="w-1/2 md:w-auto mb-8 md:mb-0">
+                <div class="w-1S/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="#inicio" class="hover:text-blue-600 transition-colors">Início</a></li>
