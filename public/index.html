@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="w-full md:w-1/2 text-center md:text-left">
-                        <h1 class="text-5xl md:text-6xl font-extold leading-tight mb-4">Sua Vaga na Areia, GarantIDA.</h1>
+                        <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-4">Sua Vaga na Areia, Garantida.</h1>
                         <p class="text-lg text-gray-200 mb-8 max-w-md mx-auto md:mx-0">
                             Reserve sua barraca de praia com antecedência e relaxe de verdade. Cadastre-se para receber as melhores ofertas.
                         </p>
@@ -297,52 +297,45 @@
     <script src="../assets/js/script.js"></script>
 
     <script>
-        // Espera o documento carregar
         document.addEventListener('DOMContentLoaded', function() {
             
-            // Pega o formulário pelo ID que criamos
+            // 1. Encontra o formulário e a div de status
             const form = document.getElementById('contact-form');
-            
-            // Pega a 'div' de status que criamos
             const statusDiv = document.getElementById('form-status');
 
-            // Função que será chamada quando o formulário for enviado
             async function handleSubmit(event) {
-                // 1. Previne o envio padrão (que causa o redirecionamento)
+                // 2. Previne o recarregamento da página
                 event.preventDefault();
                 
-                // 2. Coleta os dados do formulário
                 const data = new FormData(event.target);
                 
                 try {
-                    // 3. Tenta enviar os dados para o 'action' do formulário
+                    // 3. Envia os dados para o Formspree em segundo plano
                     const response = await fetch(event.target.action, {
                         method: form.method,
                         body: data,
                         headers: {
-                            // Esta linha é MÁGICA. Ela diz ao Formspree:
-                            // "Eu sou um script, não me redirecione, apenas me dê uma resposta JSON."
-                            'Accept': 'application/json'
+                            'Accept': 'application/json' // Pede uma resposta JSON ao invés de redirecionar
                         }
                     });
 
-                    // 4. Verifica se o Formspree disse "OK"
+                    // 4. Verifica a resposta
                     if (response.ok) {
-                        // Sucesso! Mostra a sua mensagem personalizada
+                        // Sucesso! Mostra a mensagem e limpa o formulário
                         statusDiv.innerHTML = "<p class='text-green-400 font-semibold'>Sua mensagem foi enviada!</p>";
-                        form.reset(); // Limpa os campos do formulário
+                        form.reset();
                     } else {
-                        // Se o Formspree der um erro (ex: URL errada, etc.)
+                        // Se o Formspree der um erro
                         statusDiv.innerHTML = "<p class='text-red-400 font-semibold'>Ocorreu um erro ao enviar. Tente novamente.</p>";
                     }
                 } catch (error) {
-                    // Se houver um erro de rede (ex: sem internet)
+                    // Se houver um erro de rede (sem internet)
                     console.error('Erro de envio:', error);
                     statusDiv.innerHTML = "<p class='text-red-400 font-semibold'>Erro de rede. Verifique sua conexão.</p>";
                 }
             }
 
-            // 5. Adiciona o "escutador" ao formulário
+            // 5. "Escuta" o evento de envio do formulário
             form.addEventListener("submit", handleSubmit);
         });
     </script>
