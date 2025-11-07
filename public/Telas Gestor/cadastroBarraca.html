@@ -62,6 +62,16 @@
             background-color: #eff6ff; /* Tailwind blue-50 */
             border-color: #3b82f6; /* Tailwind blue-500 */
         }
+        
+        /* INÍCIO ESTILOS DO TOGGLE SWITCH */
+        input[type="checkbox"]:checked + label span[data-toggle-label="abre-feriados-dot"] {
+            transform: translateX(calc(2.5rem - 1rem - 0.25rem)); /* w-10 - w-4 - ml-1 */
+            background-color: #3b82f6; /* Cor azul quando ativo */
+        }
+        input[type="checkbox"]:checked + label span:first-child span:first-child {
+            background-color: #bfdbfe; /* Fundo azul claro quando ativo */
+        }
+        /* FIM ESTILOS DO TOGGLE SWITCH */
     </style>
 </head>
 <body class="text-white">
@@ -184,8 +194,23 @@
                                 </label>
                             </div>
                         </div>
-
+                        
                         <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Aberta em Feriados?</label>
+                            <div class="flex items-center space-x-2 pt-2">
+                                <input type="checkbox" id="abre-feriados" name="abre-feriados" class="hidden">
+                                <label for="abre-feriados" class="relative inline-flex items-center cursor-pointer">
+                                    <span class="relative">
+                                        <span class="block w-10 h-6 bg-gray-200 rounded-full shadow-inner"></span>
+                                        <span class="absolute block w-4 h-4 mt-1 ml-1 transform bg-white rounded-full shadow inset-y-0 left-0 transition-transform duration-200 ease-in-out" 
+                                              data-toggle-label="abre-feriados-dot"></span>
+                                    </span>
+                                    <span class="ml-3 text-sm font-medium text-gray-700" id="abre-feriados-label">Não</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Horário Padrão</label>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
@@ -363,6 +388,20 @@
 
             // Ativa os ícones do Lucide em toda a página.
             lucide.createIcons();
+            
+            // --- INÍCIO LÓGICA DO TOGGLE "ABERTA EM FERIADOS" ---
+            const toggleInput = document.getElementById('abre-feriados');
+            const toggleLabel = document.getElementById('abre-feriados-label');
+            if (toggleInput && toggleLabel) {
+                toggleInput.addEventListener('change', () => {
+                    if (toggleInput.checked) {
+                        toggleLabel.textContent = 'Sim';
+                    } else {
+                        toggleLabel.textContent = 'Não';
+                    }
+                });
+            }
+            // --- FIM LÓGICA DO TOGGLE ---
 
             // Lógica para pré-visualização da imagem de destaque
             const inputDestaque = document.getElementById('imagem-destaque');
