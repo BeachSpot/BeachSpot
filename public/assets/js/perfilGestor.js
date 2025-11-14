@@ -1,300 +1,364 @@
-import { getUserProfile, checkAuthentication, formatDate, formatPhone, formatCPF } from './getUserProfile.js';
 import { supabase } from './supabaseClient.js';
 
-console.log('[perfilGestor] Script iniciado');
+// Funções auxiliares de formatação
+function formatDate(dateString) {
+    if (!dateString) return 'Não informado';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
 
-let globalProfileData = null; // Para armazenar os dados do perfil para reverter em caso de erro
+function formatPhone(phone) {
+    if (!phone) return 'Não informado';
+    const cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length === 11) {
+        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+    } else if (cleaned.length === 10) {
+        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    }
+    return phone;
+}
 
-/**
- * Carrega os dados do perfil do gestor.
- * @returns {Object} Dados do perfil do gestor ou null
- */
-async function loadGestorProfile() {
+function formatCPF(cpf) {
+    if (!cpf) return 'Não informado';
+    const cleaned = cpf.replace(/\D/g, '');
+    if (cleaned.length === 11) {
+        return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6, 9)}-${cleaned.slice(9)}`;
+    }
+    return cpf;
+}
+
+// Função para carregar dados do perfil do gestor
+async function loadProfileData() {
     try {
-        console.log('[perfilGestor] Carregando perfil...');
-
-        // 1. Buscar dados do usuário (já mescla dados do gestor)
-        const userData = await getUserProfile();
-
-        if (!userData) {
-            console.error('[perfilGestor] Dados do usuário não encontrados');
-            window.location.href = '../entrar.html'; // Redireciona se não achar
+        // 1. Verificar sessão ativa
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError || !session) {
+            console.log('[INFO] Usuário não autenticado, redirecionando...');
+            window.location.href = '../entrar.html';
             return null;
         }
 
-        // 2. Verificar se é gestor
-        if (userData.tipo_conta !== 'gestor') {
-            console.warn('[perfilGestor] Usuário não é gestor, redirecionando...');
+        console.log('[DEBUG] Carregando perfil do gestor...');
+
+        const userId = session.user.id;
+
+        // 2. Buscar dados na tabela usuarios
+        const { data: usuario, error: usuarioError } = await supabase
+            .from('usuarios')
+            .select('id_usuario, email, tipo_conta, data_criacao')
+            .eq('id_usuario', userId)
+            .single();
+
+        if (usuarioError || !usuario) {
+            console.error('[ERRO] Usuário não encontrado:', usuarioError);
+            window.location.href = '../entrar.html';
+            return null;
+        }
+
+        // 3. Verificar se é gestor
+        if (usuario.tipo_conta !== 'gestor') {
+            console.log('[INFO] Usuário não é gestor, redirecionando...');
             window.location.href = '../Telas Clientes/perfilCliente.html';
             return null;
         }
 
-        console.log('[perfilGestor] Dados carregados:', userData);
-        globalProfileData = userData; // Armazena globalmente
-        return userData;
+        // 4. Buscar dados específicos do gestor
+        const { data: gestor, error: gestorError } = await supabase
+            .from('gestor')
+            .select('nome, bio, telefone, cpf, data_nascimento, foto_perfil')
+            .eq('id_gestor', userId)
+            .single();
+
+        if (gestorError) {
+            console.warn('[AVISO] Dados do gestor não encontrados:', gestorError);
+        }
+
+        const profileData = {
+            id_usuario: userId,
+            email: usuario.email,
+            nome: gestor?.nome || session.user.user_metadata?.full_name || 'Gestor',
+            bio: gestor?.bio || '"Responsável pela gestão e coordenação das atividades da praia. Sempre buscando proporcionar a melhor experiência aos nossos clientes!"',
+            telefone: gestor?.telefone,
+            cpf: gestor?.cpf,
+            data_nascimento: gestor?.data_nascimento,
+            data_criacao: usuario.data_criacao || session.user.created_at,
+            foto_perfil: gestor?.foto_perfil,
+            tipo_conta: usuario.tipo_conta
+        };
+
+        console.log('[DEBUG] Perfil do gestor carregado:', profileData);
+        return profileData;
 
     } catch (error) {
-        console.error('[perfilGestor] Erro ao carregar perfil:', error);
-        showNotification('Erro ao carregar seu perfil. Tente novamente.', 'error');
+        console.error('[ERRO] Falha ao carregar perfil:', error);
         return null;
     }
 }
 
-/**
- * Exibe os dados do perfil do gestor na página.
- * @param {Object} profileData - Os dados do perfil
- */
-async function displayGestorData(profileData) {
-    if (!profileData) {
-        console.warn('[perfilGestor] Nenhum dado de perfil para exibir.');
-        return;
-    }
-
+// Função para carregar estatísticas do gestor
+async function loadStatistics(gestorId) {
+    console.log('[DEBUG] Carregando estatísticas do gestor:', gestorId);
+    
     try {
-        // Preencher NOME
-        const userName = document.getElementById('user-name');
-        if (userName) {
-            userName.textContent = profileData.nome || 'Gestor';
-        }
+        let barracasCount = 0;
+        let avaliacaoMedia = 0;
 
-        // Preencher EMAIL
-        const userEmail = document.getElementById('user-email');
-        if (userEmail) {
-            userEmail.textContent = profileData.email || 'Email não informado';
-        }
+        // Tentar contar barracas
+        try {
+            const { count, error } = await supabase
+                .from('barracas')
+                .select('*', { count: 'exact', head: true })
+                .eq('id_gestor', gestorId);
 
-        // Preencher CPF
-        const userCpf = document.getElementById('user-cpf');
-        if (userCpf) {
-            userCpf.textContent = formatCPF(profileData.cpf) || 'Não informado';
-        }
+            if (!error) {
+                barracasCount = count || 0;
+                console.log('[DEBUG] ✓ Barracas encontradas:', barracasCount);
 
-        // Preencher TELEFONE
-        const userPhone = document.getElementById('user-phone');
-        if (userPhone) {
-            userPhone.textContent = formatPhone(profileData.telefone) || 'Não informado';
-        }
+                // Se tem barracas, calcular avaliação média
+                if (barracasCount > 0) {
+                    const { data: barracas, error: barracasError } = await supabase
+                        .from('barracas')
+                        .select('avaliacao_media')
+                        .eq('id_gestor', gestorId);
 
-        // Preencher DATA DE NASCIMENTO
-        const userDob = document.getElementById('user-dob');
-        if (userDob) {
-            userDob.textContent = formatDate(profileData.data_nascimento) || 'Não informado';
-        }
-
-        // Preencher MEMBRO DESDE
-        const userMemberSince = document.getElementById('user-member-since');
-        if (userMemberSince) {
-            userMemberSince.textContent = `Membro desde ${formatDate(profileData.data_criacao)}`;
-        }
-
-        // Preencher FOTO DE PERFIL
-        const profileImage = document.getElementById('profile-image');
-        if (profileImage) {
-            if (profileData.foto_perfil) {
-                console.log('[perfilGestor] Baixando foto:', profileData.foto_perfil);
-                // Usar getPublicUrl para obter a URL da imagem
-                const { data, error } = await supabase
-                    .storage
-                    .from('fotos_perfil')
-                    .getPublicUrl(profileData.foto_perfil);
-
-                if (error) {
-                    console.error('[ERRO] Ao buscar URL da foto:', error);
-                    profileImage.src = 'https://placehold.co/150x150/E2E8F0/64748B?text=Gestor'; // Fallback
-                } else {
-                    console.log('[DEBUG] URL da foto:', data.publicUrl);
-                    profileImage.src = data.publicUrl;
+                    if (!barracasError && barracas && barracas.length > 0) {
+                        const somaAvaliacoes = barracas.reduce((acc, b) => acc + (b.avaliacao_media || 0), 0);
+                        avaliacaoMedia = barracasCount > 0 ? (somaAvaliacoes / barracasCount).toFixed(1) : 0;
+                        console.log('[DEBUG] ✓ Avaliação média calculada:', avaliacaoMedia);
+                    }
                 }
             } else {
-                console.log('[DEBUG] Sem foto de perfil no banco.');
-                profileImage.src = 'https://placehold.co/150x150/E2E8F0/64748B?text=Gestor'; // Fallback
+                console.warn('[DEBUG] ✗ Tabela barraca não existe ainda');
             }
+        } catch (err) {
+            console.warn('[DEBUG] Erro ao buscar barracas:', err.message);
         }
 
-        // Configurar o upload de imagem (agora é chamado aqui)
-        setupImageUpload(profileData);
+        return { barracasCount, avaliacaoMedia };
 
     } catch (error) {
-        console.error('[perfilGestor] Erro ao exibir dados:', error);
-        showNotification('Erro ao exibir dados do perfil.', 'error');
+        console.error('[ERRO] Falha ao carregar estatísticas:', error);
+        return { barracasCount: 0, avaliacaoMedia: 0 };
     }
 }
 
-/**
- * Configura o upload da foto de perfil.
- * @param {Object} userData - Dados do usuário (necessário para o ID)
- */
-function setupImageUpload(userData) {
-    const profileImage = document.getElementById('profile-image');
-    const editIcon = document.getElementById('edit-icon');
-    const fileInput = document.getElementById('file-input');
+// Função para exibir dados do perfil
+function displayProfileData(profileData) {
+    if (!profileData) return;
 
-    if (!profileImage || !editIcon || !fileInput) {
-        console.warn('[setupImageUpload] Elementos de upload não encontrados.');
+    // Nome
+    const userName = document.getElementById('user-name');
+    if (userName) {
+        userName.textContent = profileData.nome || 'Gestor';
+    }
+
+    // Bio
+    const userBio = document.getElementById('user-bio');
+    if (userBio) {
+        userBio.textContent = profileData.bio;
+    }
+
+    // Data "Gestor desde"
+    const gestorDesde = document.querySelector('main p.text-sm.text-gray-500');
+    if (gestorDesde && profileData.data_criacao) {
+        gestorDesde.textContent = `Gestor desde: ${formatDate(profileData.data_criacao)}`;
+    }
+
+    // Foto de perfil
+    const avatarElement = document.getElementById('carteirinha-avatar');
+    if (avatarElement) {
+        if (profileData.foto_perfil) {
+            const { data } = supabase
+                .storage
+                .from('fotos_perfil')
+                .getPublicUrl(profileData.foto_perfil);
+            
+            if (data && data.publicUrl) {
+                avatarElement.src = data.publicUrl;
+            } else {
+                const initials = (profileData.nome || 'G')
+                    .split(' ')
+                    .map(word => word[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+                avatarElement.src = `https://placehold.co/160x224/0138b4/FFFFFF?text=${initials}`;
+            }
+        } else {
+            const initials = (profileData.nome || 'G')
+                .split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+            avatarElement.src = `https://placehold.co/160x224/0138b4/FFFFFF?text=${initials}`;
+        }
+    }
+
+    // Avatar no header
+    const headerAvatar = document.querySelector('header img[alt="Avatar do Gestor"]');
+    if (headerAvatar) {
+        if (profileData.foto_perfil) {
+            const { data } = supabase
+                .storage
+                .from('fotos_perfil')
+                .getPublicUrl(profileData.foto_perfil);
+            
+            if (data && data.publicUrl) {
+                headerAvatar.src = data.publicUrl;
+            } else {
+                const initials = (profileData.nome || 'G').substring(0, 1).toUpperCase();
+                headerAvatar.src = `https://placehold.co/40x40/0138b4/FFFFFF?text=${initials}`;
+            }
+        } else {
+            const initials = (profileData.nome || 'G').substring(0, 1).toUpperCase();
+            headerAvatar.src = `https://placehold.co/40x40/0138b4/FFFFFF?text=${initials}`;
+        }
+    }
+
+    console.log('[DEBUG] Perfil do gestor exibido na página');
+}
+
+// Função para exibir estatísticas
+function displayStatistics(stats) {
+    if (!stats) return;
+
+    const statsElements = document.querySelectorAll('.font-bold.text-3xl');
+    if (statsElements.length >= 2) {
+        statsElements[0].textContent = `${stats.avaliacaoMedia || '0.0'} ★`;
+        statsElements[1].textContent = stats.barracasCount || 0;
+    }
+
+    console.log('[DEBUG] Estatísticas exibidas');
+}
+
+// Função para configurar upload de foto
+function setupImageUpload(profileData) {
+    const fotoInput = document.getElementById('foto-perfil-input');
+    const avatarElement = document.getElementById('carteirinha-avatar');
+
+    if (fotoInput && avatarElement) {
+        fotoInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('Por favor, selecione uma imagem válida.');
+                return;
+            }
+
+            // Preview imediato
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                avatarElement.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            try {
+                // Upload para Supabase Storage
+                const fileName = `avatar_${profileData.id_usuario}_${Date.now()}.${file.name.split('.').pop()}`;
+                
+                const { data: uploadData, error: uploadError } = await supabase
+                    .storage
+                    .from('fotos_perfil')
+                    .upload(fileName, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    });
+
+                if (uploadError) {
+                    console.error('[ERRO] Upload falhou:', uploadError);
+                    alert('Erro ao salvar a foto. Tente novamente.');
+                    displayProfileData(profileData);
+                    return;
+                }
+
+                // Atualizar no banco
+                const { error: dbError } = await supabase
+                    .from('gestor')
+                    .update({ foto_perfil: fileName })
+                    .eq('id_gestor', profileData.id_usuario);
+
+                if (dbError) {
+                    console.error('[ERRO] Ao salvar no banco:', dbError);
+                    alert('Erro ao atualizar perfil.');
+                    return;
+                }
+
+                console.log('[DEBUG] Foto atualizada com sucesso!');
+                alert('Foto atualizada!');
+            } catch (error) {
+                console.error('[ERRO] Erro no upload:', error);
+                alert('Erro ao processar a foto.');
+            }
+        });
+    }
+}
+
+// Função de logout
+async function handleLogout() {
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error('[ERRO] Logout:', error);
+            alert('Não foi possível sair.');
+            return;
+        }
+        window.location.href = '../entrar.html';
+    } catch (error) {
+        console.error('[ERRO] Logout:', error);
+    }
+}
+
+// Inicialização principal
+async function initializeProfile() {
+    console.log('[DEBUG] Inicializando perfil do gestor...');
+    
+    // 1. Verificar autenticação
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = '../entrar.html';
         return;
     }
 
-    const openFileDialog = () => fileInput.click();
-
-    // Evita adicionar múltiplos listeners se a função for chamada novamente
-    profileImage.removeEventListener('click', openFileDialog);
-    editIcon.removeEventListener('click', openFileDialog);
+    // 2. Carregar dados
+    const profileData = await loadProfileData();
+    if (!profileData) {
+        console.error('[ERRO] Falha ao carregar perfil.');
+        return;
+    }
     
-    profileImage.addEventListener('click', openFileDialog);
-    editIcon.addEventListener('click', openFileDialog);
+    // 3. Exibir dados
+    displayProfileData(profileData);
 
-    // Limpa listeners antigos do fileInput para evitar disparos múltiplos
-    const newFileInput = fileInput.cloneNode(true);
-    fileInput.parentNode.replaceChild(newFileInput, fileInput);
+    // 4. Carregar estatísticas
+    const stats = await loadStatistics(profileData.id_usuario);
+    displayStatistics(stats);
 
-    newFileInput.addEventListener('change', async (event) => {
-        const file = event.target.files[0];
-        if (!file) {
-            return;
-        }
+    // 5. Configurar upload de foto
+    setupImageUpload(profileData);
 
-        console.log('[DEBUG] Arquivo selecionado:', file.name);
-
-        // 1. Mostrar preview imediato
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            profileImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-
-        // 2. Preparar e fazer upload
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${userData.id_usuario}-${uuidv4()}.${fileExt}`;
-        const filePath = `${fileName}`; // Caminho no bucket
-
-        try {
-            showNotification('Salvando sua nova foto...', 'info');
-
-            const { error: uploadError } = await supabase
-                .storage
-                .from('fotos_perfil')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: true // Sobrescreve se já existir
-                });
-
-            if (uploadError) {
-                console.error('[ERRO] Upload da foto falhou:', uploadError);
-                showNotification('Erro ao salvar a foto. Tente novamente.', 'error');
-                // Reverter a imagem para a original
-                await displayGestorData(globalProfileData); 
-                return;
-            }
-
-            console.log('[DEBUG] Upload da foto OK:', filePath);
-
-            // 3. Atualizar o nome do arquivo no banco (tabela 'gestor')
-            const { error: dbError } = await supabase
-                .from('gestor')
-                .update({ foto_perfil: filePath })
-                .eq('id_gestor', userData.id_usuario);
-
-            if (dbError) {
-                console.error('[ERRO] Ao salvar foto no banco (gestor):', dbError);
-                showNotification('Erro ao atualizar seu perfil.', 'error');
-                await displayGestorData(globalProfileData); 
-                return;
-            }
-
-            console.log('[DEBUG] Foto de perfil (gestor) atualizada no banco!');
-            showNotification('Foto atualizada com sucesso!', 'success');
-            
-            // Atualiza globalProfileData com o novo nome da foto
-            globalProfileData.foto_perfil = filePath;
-
-        } catch (error) {
-            console.error('[ERRO] Erro geral no upload:', error);
-            showNotification('Erro inesperado ao processar a foto.', 'error');
-            await displayGestorData(globalProfileData);
-        }
-    });
-}
-
-/**
- * Gera um UUID v4.
- * @returns {string} UUID
- */
-function uuidv4() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
-}
-
-/**
- * Exibe uma notificação flutuante.
- * @param {string} message - Mensagem
- * @param {'success' | 'error' | 'info'} type - Tipo da notificação
- */
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    // Classes de base para a notificação
-    notification.className = `fixed top-20 right-5 p-4 rounded-lg shadow-lg text-white text-sm z-[100] transition-transform transform translate-x-full`;
-    
-    switch (type) {
-        case 'success':
-            notification.classList.add('bg-green-500');
-            break;
-        case 'error':
-            notification.classList.add('bg-red-500');
-            break;
-        case 'info':
-        default:
-            notification.classList.add('bg-blue-500');
-            break;
+    // 6. Configurar ícones Lucide
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
     }
 
-    notification.innerHTML = `
-        <div class="flex items-center">
-            <span class="flex-1">${message}</span>
-            <button class="ml-2 hover:opacity-75" onclick="this.parentElement.parentElement.remove()">
-                <i data-lucide="x" class="w-4 h-4"></i>
-            </button>
-        </div>
-    `;
-
-    document.body.appendChild(notification);
-    
-    // Recria ícones do Lucide na notificação
-    lucide.createIcons({
-        nodes: notification.querySelectorAll('i')
-    });
-
-    // Animação de entrada
-    setTimeout(() => {
-        notification.classList.remove('translate-x-full');
-    }, 100);
-
-    // Animação de saída
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.classList.add('translate-x-full');
-            setTimeout(() => {
-                notification.remove();
-            }, 300); // Tempo para a transição de saída
-        }
-    }, 5000); // Tempo que a notificação fica visível
-}
-
-/**
- * Função de inicialização do perfil.
- */
-async function initializeProfile() {
-    // 1. Verificar autenticação
-    await checkAuthentication();
-
-    // 2. Carregar dados do perfil
-    const profileData = await loadGestorProfile();
-
-    // 3. Exibir dados do perfil
-    if (profileData) {
-        await displayGestorData(profileData);
+    // 7. Configurar botão de logout
+    const logoutBtn = document.querySelector('a[title="Sair"]');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('Deseja realmente sair?')) {
+                handleLogout();
+            }
+        });
     }
 }
 
-// Iniciar ao carregar o DOM
+// Iniciar ao carregar DOM
 document.addEventListener('DOMContentLoaded', initializeProfile);

@@ -1,96 +1,168 @@
+import { supabase } from './supabaseClient.js';
+
 /**
- * @param {Object} supabase - Cliente Supabase inicializado (do supabaseClient.js)
- * @param {Object} dadosDaBarraca - Dados da barraca a ser cadastrada
- * @param {number} dadosDaBarraca.id_gestor - ID do gestor responsável pela barraca
- * @param {string} dadosDaBarraca.nome_barraca - Nome da barraca (máx. 30 caracteres)
- * @param {string} dadosDaBarraca.descricao_barraca - Descrição detalhada da barraca
- * @param {string} [dadosDaBarraca.localizacao] - Localização da barraca (opcional, máx. 30 caracteres)
- * @returns {Promise<Object|null>} Retorna o registro completo da barraca criada ou null em caso de erro
+ * Função auxiliar para fazer upload de um arquivo para o Supabase Storage.
+ * @param {File} file - O arquivo a ser enviado.
+ * @param {number} id_gestor - O ID do gestor (para organizar os arquivos).
+ * @param {string} tipo - 'perfil' ou 'galeria', para organizar no bucket.
+ * @returns {Promise<string|null>} - A URL pública do arquivo ou null em caso de falha.
  */
-async function cadastrarBarraca(supabase, dadosDaBarraca) {
-  try {
-    // Validação básica dos campos obrigatórios
-    if (!dadosDaBarraca.id_gestor) {
-      console.error('Erro: id_gestor é obrigatório');
-      return null;
+async function uploadArquivo(file, id_gestor, tipo) {
+    if (!file) return null;
+
+    // Remove caracteres especiais para criar um nome de arquivo seguro
+    const nomeArquivoLimpo = file.name.replace(/[^a-zA-Z0-9._-]/g, '');
+    const filePath = `barracas/${id_gestor}/${tipo}/${Date.now()}_${nomeArquivoLimpo}`;
+
+    // 
+    // IMPORTANTE: Eu presumi que seu bucket se chama 'media'. 
+    // Se o nome do seu bucket no Supabase Storage for outro, altere a linha abaixo.
+    // 
+    const { error: uploadError } = await supabase.storage
+        .from('media') // <-- Altere 'media' se o nome do seu bucket for diferente
+        .upload(filePath, file);
+
+    if (uploadError) {
+        console.error(`Erro ao enviar arquivo (${tipo}):`, uploadError);
+        throw new Error(`Falha no upload do arquivo: ${file.name}`);
     }
 
-    if (!dadosDaBarraca.nome_barraca || dadosDaBarraca.nome_barraca.trim() === '') {
-      console.error('Erro: nome_barraca é obrigatório');
-      return null;
+    // Obter a URL pública do arquivo que acabamos de enviar
+    const { data: urlData } = supabase.storage
+        .from('media') // <-- Altere 'media' aqui também
+        .getPublicUrl(filePath);
+
+    if (!urlData || !urlData.publicUrl) {
+         console.error('Não foi possível obter a URL pública para:', filePath);
+         return null;
     }
 
-    if (!dadosDaBarraca.descricao_barraca || dadosDaBarraca.descricao_barraca.trim() === '') {
-      console.error('Erro: descricao_barraca é obrigatório');
-      return null;
-    }
-
-    // Prepara o objeto para inserção
-    const novaBarraca = {
-      id_gestor: dadosDaBarraca.id_gestor,
-      nome_barraca: dadosDaBarraca.nome_barraca.trim(),
-      descricao_barraca: dadosDaBarraca.descricao_barraca.trim(),
-      localizacao: dadosDaBarraca.localizacao ? dadosDaBarraca.localizacao.trim() : null
-    };
-
-    // Insere a barraca no banco de dados e retorna o registro completo
-    const { data, error } = await supabase
-      .from('barracas')
-      .insert(novaBarraca)
-      .select()
-      .single();
-
-    // Verifica se houve erro na operação
-    if (error) {
-      console.error('Erro ao cadastrar barraca:', error.message);
-      console.error('Detalhes do erro:', error);
-      return null;
-    }
-
-    // Retorna o registro completo da barraca recém-criada
-    console.log('Barraca cadastrada com sucesso:', data);
-    return data;
-
-  } catch (error) {
-    // Trata erros inesperados
-    console.error('Erro inesperado ao cadastrar barraca:', error);
-    return null;
-  }
+    return urlData.publicUrl;
 }
 
-// ============================================
-// EXEMPLO DE USO NO FORMULÁRIO
-// ============================================
+/**
+ * Função principal que é executada quando o DOM está pronto.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formCadastroBarraca');
+    if (!form) {
+        console.error('Formulário de cadastro de barraca não encontrado.');
+        return;
+    }
 
-// Importe o cliente Supabase (já configurado em supabaseClient.js)
-// import { supabase } from './supabaseClient.js';
+    const submitButton = form.querySelector('button[type="submit"]');
 
-// Exemplo de uso ao submeter o formulário:
-/*
-document.querySelector('form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  // Pega o id_gestor do usuário logado (você precisa armazenar isso no login)
-  const id_gestor = localStorage.getItem('id_usuario'); // ou sessionStorage
-  
-  // Coleta os dados do formulário
-  const dadosDaBarraca = {
-    id_gestor: parseInt(id_gestor),
-    nome_barraca: document.getElementById('nome-barraca').value,
-    descricao_barraca: document.getElementById('descricao').value,
-    localizacao: document.getElementById('endereco').value
-  };
-  
-  // Chama a função para cadastrar
-  const barracaCadastrada = await cadastrarBarraca(supabase, dadosDaBarraca);
-  
-  if (barracaCadastrada) {
-    alert('Barraca cadastrada com sucesso!');
-    console.log('Dados da barraca:', barracaCadastrada);
-    // Redireciona para a página de gestão
-    window.location.href = 'gestaoBarraca.html';
-  } else {
-    alert('Erro ao cadastrar barraca. Verifique o console para mais detalhes.');
-  }
+    // Adiciona o listener para o envio do formulário
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Impede o envio padrão do HTML
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Cadastrando...';
+        }
+
+        try {
+            // --- 1. OBTER O GESTOR LOGADO ---
+            
+            // Primeiro, pegamos o usuário autenticado no Supabase Auth
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+            if (authError || !user) {
+                console.error('Erro ao buscar usuário ou usuário não logado:', authError?.message);
+                throw new Error('Você precisa estar logado como gestor para cadastrar uma barraca.');
+            }
+
+            // Agora, usamos o ID do usuário (UUID) para encontrar o ID do gestor (BigInt) na tabela 'gestores'
+            const { data: gestor, error: gestorError } = await supabase
+                .from('gestores')
+                .select('id_gestor')
+                .eq('id_usuario', user.id)
+                .single(); // Esperamos apenas um resultado
+
+            if (gestorError || !gestor) {
+                console.error('Erro ao buscar perfil de gestor:', gestorError?.message);
+                throw new Error('Não foi possível encontrar um perfil de gestor associado a este usuário.');
+            }
+
+            const id_gestor = gestor.id_gestor;
+
+            // --- 2. COLETAR DADOS DO FORMULÁRIO (TEXTO) ---
+            const nome_barraca = document.getElementById('nome-barraca').value;
+            const localizacao = document.getElementById('endereco').value;
+            const descricao = document.getElementById('descricao').value;
+            const horario_func = document.getElementById('horario').value;
+
+            // --- 3. LIDAR COM UPLOAD DE ARQUIVOS ---
+            
+            // Upload da Foto de Perfil
+            const fileInputPerfil = document.getElementById('foto-perfil');
+            const perfilFile = fileInputPerfil.files[0]; // Pega o primeiro arquivo
+            const fotoPerfilUrl = await uploadArquivo(perfilFile, id_gestor, 'perfil');
+
+            // Upload da Galeria de Fotos (Múltiplos arquivos)
+            const fileInputGaleria = document.getElementById('galeria-fotos');
+            const galeriaFiles = fileInputGaleria.files; // É um FileList
+
+            // Usamos Promise.all para fazer o upload de todos os arquivos da galeria em paralelo
+            const uploadPromises = Array.from(galeriaFiles).map(file => 
+                uploadArquivo(file, id_gestor, 'galeria')
+            );
+            
+            const galeriaUrls = (await Promise.all(uploadPromises)).filter(url => url !== null); // Filtra uploads que falharam
+
+            // --- 4. MONTAR O OBJETO PARA INSERIR NO BANCO ---
+            // Os nomes das chaves (ex: 'nome_barraca') devem ser iguais aos nomes das colunas na sua tabela 'barracas'
+            const dadosParaInserir = {
+                id_gestor: id_gestor,
+                nome_barraca: nome_barraca,
+                localizacao: localizacao,
+                descricao: descricao,
+                horario_func: horario_func,
+                foto_perfil: fotoPerfilUrl,    // URL da foto de perfil
+                galeria_fotos: galeriaUrls      // Array de URLs (text[])
+            };
+
+            // --- 5. INSERIR NA TABELA 'barracas' ---
+            const { data: novaBarraca, error: insertError } = await supabase
+                .from('barracas')
+                .insert(dadosParaInserir)
+                .select() // Pede ao Supabase para retornar o registro que acabou de ser criado
+                .single();
+
+            if (insertError) {
+                console.error('Erro ao inserir barraca no banco:', insertError);
+                throw new Error(`Não foi possível salvar a barraca: ${insertError.message}`);
+            }
+
+            console.log('Barraca cadastrada com sucesso!', novaBarraca);
+            
+            // (Opcional) Você pode usar o seu 'showAlert' se ele estiver disponível globalmente
+            // showAlert('Sucesso!', 'Barraca cadastrada. Redirecionando...', 'success');
+            alert('Barraca cadastrada com sucesso! Redirecionando...');
+            
+            form.reset();
+            
+            // Limpa as pré-visualizações das imagens
+            const previewPerfil = document.getElementById('preview-perfil');
+            const previewGaleria = document.getElementById('preview-galeria');
+            if (previewPerfil) previewPerfil.innerHTML = '';
+            if (previewGaleria) previewGaleria.innerHTML = '';
+            
+            // Redireciona para o início do gestor, assim como no seu 'cadastro.js'
+            setTimeout(() => {
+                window.location.href = '../Telas Gestor/inicioGestor.html';
+            }, 1500);
+
+        } catch (error) {
+            console.error('[ERRO GERAL NO CADASTRO DA BARRACA]', error);
+            // (Opcional) showAlert('Erro!', error.message, 'error');
+            alert(`Erro ao cadastrar barraca: ${error.message}`);
+        } finally {
+            // Reativa o botão, independentemente de sucesso ou falha
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Cadastrar Barraca';
+            }
+        }
+    });
 });
-*/

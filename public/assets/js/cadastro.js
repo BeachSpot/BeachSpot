@@ -132,6 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const googleBtn = document.getElementById('google-btn');
     const alertCloseBtn = document.getElementById('alert-close'); 
 
+    // ============================================
+    // SELEÇÃO DO TIPO DE CONTA
+    // ============================================
     featureCards.forEach(card => {
         card.addEventListener('click', () => {
             featureCards.forEach(c => c.classList.remove('selected'));
@@ -144,7 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- LOGIN COM GOOGLE (SUPABASE) ---
+    // ============================================
+    // LOGIN COM GOOGLE (SUPABASE)
+    // ============================================
     if (googleBtn) {
         googleBtn.addEventListener('click', async () => {
             const tipoConta = tipoContaInput.value;
@@ -171,15 +176,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CADASTRO COM EMAIL/SENHA (AGORA USA SUPABASE AUTH) ---
+    // ============================================
+    // CADASTRO COM EMAIL/SENHA - CORRIGIDO
+    // ============================================
     if (registrationForm) {
         registrationForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (!tipoContaInput.value) {
+            // CRÍTICO: Verificar tipo de conta ANTES de prosseguir
+            const tipoConta = tipoContaInput.value;
+            
+            if (!tipoConta) {
                 showAlert('Atenção', 'Por favor, selecione um tipo de perfil (Cliente ou Gestor).', 'error');
                 return;
             }
+            
+            console.log('[CADASTRO] Tipo de conta selecionado:', tipoConta);
             
             const nameInput = document.getElementById('name');
             const emailInput = document.getElementById('email');
@@ -195,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     options: {
                         data: {
                             full_name: nameInput.value,
-                            tipo_conta: tipoContaInput.value // IMPORTANTE: Salva o tipo no metadata
+                            tipo_conta: tipoConta // SALVA no metadata também
                         }
                     }
                 });
@@ -214,14 +226,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 console.log('[DEBUG] Usuário criado no Supabase Auth:', authData.user?.id);
+                console.log('[DEBUG] Salvando tipo de conta:', tipoConta);
 
-                // 2. CRIAR REGISTRO NA TABELA USUARIOS
+                // 2. CRIAR REGISTRO NA TABELA USUARIOS - USAR tipoConta da variável
                 const { error: insertUsuarioError } = await supabase
                     .from('usuarios')
                     .upsert({
                         id_usuario: authData.user.id,
                         email: emailInput.value,
-                        tipo_conta: tipoContaInput.value
+                        tipo_conta: tipoConta // <-- USAR A VARIÁVEL, NÃO tipoContaInput.value
                     }, { onConflict: 'id_usuario' });
 
                 if (insertUsuarioError) {
@@ -233,24 +246,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
+                console.log('[DEBUG] Usuário inserido na tabela usuarios com tipo:', tipoConta);
+
                 // 3. CRIAR REGISTRO NA TABELA ESPECÍFICA (CLIENTE OU GESTOR)
                 const profileData = {
-                    [`id_${tipoContaInput.value}`]: authData.user.id,
+                    [`id_${tipoConta}`]: authData.user.id, // <-- USAR tipoConta
                     nome: nameInput.value
                 };
 
+                console.log('[DEBUG] Inserindo perfil na tabela:', tipoConta, profileData);
+
                 const { error: insertProfileError } = await supabase
-                    .from(tipoContaInput.value)
-                    .upsert(profileData, { onConflict: `id_${tipoContaInput.value}` });
+                    .from(tipoConta) // <-- USAR tipoConta
+                    .upsert(profileData, { onConflict: `id_${tipoConta}` });
 
                 if (insertProfileError) {
-                    console.error(`[ERRO] Ao inserir em ${tipoContaInput.value}:`, insertProfileError);
+                    console.error(`[ERRO] Ao inserir em ${tipoConta}:`, insertProfileError);
                     hideAlert();
                     setTimeout(() => {
                         showAlert('Erro', 'Não foi possível criar o perfil completo.', 'error');
                     }, 100);
                     return;
                 }
+
+                console.log('[DEBUG] Perfil criado com sucesso na tabela:', tipoConta);
 
                 hideAlert();
                 setTimeout(() => {
@@ -261,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Aguardar um pouco antes de redirecionar
                 setTimeout(() => {
-                    if (tipoContaInput.value === 'gestor') {
+                    if (tipoConta === 'gestor') {
                         window.location.href = '/Telas Gestor/inicioGestor.html';
                     } else {
                         window.location.href = '/Telas Clientes/inicio.html';
