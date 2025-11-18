@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,39 +10,50 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <link rel="stylesheet" href="../assets/css/gestaoBarraca.css">
 </head>
+
 <body class="text-white">
 
-        <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
             <a href="inicioGestor.html" class="flex items-center">
                 <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
-            
+
             <div class="flex items-center space-x-6">
-                <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
-                <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
-    
-                <a href="configuracoesGestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
+                <a href="iniciogestor.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="gestaoBarraca.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar
+                    Barracas</a>
+                <a href="cadastroBarraca.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar
+                    Barracas</a>
+
+                <a href="configuracoesGestor.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
-    
+
                 <a href="perfilGestor.html" class="hidden md:block">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
+                        class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
 
-                <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
+                <button id="mobile-menu-btn"
+                    class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
 
-            <div id="mobile-menu" class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
+            <div id="mobile-menu"
+                class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
                 <a href="iniciogestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="home" class="w-5 h-5"></i>
                     <span>Início</span>
@@ -50,11 +62,13 @@
                     <i data-lucide="layout-grid" class="w-5 h-5"></i>
                     <span>Gerenciar</span>
                 </a>
-                <a href="cadastroBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <a href="cadastroBarraca.html"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="plus-circle" class="w-5 h-5"></i>
                     <span>Cadastrar</span>
                 </a>
-                <a href="configuracoesGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <a href="configuracoesGestor.html"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="settings" class="w-5 h-5"></i>
                     <span>Configurações</span>
                 </a>
@@ -67,16 +81,18 @@
     </header>
 
     <main class="pt-28 md:pt-32 container mx-auto max-w-5xl px-6">
-        
+
         <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-8 shadow-lg">
-            
-            <section class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-gray-200 pb-6 mb-6">
+
+            <section
+                class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-gray-200 pb-6 mb-6">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Painel de Gestão</h1>
                     <p class="text-gray-500">Administre sua barraca Oassis do Oceano</p>
                 </div>
                 <div>
-                    <a href="infoBarraca.html" class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 font-semibold py-2 px-4 rounded-full hover:bg-blue-100 transition-colors">
+                    <a href="infoBarraca.html"
+                        class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 font-semibold py-2 px-4 rounded-full hover:bg-blue-100 transition-colors">
                         <i data-lucide="eye" class="w-4 h-4"></i>
                         Ver Página da Barraca
                     </a>
@@ -86,17 +102,23 @@
             <nav class="border-b border-gray-200 mb-6">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500">
                     <li class="mr-2">
-                        <button class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors active" data-tab="dashboard">
+                        <button
+                            class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors active"
+                            data-tab="dashboard">
                             <i data-lucide="layout-dashboard"></i> Dashboard
                         </button>
                     </li>
                     <li class="mr-2">
-                        <button class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors" data-tab="reservas">
+                        <button
+                            class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors"
+                            data-tab="reservas">
                             <i data-lucide="calendar-check"></i> Reservas
                         </button>
                     </li>
                     <li class="mr-2">
-                        <button class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors" data-tab="promocoes">
+                        <button
+                            class="tab-button inline-flex items-center gap-2 p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 transition-colors"
+                            data-tab="promocoes">
                             <i data-lucide="ticket-percent"></i> Promoções
                         </button>
                     </li>
@@ -124,28 +146,36 @@
                                 <p class="text-2xl font-bold">75%</p>
                             </div>
                         </div>
-                         <a href="cadastrocardapio.html" class="bg-blue-600 text-white p-6 rounded-xl border border-blue-700 flex flex-col justify-center items-center gap-3 hover:bg-blue-700 transition-colors transform hover:-translate-y-1 shadow-lg">
+                        <a href="cadastrocardapio.html"
+                            class="bg-blue-600 text-white p-6 rounded-xl border border-blue-700 flex flex-col justify-center items-center gap-3 hover:bg-blue-700 transition-colors transform hover:-translate-y-1 shadow-lg">
                             <i data-lucide="book-open-check"></i>
                             <p class="text-lg font-bold text-center">Gerenciar Cardápio</p>
                         </a>
                     </div>
 
                     <div class="mt-8 relative border border-gray-200 rounded-xl p-6 pt-8">
-                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Últimas Atividades</h2>
+                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Últimas
+                            Atividades</h2>
                         <ul class="space-y-4">
                             <li class="flex items-center gap-3">
-                                <div class="bg-green-100 text-green-600 p-2 rounded-full"><i data-lucide="user-plus" class="w-4 h-4"></i></div>
-                                <p class="text-gray-600">Nova reserva de <span class="font-semibold">Carlos F.</span> para 4 pessoas.</p>
+                                <div class="bg-green-100 text-green-600 p-2 rounded-full"><i data-lucide="user-plus"
+                                        class="w-4 h-4"></i></div>
+                                <p class="text-gray-600">Nova reserva de <span class="font-semibold">Carlos F.</span>
+                                    para 4 pessoas.</p>
                                 <span class="text-xs text-gray-400 ml-auto">agora</span>
                             </li>
-                             <li class="flex items-center gap-3">
-                                <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full"><i data-lucide="star" class="w-4 h-4"></i></div>
-                                <p class="text-gray-600">Nova avaliação de 5 estrelas de <span class="font-semibold">Maria S.</span></p>
+                            <li class="flex items-center gap-3">
+                                <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full"><i data-lucide="star"
+                                        class="w-4 h-4"></i></div>
+                                <p class="text-gray-600">Nova avaliação de 5 estrelas de <span
+                                        class="font-semibold">Maria S.</span></p>
                                 <span class="text-xs text-gray-400 ml-auto">15 min atrás</span>
                             </li>
-                             <li class="flex items-center gap-3">
-                                <div class="bg-red-100 text-red-600 p-2 rounded-full"><i data-lucide="calendar-x" class="w-4 h-4"></i></div>
-                                <p class="text-gray-600">Reserva de <span class="font-semibold">João P.</span> foi cancelada.</p>
+                            <li class="flex items-center gap-3">
+                                <div class="bg-red-100 text-red-600 p-2 rounded-full"><i data-lucide="calendar-x"
+                                        class="w-4 h-4"></i></div>
+                                <p class="text-gray-600">Reserva de <span class="font-semibold">João P.</span> foi
+                                    cancelada.</p>
                                 <span class="text-xs text-gray-400 ml-auto">1h atrás</span>
                             </li>
                         </ul>
@@ -169,31 +199,43 @@
                                     <td class="px-6 py-4 font-medium text-gray-900">Carlos F.</td>
                                     <td class="px-6 py-4">22/09/2025 14:00</td>
                                     <td class="px-6 py-4">4</td>
-                                    <td class="px-6 py-4"><span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Pendente</span></td>
+                                    <td class="px-6 py-4"><span
+                                            class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Pendente</span>
+                                    </td>
                                     <td class="px-6 py-4 flex justify-center gap-2">
-                                        <button class="text-green-600 hover:text-green-800"><i data-lucide="check-circle"></i></button>
-                                        <button class="text-red-600 hover:text-red-800"><i data-lucide="x-circle"></i></button>
+                                        <button class="text-green-600 hover:text-green-800"><i
+                                                data-lucide="check-circle"></i></button>
+                                        <button class="text-red-600 hover:text-red-800"><i
+                                                data-lucide="x-circle"></i></button>
                                     </td>
                                 </tr>
                                 <tr class="bg-white border-b">
                                     <td class="px-6 py-4 font-medium text-gray-900">Mariana V.</td>
                                     <td class="px-6 py-4">22/09/2025 12:30</td>
                                     <td class="px-6 py-4">2</td>
-                                    <td class="px-6 py-4"><span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Confirmada</span></td>
+                                    <td class="px-6 py-4"><span
+                                            class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Confirmada</span>
+                                    </td>
                                     <td class="px-6 py-4 flex justify-center gap-2">
-                                        <button class="text-gray-400 cursor-not-allowed"><i data-lucide="check-circle"></i></button>
-                                        <button class="text-red-600 hover:text-red-800"><i data-lucide="x-circle"></i></button>
+                                        <button class="text-gray-400 cursor-not-allowed"><i
+                                                data-lucide="check-circle"></i></button>
+                                        <button class="text-red-600 hover:text-red-800"><i
+                                                data-lucide="x-circle"></i></button>
 
                                     </td>
                                 </tr>
-                                 <tr class="bg-white border-b">
+                                <tr class="bg-white border-b">
                                     <td class="px-6 py-4 font-medium text-gray-900">Roberto A.</td>
                                     <td class="px-6 py-4">23/09/2025 11:00</td>
                                     <td class="px-6 py-4">6</td>
-                                    <td class="px-6 py-4"><span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Confirmada</span></td>
+                                    <td class="px-6 py-4"><span
+                                            class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Confirmada</span>
+                                    </td>
                                     <td class="px-6 py-4 flex justify-center gap-2">
-                                        <button class="text-gray-400 cursor-not-allowed"><i data-lucide="check-circle"></i></button>
-                                        <button class="text-red-600 hover:text-red-800"><i data-lucide="x-circle"></i></button>
+                                        <button class="text-gray-400 cursor-not-allowed"><i
+                                                data-lucide="check-circle"></i></button>
+                                        <button class="text-red-600 hover:text-red-800"><i
+                                                data-lucide="x-circle"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -204,21 +246,23 @@
                 <div id="promocoes" class="tab-content">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-xl font-bold text-gray-700">Gerenciar Promoções</h2>
-                        <button id="add-promotion-btn" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
+                        <button id="add-promotion-btn"
+                            class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-full hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
                             <i data-lucide="plus-circle" class="w-5 h-5"></i>
                             Adicionar Promoção
                         </button>
                     </div>
-                    
+
                     <div id="promotions-list" class="space-y-4">
-                        </div>
+                    </div>
                 </div>
 
             </div>
         </div>
     </main>
 
-    <div id="promotion-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+    <div id="promotion-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
         <div class="bg-white rounded-xl shadow-lg w-full max-w-md">
             <form id="promotion-form" class="p-6">
                 <div class="flex justify-between items-center mb-4">
@@ -230,19 +274,27 @@
                 <input type="hidden" id="promotion-id">
                 <div class="space-y-4">
                     <div>
-                        <label for="promotion-title" class="block mb-2 text-sm font-medium text-gray-700">Título da Promoção</label>
-                        <input type="text" id="promotion-title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Ex: Happy Hour Dobrado" required>
+                        <label for="promotion-title" class="block mb-2 text-sm font-medium text-gray-700">Título da
+                            Promoção</label>
+                        <input type="text" id="promotion-title"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            placeholder="Ex: Happy Hour Dobrado" required>
                     </div>
                     <div>
-                        <label for="promotion-description" class="block mb-2 text-sm font-medium text-gray-700">Descrição</label>
-                        <textarea id="promotion-description" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Ex: Compre uma caipirinha e ganhe outra." required></textarea>
+                        <label for="promotion-description"
+                            class="block mb-2 text-sm font-medium text-gray-700">Descrição</label>
+                        <textarea id="promotion-description" rows="3"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            placeholder="Ex: Compre uma caipirinha e ganhe outra." required></textarea>
                     </div>
                 </div>
                 <div class="mt-6 flex justify-end gap-3">
-                    <button type="button" id="cancel-modal-btn" class="py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700">
+                    <button type="button" id="cancel-modal-btn"
+                        class="py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700">
                         Cancelar
                     </button>
-                    <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    <button type="submit"
+                        class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                         Salvar Promoção
                     </button>
                 </div>
@@ -250,22 +302,25 @@
         </div>
     </div>
 
-    <div id="confirm-delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+    <div id="confirm-delete-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
         <div class="bg-white rounded-xl shadow-lg w-full max-w-sm">
             <div class="p-6 text-center">
                 <i data-lucide="alert-triangle" class="mx-auto mb-4 h-14 w-14 text-red-500"></i>
                 <h3 class="mb-5 text-lg font-normal text-gray-600">Tem certeza que deseja excluir esta promoção?</h3>
-                <button id="confirm-delete-btn" type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                <button id="confirm-delete-btn" type="button"
+                    class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
                     Sim, excluir
                 </button>
-                <button id="cancel-delete-btn" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
+                <button id="cancel-delete-btn" type="button"
+                    class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
                     Cancelar
                 </button>
             </div>
         </div>
     </div>
 
-       <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-center text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
@@ -278,17 +333,21 @@
                     <ul class="space-y-2">
                         <li><a href="iniciogestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
                         <li><a href="#" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
-                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
-                        <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar
+                                Barracas</a></li>
+                        <li><a href="configuracoesgestor.html"
+                                class="hover:text-blue-600 transition-colors">Configurações</a></li>
                         <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
                     <div class="flex space-x-3">
-                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
-                        </div>
+                        <a href="https://www.instagram.com/empresa_beachspot/"
+                            class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i
+                                data-lucide="twitter"></i></a>
+                    </div>
                 </div>
             </div>
             <div class="text-center mt-12 border-t border-gray-200 pt-6">
@@ -297,36 +356,9 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Renderiza ícones (incluindo os do novo menu)
-            // O script gestaoBarraca.js provavelmente chama lucide.createIcons() 
-            // novamente, o que não é um problema.
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-    
-            // --- LÓGICA DO MENU MOBILE ---
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-    
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Impede que o clique no botão se propague para o document
-                    mobileMenu.classList.toggle('hidden');
-                });
-    
-                // Fecha o menu se clicar fora dele
-                document.addEventListener('click', (e) => {
-                    if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
-            }
-            // --- FIM DA LÓGICA DO MENU MOBILE ---
-        });
-    </script>
-
-    <script src="../assets/js/gestaoBarraca.js"></script>
+    <script type="module" src="../assets/js/supabaseClient.js"></script>
+    <script type="module" src="../assets/js/getUserProfile.js"></script>
+    <script type="module" src="../assets/js/gestaoBarraca.js"></script>
 </body>
+
 </html>

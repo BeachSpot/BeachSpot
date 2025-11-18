@@ -5,6 +5,18 @@
             background-attachment: fixed;
             min-height: 100vh;
         }
+
+        .btn-favorite.favorited {
+    background-color: rgba(239, 68, 68, 0.9) !important;
+}
+
+.btn-favorite.favorited:hover {
+    background-color: rgba(220, 38, 38, 1) !important;
+}
+
+.btn-favorite.favorited i {
+    fill: white;
+}
         
         /* Custom scrollbar */
         ::-webkit-scrollbar {
