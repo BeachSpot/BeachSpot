@@ -107,6 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const nome_barraca = document.getElementById('nome-barraca')?.value;
             const endereco = document.getElementById('endereco')?.value;
             const descricao = document.getElementById('descricao')?.value;
+            const precoMedio = document.getElementById('preco-medio')?.value;
+            const preco_medio = precoMedio ? parseFloat(precoMedio) : null;
+
             
             // Horários
             const horaAbertura = document.getElementById('hora-abertura')?.value;
@@ -176,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nome_barraca: nome_barraca,
                 descricao_barraca: descricao,
                 localizacao: endereco,
+                preco_medio: preco_medio,
                 horario_func: horario_func,
                 dias_funcionamento: diasSelecionados.length > 0 ? diasSelecionados : [], // Array vazio se não houver dados
                 caracteristicas: caracteristicas.length > 0 ? caracteristicas : [], // Array vazio se não houver dados

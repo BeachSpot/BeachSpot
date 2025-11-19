@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +10,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -23,23 +25,29 @@
             display: flex;
             flex-direction: column;
         }
+
         main {
             flex-grow: 1;
         }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
         }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.4);
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.6);
         }
+
         /* Estilo para inputs de arquivo customizados */
         .file-input-label {
             cursor: pointer;
@@ -54,19 +62,23 @@
             transition: background-color 0.2s;
             border: 1px solid #d1d5db;
         }
+
         .file-input-label:hover {
             background-color: #e5e7eb;
         }
+
         /* Estilo para labels de características selecionadas */
         label:has(input[type="checkbox"]:checked) {
-            background-color: #eff6ff; /* Tailwind blue-50 */
-            border-color: #3b82f6; /* Tailwind blue-500 */
+            background-color: #eff6ff;
+            /* Tailwind blue-50 */
+            border-color: #3b82f6;
+            /* Tailwind blue-500 */
         }
-        
-        /* ESTILOS ANTIGOS DO TOGGLE REMOVIDOS */
 
+        /* ESTILOS ANTIGOS DO TOGGLE REMOVIDOS */
     </style>
 </head>
+
 <body class="text-white">
 
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
@@ -74,26 +86,35 @@
             <a href="inicioGestor.html" class="flex items-center">
                 <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
-            
+
             <div class="flex items-center space-x-6">
-                <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
-                <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
-    
-                <a href="configuracoesGestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
+                <a href="iniciogestor.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="gestaoBarraca.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar
+                    Barracas</a>
+                <a href="cadastroBarraca.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar
+                    Barracas</a>
+
+                <a href="configuracoesGestor.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
-    
+
                 <a href="perfilGestor.html" class="hidden md:block">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
+                        class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
 
-                <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
+                <button id="mobile-menu-btn"
+                    class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
 
-            <div id="mobile-menu" class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
+            <div id="mobile-menu"
+                class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
                 <a href="iniciogestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="home" class="w-5 h-5"></i>
                     <span>Início</span>
@@ -102,11 +123,13 @@
                     <i data-lucide="layout-grid" class="w-5 h-5"></i>
                     <span>Gerenciar</span>
                 </a>
-                <a href="cadastroBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <a href="cadastroBarraca.html"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="plus-circle" class="w-5 h-5"></i>
                     <span>Cadastrar</span>
                 </a>
-                <a href="configuracoesGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <a href="configuracoesGestor.html"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="settings" class="w-5 h-5"></i>
                     <span>Configurações</span>
                 </a>
@@ -119,86 +142,125 @@
     </header>
 
     <main class="pt-28 md:pt-32 container mx-auto max-w-4xl px-6">
-        
+
         <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
-            
+
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-bold text-gray-900">Cadastre sua Barraca</h1>
                 <p class="text-gray-600 mt-2">Preencha as informações abaixo para que os clientes encontrem você.</p>
                 <br>
             </div>
-            
+
             <form action="#" method="POST" class="space-y-8" id="formCadastroBarraca">
-                
+
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
-                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Informações Básicas</h2>
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Informações Básicas
+                    </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
-                            <label for="nome-barraca" class="block text-sm font-medium text-gray-700 mb-1">Nome da Barraca</label>
-                            <input type="text" id="nome-barraca" name="nome-barraca" placeholder="Ex: Barraca do Sol" required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <label for="nome-barraca" class="block text-sm font-medium text-gray-700 mb-1">Nome da
+                                Barraca</label>
+                            <input type="text" id="nome-barraca" name="nome-barraca" placeholder="Ex: Barraca do Sol"
+                                required
+                                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         </div>
-                        
+
                         <div class="md:col-span-2">
-                            <label for="descricao" class="block text-sm font-medium text-gray-700 mb-1">Sobre a Barraca (Descrição)</label>
-                            <textarea id="descricao" name="descricao" rows="4" placeholder="Conte um pouco sobre o seu estabelecimento, seus diferenciais, etc." required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
+                            <label for="descricao" class="block text-sm font-medium text-gray-700 mb-1">Sobre a Barraca
+                                (Descrição)</label>
+                            <textarea id="descricao" name="descricao" rows="4"
+                                placeholder="Conte um pouco sobre o seu estabelecimento, seus diferenciais, etc."
+                                required
+                                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
                         </div>
-                        
+
                         <div class="md:col-span-2">
-                            <label for="endereco" class="block text-sm font-medium text-gray-700 mb-1">Endereço / Localização</label>
+                            <label for="endereco" class="block text-sm font-medium text-gray-700 mb-1">Endereço /
+                                Localização</label>
                             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                                <input type="text" id="endereco" name="endereco" placeholder="Ex: Av. Atlântica, em frente ao posto 5" required class="flex-grow w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                                <button type="button" title="Marque o local exato da barraca no mapa para que seus clientes se localizem mais rápido" class="flex-shrink-0 w-full sm:w-auto bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                                <input type="text" id="endereco" name="endereco"
+                                    placeholder="Ex: Av. Atlântica, em frente ao posto 5" required
+                                    class="flex-grow w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                <button type="button"
+                                    title="Marque o local exato da barraca no mapa para que seus clientes se localizem mais rápido"
+                                    class="flex-shrink-0 w-full sm:w-auto bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
                                     <i data-lucide="map-pin" class="w-5 h-5"></i>
                                     <span>Marcar no mapa</span>
                                 </button>
                             </div>
                         </div>
 
+                        <!-- ADICIONE ESTE BLOCO após a div do endereço -->
+                        <div class="md:col-span-2">
+                            <label for="preco-medio" class="block text-sm font-medium text-gray-700 mb-1">
+                                Preço Médio por Pessoa (R$)
+                                <span class="text-gray-500 text-xs">(opcional)</span>
+                            </label>
+                            <input type="number" id="preco-medio" name="preco-medio" placeholder="Ex: 80.00" step="0.01"
+                                min="0"
+                                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <p class="text-xs text-gray-500 mt-1">Informe o valor médio que um cliente gasta na sua
+                                barraca</p>
+                        </div>
+
                         <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-200 pt-6">
-                            
+
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Dias de Funcionamento</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Dias de
+                                    Funcionamento</label>
                                 <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
-                                    <label for="dia-seg" class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
+                                    <label for="dia-seg"
+                                        class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
                                         <input id="dia-seg" name="dias[]" value="seg" type="checkbox" class="hidden">
                                         <span class="text-sm font-medium text-gray-800">Seg</span>
                                     </label>
-                                    <label for="dia-ter" class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
+                                    <label for="dia-ter"
+                                        class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
                                         <input id="dia-ter" name="dias[]" value="ter" type="checkbox" class="hidden">
                                         <span class="text-sm font-medium text-gray-800">Ter</span>
                                     </label>
-                                    <label for="dia-qua" class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
+                                    <label for="dia-qua"
+                                        class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
                                         <input id="dia-qua" name="dias[]" value="qua" type="checkbox" class="hidden">
                                         <span class="text-sm font-medium text-gray-800">Qua</span>
                                     </label>
-                                    <label for="dia-qui" class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
+                                    <label for="dia-qui"
+                                        class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
                                         <input id="dia-qui" name="dias[]" value="qui" type="checkbox" class="hidden">
                                         <span class="text-sm font-medium text-gray-800">Qui</span>
                                     </label>
-                                    <label for="dia-sex" class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
+                                    <label for="dia-sex"
+                                        class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
                                         <input id="dia-sex" name="dias[]" value="sex" type="checkbox" class="hidden">
                                         <span class="text-sm font-medium text-gray-800">Sex</span>
                                     </label>
-                                    <label for="dia-sab" class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
+                                    <label for="dia-sab"
+                                        class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
                                         <input id="dia-sab" name="dias[]" value="sab" type="checkbox" class="hidden">
                                         <span class="text-sm font-medium text-gray-800">Sáb</span>
                                     </label>
-                                    <label for="dia-dom" class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
+                                    <label for="dia-dom"
+                                        class="flex items-center justify-center p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition cursor-pointer">
                                         <input id="dia-dom" name="dias[]" value="dom" type="checkbox" class="hidden">
                                         <span class="text-sm font-medium text-gray-800">Dom</span>
                                     </label>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Aberta em Feriados?</label>
                                 <div class="flex items-center space-x-2">
                                     <label for="abre-feriados" class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="abre-feriados" name="abre-feriados" class="sr-only peer">
-                                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-blue-600 transition duration-200">
-                                            <div class="absolute top-0.5 left-0.5 bg-white border border-gray-300 rounded-full h-5 w-5 peer-checked:translate-x-full peer-checked:border-white transition duration-200"></div>
+                                        <input type="checkbox" id="abre-feriados" name="abre-feriados"
+                                            class="sr-only peer">
+                                        <div
+                                            class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-blue-600 transition duration-200">
+                                            <div
+                                                class="absolute top-0.5 left-0.5 bg-white border border-gray-300 rounded-full h-5 w-5 peer-checked:translate-x-full peer-checked:border-white transition duration-200">
+                                            </div>
                                         </div>
-                                        <span class="ml-3 text-sm font-medium text-gray-700" id="abre-feriados-label">Não</span>
+                                        <span class="ml-3 text-sm font-medium text-gray-700"
+                                            id="abre-feriados-label">Não</span>
                                     </label>
                                 </div>
                             </div>
@@ -207,24 +269,31 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Horário Padrão</label>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label for="hora-abertura" class="block text-sm font-medium text-gray-700 mb-1">Abertura</label>
-                                    <input type="time" id="hora-abertura" name="hora-abertura" required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                    <label for="hora-abertura"
+                                        class="block text-sm font-medium text-gray-700 mb-1">Abertura</label>
+                                    <input type="time" id="hora-abertura" name="hora-abertura" required
+                                        class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                                 </div>
                                 <div>
-                                    <label for="hora-fechamento" class="block text-sm font-medium text-gray-700 mb-1">Fechamento</label>
-                                    <input type="time" id="hora-fechamento" name="hora-fechamento" required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                    <label for="hora-fechamento"
+                                        class="block text-sm font-medium text-gray-700 mb-1">Fechamento</label>
+                                    <input type="time" id="hora-fechamento" name="hora-fechamento" required
+                                        class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-<br>
+                <br>
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Cardápio</h2>
                     <div class="space-y-4">
-                         <label for="link-cardapio" class="block text-sm font-medium text-gray-700 mb-1 text-left">Link do Cardápio Digital <span class="text-gray-500">(Opcional)</span></label>
-                         <input type="url" id="link-cardapio" name="link-cardapio" placeholder="https://seusite.com/cardapio" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                        
+                        <label for="link-cardapio" class="block text-sm font-medium text-gray-700 mb-1 text-left">Link
+                            do Cardápio Digital <span class="text-gray-500">(Opcional)</span></label>
+                        <input type="url" id="link-cardapio" name="link-cardapio"
+                            placeholder="https://seusite.com/cardapio"
+                            class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+
                         <div class="relative py-2">
                             <div class="absolute inset-0 flex items-center" aria-hidden="true">
                                 <div class="w-full border-t border-gray-300"></div>
@@ -235,55 +304,71 @@
                         </div>
 
                         <div class="text-center">
-                            <button type="button" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-md flex items-center gap-2 mx-auto">
+                            <button type="button"
+                                class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-md flex items-center gap-2 mx-auto">
                                 <i data-lucide="plus-circle" class="w-5 h-5"></i>
                                 <a href="cadastrocardapio.html">
-                                <span>Cadastre seu Cardápio</span>
+                                    <span>Cadastre seu Cardápio</span>
                             </button>
-                            <p class="text-xs text-gray-500 mt-2">Crie um cardápio digital diretamente na nossa plataforma.</p>
+                            <p class="text-xs text-gray-500 mt-2">Crie um cardápio digital diretamente na nossa
+                                plataforma.</p>
                         </div>
                     </div>
                 </section>
-<br>
-<br>
+                <br>
+                <br>
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
-                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Características</h2>
-                    <p class="text-sm text-gray-500 mb-6">Selecione as opções que melhor descrevem o ambiente da sua barraca.</p>
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Características
+                    </h2>
+                    <p class="text-sm text-gray-500 mb-6">Selecione as opções que melhor descrevem o ambiente da sua
+                        barraca.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        
-                        <label for="familia" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
-                            <input id="familia" name="caracteristicas[]" value="familia" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+
+                        <label for="familia"
+                            class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="familia" name="caracteristicas[]" value="familia" type="checkbox"
+                                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
                             <span class="ml-3 text-sm font-medium text-gray-800">Ideal para Famílias</span>
                         </label>
-                        
-                        <label for="musica" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
-                            <input id="musica" name="caracteristicas[]" value="musica" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+
+                        <label for="musica"
+                            class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="musica" name="caracteristicas[]" value="musica" type="checkbox"
+                                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
                             <span class="ml-3 text-sm font-medium text-gray-800">Música ao Vivo</span>
                         </label>
 
-                        <label for="agitado" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
-                            <input id="agitado" name="caracteristicas[]" value="agitado" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                        <label for="agitado"
+                            class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="agitado" name="caracteristicas[]" value="agitado" type="checkbox"
+                                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
                             <span class="ml-3 text-sm font-medium text-gray-800">Ambiente Agitado</span>
                         </label>
 
-                        <label for="relax" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
-                            <input id="relax" name="caracteristicas[]" value="relax" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                        <label for="relax"
+                            class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="relax" name="caracteristicas[]" value="relax" type="checkbox"
+                                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
                             <span class="ml-3 text-sm font-medium text-gray-800">Relax & Tranquilo</span>
                         </label>
 
-                        <label for="pet-friendly" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
-                            <input id="pet-friendly" name="caracteristicas[]" value="pet-friendly" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                        <label for="pet-friendly"
+                            class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="pet-friendly" name="caracteristicas[]" value="pet-friendly" type="checkbox"
+                                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
                             <span class="ml-3 text-sm font-medium text-gray-800">Pet Friendly</span>
                         </label>
 
-                        <label for="esportes" class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
-                            <input id="esportes" name="caracteristicas[]" value="esportes" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
+                        <label for="esportes"
+                            class="flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition cursor-pointer">
+                            <input id="esportes" name="caracteristicas[]" value="esportes" type="checkbox"
+                                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600">
                             <span class="ml-3 text-sm font-medium text-gray-800">Esportes</span>
                         </label>
                     </div>
                 </section>
-<br>
-<br>
+                <br>
+                <br>
                 <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
                     <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Fotos do Local</h2>
                     <div class="space-y-6">
@@ -294,29 +379,33 @@
                                     <i data-lucide="upload-cloud" class="w-5 h-5"></i>
                                     <span>Escolher imagem principal</span>
                                 </label>
-                                <input type="file" id="imagem-destaque" name="imagem-destaque" class="hidden" accept="image/*">
+                                <input type="file" id="imagem-destaque" name="imagem-destaque" class="hidden"
+                                    accept="image/*">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Galeria de Fotos <span class="text-gray-500">(selecione várias)</span></label>
-                                 <label for="galeria-fotos" class="file-input-label">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Galeria de Fotos <span
+                                        class="text-gray-500">(selecione várias)</span></label>
+                                <label for="galeria-fotos" class="file-input-label">
                                     <i data-lucide="image-plus" class="w-5 h-5"></i>
                                     <span>Adicionar mais fotos</span>
                                 </label>
-                                <input type="file" id="galeria-fotos" name="galeria-fotos[]" class="hidden" accept="image/*" multiple>
+                                <input type="file" id="galeria-fotos" name="galeria-fotos[]" class="hidden"
+                                    accept="image/*" multiple>
                             </div>
                         </div>
 
                         <div id="preview-destaque" class="mt-4">
-                            </div>
+                        </div>
 
                         <div id="preview-galeria" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                            </div>
+                        </div>
                     </div>
                 </section>
 
                 <div class="text-center">
-                    <button type="submit" class="bg-blue-600 text-white font-bold py-4 px-12 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg text-lg">
+                    <button type="submit"
+                        class="bg-blue-600 text-white font-bold py-4 px-12 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg text-lg">
                         Finalizar Cadastro
                     </button>
                 </div>
@@ -324,7 +413,7 @@
         </div>
     </main>
 
-       <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
+    <footer class="w-full bg-white text-gray-800 z-10 py-12 mt-16">
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-center text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
@@ -337,17 +426,21 @@
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="iniciogestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
+                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar
+                                Barracas</a></li>
                         <li><a href="#" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
-                        <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="configuracoesgestor.html"
+                                class="hover:text-blue-600 transition-colors">Configurações</a></li>
                         <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
                     <div class="flex space-x-3">
-                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                        <a href="https://www.instagram.com/empresa_beachspot/"
+                            class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i
+                                data-lucide="twitter"></i></a>
                     </div>
                 </div>
             </div>
@@ -359,7 +452,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
+
             // --- LÓGICA DO MENU MOBILE (SUBSTITUÍDA) ---
             const mobileMenuBtn = document.getElementById('mobile-menu-btn'); // ID Novo
             const mobileMenu = document.getElementById('mobile-menu'); // ID Novo
@@ -381,7 +474,7 @@
 
             // Ativa os ícones do Lucide em toda a página.
             lucide.createIcons();
-            
+
             // --- INÍCIO LÓGICA DO TOGGLE "ABERTA EM FERIADOS" ---
             // (O JS continua funcionando com a nova estrutura HTML)
             const toggleInput = document.getElementById('abre-feriados');
@@ -400,13 +493,13 @@
             // Lógica para pré-visualização da imagem de destaque
             const inputDestaque = document.getElementById('imagem-destaque');
             const previewDestaque = document.getElementById('preview-destaque');
-            
-            inputDestaque.addEventListener('change', function() {
+
+            inputDestaque.addEventListener('change', function () {
                 previewDestaque.innerHTML = ''; // Limpa a visualização anterior
                 const file = this.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         const img = document.createElement('img');
                         img.src = e.target.result;
                         img.alt = 'Pré-visualização da imagem de destaque';
@@ -421,12 +514,12 @@
             const inputGaleria = document.getElementById('galeria-fotos');
             const previewGaleria = document.getElementById('preview-galeria');
 
-            inputGaleria.addEventListener('change', function() {
+            inputGaleria.addEventListener('change', function () {
                 previewGaleria.innerHTML = ''; // Limpa a visualização anterior
                 if (this.files) {
                     Array.from(this.files).forEach(file => {
                         const reader = new FileReader();
-                        reader.onload = function(e) {
+                        reader.onload = function (e) {
                             const div = document.createElement('div');
                             div.className = 'overflow-hidden rounded-lg shadow-md';
                             const img = document.createElement('img');
@@ -445,4 +538,5 @@
     <script type="module" src="../assets/js/cadastroBarraca.js"></script>
     <script type="module" src="../assets/js/supabaseClient.js"></script>
 </body>
+
 </html>
