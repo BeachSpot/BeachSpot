@@ -148,6 +148,48 @@ class InfoBarracaManager {
             precoContainer.style.display = 'none';
         }
 
+        if (barraca.capacidade_mesas) {
+            const storageKey = `ocupacao-barraca-${this.idBarraca}`;
+            const mesasOcupadas = parseInt(localStorage.getItem(storageKey)) || 0;
+            const percentual = Math.round((mesasOcupadas / barraca.capacidade_mesas) * 100);
+
+            // Determinar status e cor
+            let status = 'Disponível';
+            let colorClass = 'text-green-600';
+            if (percentual >= 90) {
+                status = 'Lotado';
+                colorClass = 'text-red-600';
+            } else if (percentual >= 70) {
+                status = 'Quase Lotado';
+                colorClass = 'text-yellow-600';
+            }
+
+            // Adicionar card de ocupação
+            const ocupacaoHTML = `
+        <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Ocupação</p>
+                    <p class="text-lg font-bold ${colorClass}">${status}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-2xl font-bold">${percentual}%</p>
+                    <p class="text-sm text-gray-500">${mesasOcupadas}/${barraca.capacidade_mesas} mesas</p>
+                </div>
+            </div>
+            <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full transition-all" style="width: ${percentual}%"></div>
+            </div>
+        </div>
+    `;
+
+            // Inserir após a seção de preço ou no local apropriado
+            const targetSection = document.querySelector('#tab-content-geral .space-y-4');
+            if (targetSection) {
+                targetSection.insertAdjacentHTML('beforeend', ocupacaoHTML);
+            }
+        }
+
         // Atualizar links
         const reservarBtn = document.getElementById('reserve-btn');
         if (reservarBtn) {

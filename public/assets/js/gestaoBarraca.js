@@ -1,7 +1,7 @@
 import { supabase } from './supabaseClient.js';
 import { checkAuthentication } from './getUserProfile.js';
 
-console.log('[gestaoBarraca] Script carregado');
+console.log('[gestaoBarraca] Script Unificado Carregado');
 
 /**
  * Classe para gerenciar a página de gestão da barraca
@@ -14,6 +14,8 @@ class GestaoBarracaManager {
         this.reservas = [];
         this.currentTab = 'dashboard';
         this.promotionToDelete = null;
+        this.userId = null;
+        this.mesasOcupadas = 0; // NOVO
         
         this.initElements();
         this.initEventListeners();
@@ -31,10 +33,17 @@ class GestaoBarracaManager {
         this.closeModalBtn = document.getElementById('close-modal-btn');
         this.cancelModalBtn = document.getElementById('cancel-modal-btn');
         
-        // Modal de confirmação de exclusão
+        // Modal de confirmação de exclusão de promoção
         this.confirmDeleteModal = document.getElementById('confirm-delete-modal');
         this.confirmDeleteBtn = document.getElementById('confirm-delete-btn');
         this.cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        this.closeDeleteModalBtn = document.getElementById('close-delete-modal-btn');
+        
+        // Modal de exclusão de barraca
+        this.deleteBarracaModal = document.getElementById('delete-barraca-modal');
+        this.deleteBarracaBtn = document.getElementById('delete-barraca-btn');
+        this.confirmDeleteBarracaBtn = document.getElementById('confirm-delete-barraca-btn');
+        this.cancelDeleteBarracaBtn = document.getElementById('cancel-delete-barraca-btn');
     }
 
     initEventListeners() {
@@ -65,6 +74,10 @@ class GestaoBarracaManager {
             this.cancelDeleteBtn.addEventListener('click', () => this.closeDeleteModal());
         }
         
+        if (this.closeDeleteModalBtn) {
+            this.closeDeleteModalBtn.addEventListener('click', () => this.closeDeleteModal());
+        }
+        
         if (this.confirmDeleteBtn) {
             this.confirmDeleteBtn.addEventListener('click', () => this.confirmDeletePromotion());
         }
@@ -82,7 +95,26 @@ class GestaoBarracaManager {
                 const id = btn.dataset.id;
                 this.deletePromotion(id);
             }
+
+            if (e.target.closest('.btn-delete-promo')) {
+                const btn = e.target.closest('.btn-delete-promo');
+                const id = btn.dataset.id;
+                this.deletePromotion(id);
+            }
         });
+
+        // Botão de excluir barraca
+        if (this.deleteBarracaBtn) {
+            this.deleteBarracaBtn.addEventListener('click', () => this.openDeleteBarracaModal());
+        }
+        
+        if (this.cancelDeleteBarracaBtn) {
+            this.cancelDeleteBarracaBtn.addEventListener('click', () => this.closeDeleteBarracaModal());
+        }
+        
+        if (this.confirmDeleteBarracaBtn) {
+            this.confirmDeleteBarracaBtn.addEventListener('click', () => this.confirmDeleteBarraca());
+        }
     }
 
     async init() {
@@ -93,16 +125,36 @@ class GestaoBarracaManager {
             const isAuthenticated = await checkAuthentication('../entrar.html');
             if (!isAuthenticated) return;
 
+            // Obter sessão atual do Supabase
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            
+            if (sessionError) {
+                console.error('[GestaoBarraca] Erro ao obter sessão:', sessionError);
+                window.location.href = '../entrar.html';
+                return;
+            }
+
+            if (!session || !session.user) {
+                console.warn('[GestaoBarraca] Usuário não autenticado');
+                window.location.href = '../entrar.html';
+                return;
+            }
+
+            this.userId = session.user.id;
+            console.log('[GestaoBarraca] Usuário autenticado:', this.userId);
+
             // Pegar ID da barraca da URL
             const urlParams = new URLSearchParams(window.location.search);
-            this.idBarraca = urlParams.get('id');
+            const barracaIdUrl = urlParams.get('id');
 
-            if (!this.idBarraca) {
+            if (!barracaIdUrl) {
+                console.warn('[GestaoBarraca] ID da barraca não especificado. Redirecionando...');
                 alert('ID da barraca não especificado. Redirecionando...');
                 window.location.href = './inicioGestor.html';
                 return;
             }
 
+            this.idBarraca = barracaIdUrl;
             console.log('[GestaoBarraca] ID da barraca:', this.idBarraca);
 
             // Carregar dados da barraca
@@ -128,12 +180,13 @@ class GestaoBarracaManager {
                 .from('barracas')
                 .select('*')
                 .eq('id_barraca', this.idBarraca)
+                .eq('id_gestor', this.userId)
                 .single();
 
             if (error) throw error;
 
             if (!barraca) {
-                throw new Error('Barraca não encontrada');
+                throw new Error('Barraca não encontrada ou você não tem permissão para acessá-la.');
             }
 
             this.barracaData = barraca;
@@ -141,6 +194,8 @@ class GestaoBarracaManager {
 
             // Atualizar UI com dados da barraca
             this.updateBarracaInfo();
+            this.updateDashboardUI(barraca);
+            this.atualizarLinksComIdBarraca();
 
         } catch (error) {
             console.error('[GestaoBarraca] Erro ao carregar barraca:', error);
@@ -161,23 +216,231 @@ class GestaoBarracaManager {
         if (subtitleElement) {
             subtitleElement.textContent = `Administre sua barraca ${this.barracaData.nome_barraca}`;
         }
+    }
 
-        // Atualizar link "Ver Página da Barraca"
-        const verPaginaLink = document.querySelector('a[href="infoBarraca.html"]');
-        if (verPaginaLink) {
-            verPaginaLink.href = `infoBarraca.html?id=${this.idBarraca}`;
+    updateDashboardUI(data) {
+        // Atualiza o título com o nome da barraca
+        const tituloBarraca = document.querySelector('section p.text-gray-500');
+        if (tituloBarraca) {
+            tituloBarraca.textContent = `Administre sua barraca ${data.nome_barraca}`;
         }
+        
+        // Atualiza estatísticas (exemplo com dados fictícios ou reais)
+        const viewsElement = document.getElementById('views-count');
+        const ratingElement = document.getElementById('rating-value');
+        
+        if (viewsElement) viewsElement.textContent = Math.floor(Math.random() * 1000);
+        if (ratingElement) ratingElement.textContent = '4.8';
+        
+        // Sistema de ocupação de mesas
+        this.initOccupancySystem();
+    }
 
-        // Atualizar link "Gerenciar Cardápio"
-        const gerenciarCardapioLink = document.querySelector('a[href="cadastrocardapio.html"]');
-        if (gerenciarCardapioLink) {
-            gerenciarCardapioLink.href = `cadastrocardapio.html?id=${this.idBarraca}`;
+    // === SISTEMA DE OCUPAÇÃO DE MESAS ===
+
+    initOccupancySystem() {
+        const ocupacaoCard = document.querySelector('.bg-green-100');
+        
+        if (!ocupacaoCard || !this.barracaData.capacidade_mesas) {
+            // Se não tiver capacidade definida, mostrar mensagem
+            if (ocupacaoCard) {
+                ocupacaoCard.className = 'bg-yellow-100 text-yellow-600 p-6 rounded-xl border border-gray-200 flex items-center gap-4';
+                ocupacaoCard.innerHTML = `
+                    <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
+                        <i data-lucide="alert-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Capacidade</p>
+                        <p class="text-sm text-yellow-600 font-semibold">Configure no cadastro</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+            return;
+        }
+        
+        // Carregar ocupação do localStorage
+        const storageKey = `ocupacao-barraca-${this.idBarraca}`;
+        this.mesasOcupadas = parseInt(localStorage.getItem(storageKey)) || 0;
+        
+        // Garantir que não ultrapasse a capacidade
+        if (this.mesasOcupadas > this.barracaData.capacidade_mesas) {
+            this.mesasOcupadas = this.barracaData.capacidade_mesas;
+        }
+        
+        this.renderOccupancy();
+        
+        // Tornar o gerenciador acessível globalmente para os botões
+        window.gestaoManager = this;
+    }
+
+    renderOccupancy() {
+        const ocupacaoCard = document.querySelector('.bg-green-100, .bg-yellow-100, .bg-red-100');
+        if (!ocupacaoCard) return;
+        
+        const capacidade = this.barracaData.capacidade_mesas;
+        const ocupadas = this.mesasOcupadas;
+        const percentual = Math.round((ocupadas / capacidade) * 100);
+        
+        // Determinar cor baseada na ocupação
+        let bgColor = 'bg-green-100';
+        let textColor = 'text-green-600';
+        let iconBg = 'bg-green-100';
+        
+        if (percentual >= 90) {
+            bgColor = 'bg-red-100';
+            textColor = 'text-red-600';
+            iconBg = 'bg-red-100';
+        } else if (percentual >= 70) {
+            bgColor = 'bg-yellow-100';
+            textColor = 'text-yellow-600';
+            iconBg = 'bg-yellow-100';
+        }
+        
+        ocupacaoCard.className = `${bgColor} p-6 rounded-xl border border-gray-200 flex items-center gap-4`;
+        
+        ocupacaoCard.innerHTML = `
+            <div class="${iconBg} ${textColor} p-3 rounded-full">
+                <i data-lucide="users"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-gray-500 text-sm">Ocupação Atual</p>
+                <p class="text-2xl font-bold ${textColor}">${percentual}%</p>
+                <p class="text-sm mt-1 text-gray-600">${ocupadas} de ${capacidade} mesas</p>
+            </div>
+            <div class="flex flex-col gap-1">
+                <button onclick="window.gestaoManager.incrementOccupancy()" 
+                        class="bg-white hover:bg-gray-50 text-gray-700 font-bold py-1 px-3 rounded transition ${ocupadas >= capacidade ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${ocupadas >= capacidade ? 'disabled' : ''}>
+                    +
+                </button>
+                <button onclick="window.gestaoManager.decrementOccupancy()" 
+                        class="bg-white hover:bg-gray-50 text-gray-700 font-bold py-1 px-3 rounded transition ${ocupadas <= 0 ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${ocupadas <= 0 ? 'disabled' : ''}>
+                    -
+                </button>
+            </div>
+        `;
+        
+        lucide.createIcons();
+    }
+
+    incrementOccupancy() {
+        if (this.mesasOcupadas < this.barracaData.capacidade_mesas) {
+            this.mesasOcupadas++;
+            this.saveOccupancy();
+            this.renderOccupancy();
+            this.showToast('Mesa ocupada! 🪑');
         }
     }
 
+    decrementOccupancy() {
+        if (this.mesasOcupadas > 0) {
+            this.mesasOcupadas--;
+            this.saveOccupancy();
+            this.renderOccupancy();
+            this.showToast('Mesa liberada! ✅');
+        }
+    }
+
+    saveOccupancy() {
+        const storageKey = `ocupacao-barraca-${this.idBarraca}`;
+        localStorage.setItem(storageKey, this.mesasOcupadas.toString());
+        
+        // Opcional: Salvar no banco de dados
+        // this.saveOccupancyToDatabase();
+    }
+
+    // OPCIONAL: Salvar no banco (se quiser persistir no Supabase)
+    async saveOccupancyToDatabase() {
+        try {
+            const { error } = await supabase
+                .from('barracas')
+                .update({ 
+                    ocupacao_atual: this.mesasOcupadas,
+                    ultima_atualizacao_ocupacao: new Date().toISOString()
+                })
+                .eq('id_barraca', this.idBarraca);
+            
+            if (error) console.error('Erro ao salvar ocupação:', error);
+        } catch (error) {
+            console.error('Erro ao salvar ocupação:', error);
+        }
+    }
+
+    showToast(message) {
+        // Criar toast se não existir
+        let toast = document.getElementById('toast-ocupacao');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast-ocupacao';
+            toast.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 z-50';
+            document.body.appendChild(toast);
+        }
+        
+        toast.textContent = message;
+        toast.classList.remove('opacity-0');
+        
+        setTimeout(() => {
+            toast.classList.add('opacity-0');
+        }, 2000);
+    }
+
+    // === FIM DO SISTEMA DE OCUPAÇÃO ===
+
+    atualizarLinksComIdBarraca() {
+        if (!this.idBarraca) {
+            console.warn('[GestaoBarraca] ID da barraca não disponível para atualizar links.');
+            return;
+        }
+
+        console.log('[GestaoBarraca] Atualizando links com ID da barraca:', this.idBarraca);
+
+        // 1. Link de "Editar Barraca"
+        const linkEditarBarraca = document.querySelector('a[href*="infoBarraca.html"]') || 
+                                  document.querySelector('a[href*="cadastroBarraca.html"]') ||
+                                  document.getElementById('link-editar-barraca');
+        
+        if (linkEditarBarraca) {
+            linkEditarBarraca.href = `cadastroBarraca.html?id=${this.idBarraca}&origem=gestao`;
+            
+            const textElement = linkEditarBarraca.querySelector('span');
+            if (textElement) {
+                if (textElement.textContent.includes('Ver Página') || textElement.textContent.includes('Ver página')) {
+                    textElement.textContent = 'Editar Barraca';
+                }
+            }
+            
+            if (linkEditarBarraca.textContent.includes('Ver Página') || linkEditarBarraca.textContent.includes('Ver página')) {
+                linkEditarBarraca.innerHTML = linkEditarBarraca.innerHTML.replace(/Ver [Pp]ágina da Barraca/g, 'Editar Barraca');
+            }
+            
+            console.log('[GestaoBarraca] ✅ Link "Editar Barraca" atualizado:', linkEditarBarraca.href);
+        } else {
+            console.warn('[GestaoBarraca] Link "Editar Barraca" não encontrado no DOM');
+        }
+
+        // 2. Link de "Gerenciar Cardápio"
+        const linkCardapio = document.querySelector('a[href*="cadastrocardapio.html"]');
+        if (linkCardapio) {
+            linkCardapio.href = `cadastrocardapio.html?id=${this.idBarraca}`;
+            console.log('[GestaoBarraca] Link "Gerenciar Cardápio" atualizado com ID:', this.idBarraca);
+        }
+
+        // 3. Atualiza links do menu de navegação
+        document.querySelectorAll('a[href="gestaoBarraca.html"]').forEach(link => {
+            link.href = `gestaoBarraca.html?id=${this.idBarraca}`;
+        });
+
+        // 4. Atualiza todos os links para cadastroBarraca.html
+        document.querySelectorAll('a[href="cadastroBarraca.html"]').forEach(link => {
+            link.href = `cadastroBarraca.html?id=${this.idBarraca}&origem=gestao`;
+        });
+
+        console.log('[GestaoBarraca] ✅ Todos os links atualizados com ID da barraca:', this.idBarraca);
+    }
+
     loadDashboardStats() {
-        // TODO: Buscar dados reais de reservas do banco
-        // Por enquanto, mantém os dados simulados do HTML
         console.log('[GestaoBarraca] Estatísticas carregadas (simuladas)');
     }
 
@@ -204,7 +467,7 @@ class GestaoBarracaManager {
     }
 
     renderPromocoes() {
-        const container = document.getElementById('promotions-list');
+        const container = document.getElementById('promotions-list') || document.getElementById('promocoes-list');
         if (!container) return;
 
         if (this.promocoes.length === 0) {
@@ -224,6 +487,7 @@ class GestaoBarracaManager {
                 <div class="flex-1">
                     <h3 class="text-lg font-bold text-gray-900 mb-1">${promo.titulo}</h3>
                     <p class="text-gray-600 text-sm">${promo.descricao}</p>
+                    ${promo.preco_promocional ? `<p class="text-blue-600 font-bold mt-2 text-lg">R$ ${promo.preco_promocional}</p>` : ''}
                 </div>
                 <div class="flex gap-2 ml-4">
                     <button data-id="${promo.id_promocao}" class="edit-promotion-btn text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50 transition">
@@ -242,7 +506,6 @@ class GestaoBarracaManager {
     switchTab(tabName) {
         this.currentTab = tabName;
 
-        // Atualizar botões
         this.tabButtons.forEach(button => {
             if (button.dataset.tab === tabName) {
                 button.classList.add('active', 'border-blue-600', 'text-blue-600');
@@ -251,13 +514,14 @@ class GestaoBarracaManager {
             }
         });
 
-        // Atualizar conteúdo
         this.tabContents.forEach(content => {
             if (content.id === tabName) {
                 content.classList.add('active');
+                content.classList.remove('hidden');
                 content.style.display = 'block';
             } else {
                 content.classList.remove('active');
+                content.classList.add('hidden');
                 content.style.display = 'none';
             }
         });
@@ -272,16 +536,14 @@ class GestaoBarracaManager {
         const promotionDescription = document.getElementById('promotion-description');
 
         if (promocao) {
-            // Editar promoção existente
             modalTitle.textContent = 'Editar Promoção';
             promotionId.value = promocao.id_promocao;
             promotionTitle.value = promocao.titulo;
             promotionDescription.value = promocao.descricao;
         } else {
-            // Nova promoção
             modalTitle.textContent = 'Adicionar Nova Promoção';
             this.promotionForm.reset();
-            promotionId.value = '';
+            if (promotionId) promotionId.value = '';
         }
 
         this.promotionModal.classList.remove('hidden');
@@ -296,9 +558,10 @@ class GestaoBarracaManager {
     async handlePromotionSubmit(e) {
         e.preventDefault();
 
-        const promotionId = document.getElementById('promotion-id').value;
-        const titulo = document.getElementById('promotion-title').value;
-        const descricao = document.getElementById('promotion-description').value;
+        const promotionId = document.getElementById('promotion-id')?.value;
+        const titulo = document.getElementById('promotion-title')?.value;
+        const descricao = document.getElementById('promotion-description')?.value;
+        const preco = document.getElementById('promotion-price')?.value;
 
         try {
             const promocaoData = {
@@ -307,8 +570,11 @@ class GestaoBarracaManager {
                 descricao
             };
 
+            if (preco) {
+                promocaoData.preco_promocional = parseFloat(preco);
+            }
+
             if (promotionId) {
-                // Atualizar promoção existente
                 const { error } = await supabase
                     .from('promocoes')
                     .update(promocaoData)
@@ -318,7 +584,6 @@ class GestaoBarracaManager {
 
                 alert('Promoção atualizada com sucesso!');
             } else {
-                // Criar nova promoção
                 const { error } = await supabase
                     .from('promocoes')
                     .insert(promocaoData);
@@ -375,14 +640,100 @@ class GestaoBarracaManager {
             alert(`Erro ao excluir promoção: ${error.message}`);
         }
     }
+
+    openDeleteBarracaModal() {
+        if (this.deleteBarracaModal) {
+            this.deleteBarracaModal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        } else {
+            if (confirm(`⚠️ ATENÇÃO: Tem certeza que deseja EXCLUIR permanentemente a barraca "${this.barracaData?.nome_barraca}"?\n\nEsta ação não pode ser desfeita e todos os dados serão perdidos.`)) {
+                const confirmacao = prompt('Digite "EXCLUIR" para confirmar:');
+                if (confirmacao === 'EXCLUIR') {
+                    this.confirmDeleteBarraca();
+                }
+            }
+        }
+    }
+
+    closeDeleteBarracaModal() {
+        if (this.deleteBarracaModal) {
+            this.deleteBarracaModal.classList.add('hidden');
+        }
+    }
+
+    async confirmDeleteBarraca() {
+        if (!this.idBarraca) {
+            alert('Erro: ID da barraca não encontrado.');
+            return;
+        }
+
+        try {
+            console.log('[GestaoBarraca] Iniciando exclusão da barraca:', this.idBarraca);
+
+            if (this.confirmDeleteBarracaBtn) {
+                this.confirmDeleteBarracaBtn.disabled = true;
+                this.confirmDeleteBarracaBtn.textContent = 'Excluindo...';
+            }
+
+            const { error: errorProdutos } = await supabase
+                .from('produtos')
+                .delete()
+                .eq('id_barraca', this.idBarraca);
+
+            if (errorProdutos) {
+                console.warn('[GestaoBarraca] Erro ao excluir produtos:', errorProdutos);
+            }
+
+            const { error: errorPromocoes } = await supabase
+                .from('promocoes')
+                .delete()
+                .eq('id_barraca', this.idBarraca);
+
+            if (errorPromocoes) {
+                console.warn('[GestaoBarraca] Erro ao excluir promoções:', errorPromocoes);
+            }
+
+            const { error: errorBarraca } = await supabase
+                .from('barracas')
+                .delete()
+                .eq('id_barraca', this.idBarraca)
+                .eq('id_gestor', this.userId);
+
+            if (errorBarraca) {
+                throw new Error(`Erro ao excluir barraca: ${errorBarraca.message}`);
+            }
+
+            console.log('[GestaoBarraca] ✅ Barraca excluída com sucesso!');
+            
+            alert('Barraca excluída com sucesso!');
+            
+            this.closeDeleteBarracaModal();
+
+            setTimeout(() => {
+                window.location.href = './inicioGestor.html';
+            }, 500);
+
+        } catch (error) {
+            console.error('[GestaoBarraca] Erro ao excluir barraca:', error);
+            alert(`Erro ao excluir barraca: ${error.message}`);
+            
+            if (this.confirmDeleteBarracaBtn) {
+                this.confirmDeleteBarracaBtn.disabled = false;
+                this.confirmDeleteBarracaBtn.textContent = 'Sim, Excluir Permanentemente';
+            }
+        }
+    }
 }
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[gestaoBarraca] DOM carregado');
 
-    // Inicializar ícones
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 
     // Inicializar gerenciador
     const manager = new GestaoBarracaManager();

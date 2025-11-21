@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeachSpot - Detalhes da Reserva</title>
+    <title>BeachSpot - Editar Reserva</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -27,16 +28,17 @@
             --error-red: #ef4444;
         }
 
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            /* Fundo gradiente de suasReservas.html */
             background: linear-gradient(135deg, #0138b4, #73bff6);
             margin: 0;
-            padding-top: 72px; /* Espaçamento para o header fixo */
+            padding-top: 72px;
             color: var(--text-dark);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -44,7 +46,7 @@
             flex-direction: column;
             min-height: 100vh;
         }
-        
+
         .notification {
             position: fixed;
             top: -100px;
@@ -54,16 +56,16 @@
             color: var(--white);
             padding: 12px 24px;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             z-index: 1000;
             transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-weight: 500;
         }
+
         .notification.show {
             top: 90px;
         }
 
-        /* Estilo do card de reservar.html */
         .booking-card {
             width: 100%;
             max-width: 920px;
@@ -76,10 +78,17 @@
             z-index: 10;
             animation: popIn 0.6s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) both;
         }
-        
+
         @keyframes popIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .form-title {
@@ -90,148 +99,301 @@
             margin-bottom: 8px;
         }
 
-        .form-intro { text-align: center; margin-bottom: 24px; }
-        .form-intro p { margin: 0; color: var(--text-light); font-size: 16px; line-height: 1.6; }
-        hr { border: none; height: 1px; background-color: var(--border-color); margin: 0 0 32px 0; }
-        .form-group { margin-bottom: 24px; position: relative; }
-        .form-group label { display: block; font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 8px; }
-        .input-wrapper { position: relative; }
-        .input-wrapper .lucide { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; transition: color 0.2s; pointer-events: none; }
-        
-        .form-input {
-            width: 100%; height: 52px; background-color: var(--background-color); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 0 16px 0 50px; font-size: 16px; font-family: 'Poppins', sans-serif;
-            color: var(--text-dark); transition: all 0.2s ease-in-out;
+        .form-intro {
+            text-align: center;
+            margin-bottom: 24px;
         }
+
+        .form-intro p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 0 0 32px 0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .lucide {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            transition: color 0.2s;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 52px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0 16px 0 50px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            transition: all 0.2s ease-in-out;
+        }
+
         .form-input:disabled {
-            background-color: #e5e7eb; /* Cor de fundo cinza para desabilitado */
-            color: #6b7280; /* Cor de texto mais clara */
+            background-color: #e5e7eb;
+            color: #6b7280;
             cursor: not-allowed;
         }
 
-        .form-input:focus { outline: none; background-color: var(--white); border-color: var(--brand-blue); box-shadow: 0 0 0 3px rgba(1, 56, 180, 0.15); }
-        .form-input:focus ~ .lucide { color: var(--brand-blue); }
-        .form-input::placeholder { color: #9ca3af; }
+        .form-input:focus {
+            outline: none;
+            background-color: var(--white);
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 0 3px rgba(1, 56, 180, 0.15);
+        }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        .stepper { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; background-color: var(--background-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 6px; }
-        .stepper button { background-color: var(--white); border: 1px solid var(--border-color); border-radius: 8px; width: 40px; height: 40px; font-size: 24px; font-weight: 400; color: var(--brand-blue); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-        .stepper button:hover { background-color: var(--brand-blue); color: var(--white); }
-        .stepper #peopleCount { font-size: 18px; font-weight: 600; color: var(--text-dark); min-width: 50px; text-align: center; }
+        .form-input:focus~.lucide {
+            color: var(--brand-blue);
+        }
 
-        .submit-btn { width: 100%; height: 52px; border: none; border-radius: 12px; background-color: var(--brand-blue); color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .submit-btn:hover { transform: translateY(-3px); background-color: var(--brand-blue-dark); box-shadow: 0 10px 20px rgba(1, 56, 180, 0.25); }
-        .submit-btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(1, 56, 180, 0.2); }
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
 
-        /* Botão Cancelar com cor sólida */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 52px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 6px;
+        }
+
+        .stepper button {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--brand-blue);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stepper button:hover {
+            background-color: var(--brand-blue);
+            color: var(--white);
+        }
+
+        .stepper #peopleCount {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 12px;
+            background-color: var(--brand-blue);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            background-color: var(--brand-blue-dark);
+            box-shadow: 0 10px 20px rgba(1, 56, 180, 0.25);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(1, 56, 180, 0.2);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .cancel-btn {
-            width: 100%; height: 52px; border: none; border-radius: 12px; 
-            background-color: #e5e7eb; /* Cor sólida cinza */
-            color: var(--text-dark);   /* Texto escuro */
-            font-size: 16px; font-weight: 600; cursor: pointer; 
-            transition: all 0.2s ease; margin-top: 8px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .cancel-btn:hover { 
-            background-color: #d1d5db; /* Cinza um pouco mais escuro */
-            color: var(--text-dark); 
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 12px;
+            background-color: #e5e7eb;
+            color: var(--text-dark);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
         }
 
-        .input-hint { display: block; margin-top: 6px; font-size: 12px; color: var(--text-light); font-weight: 400; }
-        .validation-error { color: var(--error-red); font-size: 14px; margin-top: 8px; text-align: center; display: none; }
-        
+        .cancel-btn:hover {
+            background-color: #d1d5db;
+            color: var(--text-dark);
+        }
+
+        .validation-error {
+            color: var(--error-red);
+            font-size: 14px;
+            margin-top: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
         @media (max-width: 768px) {
-            .booking-card { padding: 32px; margin-left: 20px; margin-right: 20px; width: auto; }
+            .booking-card {
+                padding: 32px;
+                margin-left: 20px;
+                margin-right: 20px;
+                width: auto;
+            }
         }
 
         @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .booking-card { padding: 24px;}
-        }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
 
-        /* --- ADICIONADO: Animação para o menu mobile --- */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            .booking-card {
+                padding: 24px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div id="notification" class="notification"></div>
 
-    <!-- ===== HEADER MODIFICADO ===== -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
-        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
-            <!-- Logo -->
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
             <a href="inicio.html" class="flex items-center">
-                <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
+                <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto"
+                    onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
             </a>
+            <div class="flex items-center space-x-6">
+                <a href="inicio.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="suasReservas.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas
+                    Reservas</a>
 
-            <!-- Navegação Desktop (Visível em telas 'md' e maiores) -->
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="inicio.html" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="suasReservas.html" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
-                <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300" title="Configurações">
+                <a href="configuracoes.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
-                <a href="perfilCliente.html" title="Perfil">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                <a href="perfilCliente.html" class="hidden md:block">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente"
+                        class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
+
+                <button id="mobile-menu-btn"
+                    class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
             </div>
 
-            <!-- Botão Menu Mobile (Visível apenas em telas pequenas) -->
-            <div class="md:hidden relative">
-                <!-- Botão Hambúrguer -->
-                <button id="mobile-menu-button" class="text-gray-600 hover:text-blue-600 transition duration-300">
-                    <i data-lucide="menu" class="w-7 h-7"></i>
-                </button>
-                
-                <!-- Menu Dropdown Mobile (Controlado por JS) -->
-                <div id="mobile-menu" 
-                     class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl z-50 py-2 border border-gray-100"
-                     style="animation: fadeIn 0.2s ease-out;">
-                    
-                    <a href="inicio.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors font-medium">
-                        <i data-lucide="home" class="w-5 h-5 mr-3 text-gray-500"></i>
-                        Início
-                    </a>
-                    <a href="suasReservas.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors font-medium">
-                        <i data-lucide="calendar-check" class="w-5 h-5 mr-3 text-gray-500"></i>
-                        Suas Reservas
-                    </a>
-                    
-                    <!-- Divisor -->
-                    <hr class="my-1 border-gray-100">
-
-                    <a href="configuracoes.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors font-medium">
-                        <i data-lucide="settings" class="w-5 h-5 mr-3 text-gray-500"></i>
-                        Configurações
-                    </a>
-                    <a href="perfilCliente.html" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors font-medium">
-                        <i data-lucide="user" class="w-5 h-5 mr-3 text-gray-500"></i>
-                        Perfil
-                    </a>
-                </div>
+            <div id="mobile-menu"
+                class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
+                <a href="inicio.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span>Início</span>
+                </a>
+                <a href="suasReservas.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                    <span>Suas Reservas</span>
+                </a>
+                <a href="configuracoes.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="perfilCliente.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>Perfil</span>
+                </a>
             </div>
         </nav>
     </header>
-    <!-- ===== FIM DO HEADER MODIFICADO ===== -->
-
 
     <div style="flex-grow: 1;">
         <main class="booking-card">
             <div id="booking-form-view">
                 <h1 class="form-title">Editar Reserva</h1>
                 <div class="form-intro">
-                    <p>Revise e atualize os detalhes da sua reserva.</p>
+                    <p>Altere os detalhes da sua reserva conforme necessário.</p>
                 </div>
                 <hr>
                 <form id="reservationForm" novalidate>
                     <div class="form-group">
                         <label for="barracaName">Barraca</label>
                         <div class="input-wrapper">
-                            <input type="text" id="barracaName" class="form-input" value="Quiosque do Sol" disabled>
+                            <input type="text" id="barracaName" class="form-input" value="Carregando..." disabled>
                             <i data-lucide="map-pin" class="lucide"></i>
                         </div>
                     </div>
@@ -240,23 +402,39 @@
                         <div class="form-group">
                             <label for="reservationDate">Data</label>
                             <div class="input-wrapper">
-                                <input type="text" id="reservationDate" class="form-input" placeholder="Selecione a data" required value="05/10/2025">
+                                <input type="text" id="reservationDate" class="form-input"
+                                    placeholder="Selecione a data" required value="">
                                 <i data-lucide="calendar" class="lucide"></i>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="reservationTime">Horário de Chegada</label>
                             <div class="input-wrapper">
-                                <input type="text" id="reservationTime" class="form-input" placeholder="Selecione o horário" required value="14:00">
+                                <input type="text" id="reservationTime" class="form-input"
+                                    placeholder="Selecione o horário" required value="">
                                 <i data-lucide="clock" class="lucide"></i>
                             </div>
-                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reservationDuration">Duração Estimada</label>
+                        <div class="input-wrapper">
+                            <select id="reservationDuration" class="form-input" required>
+                                <option value="2">2 horas</option>
+                                <option value="3">3 horas</option>
+                                <option value="4" selected>4 horas</option>
+                                <option value="5">5 horas</option>
+                                <option value="6">6 horas</option>
+                                <option value="8">Dia todo (8 horas)</option>
+                            </select>
+                            <i data-lucide="timer" class="lucide"></i>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Número de Pessoas</label>
                         <div class="stepper">
                             <button type="button" id="decreaseBtn">-</button>
-                            <span id="peopleCount">2</span>
+                            <span id="peopleCount">1</span>
                             <button type="button" id="increaseBtn">+</button>
                         </div>
                     </div>
@@ -264,10 +442,11 @@
                         <label class="font-medium">Nome dos Participantes</label>
                         <div id="namesContainer" class="space-y-3">
                             <div class="input-wrapper relative">
-                                <input type="text" name="participantName[]" class="form-input name-input" placeholder="Seu nome" required value="Maria da Silva">
+                                <input type="text" name="participantName[]" class="form-input name-input"
+                                    placeholder="Seu nome" required value="">
                                 <i data-lucide="user" class="lucide"></i>
                             </div>
-                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <p id="validation-message" class="validation-error">Por favor, preencha todos os campos.</p>
@@ -281,8 +460,7 @@
                     </div>
                 </form>
             </div>
-            
-            </main>
+        </main>
     </div>
 
     <footer class="w-full bg-white text-gray-800 z-10 py-12">
@@ -290,23 +468,28 @@
             <div class="flex flex-wrap justify-between items-start text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="inicio.html" class="flex items-center">
-                        <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
+                        <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto"
+                            onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
                     </a>
                 </div>
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="inicio.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a></li>
-                        <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="suasReservas.html" class="hover:text-blue-600 transition-colors">Suas Reservas</a>
+                        </li>
+                        <li><a href="configuracoes.html" class="hover:text-blue-600 transition-colors">Configurações</a>
+                        </li>
                         <li><a href="perfilCliente.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
-                    <div class="flex space-x-3"> 
-                        <a href="https://www.instagram.com/empresa_beachspot" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://twitter.com/BeachSpotpraias" target="_blank" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                    <div class="flex space-x-3">
+                        <a href="https://www.instagram.com/empresa_beachspot" target="_blank"
+                            class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://twitter.com/BeachSpotpraias" target="_blank"
+                            class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
                     </div>
                 </div>
             </div>
@@ -316,165 +499,13 @@
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-
-            // --- ADICIONADO: LÓGICA DO MENU MOBILE ---
-            const menuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            if (menuButton && mobileMenu) {
-                // Abre/Fecha o menu ao clicar no botão
-                menuButton.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Impede que o clique se propague para o document
-                    mobileMenu.classList.toggle('hidden');
-                });
-
-                // Fecha o menu se clicar em qualquer lugar fora dele
-                document.addEventListener('click', (event) => {
-                    // Verifica se o menu está visível
-                    // E se o clique NÃO foi dentro do menu
-                    // E se o clique NÃO foi no próprio botão que abre o menu
-                    if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(event.target) && !menuButton.contains(event.target)) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
-            }
-            // --- FIM DA LÓGICA DO MENU MOBILE ---
-
-
-            flatpickr("#reservationDate", {
-                dateFormat: "d/m/Y",
-                minDate: "today",
-                locale: "pt",
-            });
-
-            flatpickr("#reservationTime", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true,
-                minuteIncrement: 15,
-                locale: "pt"
-            });
-            
-            const notification = document.getElementById('notification');
-            let notificationTimeout;
-            function showNotification(message, isError = false) {
-                clearTimeout(notificationTimeout);
-                notification.textContent = message;
-                notification.style.backgroundColor = isError ? 'var(--error-red)' : 'var(--text-dark)';
-                notification.classList.add('show');
-                notificationTimeout = setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000); // 3 segundos
-            }
-
-            const form = document.getElementById('reservationForm');
-            const validationMessage = document.getElementById('validation-message');
-            const decreaseBtn = document.getElementById('decreaseBtn');
-            const increaseBtn = document.getElementById('increaseBtn');
-            const peopleCountSpan = document.getElementById('peopleCount');
-            const namesContainer = document.getElementById('namesContainer');
-            
-            // Carregar dados da reserva (simulado)
-            let peopleCount = parseInt(peopleCountSpan.textContent) || 1;
-
-            // --- MODIFICADO ---
-            // Botão 'x' removido do template
-            const addNameToForm = (nameValue = "") => {
-                const newNameField = document.createElement('div');
-                newNameField.className = 'input-wrapper relative dynamic-name-field';
-                newNameField.innerHTML = `
-                    <input type="text" name="participantName[]" class="form-input name-input" placeholder="Nome do acompanhante" required value="${nameValue}">
-                    <i data-lucide="user" class="lucide"></i>
-                `;
-                namesContainer.appendChild(newNameField);
-                lucide.createIcons();
-            };
-
-            // Simulação: Carregar o segundo participante
-            if (peopleCount > 1) {
-                // Adiciona os campos extras (exceto o primeiro, que já está no HTML)
-                for (let i = 1; i < peopleCount; i++) {
-                    // Simulação de nome
-                    const name = (i === 1) ? "João Almeida" : ""; 
-                    addNameToForm(name);
-                }
-            }
-
-
-            const removeLastDynamicName = () => {
-                const dynamicFields = namesContainer.querySelectorAll('.dynamic-name-field');
-                if (dynamicFields.length > 0) {
-                    dynamicFields[dynamicFields.length - 1].remove();
-                }
-            };
-
-            decreaseBtn.addEventListener('click', () => {
-                if (peopleCount > 1) {
-                    peopleCount--;
-                    peopleCountSpan.textContent = peopleCount;
-                    removeLastDynamicName();
-                }
-            });
-
-            increaseBtn.addEventListener('click', () => {
-                peopleCount++;
-                peopleCountSpan.textContent = peopleCount;
-                addNameToForm(); // Adiciona um campo vazio
-            });
-
-            // --- MODIFICADO ---
-            // Event listener para o botão 'x' removido, pois o botão não existe mais.
-
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                
-                let isValid = true;
-                validationMessage.style.display = 'none';
-                form.querySelectorAll('[required]').forEach(input => {
-                    if (!input.value.trim()) {
-                        isValid = false;
-                        input.style.borderColor = 'var(--error-red)';
-                    } else {
-                        input.style.borderColor = '';
-                    }
-                });
-
-                if (!isValid) {
-                    validationMessage.style.display = 'block';
-                    return;
-                }
-
-                const submitButton = form.querySelector('.submit-btn');
-                submitButton.disabled = true;
-                submitButton.innerHTML = 'Salvando...';
-                
-                // Simula o salvamento
-                setTimeout(() => {
-                    try {
-                        // Mensagem de sucesso flutuante
-                        showNotification("Reserva atualizada com sucesso!");
-
-                        // Redireciona de volta para "Suas Reservas" após 2 segundos
-                        setTimeout(() => {
-                            window.location.href = "suasReservas.html";
-                        }, 2000);
-
-                    } catch (error) {
-                        showNotification("Ocorreu um erro ao atualizar sua reserva.", true);
-                        submitButton.disabled = false;
-                        submitButton.innerHTML = '<i data-lucide="save" style="width:20px; height:20px;"></i> Salvar Alterações';
-                        lucide.createIcons();
-                    }
-                }, 1000); 
-            });
-        });
-    </script>
+    <!-- Importar módulos -->
+    <script type="module" src="../assets/js/supabaseClient.js"></script>
+    <script type="module" src="../assets/js/editarReserva.js"></script>
 </body>
+
 </html>
