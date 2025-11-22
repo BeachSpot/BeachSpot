@@ -66,7 +66,7 @@ class InfoBarracaManager {
             console.log('[InfoBarraca] Dados carregados:', barraca);
 
             // Atualizar UI
-            this.updateBarracaInfo();
+            await this.updateBarracaInfo();
 
         } catch (error) {
             console.error('[InfoBarraca] Erro ao carregar barraca:', error);
@@ -75,7 +75,7 @@ class InfoBarracaManager {
         }
     }
 
-    updateBarracaInfo() {
+    async updateBarracaInfo() {
         const barraca = this.barracaData;
 
         // Nome da barraca
@@ -144,50 +144,12 @@ class InfoBarracaManager {
                 precoSpan.textContent = `Preço médio: R$ ${precoFormatado} por pessoa`;
             }
         } else if (precoContainer) {
-            // Se não tiver preço, ocultar a seção
             precoContainer.style.display = 'none';
         }
 
+        // Calcular ocupação com reservas confirmadas
         if (barraca.capacidade_mesas) {
-            const storageKey = `ocupacao-barraca-${this.idBarraca}`;
-            const mesasOcupadas = parseInt(localStorage.getItem(storageKey)) || 0;
-            const percentual = Math.round((mesasOcupadas / barraca.capacidade_mesas) * 100);
-
-            // Determinar status e cor
-            let status = 'Disponível';
-            let colorClass = 'text-green-600';
-            if (percentual >= 90) {
-                status = 'Lotado';
-                colorClass = 'text-red-600';
-            } else if (percentual >= 70) {
-                status = 'Quase Lotado';
-                colorClass = 'text-yellow-600';
-            }
-
-            // Adicionar card de ocupação
-            const ocupacaoHTML = `
-        <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Ocupação</p>
-                    <p class="text-lg font-bold ${colorClass}">${status}</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-2xl font-bold">${percentual}%</p>
-                    <p class="text-sm text-gray-500">${mesasOcupadas}/${barraca.capacidade_mesas} mesas</p>
-                </div>
-            </div>
-            <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-blue-600 h-2 rounded-full transition-all" style="width: ${percentual}%"></div>
-            </div>
-        </div>
-    `;
-
-            // Inserir após a seção de preço ou no local apropriado
-            const targetSection = document.querySelector('#tab-content-geral .space-y-4');
-            if (targetSection) {
-                targetSection.insertAdjacentHTML('beforeend', ocupacaoHTML);
-            }
+            await this.calcularOcupacao(barraca.capacidade_mesas);
         }
 
         // Atualizar links
@@ -204,6 +166,78 @@ class InfoBarracaManager {
             } else {
                 cardapioLink.href = `cardapio.html?id=${this.idBarraca}`;
             }
+        }
+    }
+
+    async calcularOcupacao(capacidadeMesas) {
+        try {
+            // Buscar apenas reservas confirmadas para hoje
+            const hoje = new Date().toISOString().split('T')[0];
+
+            const { data: reservas, error } = await supabase
+                .from('reservas')
+                .select('num_pessoas')
+                .eq('id_barraca', this.idBarraca)
+                .eq('data_reserva', hoje)
+                .eq('status', 'confirmada');
+
+            if (error) {
+                console.error('[InfoBarraca] Erro ao buscar reservas:', error);
+                return;
+            }
+
+            // Calcular número de mesas ocupadas (assumindo 4 pessoas por mesa)
+            const pessoasReservadas = reservas?.reduce((sum, r) => sum + (r.num_pessoas || 0), 0) || 0;
+            const mesasOcupadas = Math.ceil(pessoasReservadas / 4);
+            const percentual = Math.round((mesasOcupadas / capacidadeMesas) * 100);
+
+            // Determinar status e cor
+            let status = 'Disponível';
+            let colorClass = 'text-green-600';
+            if (percentual >= 90) {
+                status = 'Lotado';
+                colorClass = 'text-red-600';
+            } else if (percentual >= 70) {
+                status = 'Quase Lotado';
+                colorClass = 'text-yellow-600';
+            }
+
+            // Formatar data de hoje
+            const dataHoje = new Date();
+            const dataFormatada = dataHoje.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            // Adicionar card de ocupação
+            const ocupacaoHTML = `
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-1">
+                        <div>
+                            <p class="text-sm text-gray-600">Ocupação de Hoje</p>
+                            <p class="text-xs text-gray-400">${dataFormatada}</p>
+                            <p class="text-lg font-bold ${colorClass} mt-1">${status}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold">${percentual}%</p>
+                            <p class="text-sm text-gray-500">${mesasOcupadas}/${capacidadeMesas} mesas</p>
+                        </div>
+                    </div>
+                    <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full transition-all" style="width: ${percentual}%"></div>
+                    </div>
+                </div>
+            `;
+
+            // Inserir após a seção de preço ou no local apropriado
+            const targetSection = document.querySelector('#tab-content-geral .space-y-4');
+            if (targetSection) {
+                targetSection.insertAdjacentHTML('beforeend', ocupacaoHTML);
+            }
+
+        } catch (error) {
+            console.error('[InfoBarraca] Erro ao calcular ocupação:', error);
         }
     }
 
@@ -276,7 +310,6 @@ class InfoBarracaManager {
     }
 
     renderPromocoes() {
-        // Encontrar o container de promoções
         const promoSection = Array.from(document.querySelectorAll('section h2'))
             .find(h2 => h2.textContent.includes('Promoções'));
 
@@ -329,7 +362,6 @@ class InfoBarracaManager {
         try {
             console.log('[InfoBarraca] Carregando avaliações...');
 
-            // Primeiro, verificar se a tabela avaliacoes existe
             const { data: avaliacoes, error } = await supabase
                 .from('avaliacoes')
                 .select('*')
@@ -337,7 +369,6 @@ class InfoBarracaManager {
                 .order('data_avaliacao', { ascending: false });
 
             if (error) {
-                // Se a tabela não existe, usar dados mock
                 if (error.code === '42P01') {
                     console.warn('[InfoBarraca] Tabela avaliacoes não existe. Usando dados de exemplo.');
                     this.renderAvaliacoes([]);
@@ -346,31 +377,25 @@ class InfoBarracaManager {
                 throw error;
             }
 
-            // Buscar informações dos usuários separadamente
             if (avaliacoes && avaliacoes.length > 0) {
                 const userIds = [...new Set(avaliacoes.map(av => av.id_usuario))];
 
-                // Buscar dados dos clientes (tipo_conta = 'cliente')
                 const { data: clientes } = await supabase
                     .from('cliente')
                     .select('id_cliente, nome')
                     .in('id_cliente', userIds);
 
-                // Buscar dados dos gestores (tipo_conta = 'gestor') como fallback
                 const { data: gestores } = await supabase
                     .from('gestor')
                     .select('id_gestor, nome')
                     .in('id_gestor', userIds);
 
-                // Buscar email da tabela usuarios como último fallback
                 const { data: usuarios } = await supabase
                     .from('usuarios')
                     .select('id_usuario, email')
                     .in('id_usuario', userIds);
 
-                // Mapear usuários para as avaliações
                 const avaliacoesComUsuarios = avaliacoes.map(av => {
-                    // Tentar encontrar o nome em ordem: cliente -> gestor -> email -> fallback
                     let nome = 'Usuário';
 
                     const cliente = clientes?.find(c => c.id_cliente === av.id_usuario);
@@ -401,7 +426,6 @@ class InfoBarracaManager {
 
         } catch (error) {
             console.error('[InfoBarraca] Erro ao carregar avaliações:', error);
-            // Em caso de erro, renderizar sem avaliações
             this.renderAvaliacoes([]);
         }
     }
@@ -424,16 +448,13 @@ class InfoBarracaManager {
             return;
         }
 
-        // Calcular média
         const totalRating = avaliacoes.reduce((sum, av) => sum + av.nota, 0);
         const avgRating = totalRating / avaliacoes.length;
 
-        // Atualizar resumo
         if (reviewSummaryText) {
             reviewSummaryText.textContent = `${avgRating.toFixed(1)} (${avaliacoes.length} ${avaliacoes.length === 1 ? 'avaliação' : 'avaliações'})`;
         }
 
-        // Atualizar estrelas do resumo
         if (reviewSummaryStars) {
             const stars = [...reviewSummaryStars.children];
             const roundedAvg = Math.round(avgRating);
@@ -446,16 +467,26 @@ class InfoBarracaManager {
             });
         }
 
-        // Renderizar lista
         reviewsList.innerHTML = avaliacoes.map(av => {
             const userName = av.usuario_nome || 'Usuário';
             const userInitial = userName.charAt(0).toUpperCase();
-            const starsHTML = Array.from({ length: 5 }, (_, i) =>
-                `<i data-lucide="star" class="w-4 h-4 ${i < av.nota ? 'fill-current' : ''}"></i>`
-            ).join('');
+
+            // Criar HTML das estrelas com preenchimento correto
+            let starsHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= av.nota) {
+                    starsHTML += `<i data-lucide="star" class="w-4 h-4 text-yellow-500" fill="currentColor"></i>`;
+                } else {
+                    starsHTML += `<i data-lucide="star" class="w-4 h-4 text-gray-300"></i>`;
+                }
+            }
 
             const dataFormatada = av.data_avaliacao
-                ? new Date(av.data_avaliacao).toLocaleDateString('pt-BR')
+                ? new Date(av.data_avaliacao).toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                })
                 : '';
 
             return `
@@ -464,9 +495,9 @@ class InfoBarracaManager {
                         <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=${userInitial}" 
                              class="w-10 h-10 rounded-full mr-3" 
                              alt="Foto de ${userName}">
-                        <div>
-                            <p class="font-bold">${userName}</p>
-                            <div class="flex text-yellow-500">${starsHTML}</div>
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-800">${userName}</p>
+                            <div class="flex gap-1 mt-1">${starsHTML}</div>
                         </div>
                     </div>
                     <p class="text-gray-600">${av.comentario}</p>
@@ -475,10 +506,11 @@ class InfoBarracaManager {
             `;
         }).join('');
 
-        lucide.createIcons();
+        // Re-inicializar os ícones do Lucide
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
-
-    // === SISTEMA DE FAVORITOS ===
 
     initFavorites() {
         const favoriteBtn = document.getElementById('favorite-btn');
@@ -486,7 +518,6 @@ class InfoBarracaManager {
 
         const storageKey = 'beachspotFavorites';
 
-        // Verificar se já está favoritado
         const favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
         const isFavorited = favorites.some(fav => fav.barracaId == this.idBarraca);
 
@@ -518,8 +549,6 @@ class InfoBarracaManager {
         });
     }
 
-    // === SISTEMA DE ABAS ===
-
     initTabs() {
         const tabs = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
@@ -541,8 +570,6 @@ class InfoBarracaManager {
             });
         });
     }
-
-    // === MODAL DA GALERIA ===
 
     initGalleryModal() {
         const galleryModal = document.getElementById('gallery-modal');
@@ -567,46 +594,60 @@ class InfoBarracaManager {
         });
     }
 
-    // === SISTEMA DE AVALIAÇÕES ===
-
     initReviewSystem() {
         const ratingStarsContainer = document.getElementById('rating-stars');
-        const ratingStars = ratingStarsContainer ? [...ratingStarsContainer.children] : [];
         const submitReviewBtn = document.getElementById('submit-review-btn');
         const reviewTextarea = document.getElementById('review-textarea');
 
         if (!ratingStarsContainer || !submitReviewBtn || !reviewTextarea) return;
 
+        // Função para atualizar as estrelas visualmente
         const updateStars = (rating) => {
-            ratingStars.forEach((star, index) => {
-                if (index < rating) {
+            const stars = ratingStarsContainer.querySelectorAll('[data-lucide="star"]');
+            stars.forEach((star, index) => {
+                const starValue = parseInt(star.dataset.value);
+                if (starValue <= rating) {
                     star.classList.remove('text-gray-300');
-                    star.classList.add('text-yellow-400', 'fill-current');
+                    star.classList.add('text-yellow-400');
+                    // Adicionar preenchimento
+                    star.setAttribute('fill', 'currentColor');
                 } else {
-                    star.classList.remove('text-yellow-400', 'fill-current');
+                    star.classList.remove('text-yellow-400');
                     star.classList.add('text-gray-300');
+                    // Remover preenchimento
+                    star.setAttribute('fill', 'none');
                 }
             });
         };
 
+        // Hover nas estrelas
         ratingStarsContainer.addEventListener('mouseover', (e) => {
-            const starValue = e.target.dataset.value;
-            if (starValue) updateStars(starValue);
+            if (e.target.hasAttribute('data-value')) {
+                const starValue = parseInt(e.target.dataset.value);
+                updateStars(starValue);
+            }
         });
 
+        // Sair do hover
         ratingStarsContainer.addEventListener('mouseout', () => {
             updateStars(this.currentRating);
         });
 
+        // Clicar na estrela
         ratingStarsContainer.addEventListener('click', (e) => {
-            const starValue = e.target.dataset.value;
-            if (starValue) {
-                this.currentRating = parseInt(starValue);
+            if (e.target.hasAttribute('data-value')) {
+                this.currentRating = parseInt(e.target.dataset.value);
                 updateStars(this.currentRating);
+                console.log('[ReviewSystem] Nota selecionada:', this.currentRating);
             }
         });
 
+        // Enviar avaliação
         submitReviewBtn.addEventListener('click', async () => {
+            console.log('[ReviewSystem] Tentando enviar avaliação...');
+            console.log('[ReviewSystem] Nota atual:', this.currentRating);
+            console.log('[ReviewSystem] Comentário:', reviewTextarea.value.trim());
+
             if (this.currentRating === 0) {
                 this.showToast('Por favor, selecione uma nota.');
                 return;
@@ -617,28 +658,53 @@ class InfoBarracaManager {
             }
 
             try {
-                // Verificar se usuário está logado
+                // Verificar autenticação
                 const { data: { user }, error: authError } = await supabase.auth.getUser();
 
                 if (authError || !user) {
+                    console.log('[ReviewSystem] Usuário não autenticado');
                     this.showToast('Você precisa estar logado para avaliar.');
                     setTimeout(() => window.location.href = 'login.html', 1500);
                     return;
                 }
 
-                // Salvar avaliação
-                const { error: insertError } = await supabase
+                console.log('[ReviewSystem] Usuário autenticado:', user.id);
+
+                // Verificar se já avaliou
+                const { data: avaliacaoExistente } = await supabase
+                    .from('avaliacoes')
+                    .select('id_avaliacao')
+                    .eq('id_barraca', this.idBarraca)
+                    .eq('id_usuario', user.id)
+                    .single();
+
+                if (avaliacaoExistente) {
+                    this.showToast('Você já avaliou esta barraca.');
+                    return;
+                }
+
+                // Inserir avaliação
+                const { data: novaAvaliacao, error: insertError } = await supabase
                     .from('avaliacoes')
                     .insert({
-                        id_barraca: this.idBarraca,
+                        id_barraca: parseInt(this.idBarraca),
                         id_usuario: user.id,
                         nota: this.currentRating,
                         comentario: reviewTextarea.value.trim()
-                    });
+                    })
+                    .select()
+                    .single();
 
-                if (insertError) throw insertError;
+                if (insertError) {
+                    console.error('[ReviewSystem] Erro ao inserir:', insertError);
+                    throw insertError;
+                }
+
+                console.log('[ReviewSystem] Avaliação inserida com sucesso:', novaAvaliacao);
 
                 this.showToast('Avaliação enviada com sucesso!');
+
+                // Limpar formulário
                 this.currentRating = 0;
                 updateStars(0);
                 reviewTextarea.value = '';
@@ -648,31 +714,42 @@ class InfoBarracaManager {
 
             } catch (error) {
                 console.error('[ReviewSystem] Erro:', error);
-                this.showToast('Erro ao enviar avaliação.');
+                this.showToast('Erro ao enviar avaliação: ' + error.message);
             }
         });
 
-        // Filtros de avaliações
+        // Sistema de filtros
         const filterAllBtn = document.getElementById('filter-all');
         const filterMediaBtn = document.getElementById('filter-media');
-        const allReviews = document.querySelectorAll('#reviews-list .review-card');
 
-        filterAllBtn?.addEventListener('click', () => {
-            allReviews.forEach(review => review.style.display = 'block');
-            filterAllBtn.classList.add('bg-blue-500', 'text-white');
-            filterMediaBtn?.classList.remove('bg-blue-500', 'text-white');
-        });
-
-        filterMediaBtn?.addEventListener('click', () => {
-            allReviews.forEach(review => {
-                review.style.display = review.classList.contains('has-media') ? 'block' : 'none';
+        if (filterAllBtn) {
+            filterAllBtn.addEventListener('click', () => {
+                const allReviews = document.querySelectorAll('#reviews-list .review-card');
+                allReviews.forEach(review => review.style.display = 'block');
+                filterAllBtn.classList.add('bg-blue-500', 'text-white');
+                filterAllBtn.classList.remove('bg-gray-200', 'text-gray-800');
+                if (filterMediaBtn) {
+                    filterMediaBtn.classList.remove('bg-blue-500', 'text-white');
+                    filterMediaBtn.classList.add('bg-gray-200', 'text-gray-800');
+                }
             });
-            filterMediaBtn.classList.add('bg-blue-500', 'text-white');
-            filterAllBtn?.classList.remove('bg-blue-500', 'text-white');
-        });
-    }
+        }
 
-    // === MODAL DO MAPA ===
+        if (filterMediaBtn) {
+            filterMediaBtn.addEventListener('click', () => {
+                const allReviews = document.querySelectorAll('#reviews-list .review-card');
+                allReviews.forEach(review => {
+                    review.style.display = review.classList.contains('has-media') ? 'block' : 'none';
+                });
+                filterMediaBtn.classList.add('bg-blue-500', 'text-white');
+                filterMediaBtn.classList.remove('bg-gray-200', 'text-gray-800');
+                if (filterAllBtn) {
+                    filterAllBtn.classList.remove('bg-blue-500', 'text-white');
+                    filterAllBtn.classList.add('bg-gray-200', 'text-gray-800');
+                }
+            });
+        }
+    }
 
     initMapModal() {
         if (!this.barracaData.localizacao) return;
@@ -683,7 +760,7 @@ class InfoBarracaManager {
 
         if (!locationBtn || !mapModal || !mapModalClose) return;
 
-        locationBtn.addEventListener('click', () => {
+        locationBtn.addEventListener('click', async () => {
             mapModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
@@ -691,7 +768,9 @@ class InfoBarracaManager {
             document.getElementById('info-endereco').textContent = this.barracaData.localizacao;
 
             if (!this.map) {
-                this.initMap();
+                await this.initMap();
+            } else {
+                this.map.resize();
             }
         });
 
@@ -706,9 +785,18 @@ class InfoBarracaManager {
         });
     }
 
-    initMap() {
-        // Coordenadas padrão (Salvador, BA)
-        const coords = { lng: -38.5230, lat: -12.9985 };
+    async initMap() {
+        let coords = { lng: -38.5230, lat: -12.9985 };
+
+        if (this.barracaData.latitude && this.barracaData.longitude) {
+            coords = {
+                lng: this.barracaData.longitude,
+                lat: this.barracaData.latitude
+            };
+            console.log('[InfoBarraca] Usando coordenadas do banco:', coords);
+        } else {
+            console.warn('[InfoBarraca] Barraca sem coordenadas. Usando coordenadas padrão.');
+        }
 
         const apiKey = 'fQkLRhuKNXOuJ7C7hE32';
 
@@ -719,28 +807,319 @@ class InfoBarracaManager {
             zoom: 15
         });
 
-        this.map.on('load', () => {
-            new maplibregl.Marker({ color: "#0138b4", scale: 1.2 })
+        this.map.on('load', async () => {
+            new maplibregl.Marker({
+                color: "#0138b4",
+                scale: 1.2
+            })
                 .setLngLat([coords.lng, coords.lat])
                 .setPopup(
                     new maplibregl.Popup({ offset: 25 }).setHTML(`
-                        <div class="text-center">
-                            <strong>${this.barracaData.nome_barraca}</strong><br>
-                            <a href="https://maps.google.com/?q=${coords.lat},${coords.lng}" 
-                               target="_blank" 
-                               class="map-directions-link">Ver Rotas</a>
-                        </div>
-                    `)
+                    <div class="text-center p-2">
+                        <strong class="text-gray-800">${this.barracaData.nome_barraca}</strong><br>
+                        <p class="text-xs text-gray-600 mt-1">${this.barracaData.localizacao || 'Localização'}</p>
+                        <a href="https://maps.google.com/?q=${coords.lat},${coords.lng}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="map-directions-link mt-2 inline-block">
+                           Ver Rotas no Google Maps
+                        </a>
+                    </div>
+                `)
                 )
                 .addTo(this.map);
+
+            await this.buscarLugaresProximos(coords);
         });
     }
 
-    // === API DO TEMPO ===
+    async buscarLugaresProximos(coords) {
+        try {
+            console.log('[InfoBarraca] Buscando lugares próximos com Overpass API...');
+
+            const turisticosContainer = document.getElementById('info-turisticos');
+            const proximosContainer = document.getElementById('info-proximos');
+
+            if (turisticosContainer) {
+                turisticosContainer.innerHTML = '<p class="text-sm text-gray-500"><i data-lucide="loader" class="w-4 h-4 inline animate-spin"></i> Buscando...</p>';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+            if (proximosContainer) {
+                proximosContainer.innerHTML = '<p class="text-sm text-gray-500"><i data-lucide="loader" class="w-4 h-4 inline animate-spin"></i> Buscando...</p>';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+
+            // Buscar em paralelo (com timeout de 15s cada)
+            const promises = [
+                this.searchOverpass(coords, 'tourism', 2000),
+                this.searchOverpass(coords, 'restaurant', 1500),
+                this.searchOverpass(coords, 'hotel', 2000),
+                this.searchOverpass(coords, 'shop', 1000),
+                this.searchOverpass(coords, 'leisure', 1500)
+            ];
+
+            const [pontosTuristicos, restaurantes, hoteis, lojas, lazer] = await Promise.all(
+                promises.map(p => p.catch(() => []))
+            );
+
+            // Renderizar pontos turísticos
+            if (turisticosContainer) {
+                if (pontosTuristicos.length > 0) {
+                    turisticosContainer.innerHTML = '';
+                    pontosTuristicos.slice(0, 6).forEach(lugar => {
+                        this.renderLugar(lugar, turisticosContainer);
+                    });
+                } else {
+                    turisticosContainer.innerHTML = '<p class="text-sm text-gray-500">Nenhum ponto turístico cadastrado próximo.</p>';
+                }
+            }
+
+            // Renderizar lugares próximos
+            if (proximosContainer) {
+                proximosContainer.innerHTML = '';
+
+                const categorias = [
+                    { nome: 'Restaurantes & Bares', lugares: restaurantes, icon: 'utensils' },
+                    { nome: 'Hotéis & Hospedagem', lugares: hoteis, icon: 'hotel' },
+                    { nome: 'Lojas & Comércio', lugares: lojas, icon: 'shopping-bag' },
+                    { nome: 'Lazer & Entretenimento', lugares: lazer, icon: 'volleyball' }
+                ];
+
+                let hasResults = false;
+
+                categorias.forEach(categoria => {
+                    if (categoria.lugares.length > 0) {
+                        hasResults = true;
+                        const categoriaDiv = document.createElement('div');
+                        categoriaDiv.className = 'mb-5';
+                        categoriaDiv.innerHTML = `
+                        <h4 class="font-semibold text-lg text-gray-600 mb-3 flex items-center gap-2">
+                            <i data-lucide="${categoria.icon}" class="w-5 h-5"></i>
+                            ${categoria.nome}
+                        </h4>
+                    `;
+
+                        const listaDiv = document.createElement('div');
+                        listaDiv.className = 'space-y-3';
+
+                        categoria.lugares.slice(0, 5).forEach(lugar => {
+                            this.renderLugar(lugar, listaDiv);
+                        });
+
+                        categoriaDiv.appendChild(listaDiv);
+                        proximosContainer.appendChild(categoriaDiv);
+                    }
+                });
+
+                if (!hasResults) {
+                    proximosContainer.innerHTML = '<p class="text-sm text-gray-500">Nenhum estabelecimento cadastrado próximo no OpenStreetMap.</p>';
+                }
+
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+
+        } catch (error) {
+            console.error('[InfoBarraca] Erro ao buscar lugares próximos:', error);
+            if (document.getElementById('info-turisticos')) {
+                document.getElementById('info-turisticos').innerHTML = '<p class="text-sm text-red-500">Erro ao carregar.</p>';
+            }
+            if (document.getElementById('info-proximos')) {
+                document.getElementById('info-proximos').innerHTML = '<p class="text-sm text-red-500">Erro ao carregar.</p>';
+            }
+        }
+    }
+
+    async searchOverpass(coords, type, radiusMeters = 1500) {
+        try {
+            // Mapeamento de tags do OpenStreetMap
+            const queries = {
+                'tourism': `
+                node["tourism"](around:${radiusMeters},${coords.lat},${coords.lng});
+                node["historic"](around:${radiusMeters},${coords.lat},${coords.lng});
+            `,
+                'restaurant': `
+                node["amenity"="restaurant"](around:${radiusMeters},${coords.lat},${coords.lng});
+                node["amenity"="bar"](around:${radiusMeters},${coords.lat},${coords.lng});
+                node["amenity"="cafe"](around:${radiusMeters},${coords.lat},${coords.lng});
+            `,
+                'hotel': `
+                node["tourism"="hotel"](around:${radiusMeters},${coords.lat},${coords.lng});
+                node["tourism"="hostel"](around:${radiusMeters},${coords.lat},${coords.lng});
+                node["tourism"="guest_house"](around:${radiusMeters},${coords.lat},${coords.lng});
+            `,
+                'shop': `
+                node["shop"](around:${radiusMeters},${coords.lat},${coords.lng});
+                node["amenity"="marketplace"](around:${radiusMeters},${coords.lat},${coords.lng});
+            `,
+                'leisure': `
+                node["leisure"](around:${radiusMeters},${coords.lat},${coords.lng});
+                node["sport"](around:${radiusMeters},${coords.lat},${coords.lng});
+            `
+            };
+
+            const query = queries[type] || queries['tourism'];
+
+            const overpassQuery = `
+            [out:json][timeout:15];
+            (
+                ${query}
+            );
+            out body;
+        `;
+
+            const response = await fetch('https://overpass-api.de/api/interpreter', {
+                method: 'POST',
+                body: `data=${encodeURIComponent(overpassQuery)}`
+            });
+
+            if (!response.ok) throw new Error('Falha na Overpass API');
+
+            const data = await response.json();
+
+            const lugares = data.elements
+                .filter(element => element.tags && element.tags.name)
+                .map(element => {
+                    const distance = this.calcularDistancia(coords, {
+                        lat: element.lat,
+                        lng: element.lon
+                    });
+
+                    let tipo = 'Local';
+                    let categoria = type;
+
+                    if (element.tags.tourism) tipo = element.tags.tourism;
+                    else if (element.tags.amenity) tipo = element.tags.amenity;
+                    else if (element.tags.shop) tipo = 'Loja';
+                    else if (element.tags.leisure) tipo = element.tags.leisure;
+                    else if (element.tags.historic) tipo = element.tags.historic;
+
+                    return {
+                        nome: element.tags.name,
+                        tipo: this.formatarTipo(tipo),
+                        categoria: categoria,
+                        coordenadas: { lng: element.lon, lat: element.lat },
+                        distancia: distance
+                    };
+                })
+                .sort((a, b) => a.distancia - b.distancia);
+
+            console.log(`[Overpass] ${type}: ${lugares.length} resultados`);
+            return lugares;
+
+        } catch (error) {
+            console.error(`[Overpass] Erro ao buscar ${type}:`, error);
+            return [];
+        }
+    }
+
+    // 5. ADICIONE este método helper:
+    formatarTipo(tipo) {
+        const traducoes = {
+            'restaurant': 'Restaurante',
+            'bar': 'Bar',
+            'cafe': 'Café',
+            'hotel': 'Hotel',
+            'hostel': 'Hostel',
+            'guest_house': 'Pousada',
+            'attraction': 'Atração',
+            'museum': 'Museu',
+            'viewpoint': 'Mirante',
+            'beach': 'Praia',
+            'monument': 'Monumento',
+            'castle': 'Castelo',
+            'sports_centre': 'Centro Esportivo'
+        };
+        return traducoes[tipo] || tipo;
+    }
+
+    // 6. ADICIONE este método:
+    calcularDistancia(coord1, coord2) {
+        const R = 6371e3; // Raio da Terra em metros
+        const φ1 = coord1.lat * Math.PI / 180;
+        const φ2 = coord2.lat * Math.PI / 180;
+        const Δφ = (coord2.lat - coord1.lat) * Math.PI / 180;
+        const Δλ = (coord2.lng - coord1.lng) * Math.PI / 180;
+
+        const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c;
+    }
+
+    // 7. ADICIONE este método:
+    renderLugar(lugar, container) {
+        const lugarEl = document.createElement('div');
+        lugarEl.className = 'p-3 bg-white rounded-lg border hover:shadow-md hover:border-blue-500 cursor-pointer transition-all';
+
+        const distanciaKm = (lugar.distancia / 1000).toFixed(1);
+        const distanciaTexto = lugar.distancia < 1000
+            ? `${Math.round(lugar.distancia)}m`
+            : `${distanciaKm}km`;
+
+        lugarEl.innerHTML = `
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <p class="font-semibold text-blue-700">${lugar.nome}</p>
+                <p class="text-xs text-gray-500 mt-1">${lugar.tipo}</p>
+            </div>
+            <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full ml-2">
+                ${distanciaTexto}
+            </span>
+        </div>
+    `;
+
+        lugarEl.addEventListener('click', () => {
+            if (this.map) {
+                const marker = new maplibregl.Marker({ color: "#ef4444" })
+                    .setLngLat([lugar.coordenadas.lng, lugar.coordenadas.lat])
+                    .setPopup(
+                        new maplibregl.Popup({ offset: 25 }).setHTML(`
+                        <div class="text-center p-2">
+                            <strong class="text-gray-800">${lugar.nome}</strong><br>
+                            <p class="text-xs text-gray-600 mt-1">${lugar.tipo}</p>
+                            <p class="text-xs text-gray-400 mt-1">${distanciaTexto} de distância</p>
+                            <a href="https://maps.google.com/?q=${lugar.coordenadas.lat},${lugar.coordenadas.lng}" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="map-directions-link mt-2 inline-block">
+                               Ver Rotas
+                            </a>
+                        </div>
+                    `)
+                    )
+                    .addTo(this.map);
+
+                this.map.flyTo({
+                    center: [lugar.coordenadas.lng, lugar.coordenadas.lat],
+                    zoom: 16,
+                    essential: true
+                });
+
+                marker.togglePopup();
+            }
+        });
+
+        container.appendChild(lugarEl);
+    }
 
     async initWeatherAPI() {
-        const apiKey = 'ee1c7addcc374cafbd0194317250610';
-        const coords = { lat: -12.9985, lng: -38.5230 };
+        const apiKey = 'ee1c7addcc374cafbd0194317250610'; // Use sua própria chave do WeatherAPI
+
+        // Usar coordenadas reais do banco
+        let coords = { lat: -12.9985, lng: -38.5230 }; // Padrão
+
+        if (this.barracaData.latitude && this.barracaData.longitude) {
+            coords = {
+                lat: this.barracaData.latitude,
+                lng: this.barracaData.longitude
+            };
+            console.log('[WeatherAPI] Usando coordenadas do banco para clima:', coords);
+        }
+
         const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${coords.lat},${coords.lng}&days=3&lang=pt`;
 
         try {
@@ -760,15 +1139,15 @@ class InfoBarracaManager {
                 const dayName = date.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3);
 
                 return `
-                    <div class="flex flex-col items-center space-y-1">
-                        <p class="font-semibold text-sm">${dayName.charAt(0).toUpperCase() + dayName.slice(1)}</p>
-                        <img src="https:${day.day.condition.icon}" class="w-8 h-8">
-                        <p class="text-sm">
-                            <span class="font-bold">${Math.round(day.day.maxtemp_c)}°</span>
-                            <span>${Math.round(day.day.mintemp_c)}°</span>
-                        </p>
-                    </div>
-                `;
+                <div class="flex flex-col items-center space-y-1">
+                    <p class="font-semibold text-sm">${dayName.charAt(0).toUpperCase() + dayName.slice(1)}</p>
+                    <img src="https:${day.day.condition.icon}" class="w-8 h-8">
+                    <p class="text-sm">
+                        <span class="font-bold">${Math.round(day.day.maxtemp_c)}°</span>
+                        <span>${Math.round(day.day.mintemp_c)}°</span>
+                    </p>
+                </div>
+            `;
             }).join('');
 
             const weatherSection = document.getElementById('weather-section');
@@ -784,9 +1163,6 @@ class InfoBarracaManager {
             document.getElementById('weather-condition').textContent = 'Erro ao carregar';
         }
     }
-
-    // === UTILITÁRIOS ===
-
     showToast(message) {
         const toast = document.getElementById('toast');
         if (!toast) return;

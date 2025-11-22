@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BeachSpot</title>
+    <title>BeachSpot - Gerenciar Cardápio</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -16,7 +16,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* Estilos base e fundo */
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #0138b4, #73bff6);
@@ -30,7 +29,6 @@
             flex-grow: 1;
         }
 
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -48,7 +46,6 @@
             background: rgba(255, 255, 255, 0.6);
         }
 
-        /* Estilos das abas */
         .tab-button {
             transition: all 0.3s ease;
             border-radius: 6px 6px 0 0;
@@ -64,7 +61,6 @@
             display: none;
         }
 
-        /* Estilo para input de arquivo customizado */
         .custom-file-input-button {
             cursor: pointer;
             display: inline-flex;
@@ -82,6 +78,26 @@
         .custom-file-input-button:hover {
             background-color: #e5e7eb;
         }
+
+        .option-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-card.selected {
+            border-color: #0138b4;
+            background-color: #eff6ff;
+        }
+
+        .option-card.selected .option-icon {
+            background-color: #0138b4;
+            color: white;
+        }
     </style>
 </head>
 
@@ -89,8 +105,8 @@
 
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
-            <a href="inicioGestor.html" class="flex items-center"> <img src="../assets/icons/Logo Preta.png"
-                    alt="Logo Beachspot" class="h-5 w-auto">
+            <a href="inicioGestor.html" class="flex items-center">
+                <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
             <div class="flex items-center space-x-6">
                 <a href="iniciogestor.html"
@@ -101,7 +117,6 @@
                 <a href="cadastroBarraca.html"
                     class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar
                     Barracas</a>
-
                 <a href="configuracoesGestor.html"
                     class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
@@ -110,7 +125,6 @@
                     <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
                         class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
-
                 <button id="mobile-menu-btn"
                     class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="menu" class="w-6 h-6"></i>
@@ -151,102 +165,164 @@
 
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-bold text-gray-900">Gerenciar Cardápio</h1>
-                <p class="text-gray-600 mt-2">Adicione e organize os produtos da sua barraca.</p>
+                <p class="text-gray-600 mt-2">Configure o cardápio da sua barraca.</p>
             </div>
 
             <div class="space-y-8">
 
-                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
-                    <h2 id="form-title" class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">
-                        Adicionar Novo Item</h2>
-                    <form id="item-form" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-                        <input type="hidden" id="editing-item-id">
-                        <div>
-                            <label for="nome-produto" class="block text-sm font-medium text-gray-700 mb-1">Nome do
-                                Produto</label>
-                            <input type="text" id="nome-produto" placeholder="Ex: Porção de Fritas"
-                                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required>
+                <!-- Seção de escolha do tipo de cardápio -->
+                <section id="cardapio-type-section" class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">
+                        Escolha o Tipo de Cardápio
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <!-- Opção 1: Cardápio Personalizado -->
+                        <div id="option-custom" class="option-card border-2 border-gray-200 rounded-lg p-6 text-center">
+                            <div class="option-icon w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="utensils" class="w-8 h-8 text-gray-600"></i>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">Cardápio Personalizado</h3>
+                            <p class="text-sm text-gray-600">Adicione produtos diretamente no BeachSpot</p>
                         </div>
-                        <div>
-                            <label for="valor-produto" class="block text-sm font-medium text-gray-700 mb-1">Valor
-                                (R$)</label>
-                            <input type="number" id="valor-produto" placeholder="29.90" step="0.01"
-                                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required>
+
+                        <!-- Opção 2: Link Externo -->
+                        <div id="option-link" class="option-card border-2 border-gray-200 rounded-lg p-6 text-center">
+                            <div class="option-icon w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="link" class="w-8 h-8 text-gray-600"></i>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">Link do Cardápio</h3>
+                            <p class="text-sm text-gray-600">Use um cardápio que você já tem (PDF, imagem, etc.)</p>
                         </div>
-                        <div class="md:col-span-1">
-                            <label for="categoria-produto"
-                                class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
-                            <select id="categoria-produto"
-                                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="comidas">Comidas e Petiscos</option>
-                                <option value="bebidas">Bebidas</option>
-                                <option value="outros">Outros</option>
-                            </select>
-                        </div>
+                    </div>
+                </section>
+
+                <!-- Seção de Link do Cardápio -->
+                <section id="link-section" class="relative border-2 border-gray-200 rounded-xl p-6 pt-8" style="display: none;">
+                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">
+                        Link do Cardápio
+                    </h2>
+                    <form id="link-form" class="space-y-6">
                         <div>
-                            <label for="imagem-produto"
-                                class="block text-sm font-medium text-gray-700 mb-1">Imagem</label>
-                            <input type="file" id="imagem-produto" class="hidden" accept="image/*">
-                            <label for="imagem-produto" class="custom-file-input-button">
-                                <i data-lucide="upload" class="w-5 h-5"></i>
-                                <span>Escolher Imagem</span>
+                            <label for="link-cardapio" class="block text-sm font-medium text-gray-700 mb-2">
+                                Cole o link do seu cardápio
                             </label>
-                            <span id="file-name" class="text-sm text-gray-500 ml-3"></span>
+                            <input type="url" id="link-cardapio" 
+                                placeholder="https://drive.google.com/... ou https://exemplo.com/cardapio.pdf"
+                                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required>
+                            <p class="text-xs text-gray-500 mt-2">
+                                Pode ser um link do Google Drive, Canva, Dropbox, ou qualquer URL pública
+                            </p>
                         </div>
-                        <div class="md:col-span-2 text-center">
-                            <button id="submit-button" type="submit"
-                                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-full transition-all transform hover:scale-105 shadow-md flex items-center gap-2 mx-auto">
-                                <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                                <span>Adicionar Item</span>
+                        
+                        <div class="flex gap-4">
+                            <button type="submit"
+                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-full transition-all transform hover:scale-105 shadow-md flex items-center justify-center gap-2">
+                                <i data-lucide="save" class="w-5 h-5"></i>
+                                <span>Salvar Link</span>
+                            </button>
+                            <button type="button" id="cancel-link-btn"
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-full transition-all">
+                                Cancelar
                             </button>
                         </div>
                     </form>
                 </section>
 
-                <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
-                    <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Itens Cadastrados
-                    </h2>
-
-                    <div class="border-b border-gray-200 mb-6">
-                        <nav class="-mb-px flex space-x-2 sm:space-x-6" aria-label="Tabs">
-                            <button data-tab="comidas"
-                                class="tab-button active font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Comidas
-                                e Petiscos</button>
-                            <button data-tab="bebidas"
-                                class="tab-button font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Bebidas</button>
-                            <button data-tab="outros"
-                                class="tab-button font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">Outros</button>
-                        </nav>
-                    </div>
-
-                    <div>
-                        <div id="comidas" class="tab-content border rounded-lg p-4" style="display: block;">
-                            <div id="comidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Seção de Cardápio Personalizado -->
+                <div id="custom-cardapio-section" class="space-y-8" style="display: none;">
+                    <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                        <h2 id="form-title" class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">
+                            Adicionar Novo Item
+                        </h2>
+                        <form id="item-form" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                            <input type="hidden" id="editing-item-id">
+                            <div>
+                                <label for="nome-produto" class="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
+                                <input type="text" id="nome-produto" placeholder="Ex: Porção de Fritas"
+                                    class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    required>
                             </div>
-                            <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta
-                                categoria.</p>
-                        </div>
-                        <div id="bebidas" class="tab-content border rounded-lg p-4">
-                            <div id="bebidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                            <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta
-                                categoria.</p>
-                        </div>
-                        <div id="outros" class="tab-content border rounded-lg p-4">
-                            <div id="outros-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                            <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta
-                                categoria.</p>
-                        </div>
-                    </div>
-                </section>
+                            <div>
+                                <label for="valor-produto" class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                                <input type="number" id="valor-produto" placeholder="29.90" step="0.01"
+                                    class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    required>
+                            </div>
+                            <div class="md:col-span-1">
+                                <label for="categoria-produto" class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                                <select id="categoria-produto"
+                                    class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="comidas">Comidas e Petiscos</option>
+                                    <option value="bebidas">Bebidas</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="imagem-produto" class="block text-sm font-medium text-gray-700 mb-1">Imagem</label>
+                                <input type="file" id="imagem-produto" class="hidden" accept="image/*">
+                                <label for="imagem-produto" class="custom-file-input-button">
+                                    <i data-lucide="upload" class="w-5 h-5"></i>
+                                    <span>Escolher Imagem</span>
+                                </label>
+                                <span id="file-name" class="text-sm text-gray-500 ml-3"></span>
+                            </div>
+                            <div class="md:col-span-2 text-center">
+                                <button id="submit-button" type="submit"
+                                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-full transition-all transform hover:scale-105 shadow-md flex items-center gap-2 mx-auto">
+                                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                                    <span>Adicionar Item</span>
+                                </button>
+                            </div>
+                        </form>
+                    </section>
 
-                <div class="text-center">
-                    <button type="button"
-                        class="bg-blue-600 text-white font-bold py-4 px-12 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg text-lg">
-                        Salvar Alterações
-                    </button>
+                    <section class="relative border-2 border-gray-200 rounded-xl p-6 pt-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">
+                                Itens Cadastrados
+                            </h2>
+                            <button type="button" id="change-type-btn"
+                                class="ml-auto text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                Trocar para Link Externo
+                            </button>
+                        </div>
+
+                        <div class="border-b border-gray-200 mb-6">
+                            <nav class="-mb-px flex space-x-2 sm:space-x-6" aria-label="Tabs">
+                                <button data-tab="comidas"
+                                    class="tab-button active font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">
+                                    Comidas e Petiscos
+                                </button>
+                                <button data-tab="bebidas"
+                                    class="tab-button font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">
+                                    Bebidas
+                                </button>
+                                <button data-tab="outros"
+                                    class="tab-button font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap py-3 px-4 border-b-2 border-transparent text-sm">
+                                    Outros
+                                </button>
+                            </nav>
+                        </div>
+
+                        <div>
+                            <div id="comidas" class="tab-content border rounded-lg p-4" style="display: block;">
+                                <div id="comidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                                <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                            </div>
+                            <div id="bebidas" class="tab-content border rounded-lg p-4">
+                                <div id="bebidas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                                <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                            </div>
+                            <div id="outros" class="tab-content border rounded-lg p-4">
+                                <div id="outros-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                                <p class="no-items-message text-center text-gray-500 py-8">Nenhum item cadastrado nesta categoria.</p>
+                            </div>
+                        </div>
+                    </section>
                 </div>
+
             </div>
         </div>
     </main>
@@ -256,31 +332,28 @@
             <div class="flex flex-wrap justify-between items-start text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="inicioGestor.html" class="flex items-center">
-                        <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto"
-                            onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
+                        <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
                     </a>
                 </div>
-
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
                     <h3 class="font-bold mb-3">Navegação do Gestor</h3>
                     <ul class="space-y-2">
                         <li><a href="inicioGestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar
-                                Barracas</a></li>
-                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar
-                                Barracas</a></li>
-                        <li><a href="configuracoesgestor.html"
-                                class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
+                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
+                        <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
                         <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
                     <div class="flex space-x-3">
-                        <a href="https://www.instagram.com/empresa_beachspot/"
-                            class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i
-                                data-lucide="twitter"></i></a>
+                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors">
+                            <i data-lucide="instagram"></i>
+                        </a>
+                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors">
+                            <i data-lucide="twitter"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -303,11 +376,16 @@
         </div>
     </div>
 
-    <!-- REMOVA TODO O SCRIPT INLINE E ADICIONE ESTES: -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-white rounded-lg p-8 shadow-xl">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p class="text-gray-700 mt-4 font-medium">Carregando...</p>
+        </div>
+    </div>
+
     <script type="module" src="../assets/js/supabaseClient.js"></script>
     <script type="module" src="../assets/js/cadastroCardapio.js"></script>
 
-    <!-- Menu mobile (manter este script inline) -->
     <script>
         lucide.createIcons();
 
@@ -330,9 +408,6 @@
             });
         }
     </script>
-</body>
-
-</html>
 </body>
 
 </html>

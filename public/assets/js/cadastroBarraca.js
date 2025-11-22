@@ -15,7 +15,6 @@ async function uploadArquivo(file, id_gestor, tipo) {
 
     console.log(`[uploadArquivo] Iniciando upload: ${file.name}, tipo: ${tipo}`);
 
-    // Remove caracteres especiais para criar um nome de arquivo seguro
     const nomeArquivoLimpo = file.name.replace(/[^a-zA-Z0-9._-]/g, '');
     const filePath = `barracas/${id_gestor}/${tipo}/${Date.now()}_${nomeArquivoLimpo}`;
 
@@ -68,7 +67,6 @@ class CadastroBarracaManager {
         this.pageTitle = document.querySelector('section h1');
         this.pageSubtitle = document.querySelector('section p');
         
-        // Campos do formulário
         this.nomeInput = document.getElementById('nome-barraca');
         this.enderecoInput = document.getElementById('endereco');
         this.descricaoInput = document.getElementById('descricao');
@@ -76,12 +74,10 @@ class CadastroBarracaManager {
         this.capacidadeMesasInput = document.getElementById('capacidade-mesas');
         this.horaAberturaInput = document.getElementById('hora-abertura');
         this.horaFechamentoInput = document.getElementById('hora-fechamento');
-        this.linkCardapioInput = document.getElementById('link-cardapio');
         this.abreFeriadosInput = document.getElementById('abre-feriados');
         this.imagemDestaqueInput = document.getElementById('imagem-destaque');
         this.galeriaFotosInput = document.getElementById('galeria-fotos');
         
-        // Previews
         this.previewDestaque = document.getElementById('preview-destaque');
         this.previewGaleria = document.getElementById('preview-galeria');
     }
@@ -90,14 +86,12 @@ class CadastroBarracaManager {
         try {
             console.log('[CadastroBarraca] Inicializando...');
 
-            // Verificar autenticação
             const isAuthenticated = await checkAuthentication();
             if (!isAuthenticated) {
                 window.location.href = '../entrar.html';
                 return;
             }
 
-            // Obter sessão do usuário
             const { data: { session }, error: sessionError } = await supabase.auth.getSession();
             
             if (sessionError || !session || !session.user) {
@@ -109,7 +103,6 @@ class CadastroBarracaManager {
             this.idGestor = session.user.id;
             console.log('[CadastroBarraca] Gestor autenticado:', this.idGestor);
 
-            // Verificar se é modo de edição (tem ID na URL)
             const urlParams = new URLSearchParams(window.location.search);
             const barracaId = urlParams.get('id');
 
@@ -123,14 +116,12 @@ class CadastroBarracaManager {
                 this.isEditMode = false;
             }
 
-            // Configurar event listeners
             console.log('[CadastroBarraca] Configurando event listeners...');
             this.setupEventListeners();
             console.log('[CadastroBarraca] Inicialização concluída com sucesso!');
 
         } catch (error) {
             console.error('[CadastroBarraca] Erro na inicialização:', error);
-            console.error('[CadastroBarraca] Stack trace:', error.stack);
             alert(`Erro ao inicializar: ${error.message}`);
         }
     }
@@ -155,10 +146,7 @@ class CadastroBarracaManager {
             this.barracaData = barraca;
             console.log('[CadastroBarraca] Dados carregados:', barraca);
 
-            // Preencher formulário
             this.fillForm();
-
-            // Atualizar UI para modo de edição
             this.updateUIForEditMode();
 
         } catch (error) {
@@ -173,23 +161,33 @@ class CadastroBarracaManager {
 
         const data = this.barracaData;
 
-        // Preencher campos básicos
         if (this.nomeInput) this.nomeInput.value = data.nome_barraca || '';
         if (this.enderecoInput) this.enderecoInput.value = data.localizacao || '';
         if (this.descricaoInput) this.descricaoInput.value = data.descricao_barraca || '';
         if (this.precoMedioInput) this.precoMedioInput.value = data.preco_medio || '';
         if (this.capacidadeMesasInput) this.capacidadeMesasInput.value = data.capacidade_mesas || '';
-        if (this.linkCardapioInput) this.linkCardapioInput.value = data.link_cardapio || '';
         if (this.abreFeriadosInput) this.abreFeriadosInput.checked = data.abre_feriados || false;
 
-        // Preencher horários
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        if (latitudeInput && data.latitude) latitudeInput.value = data.latitude;
+        if (longitudeInput && data.longitude) longitudeInput.value = data.longitude;
+
+        if (data.latitude && data.longitude) {
+            const coordenadasInfo = document.getElementById('coordenadas-info');
+            const coordsDisplay = document.getElementById('coords-display');
+            if (coordenadasInfo && coordsDisplay) {
+                coordenadasInfo.classList.remove('hidden');
+                coordsDisplay.textContent = `${data.latitude.toFixed(6)}, ${data.longitude.toFixed(6)}`;
+            }
+        }
+
         if (data.horario_func && data.horario_func.includes('-')) {
             const [abertura, fechamento] = data.horario_func.split('-').map(h => h.trim());
             if (this.horaAberturaInput) this.horaAberturaInput.value = abertura;
             if (this.horaFechamentoInput) this.horaFechamentoInput.value = fechamento;
         }
 
-        // Preencher dias da semana
         if (data.dias_funcionamento && Array.isArray(data.dias_funcionamento)) {
             data.dias_funcionamento.forEach(dia => {
                 const checkbox = document.querySelector(`input[name="dias[]"][value="${dia}"]`);
@@ -197,7 +195,6 @@ class CadastroBarracaManager {
             });
         }
 
-        // Preencher características
         if (data.caracteristicas && Array.isArray(data.caracteristicas)) {
             data.caracteristicas.forEach(carac => {
                 const checkbox = document.querySelector(`input[name="caracteristicas[]"][value="${carac}"]`);
@@ -205,7 +202,6 @@ class CadastroBarracaManager {
             });
         }
 
-        // Exibir imagem de destaque existente
         if (data.foto_destaque && this.previewDestaque) {
             this.previewDestaque.innerHTML = `
                 <div class="relative inline-block">
@@ -216,7 +212,6 @@ class CadastroBarracaManager {
             `;
         }
 
-        // Exibir galeria existente
         if (data.galeria_urls && Array.isArray(data.galeria_urls) && data.galeria_urls.length > 0 && this.previewGaleria) {
             this.previewGaleria.innerHTML = data.galeria_urls.map((url, index) => `
                 <div class="relative">
@@ -232,11 +227,10 @@ class CadastroBarracaManager {
                 </div>
             `;
             
-            // Função global para remover imagem da galeria
             window.removeGalleryImage = (index) => {
                 if (confirm('Deseja remover esta imagem da galeria?')) {
                     this.barracaData.galeria_urls.splice(index, 1);
-                    this.fillForm(); // Recarrega o preview
+                    this.fillForm();
                 }
             };
         }
@@ -266,13 +260,171 @@ class CadastroBarracaManager {
 
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
 
-        // Preview de imagens
+        this.initMapSelection();
+
         if (this.imagemDestaqueInput) {
             this.imagemDestaqueInput.addEventListener('change', (e) => this.previewImagemDestaque(e));
         }
 
         if (this.galeriaFotosInput) {
             this.galeriaFotosInput.addEventListener('change', (e) => this.previewGaleriaFotos(e));
+        }
+    }
+
+    initMapSelection() {
+        const marcarNoMapaBtn = document.getElementById('marcar-no-mapa-btn');
+        const mapModal = document.getElementById('map-modal');
+        const mapModalClose = document.getElementById('map-modal-close');
+        const cancelLocationBtn = document.getElementById('cancel-location-btn');
+        const confirmLocationBtn = document.getElementById('confirm-location-btn');
+        const coordenadasInfo = document.getElementById('coordenadas-info');
+        const coordsDisplay = document.getElementById('coords-display');
+        const selectedCoordsText = document.getElementById('selected-coords');
+        
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+
+        let locationMap = null;
+        let currentMarker = null;
+        let selectedCoords = null;
+
+        const defaultCoords = { lng: -38.5108, lat: -12.9714 };
+
+        if (marcarNoMapaBtn) {
+            marcarNoMapaBtn.addEventListener('click', () => {
+                mapModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+
+                if (!locationMap) {
+                    const apiKey = 'fQkLRhuKNXOuJ7C7hE32';
+
+                    const initialCoords = (latitudeInput.value && longitudeInput.value)
+                        ? { lng: parseFloat(longitudeInput.value), lat: parseFloat(latitudeInput.value) }
+                        : defaultCoords;
+
+                    locationMap = new maplibregl.Map({
+                        container: 'location-map',
+                        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`,
+                        center: [initialCoords.lng, initialCoords.lat],
+                        zoom: 13
+                    });
+
+                    locationMap.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+                    locationMap.on('load', () => {
+                        if (latitudeInput.value && longitudeInput.value) {
+                            selectedCoords = initialCoords;
+                            addMarker(selectedCoords);
+                            updateCoordsDisplay(selectedCoords);
+                            confirmLocationBtn.disabled = false;
+                        }
+
+                        locationMap.on('click', (e) => {
+                            selectedCoords = {
+                                lng: e.lngLat.lng,
+                                lat: e.lngLat.lat
+                            };
+
+                            addMarker(selectedCoords);
+                            updateCoordsDisplay(selectedCoords);
+                            confirmLocationBtn.disabled = false;
+                        });
+                    });
+                } else {
+                    setTimeout(() => locationMap.resize(), 100);
+                }
+            });
+        }
+
+        const addMarker = (coords) => {
+            if (currentMarker) {
+                currentMarker.remove();
+            }
+
+            currentMarker = new maplibregl.Marker({ 
+                color: "#0138b4",
+                scale: 1.2,
+                draggable: true 
+            })
+                .setLngLat([coords.lng, coords.lat])
+                .setPopup(
+                    new maplibregl.Popup({ offset: 25 })
+                        .setHTML(`
+                            <div class="text-center p-2">
+                                <p class="font-bold text-gray-800">Localização da Barraca</p>
+                                <p class="text-xs text-gray-600 mt-1">
+                                    Lat: ${coords.lat.toFixed(6)}<br>
+                                    Lng: ${coords.lng.toFixed(6)}
+                                </p>
+                            </div>
+                        `)
+                )
+                .addTo(locationMap);
+
+            currentMarker.on('dragend', () => {
+                const lngLat = currentMarker.getLngLat();
+                selectedCoords = {
+                    lng: lngLat.lng,
+                    lat: lngLat.lat
+                };
+                updateCoordsDisplay(selectedCoords);
+            });
+
+            locationMap.flyTo({
+                center: [coords.lng, coords.lat],
+                zoom: 15
+            });
+        };
+
+        const updateCoordsDisplay = (coords) => {
+            if (selectedCoordsText) {
+                selectedCoordsText.innerHTML = `
+                    <i data-lucide="map-pin" class="w-4 h-4 inline text-blue-600"></i>
+                    Lat: ${coords.lat.toFixed(6)}, Lng: ${coords.lng.toFixed(6)}
+                `;
+                lucide.createIcons();
+            }
+        };
+
+        const closeMapModal = () => {
+            mapModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        };
+
+        if (mapModalClose) {
+            mapModalClose.addEventListener('click', closeMapModal);
+        }
+
+        if (cancelLocationBtn) {
+            cancelLocationBtn.addEventListener('click', closeMapModal);
+        }
+
+        if (confirmLocationBtn) {
+            confirmLocationBtn.addEventListener('click', () => {
+                if (selectedCoords) {
+                    if (latitudeInput) latitudeInput.value = selectedCoords.lat.toFixed(8);
+                    if (longitudeInput) longitudeInput.value = selectedCoords.lng.toFixed(8);
+
+                    if (coordenadasInfo) coordenadasInfo.classList.remove('hidden');
+                    if (coordsDisplay) coordsDisplay.textContent = `${selectedCoords.lat.toFixed(6)}, ${selectedCoords.lng.toFixed(6)}`;
+                    
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+
+                    closeMapModal();
+
+                    alert('✅ Localização marcada com sucesso!');
+                }
+            });
+        }
+
+        if (mapModal) {
+            mapModal.addEventListener('click', (e) => {
+                if (e.target === mapModal) {
+                    closeMapModal();
+                }
+            });
         }
     }
 
@@ -296,7 +448,6 @@ class CadastroBarracaManager {
     previewGaleriaFotos(e) {
         if (!this.previewGaleria) return;
 
-        // Mantém as imagens antigas se estiver em modo de edição
         const existingImages = this.isEditMode && this.barracaData?.galeria_urls 
             ? this.barracaData.galeria_urls.map((url, index) => `
                 <div class="relative">
@@ -309,7 +460,6 @@ class CadastroBarracaManager {
             `).join('')
             : '';
         
-        // Adiciona as novas imagens
         const newImages = Array.from(e.target.files).map(file => {
             const reader = new FileReader();
             return new Promise((resolve) => {
@@ -344,7 +494,6 @@ class CadastroBarracaManager {
         }
 
         try {
-            // --- 1. COLETAR DADOS DO FORMULÁRIO ---
             const nome_barraca = this.nomeInput?.value;
             const endereco = this.enderecoInput?.value;
             const descricao = this.descricaoInput?.value;
@@ -353,46 +502,53 @@ class CadastroBarracaManager {
             const capacidadeMesas = this.capacidadeMesasInput?.value;
             const capacidade_mesas = capacidadeMesas ? parseInt(capacidadeMesas) : null;
 
-            // Horários
+            const latitudeInput = document.getElementById('latitude');
+            const longitudeInput = document.getElementById('longitude');
+            
+            const latitude = latitudeInput?.value ? parseFloat(latitudeInput.value) : null;
+            const longitude = longitudeInput?.value ? parseFloat(longitudeInput.value) : null;
+
+            if (!latitude || !longitude) {
+                alert('Por favor, marque a localização exata da barraca no mapa.');
+                if (this.submitButton) {
+                    this.submitButton.disabled = false;
+                    this.submitButton.textContent = this.isEditMode ? 'Salvar Alterações' : 'Finalizar Cadastro';
+                }
+                return;
+            }
+
             const horaAbertura = this.horaAberturaInput?.value;
             const horaFechamento = this.horaFechamentoInput?.value;
             const horario_func = horaAbertura && horaFechamento 
                 ? `${horaAbertura} - ${horaFechamento}` 
                 : '';
 
-            // Dias da semana
             const diasSelecionados = Array.from(document.querySelectorAll('input[name="dias[]"]:checked'))
                 .map(input => input.value);
 
-            // Características
             const caracteristicas = Array.from(document.querySelectorAll('input[name="caracteristicas[]"]:checked'))
                 .map(input => input.value);
 
-            // Abre em feriados
             const abreFeriados = this.abreFeriadosInput?.checked || false;
-
-            // Link do cardápio
-            const linkCardapio = this.linkCardapioInput?.value || null;
 
             console.log('[CadastroBarraca] Dados coletados:', {
                 nome_barraca,
                 endereco,
+                latitude,
+                longitude,
                 horario_func,
                 diasSelecionados,
                 caracteristicas,
                 abreFeriados
             });
 
-            // Validações básicas
             if (!nome_barraca || !endereco || !descricao) {
                 throw new Error('Por favor, preencha todos os campos obrigatórios.');
             }
 
-            // --- 2. LIDAR COM UPLOAD DE ARQUIVOS ---
             let fotoPerfilUrl = this.barracaData?.foto_destaque || null;
             let galeriaUrls = this.barracaData?.galeria_urls || [];
 
-            // Imagem de destaque - SUBSTITUIR se houver novo arquivo
             if (this.imagemDestaqueInput?.files && this.imagemDestaqueInput.files.length > 0) {
                 console.log('[CadastroBarraca] Fazendo upload da nova imagem de destaque...');
                 const novaFotoDestaque = await uploadArquivo(this.imagemDestaqueInput.files[0], this.idGestor, 'perfil');
@@ -402,7 +558,6 @@ class CadastroBarracaManager {
                 }
             }
 
-            // Galeria de fotos - ADICIONAR novas fotos às existentes
             if (this.galeriaFotosInput?.files && this.galeriaFotosInput.files.length > 0) {
                 console.log(`[CadastroBarraca] Fazendo upload de ${this.galeriaFotosInput.files.length} novas fotos da galeria...`);
                 
@@ -412,40 +567,36 @@ class CadastroBarracaManager {
                 
                 const novasUrls = (await Promise.all(uploadPromises)).filter(url => url !== null);
                 
-                // Adicionar novas URLs às existentes (mantém as antigas)
                 galeriaUrls = [...galeriaUrls, ...novasUrls];
                 
                 console.log(`[CadastroBarraca] ✅ ${novasUrls.length} fotos adicionadas à galeria`);
             }
 
-            // --- 3. MONTAR O OBJETO PARA INSERIR/ATUALIZAR NO BANCO ---
             const dadosBarraca = {
                 nome_barraca: nome_barraca,
                 descricao_barraca: descricao,
                 localizacao: endereco,
+                latitude: latitude,
+                longitude: longitude,
                 preco_medio: preco_medio,
                 capacidade_mesas: capacidade_mesas,
                 horario_func: horario_func,
                 dias_funcionamento: diasSelecionados.length > 0 ? diasSelecionados : [],
                 caracteristicas: caracteristicas.length > 0 ? caracteristicas : [],
                 abre_feriados: abreFeriados,
-                link_cardapio: linkCardapio || null,
                 foto_destaque: fotoPerfilUrl || null,
                 galeria_urls: galeriaUrls.length > 0 ? galeriaUrls : []
             };
 
-            // Adicionar id_gestor apenas no modo de criação
             if (!this.isEditMode) {
                 dadosBarraca.id_gestor = this.idGestor;
             }
 
             console.log('[CadastroBarraca] Dados para salvar:', dadosBarraca);
 
-            // --- 4. INSERIR OU ATUALIZAR NA TABELA 'barracas' ---
             let barracaId = this.idBarraca;
             
             if (this.isEditMode) {
-                // Atualizar barraca existente
                 const { data: barracaAtualizada, error: updateError } = await supabase
                     .from('barracas')
                     .update(dadosBarraca)
@@ -463,7 +614,6 @@ class CadastroBarracaManager {
                 alert('Barraca atualizada com sucesso!');
 
             } else {
-                // Criar nova barraca
                 const { data: novaBarraca, error: insertError } = await supabase
                     .from('barracas')
                     .insert(dadosBarraca)
@@ -486,7 +636,6 @@ class CadastroBarracaManager {
                 if (this.previewGaleria) this.previewGaleria.innerHTML = '';
             }
 
-            // Redirecionar
             setTimeout(() => {
                 const urlParams = new URLSearchParams(window.location.search);
                 const origem = urlParams.get('origem');
@@ -510,7 +659,6 @@ class CadastroBarracaManager {
     }
 }
 
-// Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[cadastroBarraca] DOM carregado');
     new CadastroBarracaManager();

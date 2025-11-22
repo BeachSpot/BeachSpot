@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-translate="page_title">BeachSpot</title>
+    <title data-translate="page_title">BeachSpot - Configurações</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -110,11 +110,10 @@
         }
 
     </style>
-        <link rel="stylesheet" href="../assets/css/configuracoes.css">
 </head>
 <body class="text-white">
 
-        <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+    <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
             <a href="inicioGestor.html" class="flex items-center">
                 <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
@@ -194,23 +193,16 @@
                         <div class="flex items-center justify-between py-3">
                             <div>
                                 <p class="font-medium text-gray-900" data-translate="email_label">E-mail</p>
-                                <p class="setting-description" id="current-email">ana.silva@email.com</p>
+                                <p class="setting-description" id="current-email">Carregando...</p>
                             </div>
                             <button id="change-email-btn" class="font-semibold text-blue-600 hover:underline" data-translate="change_button">Alterar</button>
                         </div>
-                        <div class="flex items-center justify-between py-3">
-                            <div>
-                                <p class="font-medium text-gray-900" data-translate="password_label">Senha</p>
-                                <p class="setting-description" data-translate="password_desc">************</p>
-                            </div>
-                            <button id="change-password-btn" class="font-semibold text-blue-600 hover:underline" data-translate="change_button">Alterar</button>
-                        </div>
                         <div class="flex items-center justify-between pt-3">
                             <div>
-                                <p class="font-medium text-gray-900" data-translate="phone_label">Número de Telefone</p>
-                                <p class="setting-description" id="current-phone">(11) 98765-4321</p>
+                                <p class="font-medium text-gray-900" data-translate="password_label">Senha</p>
+                                <p class="setting-description" data-translate="password_desc">••••••••</p>
                             </div>
-                            <button id="change-phone-btn" class="font-semibold text-blue-600 hover:underline" data-translate="change_button">Alterar</button>
+                            <button id="change-password-btn" class="font-semibold text-blue-600 hover:underline" data-translate="change_button">Alterar</button>
                         </div>
                     </div>
                     <hr class="border-gray-200 mt-4">
@@ -255,6 +247,7 @@
                     </div>
                     <hr class="border-gray-200 mt-6">
                 </div>
+                
                 <div>
                     <h3 class="section-title flex items-center space-x-2 mb-1">
                         <i data-lucide="user-plus" class="text-blue-500"></i>
@@ -262,10 +255,10 @@
                     </h3>
                     <p class="setting-description mb-4" data-translate="add_account_desc">Conecte-se para salvar suas preferências e reservas.</p>
                     <div class="space-y-3 mt-4">
-                        <a href="#" id="login-btn" class="block w-full text-center py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105" data-translate="login_button">
+                        <a href="entrar.html" id="login-btn" class="block w-full text-center py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105" data-translate="login_button">
                             Entrar na conta existente
                         </a>
-                        <a href="#" id="create-account-btn" class="block w-full text-center py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-full transition-colors border border-gray-300" data-translate="create_account_button">
+                        <a href="cadastro.html" id="create-account-btn" class="block w-full text-center py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-full transition-colors border border-gray-300" data-translate="create_account_button">
                             Criar nova conta
                         </a>
                     </div>
@@ -305,7 +298,7 @@
             </h3>
             <p class="setting-description mb-6" data-translate="contact_subtitle">Tem alguma dúvida ou sugestão? Adoraríamos ouvir você!</p>
             <div id="form-status" class="mb-4 text-center"></div>
-              <form id="contact-form" action="https://formspree.io/f/mwpwdbyy" method="POST" class="max-w-xl mx-auto text-left">
+            <form id="contact-form" action="https://formspree.io/f/mwpwdbyy" method="POST" class="max-w-xl mx-auto text-left">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="text" name="name" placeholder="Seu Nome" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all" data-translate-placeholder="contact_name_placeholder">
                     <input type="email" name="email" placeholder="Seu E-mail" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all" data-translate-placeholder="contact_email_placeholder">
@@ -339,7 +332,7 @@
                     <ul class="space-y-2">
                         <li><a href="iniciogestor.html" class="hover:text-blue-600 transition-colors" data-translate="footer_nav_home">Início</a></li>
                         <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors" data-translate="footer_nav_manage">Gerenciar Barracas</a></li>
-                        <li><a href="#" class="hover:text-blue-600 transition-colors" data-translate="footer_nav_register">Cadastrar Barracas</a></li>
+                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors" data-translate="footer_nav_register">Cadastrar Barracas</a></li>
                         <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors" data-translate="footer_nav_settings">Configurações</a></li>
                         <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors" data-translate="footer_nav_profile">Perfil</a></li>
                     </ul>
@@ -357,74 +350,75 @@
             </div>
         </div>
     </footer>
-    <script src="../assets/js/script.js"></script>
+
+    <!-- Toast e Modal -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-5 rounded-lg shadow-lg opacity-0 translate-y-3 transition-all duration-300"></div>
+    <div id="modal" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <script src="../assets/js/components.js"></script>
+
+    <!-- Scripts do Supabase e Configurações -->
+    <script type="module" src="../assets/js/supabaseClient.js"></script>
+    <script type="module" src="../assets/js/configuracoes.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            // 1. Encontra o formulário e a div de status
+            // Form de contato
             const form = document.getElementById('contact-form');
             const statusDiv = document.getElementById('form-status');
 
             async function handleSubmit(event) {
-                // 2. Previne o recarregamento da página
                 event.preventDefault();
                 
                 const data = new FormData(event.target);
                 
                 try {
-                    // 3. Envia os dados para o Formspree em segundo plano
                     const response = await fetch(event.target.action, {
                         method: form.method,
                         body: data,
                         headers: {
-                            'Accept': 'application/json' // Pede uma resposta JSON ao invés de redirecionar
+                            'Accept': 'application/json'
                         }
                     });
 
-                    // 4. Verifica a resposta
                     if (response.ok) {
-                        // Sucesso! Mostra a mensagem e limpa o formulário
                         statusDiv.innerHTML = "<p class='text-green-400 font-semibold'>Sua mensagem foi enviada!</p>";
                         form.reset();
                     } else {
-                        // Se o Formspree der um erro
                         statusDiv.innerHTML = "<p class='text-red-400 font-semibold'>Ocorreu um erro ao enviar. Tente novamente.</p>";
                     }
                 } catch (error) {
-                    // Se houver um erro de rede (sem internet)
                     console.error('Erro de envio:', error);
                     statusDiv.innerHTML = "<p class='text-red-400 font-semibold'>Erro de rede. Verifique sua conexão.</p>";
                 }
             }
 
-            // 5. "Escuta" o evento de envio do formulário
             form.addEventListener("submit", handleSubmit);
         });
     </script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Renderiza ícones iniciais, incluindo os do novo menu
+            // Renderiza ícones iniciais
             lucide.createIcons();
     
-            // --- LÓGICA DO MENU MOBILE (ADICIONADA) ---
+            // Menu mobile
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
     
             if (mobileMenuBtn && mobileMenu) {
                 mobileMenuBtn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Impede que o clique no botão se propague para o document
+                    e.stopPropagation();
                     mobileMenu.classList.toggle('hidden');
                 });
     
-                // Fecha o menu se clicar fora dele
                 document.addEventListener('click', (e) => {
                     if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                         mobileMenu.classList.add('hidden');
                     }
                 });
             }
-            // --- FIM DA LÓGICA DO MENU MOBILE ---
         });
     </script>
 </body>

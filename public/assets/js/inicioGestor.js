@@ -23,7 +23,7 @@ class InicioGestorManager {
 
             // Buscar dados do gestor
             this.userData = await getUserProfile();
-            
+
             if (!this.userData) {
                 alert('Erro ao carregar dados do usuário.');
                 window.location.href = '../entrar.html';
@@ -55,18 +55,40 @@ class InicioGestorManager {
     updateGestorName() {
         // Atualizar o título com o nome do gestor
         const welcomeTitle = document.querySelector('main h1');
-        if (welcomeTitle && this.userData.nome) {
-            const firstName = this.userData.nome.split(' ')[0];
+        if (welcomeTitle && this.userData && this.userData.nome) {
+            const firstName = this.userData.nome.trim().split(' ')[0];
             welcomeTitle.textContent = `Bem-vindo, ${firstName}`;
+            console.log('[InicioGestor] Nome atualizado para:', firstName);
+        } else {
+            console.warn('[InicioGestor] Não foi possível atualizar o nome do gestor');
         }
 
         // Atualizar avatar do header
         const avatarImg = document.querySelector('header img[alt="Avatar do Gestor"]');
-        if (avatarImg) {
+        if (avatarImg && this.userData) {
             if (this.userData.foto_perfil) {
-                avatarImg.src = this.userData.foto_perfil;
-            } else {
-                const initials = this.userData.nome.split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 1);
+                // Verificar se é uma URL válida ou caminho do Supabase Storage
+                const fotoUrl = this.userData.foto_perfil;
+
+                // Se for um caminho relativo, tentar construir URL do Supabase
+                if (!fotoUrl.startsWith('http')) {
+                    // Assumir que está no Supabase Storage
+                    const { data } = supabase.storage
+                        .from('perfis') // ajuste o bucket conforme necessário
+                        .getPublicUrl(fotoUrl);
+
+                    avatarImg.src = data.publicUrl;
+                } else {
+                    avatarImg.src = fotoUrl;
+                }
+
+                // Fallback em caso de erro ao carregar
+                avatarImg.onerror = () => {
+                    const initials = this.userData.nome.split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
+                    avatarImg.src = `https://placehold.co/40x40/0138b4/FFFFFF?text=${initials}`;
+                };
+            } else if (this.userData.nome) {
+                const initials = this.userData.nome.split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
                 avatarImg.src = `https://placehold.co/40x40/0138b4/FFFFFF?text=${initials}`;
             }
         }
@@ -143,8 +165,8 @@ class InicioGestorManager {
         const localizacao = barraca.localizacao || 'Localização não informada';
 
         // Limitar descrição a 80 caracteres
-        const descricaoCurta = descricao.length > 80 
-            ? descricao.substring(0, 80) + '...' 
+        const descricaoCurta = descricao.length > 80
+            ? descricao.substring(0, 80) + '...'
             : descricao;
 
         return `
@@ -222,8 +244,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         document.addEventListener('click', (e) => {
-            if (!mobileMenu.classList.contains('hidden') && 
-                !mobileMenu.contains(e.target) && 
+            if (!mobileMenu.classList.contains('hidden') &&
+                !mobileMenu.contains(e.target) &&
                 !mobileMenuBtn.contains(e.target)) {
                 mobileMenu.classList.add('hidden');
             }

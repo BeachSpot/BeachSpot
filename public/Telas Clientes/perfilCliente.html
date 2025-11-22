@@ -64,13 +64,6 @@
     <main class="pt-28 md:pt-32 container mx-auto max-w-6xl px-6 flex flex-col items-center">
         
         <div class="relative w-full max-w-4xl">
-            <!-- Ações Laterais (Fora do Card) -->
-            <div class="absolute top-1/2 -translate-y-1/2 -left-12 -translate-x-full hidden md:flex flex-col space-y-4">
-                <button id="edit-profile-button" class="p-4 rounded-full bg-white text-gray-700 shadow-lg hover:bg-gray-200 transition-colors" title="Editar Perfil">
-                    <i data-lucide="pencil" class="w-6 h-6"></i>
-                </button>
-            </div>
-
             <!-- Card Maior (Estrutura/Moldura) -->
             <div class="relative w-full bg-blue-800/80 backdrop-blur-sm border border-white/20 rounded-2xl p-10 shadow-2xl transition-all duration-300 transform hover:scale-105">
                 <div class="flex items-center justify-center text-white/90">
@@ -81,13 +74,19 @@
 
                 <!-- Card Menor (Conteúdo) -->
                 <div class="relative mt-8 bg-white text-gray-800 rounded-2xl p-12 shadow-lg">
+                    <!-- Botão de Edição no Canto Superior Direito -->
+                    <button id="edit-profile-button" class="absolute top-6 right-6 p-3 rounded-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors shadow-md" title="Editar Perfil">
+                        <i data-lucide="pencil" class="w-5 h-5"></i>
+                    </button>
+
                     <div class="flex flex-col sm:flex-row gap-14">
 
                         <!-- Lado Esquerdo: Foto e ID -->
                         <div class="flex-shrink-0 text-center w-full sm:w-auto">
-                            <label for="foto-perfil-input" class="cursor-pointer group relative block mx-auto w-40">
-                                <img id="carteirinha-avatar" src="https://placehold.co/160x224/0138b4/FFFFFF?text=User" alt="Avatar do usuário" class="w-40 h-56 rounded-lg object-cover border-4 border-cyan-300 transition-opacity group-hover:opacity-75" />
-                                <div class="absolute inset-0 rounded-lg flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <label for="foto-perfil-input" class="cursor-pointer group relative block mx-auto w-40 pointer-events-none photo-container rounded-lg transition-all duration-300">
+                                <img id="carteirinha-avatar" src="https://placehold.co/160x224/0138b4/FFFFFF?text=User" alt="Avatar do usuário" class="w-40 h-56 rounded-lg object-cover border-4 border-cyan-300 transition-transform group-hover:scale-105" />
+                                <!-- Overlay que aparece apenas no modo de edição -->
+                                <div class="photo-edit-overlay hidden absolute inset-0 rounded-lg flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <i data-lucide="camera" class="w-10 h-10 text-white"></i>
                                 </div>
                             </label>
@@ -96,13 +95,8 @@
 
                         <!-- Lado Direito: Informações -->
                         <div class="flex-1 flex flex-col">
-                            <!-- Nome e Chat -->
-                            <div class="flex justify-between items-start">
-                                <h3 id="user-name" class="text-5xl font-bold leading-tight">Usuário</h3>
-                                <a href="chat.html" class="p-3 rounded-full bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 transition-colors flex-shrink-0" title="Minhas Mensagens">
-                                    <i data-lucide="messages-square" class="w-7 h-7"></i>
-                                </a>
-                            </div>
+                            <!-- Nome -->
+                            <h3 id="user-name" class="text-5xl font-bold leading-tight">Usuário</h3>
                         
                             <!-- Tipo de Usuário -->
                             <div class="flex items-center space-x-2 text-base font-semibold text-cyan-600 mt-2">
@@ -113,7 +107,7 @@
                             <p id="member-since" class="text-sm text-gray-500 mt-4">Membro desde: --/--/----</p>
                         
                             <!-- Bio do Usuário -->
-                            <p id="user-bio" class="text-base text-gray-600 mt-6 italic">Adicione uma bio.</p>
+                            <p id="user-bio" class="text-base text-gray-600 mt-6 italic"></p>
 
                             <!-- Stats: Divisor e Grade -->
                             <div class="border-t border-gray-200 mt-auto pt-6">
@@ -171,5 +165,65 @@
     <script type="module" src="../assets/js/supabaseClient.js"></script>
     <script type="module" src="../assets/js/getUserProfile.js"></script>
     <script type="module" src="../assets/js/perfilCliente.js"></script>
+
+    <!-- Modal de Edição de Foto -->
+    <div id="photo-editor-modal" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold text-gray-800">Ajustar Foto de Perfil</h3>
+                <button id="close-photo-editor" class="text-gray-500 hover:text-gray-700 transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Container da Imagem -->
+                <div class="relative bg-gray-100 rounded-lg overflow-hidden" style="height: 400px;">
+                    <div id="image-container" class="absolute inset-0 flex items-center justify-center">
+                        <img id="preview-image" src="" alt="Preview" class="max-w-none select-none" style="width: auto; height: auto;">
+                    </div>
+                    <!-- Grid de Crop (retângulo 160x224) -->
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div class="relative" style="width: 160px; height: 224px;">
+                            <div class="absolute inset-0 border-4 border-blue-500 rounded-lg shadow-lg"></div>
+                            <div class="absolute inset-0 border-2 border-white/50 rounded-lg"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controles -->
+                <div class="space-y-3">
+                    <!-- Zoom -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="zoom-in" class="w-4 h-4 inline mr-1"></i>
+                            Zoom: <span id="zoom-value">100</span>%
+                        </label>
+                        <input type="range" id="zoom-slider" min="50" max="200" value="100" 
+                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                    </div>
+
+                    <!-- Instruções -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <p class="text-sm text-blue-800">
+                            <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                            <strong>Dica:</strong> Use o slider para dar zoom na imagem. A área dentro do retângulo azul será sua foto de perfil.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="flex gap-3">
+                    <button id="cancel-photo-edit" class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">
+                        Cancelar
+                    </button>
+                    <button id="save-photo-edit" class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                        <i data-lucide="check" class="w-5 h-5 inline mr-1"></i>
+                        Salvar Foto
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
