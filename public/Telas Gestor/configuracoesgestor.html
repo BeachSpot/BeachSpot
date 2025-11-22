@@ -304,14 +304,15 @@
                 <span data-translate="contact_title">Entre em Contato</span>
             </h3>
             <p class="setting-description mb-6" data-translate="contact_subtitle">Tem alguma dúvida ou sugestão? Adoraríamos ouvir você!</p>
-            <form id="contact-form" action="#" method="POST" class="space-y-4">
+            <div id="form-status" class="mb-4 text-center"></div>
+              <form id="contact-form" action="https://formspree.io/f/mwpwdbyy" method="POST" class="max-w-xl mx-auto text-left">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="text" name="name" placeholder="Seu Nome" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all" data-translate-placeholder="contact_name_placeholder">
                     <input type="email" name="email" placeholder="Seu E-mail" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all" data-translate-placeholder="contact_email_placeholder">
-                </div>
+                </div><br>
                 <div>
                     <input type="text" name="subject" placeholder="Assunto" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all" data-translate-placeholder="contact_subject_placeholder">
-                </div>
+                </div><br>
                 <div>
                     <textarea name="message" placeholder="Sua Mensagem" rows="5" required class="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500 transition-all resize-none" data-translate-placeholder="contact_message_placeholder"></textarea>
                 </div>
@@ -356,7 +357,51 @@
             </div>
         </div>
     </footer>
+    <script src="../assets/js/script.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Encontra o formulário e a div de status
+            const form = document.getElementById('contact-form');
+            const statusDiv = document.getElementById('form-status');
+
+            async function handleSubmit(event) {
+                // 2. Previne o recarregamento da página
+                event.preventDefault();
+                
+                const data = new FormData(event.target);
+                
+                try {
+                    // 3. Envia os dados para o Formspree em segundo plano
+                    const response = await fetch(event.target.action, {
+                        method: form.method,
+                        body: data,
+                        headers: {
+                            'Accept': 'application/json' // Pede uma resposta JSON ao invés de redirecionar
+                        }
+                    });
+
+                    // 4. Verifica a resposta
+                    if (response.ok) {
+                        // Sucesso! Mostra a mensagem e limpa o formulário
+                        statusDiv.innerHTML = "<p class='text-green-400 font-semibold'>Sua mensagem foi enviada!</p>";
+                        form.reset();
+                    } else {
+                        // Se o Formspree der um erro
+                        statusDiv.innerHTML = "<p class='text-red-400 font-semibold'>Ocorreu um erro ao enviar. Tente novamente.</p>";
+                    }
+                } catch (error) {
+                    // Se houver um erro de rede (sem internet)
+                    console.error('Erro de envio:', error);
+                    statusDiv.innerHTML = "<p class='text-red-400 font-semibold'>Erro de rede. Verifique sua conexão.</p>";
+                }
+            }
+
+            // 5. "Escuta" o evento de envio do formulário
+            form.addEventListener("submit", handleSubmit);
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Renderiza ícones iniciais, incluindo os do novo menu
