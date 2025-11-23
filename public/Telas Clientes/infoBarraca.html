@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF--8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BeachSpot</title>
     <link rel="icon" type="image/png" href="../assets/icons/Logo BeachSpot.png">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
@@ -25,9 +25,7 @@
         /* Estilo apenas para o estado de favorito, sem alterar cores originais */
         .is-favorited .lucide-heart {
             fill: #ef4444;
-            /* Cor vermelha para o coração preenchido */
             color: #ef4444;
-            /* Cor vermelha para la borda */
         }
 
         /* Melhora a aparência dos popups do mapa */
@@ -59,14 +57,12 @@
         /* Para garantir que as imagens da galeria tenham o mesmo tamanho */
         .gallery-item {
             height: 200px;
-            /* Altura fixa para todos os itens da galeria */
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Garante que a imagem cubra a área sem distorcer */
         }
     </style>
 </head>
@@ -194,6 +190,7 @@
                     </section>
                 </div>
             </section>
+            
             <section class="py-8">
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="reservar.html" id="reserve-btn"
@@ -220,6 +217,7 @@
                     </div>
                 </div>
             </section>
+            
             <div class="mt-8">
                 <div class="border-b border-gray-200">
                     <nav class="-mb-px flex justify-center md:justify-start space-x-4 md:space-x-8" aria-label="Tabs">
@@ -467,10 +465,12 @@
         </div>
     </footer>
 
+    <!-- Toast de notificações -->
     <div id="toast"
         class="fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-5 rounded-lg shadow-lg opacity-0 translate-y-3 transition-all duration-300 z-50">
     </div>
 
+    <!-- Modal da Galeria -->
     <div id="gallery-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
         <button id="modal-close"
             class="absolute top-4 right-4 text-white text-5xl leading-none hover:text-gray-300">×</button>
@@ -478,6 +478,7 @@
             class="max-w-[90vw] max-h-[90vh] rounded-lg">
     </div>
 
+    <!-- Modal do Mapa -->
     <div id="map-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
         <div
             class="bg-white rounded-2xl shadow-xl w-full max-w-6xl h-[90vh] flex overflow-hidden relative text-gray-800">
@@ -506,433 +507,13 @@
             <div id='map' class="w-full md:w-2/3 h-full"></div>
         </div>
     </div>
-    <script type="module" src="../assets/js/infoBarraca.js"></script>
+
+    <!-- Scripts Modulares -->
     <script type="module" src="../assets/js/supabaseClient.js"></script>
+    <script type="module" src="../assets/js/locationManager.js"></script>
+    <script type="module" src="../assets/js/weatherManager.js"></script>
+    <script type="module" src="../assets/js/infoBarraca.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-
-            // --- LÓGICA DO MENU MOBILE (ADICIONADA) ---
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Impede que o clique no botão se propague para o document
-                    mobileMenu.classList.toggle('hidden');
-                });
-
-                // Fecha o menu se clicar fora dele
-                document.addEventListener('click', (e) => {
-                    // Verifica se o menu está visível
-                    // Verifica se o clique NÃO foi dentro do menu
-                    // Verifica se o clique NÃO foi no botão (ou em um filho do botão)
-                    if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
-            }
-            // --- FIM DA LÓGICA DO MENU MOBILE ---
-
-            // --- Lógica para controle das abas ---
-            const tabs = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const target = tab.dataset.tabTarget;
-
-                    tabs.forEach(t => {
-                        t.classList.remove('border-blue-600', 'text-blue-600');
-                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                    });
-                    tab.classList.add('border-blue-600', 'text-blue-600');
-                    tab.classList.remove('border-transparent', 'text-gray-500');
-
-                    tabContents.forEach(content => {
-                        content.classList.add('hidden');
-                        if (content.id === `tab-content-${target}`) {
-                            content.classList.remove('hidden');
-                        }
-                    });
-                });
-            });
-
-            // --- Dados da Localização (simulação) ---
-            const locationData = {
-                nome: "Barraca Axé Bahia",
-                endereco: "Praia do Porto da Barra, Barra, Salvador - BA",
-                coordenadas: { lng: -38.5230, lat: -12.9985 },
-                pontosTuristicos: [
-                    { nome: "Farol da Barra", tipo: "Ponto Turístico", coordenadas: { lng: -38.5328, lat: -13.0105 } },
-                    { nome: "Morro do Cristo", tipo: "Monumento", coordenadas: { lng: -38.5126, lat: -13.0044 } }
-                ],
-                lugaresProximos: [
-                    { nome: "Yacht Clube da Bahia", tipo: "Clube", categoria: "Clubes", coordenadas: { lng: -38.5222, lat: -12.9932 } },
-                    { nome: "Restaurante Acarajé Dourado", tipo: "Culinária Baiana", categoria: "Restaurantes", coordenadas: { lng: -38.5200, lat: -12.9980 } },
-                    { nome: "Monte Pascoal Praia Hotel", tipo: "Hospedagem", categoria: "Hotéis", coordenadas: { lng: -38.5273, lat: -13.0078 } },
-                    { nome: "Shopping Barra", tipo: "Centro Comercial", categoria: "Compras", coordenadas: { lng: -38.5085, lat: -12.9967 } },
-                    { nome: "Bompreço Supermercado", tipo: "Supermercado", categoria: "Mercados", coordenadas: { lng: -38.5147, lat: -12.9996 } },
-                    { nome: "Estação Lapa", tipo: "Transporte Público", categoria: "Metrô", coordenadas: { lng: -38.5097, lat: -12.9818 } }
-                ]
-            };
-
-            // --- API DE PREVISÃO DO TEMPO ---
-            async function buscarPrevisaoTempo() {
-                const apiKey = ' ee1c7addcc374cafbd0194317250610'; // Chave de API de exemplo
-                const locationQuery = `${locationData.coordenadas.lat},${locationData.coordenadas.lng}`;
-                const days = 3;
-                const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${locationQuery}&days=${days}&lang=pt`;
-
-                const tempElement = document.getElementById('weather-temp');
-                const conditionElement = document.getElementById('weather-condition');
-                const iconElement = document.getElementById('weather-icon');
-                const forecastContainer = document.getElementById('forecast-container');
-
-                forecastContainer.innerHTML = `<p class="text-sm text-gray-500 w-full">Carregando previsão...</p>`;
-
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error('Falha na API do tempo');
-                    const data = await response.json();
-
-                    const current = data.current;
-                    tempElement.textContent = `${Math.round(current.temp_c)}°C`;
-                    conditionElement.textContent = current.condition.text;
-                    iconElement.src = `https:${current.condition.icon}`;
-                    iconElement.alt = current.condition.text;
-
-                    const forecastDays = data.forecast.forecastday;
-                    forecastContainer.innerHTML = '';
-
-                    forecastDays.forEach(dayData => {
-                        const date = new Date(dayData.date + 'T00:00:00');
-                        const dayOfWeek = date.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3);
-
-                        const dayElement = document.createElement('div');
-                        dayElement.className = 'flex flex-col items-center space-y-1';
-                        dayElement.innerHTML = `
-                            <p class="font-semibold text-sm text-gray-700">${dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)}</p>
-                            <img src="https:${dayData.day.condition.icon}" alt="${dayData.day.condition.text}" class="w-8 h-8">
-                            <p class="text-sm text-gray-600">
-                                <span class="font-bold text-gray-800">${Math.round(dayData.day.maxtemp_c)}°</span>
-                                <span>${Math.round(dayData.day.mintemp_c)}°</span>
-                            </p>
-                        `;
-                        forecastContainer.appendChild(dayElement);
-                    });
-                } catch (error) {
-                    console.error("Erro ao buscar previsão do tempo:", error);
-                    conditionElement.textContent = 'Erro ao carregar';
-                    forecastContainer.innerHTML = '<p class="text-sm text-red-500 w-full">Não foi possível carregar a previsão.</p>';
-                }
-            }
-            buscarPrevisaoTempo();
-
-            // --- LÓGICA PARA EXPANDIR/RECOLHER PREVISÃO ---
-            const weatherSection = document.getElementById('weather-section');
-            const forecastContainer = document.getElementById('forecast-container');
-            const weatherChevron = document.getElementById('weather-chevron');
-
-            weatherSection.addEventListener('click', () => {
-                forecastContainer.classList.toggle('hidden');
-                weatherChevron.classList.toggle('rotate-180');
-            });
-
-            // --- Sistema de Toast (Notificação) ---
-            const toast = document.getElementById('toast');
-            function showToast(message) {
-                toast.textContent = message;
-                toast.classList.remove('opacity-0', 'translate-y-3');
-                setTimeout(() => {
-                    toast.classList.add('opacity-0', 'translate-y-3');
-                }, 3000);
-            }
-
-            // --- Botão de Favorito ---
-            const favoriteBtn = document.getElementById('favorite-btn');
-            favoriteBtn.addEventListener('click', () => {
-                const isFavorited = favoriteBtn.classList.toggle('is-favorited');
-                showToast(isFavorited ? 'Adicionado aos seus favoritos!' : 'Removido dos favoritos.');
-            });
-
-            // --- Atualiza o texto do botão de localização ---
-            document.getElementById('location-text').textContent = locationData.endereco;
-
-            // --- LÓGICA DO MODAL DO MAPA ---
-            const locationBtn = document.getElementById('location-btn');
-            const mapModal = document.getElementById('map-modal');
-            const mapModalClose = document.getElementById('map-modal-close');
-            let map;
-
-            locationBtn.addEventListener('click', () => {
-                mapModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-
-                document.getElementById('info-nome').textContent = locationData.nome;
-                document.getElementById('info-endereco').textContent = locationData.endereco;
-
-                const turisticosContainer = document.getElementById('info-turisticos');
-                const proximosContainer = document.getElementById('info-proximos');
-                turisticosContainer.innerHTML = '';
-                proximosContainer.innerHTML = '';
-
-                const createAndAppendLugar = (lugar, container) => {
-                    const lugarEl = document.createElement('div');
-                    lugarEl.className = 'p-3 bg-white rounded-lg border hover:shadow-md hover:border-blue-500 cursor-pointer transition-all';
-                    lugarEl.innerHTML = `
-                        <p class="font-semibold text-blue-700">${lugar.nome}</p>
-                        <p class="text-sm text-gray-500">${lugar.tipo}</p>
-                    `;
-                    lugarEl.addEventListener('click', () => {
-                        if (map) map.flyTo({ center: [lugar.coordenadas.lng, lugar.coordenadas.lat], zoom: 16, essential: true });
-                    });
-                    container.appendChild(lugarEl);
-                };
-
-                locationData.pontosTuristicos.forEach(lugar => createAndAppendLugar(lugar, turisticosContainer));
-
-                const lugaresAgrupados = locationData.lugaresProximos.reduce((acc, lugar) => {
-                    const categoria = lugar.categoria || 'Outros';
-                    if (!acc[categoria]) acc[categoria] = [];
-                    acc[categoria].push(lugar);
-                    return acc;
-                }, {});
-
-                for (const categoria in lugaresAgrupados) {
-                    const categoriaWrapper = document.createElement('div');
-                    categoriaWrapper.className = 'mb-5';
-                    categoriaWrapper.innerHTML = `<h4 class="font-semibold text-lg text-gray-600 mb-3">${categoria}</h4>`;
-                    const listaLugares = document.createElement('div');
-                    listaLugares.className = 'space-y-3';
-                    lugaresAgrupados[categoria].forEach(lugar => createAndAppendLugar(lugar, listaLugares));
-                    categoriaWrapper.appendChild(listaLugares);
-                    proximosContainer.appendChild(categoriaWrapper);
-                }
-
-                if (!map) {
-                    const apiKey = 'fQkLRhuKNXOuJ7C7hE32'; // Chave de API de exemplo MapTiler
-                    map = new maplibregl.Map({
-                        container: 'map',
-                        style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`,
-                        center: [locationData.coordenadas.lng, locationData.coordenadas.lat],
-                        zoom: 15
-                    });
-
-                    map.on('load', () => {
-                        const barracaPopupContent = `<div class="text-center"><strong class="text-gray-800">${locationData.nome}</strong><br><a href="https://maps.google.com/?q=${locationData.coordenadas.lat},${locationData.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">Ver Rotas</a></div>`;
-                        new maplibregl.Marker({ color: "#0138b4", scale: 1.2 })
-                            .setLngLat([locationData.coordenadas.lng, locationData.coordenadas.lat])
-                            .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(barracaPopupContent))
-                            .addTo(map);
-
-                        const todosOsLugares = [...locationData.pontosTuristicos, ...locationData.lugaresProximos];
-                        todosOsLugares.forEach(lugar => {
-                            const lugarPopupContent = `<div class="text-center"><strong class="text-gray-800">${lugar.nome}</strong><br><a href="https://maps.google.com/?q=${lugar.coordenadas.lat},${lugar.coordenadas.lng}" target="_blank" rel="noopener noreferrer" class="map-directions-link">Ver Rotas</a></div>`;
-                            new maplibregl.Marker({ color: "#ef4444" })
-                                .setLngLat([lugar.coordenadas.lng, lugar.coordenadas.lat])
-                                .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(lugarPopupContent))
-                                .addTo(map);
-                        });
-                    });
-                } else {
-                    map.resize();
-                    map.flyTo({ center: [locationData.coordenadas.lng, locationData.coordenadas.lat], zoom: 15 });
-                }
-            });
-
-            function closeMapModal() {
-                mapModal.classList.add('hidden');
-                document.body.style.overflow = '';
-            }
-            mapModalClose.addEventListener('click', closeMapModal);
-            mapModal.addEventListener('click', (e) => { if (e.target === mapModal) closeMapModal(); });
-
-            // --- Botão de Reservar ---
-            document.getElementById('reserve-btn').addEventListener('click', (e) => {
-                e.preventDefault();
-                showToast('Redirecionando para a página de reserva...');
-                setTimeout(() => { window.location.href = e.target.href; }, 1000);
-            });
-
-            // --- Galeria de Fotos Modal ---
-            const galleryModal = document.getElementById('gallery-modal');
-            const modalImage = document.getElementById('modal-image');
-            const modalClose = document.getElementById('modal-close');
-            const galleryImages = document.querySelectorAll('#gallery img');
-
-            galleryImages.forEach(img => {
-                img.addEventListener('click', () => {
-                    modalImage.src = img.src;
-                    galleryModal.classList.remove('hidden');
-                });
-            });
-
-            function closeModal() { galleryModal.classList.add('hidden'); }
-            modalClose.addEventListener('click', closeModal);
-            galleryModal.addEventListener('click', (e) => { if (e.target === galleryModal) closeModal(); });
-
-
-            // --- LÓGICA DA SEÇÃO DE AVALIAÇÃO (ATUALIZADA) ---
-            const reviewFormContainer = document.getElementById('review-form-container');
-            const userReviewPlaceholder = document.getElementById('user-review-placeholder');
-            const deleteReviewBtn = document.getElementById('delete-review-btn');
-
-            const ratingStarsContainer = document.getElementById('rating-stars');
-            const ratingStars = [...ratingStarsContainer.children];
-            const submitReviewBtn = document.getElementById('submit-review-btn');
-            const reviewTextarea = document.getElementById('review-textarea');
-            const reviewsList = document.getElementById('reviews-list');
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const reviewSummaryText = document.getElementById('review-summary-text');
-            const reviewSummaryStars = document.querySelector('#review-summary .flex');
-
-            let currentRating = 0;
-            let totalReviews = 3;
-            let totalRatingScore = 13; // (5 + 4 + 4)
-
-            let userReviewElement = null; // Armazena a avaliação do usuário
-            let userReviewRating = 0; // Armazena a nota da avaliação
-
-            function updateStars(rating) {
-                ratingStars.forEach(star => {
-                    if (parseInt(star.dataset.value) <= rating) {
-                        star.classList.remove('text-gray-300');
-                        star.classList.add('text-yellow-400', 'fill-current');
-                    } else {
-                        star.classList.remove('text-yellow-400', 'fill-current');
-                        star.classList.add('text-gray-300');
-                    }
-                });
-            }
-
-            function updateReviewSummary() {
-                if (totalReviews === 0) {
-                    reviewSummaryText.textContent = `(0 avaliações)`;
-                    const summaryStars = [...reviewSummaryStars.children];
-                    summaryStars.forEach(star => star.classList.remove('fill-current'));
-                    return;
-                }
-                const averageRating = totalRatingScore / totalReviews;
-                reviewSummaryText.textContent = `${averageRating.toFixed(1)} (${totalReviews} avaliações)`;
-
-                const summaryStars = [...reviewSummaryStars.children];
-                const roundedAverage = Math.round(averageRating);
-                summaryStars.forEach((star, index) => {
-                    star.classList.toggle('fill-current', index < roundedAverage);
-                });
-            }
-
-            ratingStarsContainer.addEventListener('mouseover', (e) => {
-                const starValue = e.target.dataset.value;
-                if (starValue) updateStars(starValue);
-            });
-            ratingStarsContainer.addEventListener('mouseout', () => updateStars(currentRating));
-            ratingStarsContainer.addEventListener('click', (e) => {
-                const starValue = e.target.dataset.value;
-                if (starValue) currentRating = parseInt(starValue);
-            });
-
-            // Enviar avaliação
-            submitReviewBtn.addEventListener('click', () => {
-                const reviewText = reviewTextarea.value.trim();
-                if (currentRating === 0) {
-                    showToast('Por favor, selecione uma nota.'); return;
-                }
-                if (reviewText === '') {
-                    showToast('Por favor, escreva um comentário.'); return;
-                }
-
-                userReviewRating = currentRating; // Salva a nota
-                totalReviews++;
-                totalRatingScore += userReviewRating;
-                updateReviewSummary();
-
-                const newReview = document.createElement('div');
-                newReview.className = 'review-card p-4 border rounded-lg bg-gray-50';
-                newReview.dataset.rating = currentRating;
-
-                let starsHTML = '';
-                for (let i = 1; i <= 5; i++) {
-                    starsHTML += `<i data-lucide="star" class="w-4 h-4 ${i <= currentRating ? 'fill-current' : ''}"></i>`;
-                }
-
-                newReview.innerHTML = `
-                    <div class="flex items-center mb-2">
-                        <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" class="w-10 h-10 rounded-full mr-3" alt="Foto do Cliente">
-                        <div>
-                            <p class="font-bold">Você</p>
-                            <div class="flex text-yellow-500">${starsHTML}</div>
-                        </div>
-                    </div>
-                    <p class="text-gray-600">${reviewText}</p>
-                `;
-                reviewsList.prepend(newReview);
-                userReviewElement = newReview; // Salva a referência
-                lucide.createIcons();
-
-                // Limpa o formulário
-                reviewTextarea.value = '';
-                // currentRating = 0; // Não precisa resetar aqui, pois já será escondido
-                // updateStars(0);
-                showToast('Avaliação enviada com sucesso!');
-
-                // Esconde o formulário e mostra o botão de apagar
-                reviewFormContainer.classList.add('hidden');
-                userReviewPlaceholder.classList.remove('hidden');
-            });
-
-            // Apagar avaliação
-            deleteReviewBtn.addEventListener('click', () => {
-                if (userReviewElement) {
-                    userReviewElement.remove(); // Remove o elemento do DOM
-
-                    // Atualiza os totais
-                    totalReviews--;
-                    totalRatingScore -= userReviewRating;
-                    updateReviewSummary();
-
-                    // Reseta
-                    userReviewElement = null;
-                    userReviewRating = 0;
-
-                    // *** INÍCIO DO BUGFIX ***
-                    currentRating = 0; // Reseta a nota atual
-                    updateStars(0); // Limpa as estrelas visualmente
-                    // *** FIM DO BUGFIX ***
-
-                    // Mostra o formulário novamente
-                    reviewFormContainer.classList.remove('hidden');
-                    userReviewPlaceholder.classList.add('hidden');
-
-                    showToast('Sua avaliação foi removida.');
-                }
-            });
-
-            // Filtros
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    filterButtons.forEach(btn => {
-                        btn.classList.remove('bg-blue-500', 'text-white');
-                        btn.classList.add('bg-gray-200', 'text-gray-800', 'hover:bg-gray-300');
-                    });
-                    button.classList.add('bg-blue-500', 'text-white');
-                    button.classList.remove('bg-gray-200', 'text-gray-800');
-
-                    const filterType = button.id;
-                    const allReviews = reviewsList.querySelectorAll('.review-card');
-
-                    allReviews.forEach(review => {
-                        const show = (filterType === 'filter-all') || (filterType === 'filter-media' && review.classList.contains('has-media'));
-                        review.style.display = show ? 'block' : 'none';
-                    });
-                });
-            });
-
-            updateReviewSummary();
-        });
-    </script>
 </body>
 
 </html>
