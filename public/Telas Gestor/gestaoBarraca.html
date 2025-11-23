@@ -127,56 +127,48 @@
 
             <div>
                 <div id="dashboard" class="tab-content active">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 flex items-center gap-4">
-                            <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
-                                <i data-lucide="calendar-check-2"></i>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex items-center gap-3">
+                            <div class="bg-blue-100 text-blue-600 p-2 rounded-full">
+                                <i data-lucide="calendar-check-2" class="w-5 h-5"></i>
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm">Reservas Hoje</p>
-                                <p class="text-2xl font-bold">12</p>
+                                <p class="text-2xl font-bold">0</p>
                             </div>
                         </div>
-                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 flex items-center gap-4">
-                            <div class="bg-green-100 text-green-600 p-3 rounded-full">
-                                <i data-lucide="users"></i>
+                        <div id="ocupacao-card" class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex items-center gap-3">
+                            <div class="bg-green-100 text-green-600 p-2 rounded-full">
+                                <i data-lucide="users" class="w-5 h-5"></i>
                             </div>
                             <div>
                                 <p class="text-gray-500 text-sm">Ocupação Atual</p>
-                                <p class="text-2xl font-bold">75%</p>
+                                <p class="text-2xl font-bold">0%</p>
                             </div>
                         </div>
                         <a href="cadastrocardapio.html"
-                            class="bg-blue-600 text-white p-6 rounded-xl border border-blue-700 flex flex-col justify-center items-center gap-3 hover:bg-blue-700 transition-colors transform hover:-translate-y-1 shadow-lg">
-                            <i data-lucide="book-open-check"></i>
-                            <p class="text-lg font-bold text-center">Gerenciar Cardápio</p>
+                            class="bg-blue-600 text-white p-4 rounded-xl border border-blue-700 flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-lg">
+                            <i data-lucide="book-open-check" class="w-5 h-5"></i>
+                            <p class="font-semibold">Gerenciar Cardápio</p>
                         </a>
                     </div>
 
                     <div class="mt-8 relative border border-gray-200 rounded-xl p-6 pt-8">
-                        <h2 class="absolute -top-4 left-4 bg-white px-2 text-xl font-bold text-gray-700">Últimas
-                            Atividades</h2>
-                        <ul class="space-y-4">
-                            <li class="flex items-center gap-3">
-                                <div class="bg-green-100 text-green-600 p-2 rounded-full"><i data-lucide="user-plus"
-                                        class="w-4 h-4"></i></div>
-                                <p class="text-gray-600">Nova reserva de <span class="font-semibold">Carlos F.</span>
-                                    para 4 pessoas.</p>
-                                <span class="text-xs text-gray-400 ml-auto">agora</span>
-                            </li>
-                            <li class="flex items-center gap-3">
-                                <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full"><i data-lucide="star"
-                                        class="w-4 h-4"></i></div>
-                                <p class="text-gray-600">Nova avaliação de 5 estrelas de <span
-                                        class="font-semibold">Maria S.</span></p>
-                                <span class="text-xs text-gray-400 ml-auto">15 min atrás</span>
-                            </li>
-                            <li class="flex items-center gap-3">
-                                <div class="bg-red-100 text-red-600 p-2 rounded-full"><i data-lucide="calendar-x"
-                                        class="w-4 h-4"></i></div>
-                                <p class="text-gray-600">Reserva de <span class="font-semibold">João P.</span> foi
-                                    cancelada.</p>
-                                <span class="text-xs text-gray-400 ml-auto">1h atrás</span>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-gray-700">Últimas Atividades</h2>
+                            <div class="flex gap-2">
+                                <select id="filtro-atividades" class="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="todas">Todas</option>
+                                    <option value="reservas">Reservas</option>
+                                    <option value="cancelamentos">Cancelamentos</option>
+                                    <option value="avaliacoes">Avaliações</option>
+                                </select>
+                            </div>
+                        </div>
+                        <ul id="lista-atividades" class="space-y-4">
+                            <li class="text-center text-gray-400 py-4">
+                                <i data-lucide="loader" class="w-6 h-6 mx-auto mb-2 animate-spin"></i>
+                                <p>Carregando atividades...</p>
                             </li>
                         </ul>
                     </div>

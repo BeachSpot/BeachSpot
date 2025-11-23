@@ -115,3 +115,25 @@
             fill: #ef4444; /* Cor vermelha do Tailwind (red-500) */
             stroke: #ef4444;
         }
+
+        /* Adicionar ao arquivo inicio.css existente */
+
+/* Slideshow de fundo para promoções */
+.promo-slideshow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.promo-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.promo-slide.active {
+    opacity: 1;
+}

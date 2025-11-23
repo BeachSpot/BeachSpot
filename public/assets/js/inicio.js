@@ -27,6 +27,9 @@ class InicioClienteManager {
             // Carregar barracas do banco
             await this.loadBarracas();
 
+            // NOVO: Carregar promoções
+            await this.loadPromocoes();
+
             // Inicializar Swipers após carregar as barracas
             this.initSwipers();
 
@@ -37,6 +40,115 @@ class InicioClienteManager {
         } catch (error) {
             console.error('[InicioCliente] Erro na inicialização:', error);
         }
+    }
+
+    // NOVO: Carregar promoções do banco
+    async loadPromocoes() {
+        try {
+            console.log('[InicioCliente] Carregando promoções...');
+
+            const { data: promocoes, error } = await supabase
+                .from('promocoes')
+                .select(`
+                    *,
+                    barracas:id_barraca (
+                        id_barraca,
+                        nome_barraca,
+                        foto_destaque,
+                        galeria_urls
+                    )
+                `)
+                .order('data_criacao', { ascending: false })
+                .limit(6);
+
+            if (error) throw error;
+
+            if (promocoes && promocoes.length > 0) {
+                this.renderPromocoes(promocoes);
+            }
+
+        } catch (error) {
+            console.error('[InicioCliente] Erro ao carregar promoções:', error);
+        }
+    }
+
+    // NOVO: Renderizar promoções mantendo a estrutura HTML existente
+    renderPromocoes(promocoes) {
+        const promoSection = Array.from(document.querySelectorAll('section h2'))
+            .find(h2 => h2.textContent.includes('Promoções'));
+
+        if (!promoSection) return;
+
+        const container = promoSection.closest('section').querySelector('.grid');
+        if (!container) return;
+
+        // Pegar os cards existentes
+        const cards = container.querySelectorAll('.relative.rounded-xl');
+        
+        // Atualizar cada card com dados do banco
+        promocoes.slice(0, Math.min(4, cards.length)).forEach((promo, index) => {
+            const card = cards[index];
+            if (!card) return;
+
+            const barraca = promo.barracas;
+            if (!barraca) return;
+
+            // Preparar array de imagens
+            const imagens = [];
+            if (barraca.foto_destaque) imagens.push(barraca.foto_destaque);
+            if (barraca.galeria_urls && Array.isArray(barraca.galeria_urls)) {
+                imagens.push(...barraca.galeria_urls);
+            }
+
+            // Se tiver imagens, adicionar slideshow
+            if (imagens.length > 0) {
+                // Remover background-image inline se existir
+                card.style.backgroundImage = '';
+                
+                // Criar container de slideshow
+                const slideshowHTML = `
+                    <div class="promo-slideshow">
+                        ${imagens.map((img, idx) => `
+                            <div class="promo-slide ${idx === 0 ? 'active' : ''}" 
+                                 style="background-image: url('${img}')"></div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                // Inserir no início do card
+                card.insertAdjacentHTML('afterbegin', slideshowHTML);
+
+                // Iniciar animação se houver múltiplas imagens
+                if (imagens.length > 1) {
+                    this.initSlideshow(card, imagens.length);
+                }
+            }
+
+            // Atualizar conteúdo do card
+            const contentDiv = card.querySelector('.relative.z-10');
+            if (contentDiv) {
+                contentDiv.innerHTML = `
+                    <h3 class="text-2xl font-bold">${promo.titulo}</h3>
+                    <p class="mb-4">${promo.descricao}</p>
+                    <button class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-full transition"
+                            onclick="window.location.href='infoBarraca.html?id=${barraca.id_barraca}'">
+                        ${index === 0 ? 'Aproveitar' : index === 1 ? 'Ver Cardápio' : index === 2 ? 'Reservar' : 'Aproveitar'}
+                    </button>
+                `;
+            }
+        });
+    }
+
+    // NOVO: Inicializar slideshow de uma promoção
+    initSlideshow(card, totalImages) {
+        let currentIndex = 0;
+        const slides = card.querySelectorAll('.promo-slide');
+
+        setInterval(() => {
+            slides[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % totalImages;
+            slides[currentIndex].classList.add('active');
+        }, 5000); // Troca a cada 5 segundos
     }
 
     async loadBarracas() {

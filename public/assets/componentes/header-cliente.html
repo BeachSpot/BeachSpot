@@ -1,0 +1,50 @@
+<!-- header-cliente.html -->
+<!-- Salvar em: public/assets/components/header-cliente.html -->
+
+<header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+    <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+        <a href="inicio.html" class="flex items-center">
+            <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+        </a>
+        
+        <div class="flex items-center space-x-6">
+            <a href="inicio.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+            <a href="suasReservas.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Suas Reservas</a>
+
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="configuracoes.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="settings" class="w-6 h-6"></i>
+                </a>
+    
+                <a href="perfilCliente.html">
+                    <img id="header-avatar" src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                </a>
+            </div>
+
+            <div class="md:hidden relative" id="mobile-menu-container">
+                <button id="mobile-menu-button" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                    <i data-lucide="menu" class="w-7 h-7"></i>
+                </button>
+
+                <div id="mobile-menu-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl z-20 border border-gray-100">
+                    <a href="inicio.html" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg">
+                        <i data-lucide="home" class="w-5 h-5 inline-block mr-2"></i>
+                        Início
+                    </a>
+                    <a href="suasReservas.html" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                        <i data-lucide="calendar-check" class="w-5 h-5 inline-block mr-2"></i>
+                        Suas Reservas
+                    </a>
+                    <a href="configuracoes.html" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                        <i data-lucide="settings" class="w-5 h-5 inline-block mr-2"></i>
+                        Configurações
+                    </a>
+                    <a href="perfilCliente.html" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                        <i data-lucide="user-circle-2" class="w-5 h-5 inline-block mr-2"></i>
+                        Perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

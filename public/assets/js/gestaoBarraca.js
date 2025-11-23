@@ -12,10 +12,12 @@ class GestaoBarracaManager {
         this.barracaData = null;
         this.promocoes = [];
         this.reservas = [];
+        this.atividades = [];
+        this.filtroAtividades = 'todas';
         this.currentTab = 'dashboard';
         this.promotionToDelete = null;
         this.userId = null;
-        this.mesasOcupadas = 0; // NOVO
+        this.mesasOcupadas = 0;
         
         this.initElements();
         this.initEventListeners();
@@ -37,13 +39,9 @@ class GestaoBarracaManager {
         this.confirmDeleteModal = document.getElementById('confirm-delete-modal');
         this.confirmDeleteBtn = document.getElementById('confirm-delete-btn');
         this.cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-        this.closeDeleteModalBtn = document.getElementById('close-delete-modal-btn');
         
-        // Modal de exclusão de barraca
-        this.deleteBarracaModal = document.getElementById('delete-barraca-modal');
-        this.deleteBarracaBtn = document.getElementById('delete-barraca-btn');
-        this.confirmDeleteBarracaBtn = document.getElementById('confirm-delete-barraca-btn');
-        this.cancelDeleteBarracaBtn = document.getElementById('cancel-delete-barraca-btn');
+        // Filtro de atividades
+        this.filtroAtividadesSelect = document.getElementById('filtro-atividades');
     }
 
     initEventListeners() {
@@ -74,12 +72,16 @@ class GestaoBarracaManager {
             this.cancelDeleteBtn.addEventListener('click', () => this.closeDeleteModal());
         }
         
-        if (this.closeDeleteModalBtn) {
-            this.closeDeleteModalBtn.addEventListener('click', () => this.closeDeleteModal());
-        }
-        
         if (this.confirmDeleteBtn) {
             this.confirmDeleteBtn.addEventListener('click', () => this.confirmDeletePromotion());
+        }
+
+        // Filtro de atividades
+        if (this.filtroAtividadesSelect) {
+            this.filtroAtividadesSelect.addEventListener('change', (e) => {
+                this.filtroAtividades = e.target.value;
+                this.renderAtividades();
+            });
         }
 
         // Delegação de eventos para editar e deletar promoções
@@ -95,26 +97,7 @@ class GestaoBarracaManager {
                 const id = btn.dataset.id;
                 this.deletePromotion(id);
             }
-
-            if (e.target.closest('.btn-delete-promo')) {
-                const btn = e.target.closest('.btn-delete-promo');
-                const id = btn.dataset.id;
-                this.deletePromotion(id);
-            }
         });
-
-        // Botão de excluir barraca
-        if (this.deleteBarracaBtn) {
-            this.deleteBarracaBtn.addEventListener('click', () => this.openDeleteBarracaModal());
-        }
-        
-        if (this.cancelDeleteBarracaBtn) {
-            this.cancelDeleteBarracaBtn.addEventListener('click', () => this.closeDeleteBarracaModal());
-        }
-        
-        if (this.confirmDeleteBarracaBtn) {
-            this.confirmDeleteBarracaBtn.addEventListener('click', () => this.confirmDeleteBarraca());
-        }
     }
 
     async init() {
@@ -163,8 +146,11 @@ class GestaoBarracaManager {
             // Carregar promoções
             await this.loadPromocoes();
 
-            // Carregar estatísticas (simuladas por enquanto)
-            this.loadDashboardStats();
+            // Carregar estatísticas e reservas
+            await this.loadDashboardStats();
+
+            // Carregar todas as atividades
+            await this.loadTodasAtividades();
 
         } catch (error) {
             console.error('[GestaoBarraca] Erro na inicialização:', error);
@@ -194,7 +180,6 @@ class GestaoBarracaManager {
 
             // Atualizar UI com dados da barraca
             this.updateBarracaInfo();
-            this.updateDashboardUI(barraca);
             this.atualizarLinksComIdBarraca();
 
         } catch (error) {
@@ -218,64 +203,131 @@ class GestaoBarracaManager {
         }
     }
 
-    updateDashboardUI(data) {
-        // Atualiza o título com o nome da barraca
-        const tituloBarraca = document.querySelector('section p.text-gray-500');
-        if (tituloBarraca) {
-            tituloBarraca.textContent = `Administre sua barraca ${data.nome_barraca}`;
+    async loadDashboardStats() {
+        try {
+            console.log('[GestaoBarraca] Carregando estatísticas...');
+
+            // Carregar reservas do dia
+            await this.loadReservasHoje();
+
+            // Carregar todas as reservas para a aba de reservas
+            await this.loadTodasReservas();
+
+        } catch (error) {
+            console.error('[GestaoBarraca] Erro ao carregar estatísticas:', error);
         }
-        
-        // Atualiza estatísticas (exemplo com dados fictícios ou reais)
-        const viewsElement = document.getElementById('views-count');
-        const ratingElement = document.getElementById('rating-value');
-        
-        if (viewsElement) viewsElement.textContent = Math.floor(Math.random() * 1000);
-        if (ratingElement) ratingElement.textContent = '4.8';
-        
-        // Sistema de ocupação de mesas
-        this.initOccupancySystem();
     }
 
-    // === SISTEMA DE OCUPAÇÃO DE MESAS ===
+    async loadReservasHoje() {
+        try {
+            // MODO DEBUG: Descomente a linha abaixo para testar com outra data
+            // const dataTestDebug = '2025-11-28'; // Coloque a data que quiser testar
+            
+            const hoje = new Date();
+            const ano = hoje.getFullYear();
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoje.getDate()).padStart(2, '0');
+            
+            // Se tiver data de debug, usa ela, senão usa hoje
+            const dataHoje = typeof dataTestDebug !== 'undefined' ? dataTestDebug : `${ano}-${mes}-${dia}`;
 
-    initOccupancySystem() {
-        const ocupacaoCard = document.querySelector('.bg-green-100');
-        
-        if (!ocupacaoCard || !this.barracaData.capacidade_mesas) {
-            // Se não tiver capacidade definida, mostrar mensagem
-            if (ocupacaoCard) {
-                ocupacaoCard.className = 'bg-yellow-100 text-yellow-600 p-6 rounded-xl border border-gray-200 flex items-center gap-4';
-                ocupacaoCard.innerHTML = `
-                    <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
-                        <i data-lucide="alert-circle"></i>
-                    </div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Capacidade</p>
-                        <p class="text-sm text-yellow-600 font-semibold">Configure no cadastro</p>
-                    </div>
-                `;
-                lucide.createIcons();
+            console.log('[GestaoBarraca] Buscando reservas para:', dataHoje);
+
+            // Buscar todas as reservas
+            const { data: todasReservas, error: errorTodas } = await supabase
+                .from('reservas')
+                .select('*')
+                .eq('id_barraca', this.idBarraca);
+
+            if (errorTodas) {
+                console.error('[GestaoBarraca] Erro ao buscar reservas:', errorTodas);
+                throw errorTodas;
             }
+
+            console.log('[GestaoBarraca] TODAS as reservas da barraca:', todasReservas);
+
+            // Filtrar reservas do dia (compara apenas a parte da data)
+            const reservasDoDia = todasReservas?.filter(reserva => {
+                // Extrai apenas a data (YYYY-MM-DD) do timestamp
+                const dataReserva = reserva.data_reserva.split('T')[0];
+                console.log('[GestaoBarraca] Comparando:', dataReserva, '===', dataHoje, '?', dataReserva === dataHoje);
+                return dataReserva === dataHoje;
+            }) || [];
+
+            console.log('[GestaoBarraca] Reservas filtradas do dia:', reservasDoDia);
+
+            // Contar total de reservas do dia
+            const reservasHoje = reservasDoDia.length;
+            
+            // Filtrar apenas confirmadas para ocupação
+            const reservasConfirmadas = reservasDoDia.filter(r => {
+                console.log('[GestaoBarraca] Status da reserva:', r.status, '- É confirmada?', r.status === 'confirmada');
+                return r.status === 'confirmada';
+            });
+
+            console.log('[GestaoBarraca] Reservas CONFIRMADAS:', reservasConfirmadas);
+
+            console.log('[GestaoBarraca] Resumo - Reservas hoje:', {
+                total: reservasHoje,
+                confirmadas: reservasConfirmadas.length,
+                data: dataHoje,
+                todasReservas: todasReservas?.length || 0
+            });
+
+            // Atualizar UI - Card de Reservas Hoje
+            const reservasCard = document.querySelector('.bg-gray-50.p-4');
+            if (reservasCard) {
+                const valueElement = reservasCard.querySelector('.text-2xl.font-bold');
+                if (valueElement) {
+                    valueElement.textContent = reservasHoje;
+                    console.log('[GestaoBarraca] UI atualizada - Reservas Hoje:', reservasHoje);
+                }
+            } else {
+                console.warn('[GestaoBarraca] Card de reservas não encontrado!');
+            }
+
+            // Atualizar ocupação AUTOMÁTICA baseada nas reservas confirmadas do dia
+            await this.updateOcupacaoAutomatica(reservasConfirmadas);
+
+        } catch (error) {
+            console.error('[GestaoBarraca] Erro ao carregar reservas hoje:', error);
+        }
+    }
+
+    async updateOcupacaoAutomatica(reservasConfirmadas) {
+        console.log('[updateOcupacaoAutomatica] Iniciando com:', reservasConfirmadas);
+        
+        if (!this.barracaData?.capacidade_mesas) {
+            console.warn('[updateOcupacaoAutomatica] Barraca sem capacidade definida');
+            this.renderOcupacaoSemCapacidade();
             return;
         }
+
+        // Calcular mesas ocupadas baseado no número de pessoas das reservas CONFIRMADAS
+        // Assumindo média de 4 pessoas por mesa
+        const pessoasTotal = reservasConfirmadas.reduce((sum, r) => {
+            console.log('[updateOcupacaoAutomatica] Somando pessoas:', r.num_pessoas);
+            return sum + (r.num_pessoas || 0);
+        }, 0);
         
-        // Carregar ocupação do localStorage
-        const storageKey = `ocupacao-barraca-${this.idBarraca}`;
-        this.mesasOcupadas = parseInt(localStorage.getItem(storageKey)) || 0;
+        const mesasOcupadas = Math.ceil(pessoasTotal / 4);
+
+        this.mesasOcupadas = Math.min(mesasOcupadas, this.barracaData.capacidade_mesas);
         
-        // Garantir que não ultrapasse a capacidade
-        if (this.mesasOcupadas > this.barracaData.capacidade_mesas) {
-            this.mesasOcupadas = this.barracaData.capacidade_mesas;
-        }
-        
-        this.renderOccupancy();
-        
-        // Tornar o gerenciador acessível globalmente para os botões
-        window.gestaoManager = this;
+        console.log('[GestaoBarraca] Ocupação automática calculada:', {
+            reservasConfirmadas: reservasConfirmadas.length,
+            pessoasTotal,
+            mesasCalculadas: mesasOcupadas,
+            mesasOcupadas: this.mesasOcupadas,
+            capacidade: this.barracaData.capacidade_mesas,
+            percentual: Math.round((this.mesasOcupadas / this.barracaData.capacidade_mesas) * 100) + '%'
+        });
+
+        this.renderOcupacao();
     }
 
-    renderOccupancy() {
-        const ocupacaoCard = document.querySelector('.bg-green-100, .bg-yellow-100, .bg-red-100');
+    renderOcupacao() {
+        const ocupacaoCard = document.getElementById('ocupacao-card');
         if (!ocupacaoCard) return;
         
         const capacidade = this.barracaData.capacidade_mesas;
@@ -283,97 +335,496 @@ class GestaoBarracaManager {
         const percentual = Math.round((ocupadas / capacidade) * 100);
         
         // Determinar cor baseada na ocupação
-        let bgColor = 'bg-green-100';
+        let bgColor = 'bg-green-50';
         let textColor = 'text-green-600';
         let iconBg = 'bg-green-100';
         
         if (percentual >= 90) {
-            bgColor = 'bg-red-100';
+            bgColor = 'bg-red-50';
             textColor = 'text-red-600';
             iconBg = 'bg-red-100';
         } else if (percentual >= 70) {
-            bgColor = 'bg-yellow-100';
+            bgColor = 'bg-yellow-50';
             textColor = 'text-yellow-600';
             iconBg = 'bg-yellow-100';
         }
         
-        ocupacaoCard.className = `${bgColor} p-6 rounded-xl border border-gray-200 flex items-center gap-4`;
+        ocupacaoCard.className = `${bgColor} p-4 rounded-xl border border-gray-200 flex items-center gap-3`;
         
         ocupacaoCard.innerHTML = `
-            <div class="${iconBg} ${textColor} p-3 rounded-full">
-                <i data-lucide="users"></i>
+            <div class="${iconBg} ${textColor} p-2 rounded-full">
+                <i data-lucide="users" class="w-5 h-5"></i>
             </div>
             <div class="flex-1">
                 <p class="text-gray-500 text-sm">Ocupação Atual</p>
                 <p class="text-2xl font-bold ${textColor}">${percentual}%</p>
-                <p class="text-sm mt-1 text-gray-600">${ocupadas} de ${capacidade} mesas</p>
-            </div>
-            <div class="flex flex-col gap-1">
-                <button onclick="window.gestaoManager.incrementOccupancy()" 
-                        class="bg-white hover:bg-gray-50 text-gray-700 font-bold py-1 px-3 rounded transition ${ocupadas >= capacidade ? 'opacity-50 cursor-not-allowed' : ''}"
-                        ${ocupadas >= capacidade ? 'disabled' : ''}>
-                    +
-                </button>
-                <button onclick="window.gestaoManager.decrementOccupancy()" 
-                        class="bg-white hover:bg-gray-50 text-gray-700 font-bold py-1 px-3 rounded transition ${ocupadas <= 0 ? 'opacity-50 cursor-not-allowed' : ''}"
-                        ${ocupadas <= 0 ? 'disabled' : ''}>
-                    -
-                </button>
+                <p class="text-xs mt-0.5 text-gray-600">${ocupadas} de ${capacidade} mesas</p>
             </div>
         `;
         
         lucide.createIcons();
     }
 
-    incrementOccupancy() {
-        if (this.mesasOcupadas < this.barracaData.capacidade_mesas) {
-            this.mesasOcupadas++;
-            this.saveOccupancy();
-            this.renderOccupancy();
-            this.showToast('Mesa ocupada! 🪑');
-        }
-    }
-
-    decrementOccupancy() {
-        if (this.mesasOcupadas > 0) {
-            this.mesasOcupadas--;
-            this.saveOccupancy();
-            this.renderOccupancy();
-            this.showToast('Mesa liberada! ✅');
-        }
-    }
-
-    saveOccupancy() {
-        const storageKey = `ocupacao-barraca-${this.idBarraca}`;
-        localStorage.setItem(storageKey, this.mesasOcupadas.toString());
+    renderOcupacaoSemCapacidade() {
+        const ocupacaoCard = document.getElementById('ocupacao-card');
+        if (!ocupacaoCard) return;
         
-        // Opcional: Salvar no banco de dados
-        // this.saveOccupancyToDatabase();
+        ocupacaoCard.className = 'bg-yellow-50 p-4 rounded-xl border border-gray-200 flex items-center gap-3';
+        ocupacaoCard.innerHTML = `
+            <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full">
+                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-sm">Capacidade</p>
+                <p class="text-sm text-yellow-600 font-semibold">Configure no cadastro</p>
+            </div>
+        `;
+        lucide.createIcons();
     }
 
-    // OPCIONAL: Salvar no banco (se quiser persistir no Supabase)
-    async saveOccupancyToDatabase() {
+    async loadTodasAtividades() {
+        try {
+            console.log('[GestaoBarraca] Carregando todas as atividades...');
+            
+            this.atividades = [];
+
+            // 1. Carregar reservas (usando data_reserva ao invés de created_at)
+            const { data: reservas, error: errorReservas } = await supabase
+                .from('reservas')
+                .select('*')
+                .eq('id_barraca', this.idBarraca)
+                .order('data_reserva', { ascending: false })
+                .limit(50);
+
+            if (!errorReservas && reservas) {
+                reservas.forEach(reserva => {
+                    const nomeCliente = this.extrairNomeCliente(reserva);
+                    
+                    if (reserva.status === 'cancelada') {
+                        this.atividades.push({
+                            tipo: 'cancelamento',
+                            data: reserva.data_reserva, // Usar data_reserva
+                            descricao: `Reserva de <span class="font-semibold">${nomeCliente}</span> foi cancelada`,
+                            icon: 'calendar-x',
+                            bgColor: 'bg-red-100',
+                            textColor: 'text-red-600'
+                        });
+                    } else if (reserva.status === 'confirmada') {
+                        this.atividades.push({
+                            tipo: 'reserva',
+                            data: reserva.data_reserva,
+                            descricao: `Reserva de <span class="font-semibold">${nomeCliente}</span> foi confirmada para ${reserva.num_pessoas} pessoa${reserva.num_pessoas > 1 ? 's' : ''}`,
+                            icon: 'check-circle',
+                            bgColor: 'bg-green-100',
+                            textColor: 'text-green-600'
+                        });
+                    } else if (reserva.status === 'pendente') {
+                        this.atividades.push({
+                            tipo: 'reserva',
+                            data: reserva.data_reserva,
+                            descricao: `Nova reserva de <span class="font-semibold">${nomeCliente}</span> para ${reserva.num_pessoas} pessoa${reserva.num_pessoas > 1 ? 's' : ''}`,
+                            icon: 'user-plus',
+                            bgColor: 'bg-blue-100',
+                            textColor: 'text-blue-600'
+                        });
+                    }
+                });
+            }
+
+            // 2. Carregar avaliações (usando data_avaliacao ao invés de created_at)
+            const { data: avaliacoes, error: errorAvaliacoes } = await supabase
+                .from('avaliacoes')
+                .select('*')
+                .eq('id_barraca', this.idBarraca)
+                .order('data_avaliacao', { ascending: false })
+                .limit(20);
+
+            if (!errorAvaliacoes && avaliacoes) {
+                avaliacoes.forEach(avaliacao => {
+                    // Buscar nome do usuário (se precisar, fazer join com tabela usuarios)
+                    const nomeCliente = 'Cliente'; // Placeholder, ajuste conforme sua estrutura
+                    
+                    this.atividades.push({
+                        tipo: 'avaliacao',
+                        data: avaliacao.data_avaliacao,
+                        descricao: `Nova avaliação de ${avaliacao.nota} estrela${avaliacao.nota > 1 ? 's' : ''}${avaliacao.comentario ? ': "' + avaliacao.comentario.substring(0, 50) + '..."' : ''}`,
+                        icon: 'star',
+                        bgColor: 'bg-yellow-100',
+                        textColor: 'text-yellow-600'
+                    });
+                });
+            }
+
+            // Ordenar todas as atividades por data (mais recente primeiro)
+            this.atividades.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            console.log(`[GestaoBarraca] ${this.atividades.length} atividades carregadas`);
+            this.renderAtividades();
+
+        } catch (error) {
+            console.error('[GestaoBarraca] Erro ao carregar atividades:', error);
+            this.renderAtividades();
+        }
+    }
+
+    extrairNomeCliente(reserva) {
+        if (reserva.participantes && Array.isArray(reserva.participantes) && reserva.participantes.length > 0) {
+            const nome = reserva.participantes[0];
+            const primeiroNome = nome.split(' ')[0];
+            const palavras = nome.split(' ');
+            const inicial = palavras.length > 1 ? palavras[palavras.length - 1].charAt(0).toUpperCase() : '';
+            return `${primeiroNome}${inicial ? ' ' + inicial + '.' : ''}`;
+        }
+        return 'Cliente';
+    }
+
+    renderAtividades() {
+        const container = document.getElementById('lista-atividades');
+        if (!container) return;
+
+        // Filtrar atividades
+        let atividadesFiltradas = this.atividades;
+        
+        if (this.filtroAtividades !== 'todas') {
+            const mapeamentoFiltros = {
+                'reservas': 'reserva',
+                'cancelamentos': 'cancelamento',
+                'avaliacoes': 'avaliacao',
+                'favoritos': 'favorito'
+            };
+            
+            atividadesFiltradas = this.atividades.filter(a => 
+                a.tipo === mapeamentoFiltros[this.filtroAtividades]
+            );
+        }
+
+        if (atividadesFiltradas.length === 0) {
+            container.innerHTML = `
+                <li class="text-center text-gray-500 py-4">
+                    <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
+                    <p>Nenhuma atividade encontrada</p>
+                </li>
+            `;
+            lucide.createIcons();
+            return;
+        }
+
+        // Limitar a 10 atividades mais recentes
+        const atividadesLimitadas = atividadesFiltradas.slice(0, 10);
+
+        container.innerHTML = atividadesLimitadas.map(ativ => {
+            const tempo = this.formatarTempoAtras(ativ.data);
+
+            return `
+                <li class="flex items-center gap-3">
+                    <div class="${ativ.bgColor} ${ativ.textColor} p-2 rounded-full flex-shrink-0">
+                        <i data-lucide="${ativ.icon}" class="w-4 h-4"></i>
+                    </div>
+                    <p class="text-gray-600 flex-1">${ativ.descricao}</p>
+                    <span class="text-xs text-gray-400 whitespace-nowrap">${tempo}</span>
+                </li>
+            `;
+        }).join('');
+
+        lucide.createIcons();
+    }
+
+    formatarTempoAtras(dataISO) {
+        const agora = new Date();
+        const data = new Date(dataISO);
+        const diffMs = agora - data;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHoras = Math.floor(diffMs / 3600000);
+        const diffDias = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 1) return 'agora';
+        if (diffMins < 60) return `${diffMins} min atrás`;
+        if (diffHoras < 24) return `${diffHoras}h atrás`;
+        if (diffDias === 1) return 'ontem';
+        if (diffDias < 7) return `${diffDias} dias atrás`;
+        return data.toLocaleDateString('pt-BR');
+    }
+
+    async loadTodasReservas() {
+        try {
+            console.log('[GestaoBarraca] Carregando todas as reservas...');
+
+            const { data: reservas, error } = await supabase
+                .from('reservas')
+                .select('*')
+                .eq('id_barraca', this.idBarraca)
+                .order('data_reserva', { ascending: false })
+                .order('data_inicio', { ascending: false });
+
+            if (error) throw error;
+
+            this.reservas = reservas || [];
+            console.log(`[GestaoBarraca] ${this.reservas.length} reservas carregadas`);
+
+            this.renderReservas();
+
+        } catch (error) {
+            console.error('[GestaoBarraca] Erro ao carregar reservas:', error);
+            this.reservas = [];
+            this.renderReservas();
+        }
+    }
+
+    renderReservas() {
+        const tbody = document.querySelector('#reservas tbody');
+        if (!tbody) return;
+
+        if (this.reservas.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                        <i data-lucide="calendar-x" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
+                        <p>Nenhuma reserva encontrada</p>
+                    </td>
+                </tr>
+            `;
+            lucide.createIcons();
+            return;
+        }
+
+        // Debug: Verificar formato da primeira reserva
+        if (this.reservas.length > 0) {
+            console.log('[DEBUG] Exemplo de reserva:', {
+                data_reserva: this.reservas[0].data_reserva,
+                data_inicio: this.reservas[0].data_inicio,
+                data_fim: this.reservas[0].data_fim,
+                num_pessoas: this.reservas[0].num_pessoas,
+                participantes: this.reservas[0].participantes,
+                status: this.reservas[0].status
+            });
+        }
+
+        tbody.innerHTML = this.reservas.map(reserva => {
+            const nomeCliente = this.extrairNomeClienteCompleto(reserva);
+            const dataFormatada = this.formatarDataSimples(reserva.data_reserva);
+            const horarioCompleto = this.formatarHorarioCompleto(reserva.data_inicio, reserva.data_fim);
+            const status = this.getStatusBadge(reserva.status);
+            const podeConfirmar = reserva.status === 'pendente';
+            const podeCancelar = reserva.status === 'pendente' || reserva.status === 'confirmada';
+
+            return `
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        <div class="font-medium text-gray-900">${nomeCliente}</div>
+                        ${reserva.participantes && reserva.participantes.length > 1 ? 
+                            `<div class="text-xs text-gray-500 mt-1">+${reserva.participantes.length - 1} acompanhante${reserva.participantes.length > 2 ? 's' : ''}</div>` 
+                            : ''}
+                    </td>
+                    <td class="px-6 py-4">${dataFormatada}</td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm">${horarioCompleto}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1">
+                            <i data-lucide="users" class="w-4 h-4 text-gray-400"></i>
+                            ${reserva.num_pessoas || '-'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">${status}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex justify-center gap-2">
+                            ${podeConfirmar ? `
+                                <button class="confirm-reserva-btn text-green-600 hover:text-green-800 p-2 rounded-full hover:bg-green-50 transition" 
+                                        data-id="${reserva.id_reserva}" 
+                                        title="Confirmar reserva">
+                                    <i data-lucide="check-circle" class="w-5 h-5 pointer-events-none"></i>
+                                </button>
+                            ` : `
+                                <button class="text-gray-300 cursor-not-allowed p-2" disabled title="Reserva já confirmada">
+                                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                                </button>
+                            `}
+                            
+                            ${podeCancelar ? `
+                                <button class="cancel-reserva-btn text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition" 
+                                        data-id="${reserva.id_reserva}"
+                                        title="Cancelar reserva">
+                                    <i data-lucide="x-circle" class="w-5 h-5 pointer-events-none"></i>
+                                </button>
+                            ` : `
+                                <button class="text-gray-300 cursor-not-allowed p-2" disabled title="Não pode cancelar">
+                                    <i data-lucide="x-circle" class="w-5 h-5"></i>
+                                </button>
+                            `}
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        lucide.createIcons();
+        this.addReservaActionListeners();
+    }
+
+    formatarDataSimples(dataReserva) {
+        // Criar data a partir do formato do Supabase
+        let data;
+        
+        if (dataReserva.includes('T')) {
+            data = new Date(dataReserva);
+        } else {
+            data = new Date(dataReserva + 'T00:00:00');
+        }
+        
+        if (isNaN(data.getTime())) {
+            return 'Data inválida';
+        }
+        
+        return data.toLocaleDateString('pt-BR');
+    }
+
+    formatarHorarioCompleto(dataInicio, dataFim) {
+        if (!dataInicio) {
+            return '<span class="text-gray-400">Não especificado</span>';
+        }
+
+        const inicio = new Date(dataInicio);
+        
+        if (isNaN(inicio.getTime())) {
+            return '<span class="text-gray-400">Horário inválido</span>';
+        }
+        
+        const horaInicio = inicio.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        
+        if (dataFim) {
+            const fim = new Date(dataFim);
+            
+            if (!isNaN(fim.getTime())) {
+                const horaFim = fim.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                return `<span class="font-medium">${horaInicio}</span> <span class="text-gray-400">até</span> <span class="font-medium">${horaFim}</span>`;
+            }
+        }
+        
+        return `<span class="font-medium">${horaInicio}</span>`;
+    }
+
+    extrairNomeClienteCompleto(reserva) {
+        if (reserva.participantes && Array.isArray(reserva.participantes) && reserva.participantes.length > 0) {
+            return reserva.participantes[0];
+        }
+        return 'Cliente';
+    }
+
+    formatarDataHora(dataReserva, dataInicio) {
+        // Criar data a partir do formato do Supabase
+        let data;
+        
+        // Se dataReserva já vier como timestamp completo
+        if (dataReserva.includes('T')) {
+            data = new Date(dataReserva);
+        } else {
+            // Se vier apenas como data (YYYY-MM-DD)
+            data = new Date(dataReserva + 'T00:00:00');
+        }
+        
+        // Verificar se a data é válida
+        if (isNaN(data.getTime())) {
+            console.error('[formatarDataHora] Data inválida:', dataReserva);
+            return 'Data inválida';
+        }
+        
+        const dataFormatada = data.toLocaleDateString('pt-BR');
+        
+        if (dataInicio) {
+            const inicio = new Date(dataInicio);
+            
+            // Verificar se dataInicio é válido
+            if (isNaN(inicio.getTime())) {
+                return dataFormatada; // Retorna só a data se o horário for inválido
+            }
+            
+            const hora = inicio.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            return `${dataFormatada} ${hora}`;
+        }
+        
+        return dataFormatada;
+    }
+
+    getStatusBadge(status) {
+        const badges = {
+            'pendente': '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Pendente</span>',
+            'confirmada': '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Confirmada</span>',
+            'cancelada': '<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Cancelada</span>',
+            'concluida': '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Concluída</span>'
+        };
+
+        return badges[status] || '<span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Desconhecido</span>';
+    }
+
+    addReservaActionListeners() {
+        // Confirmar reserva
+        document.querySelectorAll('.confirm-reserva-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const reservaId = btn.dataset.id;
+                if (confirm('Confirmar esta reserva?')) {
+                    await this.confirmarReserva(reservaId);
+                }
+            });
+        });
+
+        // Cancelar reserva
+        document.querySelectorAll('.cancel-reserva-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const reservaId = btn.dataset.id;
+                if (confirm('Tem certeza que deseja cancelar esta reserva?')) {
+                    await this.cancelarReserva(reservaId);
+                }
+            });
+        });
+    }
+
+    async confirmarReserva(reservaId) {
         try {
             const { error } = await supabase
-                .from('barracas')
+                .from('reservas')
                 .update({ 
-                    ocupacao_atual: this.mesasOcupadas,
-                    ultima_atualizacao_ocupacao: new Date().toISOString()
+                    status: 'confirmada'
                 })
-                .eq('id_barraca', this.idBarraca);
-            
-            if (error) console.error('Erro ao salvar ocupação:', error);
+                .eq('id_reserva', reservaId);
+
+            if (error) throw error;
+
+            this.showToast('Reserva confirmada com sucesso! ✅');
+            await this.loadDashboardStats();
+            await this.loadTodasAtividades();
+
         } catch (error) {
-            console.error('Erro ao salvar ocupação:', error);
+            console.error('[GestaoBarraca] Erro ao confirmar reserva:', error);
+            alert('Erro ao confirmar reserva.');
+        }
+    }
+
+    async cancelarReserva(reservaId) {
+        try {
+            const { error } = await supabase
+                .from('reservas')
+                .update({ 
+                    status: 'cancelada'
+                })
+                .eq('id_reserva', reservaId);
+
+            if (error) throw error;
+
+            this.showToast('Reserva cancelada! ❌');
+            await this.loadDashboardStats();
+            await this.loadTodasAtividades();
+
+        } catch (error) {
+            console.error('[GestaoBarraca] Erro ao cancelar reserva:', error);
+            alert('Erro ao cancelar reserva.');
         }
     }
 
     showToast(message) {
-        // Criar toast se não existir
-        let toast = document.getElementById('toast-ocupacao');
+        let toast = document.getElementById('toast-geral');
         if (!toast) {
             toast = document.createElement('div');
-            toast.id = 'toast-ocupacao';
+            toast.id = 'toast-geral';
             toast.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 z-50';
             document.body.appendChild(toast);
         }
@@ -385,8 +836,6 @@ class GestaoBarracaManager {
             toast.classList.add('opacity-0');
         }, 2000);
     }
-
-    // === FIM DO SISTEMA DE OCUPAÇÃO ===
 
     atualizarLinksComIdBarraca() {
         if (!this.idBarraca) {
@@ -416,8 +865,6 @@ class GestaoBarracaManager {
             }
             
             console.log('[GestaoBarraca] ✅ Link "Editar Barraca" atualizado:', linkEditarBarraca.href);
-        } else {
-            console.warn('[GestaoBarraca] Link "Editar Barraca" não encontrado no DOM');
         }
 
         // 2. Link de "Gerenciar Cardápio"
@@ -438,10 +885,6 @@ class GestaoBarracaManager {
         });
 
         console.log('[GestaoBarraca] ✅ Todos os links atualizados com ID da barraca:', this.idBarraca);
-    }
-
-    loadDashboardStats() {
-        console.log('[GestaoBarraca] Estatísticas carregadas (simuladas)');
     }
 
     async loadPromocoes() {
@@ -582,7 +1025,7 @@ class GestaoBarracaManager {
 
                 if (error) throw error;
 
-                alert('Promoção atualizada com sucesso!');
+                this.showToast('Promoção atualizada com sucesso! ✅');
             } else {
                 const { error } = await supabase
                     .from('promocoes')
@@ -590,7 +1033,7 @@ class GestaoBarracaManager {
 
                 if (error) throw error;
 
-                alert('Promoção criada com sucesso!');
+                this.showToast('Promoção criada com sucesso! 🎉');
             }
 
             this.closePromotionModal();
@@ -631,98 +1074,13 @@ class GestaoBarracaManager {
 
             if (error) throw error;
 
-            alert('Promoção excluída com sucesso!');
+            this.showToast('Promoção excluída com sucesso! 🗑️');
             this.closeDeleteModal();
             await this.loadPromocoes();
 
         } catch (error) {
             console.error('[confirmDeletePromotion] Erro:', error);
             alert(`Erro ao excluir promoção: ${error.message}`);
-        }
-    }
-
-    openDeleteBarracaModal() {
-        if (this.deleteBarracaModal) {
-            this.deleteBarracaModal.classList.remove('hidden');
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        } else {
-            if (confirm(`⚠️ ATENÇÃO: Tem certeza que deseja EXCLUIR permanentemente a barraca "${this.barracaData?.nome_barraca}"?\n\nEsta ação não pode ser desfeita e todos os dados serão perdidos.`)) {
-                const confirmacao = prompt('Digite "EXCLUIR" para confirmar:');
-                if (confirmacao === 'EXCLUIR') {
-                    this.confirmDeleteBarraca();
-                }
-            }
-        }
-    }
-
-    closeDeleteBarracaModal() {
-        if (this.deleteBarracaModal) {
-            this.deleteBarracaModal.classList.add('hidden');
-        }
-    }
-
-    async confirmDeleteBarraca() {
-        if (!this.idBarraca) {
-            alert('Erro: ID da barraca não encontrado.');
-            return;
-        }
-
-        try {
-            console.log('[GestaoBarraca] Iniciando exclusão da barraca:', this.idBarraca);
-
-            if (this.confirmDeleteBarracaBtn) {
-                this.confirmDeleteBarracaBtn.disabled = true;
-                this.confirmDeleteBarracaBtn.textContent = 'Excluindo...';
-            }
-
-            const { error: errorProdutos } = await supabase
-                .from('produtos')
-                .delete()
-                .eq('id_barraca', this.idBarraca);
-
-            if (errorProdutos) {
-                console.warn('[GestaoBarraca] Erro ao excluir produtos:', errorProdutos);
-            }
-
-            const { error: errorPromocoes } = await supabase
-                .from('promocoes')
-                .delete()
-                .eq('id_barraca', this.idBarraca);
-
-            if (errorPromocoes) {
-                console.warn('[GestaoBarraca] Erro ao excluir promoções:', errorPromocoes);
-            }
-
-            const { error: errorBarraca } = await supabase
-                .from('barracas')
-                .delete()
-                .eq('id_barraca', this.idBarraca)
-                .eq('id_gestor', this.userId);
-
-            if (errorBarraca) {
-                throw new Error(`Erro ao excluir barraca: ${errorBarraca.message}`);
-            }
-
-            console.log('[GestaoBarraca] ✅ Barraca excluída com sucesso!');
-            
-            alert('Barraca excluída com sucesso!');
-            
-            this.closeDeleteBarracaModal();
-
-            setTimeout(() => {
-                window.location.href = './inicioGestor.html';
-            }, 500);
-
-        } catch (error) {
-            console.error('[GestaoBarraca] Erro ao excluir barraca:', error);
-            alert(`Erro ao excluir barraca: ${error.message}`);
-            
-            if (this.confirmDeleteBarracaBtn) {
-                this.confirmDeleteBarracaBtn.disabled = false;
-                this.confirmDeleteBarracaBtn.textContent = 'Sim, Excluir Permanentemente';
-            }
         }
     }
 }

@@ -45,24 +45,37 @@ class CardapioManager {
         this.produtos = [];
         this.editingItemId = null;
         this.itemToDelete = null;
+        this.cardapioType = null; // 'custom' ou 'link'
         
         this.initElements();
         this.initEventListeners();
     }
 
     initElements() {
-        // Formulário
+        // Seções de escolha
+        this.cardapioTypeSection = document.getElementById('cardapio-type-section');
+        this.optionCustom = document.getElementById('option-custom');
+        this.optionLink = document.getElementById('option-link');
+        this.linkSection = document.getElementById('link-section');
+        this.customCardapioSection = document.getElementById('custom-cardapio-section');
+        
+        // Formulário de link
+        this.linkForm = document.getElementById('link-form');
+        this.linkCardapioInput = document.getElementById('link-cardapio');
+        this.cancelLinkBtn = document.getElementById('cancel-link-btn');
+        this.changeTypeBtn = document.getElementById('change-type-btn');
+        
+        // Formulário de produtos
         this.itemForm = document.getElementById('item-form');
         this.formTitle = document.getElementById('form-title');
         this.submitButton = document.getElementById('submit-button');
         this.editingItemIdInput = document.getElementById('editing-item-id');
         
-        // Inputs do formulário (suporte a múltiplos IDs)
-        this.nomeInput = document.getElementById('nome-produto') || document.querySelector('[name="name"]');
-        this.valorInput = document.getElementById('valor-produto') || document.querySelector('[name="price"]');
-        this.categoriaInput = document.getElementById('categoria-produto') || document.getElementById('item-category');
-        this.descricaoInput = document.querySelector('[name="description"]');
-        this.imagemInput = document.getElementById('imagem-produto') || document.getElementById('item-image');
+        // Inputs do formulário
+        this.nomeInput = document.getElementById('nome-produto');
+        this.valorInput = document.getElementById('valor-produto');
+        this.categoriaInput = document.getElementById('categoria-produto');
+        this.imagemInput = document.getElementById('imagem-produto');
         this.fileNameSpan = document.getElementById('file-name');
         
         // Listas de produtos
@@ -78,10 +91,33 @@ class CardapioManager {
     }
 
     initEventListeners() {
-        if (!this.itemForm) return;
+        // Escolha do tipo de cardápio
+        if (this.optionCustom) {
+            this.optionCustom.addEventListener('click', () => this.selectCardapioType('custom'));
+        }
+        
+        if (this.optionLink) {
+            this.optionLink.addEventListener('click', () => this.selectCardapioType('link'));
+        }
 
-        // Submissão do formulário
-        this.itemForm.addEventListener('submit', (e) => this.handleSubmit(e));
+        // Formulário de link
+        if (this.linkForm) {
+            this.linkForm.addEventListener('submit', (e) => this.handleLinkSubmit(e));
+        }
+
+        if (this.cancelLinkBtn) {
+            this.cancelLinkBtn.addEventListener('click', () => this.cancelLinkSelection());
+        }
+
+        // Botão para trocar tipo
+        if (this.changeTypeBtn) {
+            this.changeTypeBtn.addEventListener('click', () => this.confirmChangeType());
+        }
+
+        // Submissão do formulário de produtos
+        if (this.itemForm) {
+            this.itemForm.addEventListener('submit', (e) => this.handleSubmit(e));
+        }
 
         // Abas
         const tabs = document.querySelectorAll('.tab-button');
@@ -100,14 +136,12 @@ class CardapioManager {
 
         // Delegação de eventos para botões dinâmicos
         document.addEventListener('click', (e) => {
-            // Botão Editar
             const editBtn = e.target.closest('.edit-btn');
             if (editBtn) {
                 this.handleEdit(editBtn);
             }
 
-            // Botão Deletar (múltiplas classes)
-            const deleteBtn = e.target.closest('.delete-btn') || e.target.closest('.btn-delete');
+            const deleteBtn = e.target.closest('.delete-btn');
             if (deleteBtn) {
                 this.handleDelete(deleteBtn);
             }
@@ -151,8 +185,8 @@ class CardapioManager {
 
             console.log('[CardapioManager] Barraca ID:', this.idBarraca);
 
-            // Carregar produtos existentes
-            await this.loadProdutos();
+            // Verificar se já existe configuração de cardápio
+            await this.checkExistingCardapioType();
 
         } catch (error) {
             console.error('[CardapioManager] Erro na inicialização:', error);
@@ -169,15 +203,13 @@ class CardapioManager {
 
             let query = supabase
                 .from('barracas')
-                .select('id_barraca, nome_barraca')
+                .select('id_barraca, nome_barraca, link_cardapio')
                 .eq('id_gestor', this.idGestor);
 
             if (idUrl) {
                 query = query.eq('id_barraca', idUrl);
-                console.log('[CardapioManager] Buscando barraca específica com ID:', idUrl);
             }
 
-            // .limit(1).maybeSingle() previne o erro se houver múltiplas barracas
             const { data, error } = await query.limit(1).maybeSingle();
 
             if (error) throw error;
@@ -186,7 +218,11 @@ class CardapioManager {
             this.idBarraca = data.id_barraca;
             console.log(`[CardapioManager] Cardápio da barraca: ${data.nome_barraca} (ID: ${this.idBarraca})`);
             
-            // Atualizar título da página se existir
+            // Guardar link se existir
+            if (data.link_cardapio) {
+                this.existingLink = data.link_cardapio;
+            }
+            
             this.atualizarTituloPagina(data.nome_barraca);
             
             return true;
@@ -198,15 +234,202 @@ class CardapioManager {
     }
 
     atualizarTituloPagina(nomeBarraca) {
-        const pageTitle = document.querySelector('section h1');
-        const pageSubtitle = document.querySelector('section p');
+        const pageTitle = document.querySelector('main h1');
         
         if (pageTitle) {
             pageTitle.textContent = `Cardápio - ${nomeBarraca}`;
         }
+    }
+
+    async checkExistingCardapioType() {
+        try {
+            // Verificar se tem link salvo
+            if (this.existingLink) {
+                this.cardapioType = 'link';
+                this.showLinkSection(true);
+                if (this.linkCardapioInput) {
+                    this.linkCardapioInput.value = this.existingLink;
+                }
+                return;
+            }
+
+            // Verificar se tem produtos cadastrados
+            const { data: produtos, error } = await supabase
+                .from('produtos')
+                .select('id_produto')
+                .eq('id_barraca', this.idBarraca)
+                .limit(1);
+
+            if (error) throw error;
+
+            if (produtos && produtos.length > 0) {
+                this.cardapioType = 'custom';
+                this.showCustomSection();
+                await this.loadProdutos();
+            } else {
+                // Mostrar opções de escolha
+                this.showCardapioTypeSection();
+            }
+
+        } catch (error) {
+            console.error('[checkExistingCardapioType] Erro:', error);
+            this.showCardapioTypeSection();
+        }
+    }
+
+    showCardapioTypeSection() {
+        if (this.cardapioTypeSection) {
+            this.cardapioTypeSection.style.display = 'block';
+        }
+        if (this.linkSection) {
+            this.linkSection.style.display = 'none';
+        }
+        if (this.customCardapioSection) {
+            this.customCardapioSection.style.display = 'none';
+        }
+    }
+
+    selectCardapioType(type) {
+        this.cardapioType = type;
+
+        // Atualizar UI dos cards
+        if (this.optionCustom && this.optionLink) {
+            this.optionCustom.classList.toggle('selected', type === 'custom');
+            this.optionLink.classList.toggle('selected', type === 'link');
+        }
+
+        // Mostrar seção apropriada
+        if (type === 'link') {
+            this.showLinkSection();
+        } else {
+            this.showCustomSection();
+        }
+    }
+
+    showLinkSection(skipHideTypeSection = false) {
+        if (!skipHideTypeSection && this.cardapioTypeSection) {
+            this.cardapioTypeSection.style.display = 'none';
+        }
+        if (this.linkSection) {
+            this.linkSection.style.display = 'block';
+        }
+        if (this.customCardapioSection) {
+            this.customCardapioSection.style.display = 'none';
+        }
+    }
+
+    showCustomSection() {
+        if (this.cardapioTypeSection) {
+            this.cardapioTypeSection.style.display = 'none';
+        }
+        if (this.linkSection) {
+            this.linkSection.style.display = 'none';
+        }
+        if (this.customCardapioSection) {
+            this.customCardapioSection.style.display = 'block';
+        }
+    }
+
+    cancelLinkSelection() {
+        this.cardapioType = null;
+        if (this.linkCardapioInput) {
+            this.linkCardapioInput.value = '';
+        }
+        this.showCardapioTypeSection();
+    }
+
+    async handleLinkSubmit(e) {
+        e.preventDefault();
+
+        const link = this.linkCardapioInput?.value;
         
-        if (pageSubtitle) {
-            pageSubtitle.textContent = `Gerencie os produtos da sua barraca`;
+        if (!link) {
+            alert('Por favor, insira um link válido.');
+            return;
+        }
+
+        this.showLoading(true);
+
+        try {
+            // Salvar link no banco
+            const { error } = await supabase
+                .from('barracas')
+                .update({ link_cardapio: link })
+                .eq('id_barraca', this.idBarraca);
+
+            if (error) throw error;
+
+            console.log('[handleLinkSubmit] Link salvo com sucesso');
+            alert('Link do cardápio salvo com sucesso!');
+            
+            this.existingLink = link;
+
+        } catch (error) {
+            console.error('[handleLinkSubmit] Erro:', error);
+            alert(`Erro ao salvar link: ${error.message}`);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async confirmChangeType() {
+        const hasProducts = this.produtos && this.produtos.length > 0;
+        const hasLink = this.existingLink;
+
+        let confirmMessage = '';
+        
+        if (hasProducts) {
+            confirmMessage = 'Você tem produtos cadastrados. Se trocar para link externo, eles serão removidos. Deseja continuar?';
+        } else if (hasLink) {
+            confirmMessage = 'Você já tem um link cadastrado. Se trocar para cardápio personalizado, o link será removido. Deseja continuar?';
+        }
+
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+
+        this.showLoading(true);
+
+        try {
+            if (this.cardapioType === 'custom') {
+                // Trocar de custom para link - deletar produtos
+                const { error: deleteError } = await supabase
+                    .from('produtos')
+                    .delete()
+                    .eq('id_barraca', this.idBarraca);
+
+                if (deleteError) throw deleteError;
+
+                this.produtos = [];
+                this.cardapioType = 'link';
+                this.showLinkSection();
+                
+            } else if (this.cardapioType === 'link') {
+                // Trocar de link para custom - remover link
+                const { error: updateError } = await supabase
+                    .from('barracas')
+                    .update({ link_cardapio: null })
+                    .eq('id_barraca', this.idBarraca);
+
+                if (updateError) throw updateError;
+
+                this.existingLink = null;
+                if (this.linkCardapioInput) {
+                    this.linkCardapioInput.value = '';
+                }
+                
+                this.cardapioType = 'custom';
+                this.showCustomSection();
+                await this.loadProdutos();
+            }
+
+            alert('Tipo de cardápio alterado com sucesso!');
+
+        } catch (error) {
+            console.error('[confirmChangeType] Erro:', error);
+            alert(`Erro ao trocar tipo de cardápio: ${error.message}`);
+        } finally {
+            this.showLoading(false);
         }
     }
 
@@ -215,12 +438,12 @@ class CardapioManager {
             console.log('[CardapioManager] Carregando produtos...');
 
             // Limpar listas
-            ['comidas-list', 'bebidas-list', 'sobremesas-list', 'outros-list'].forEach(id => {
+            ['comidas-list', 'bebidas-list', 'outros-list'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = '';
             });
 
-            // Buscar produtos (sem ordenação por created_at para evitar erro 400)
+            // Buscar produtos
             const { data: produtos, error } = await supabase
                 .from('produtos')
                 .select('*')
@@ -228,7 +451,6 @@ class CardapioManager {
 
             if (error) {
                 console.error('Erro ao carregar produtos:', error);
-                alert(`Erro ao buscar produtos: ${error.message}`);
                 return;
             }
 
@@ -244,7 +466,7 @@ class CardapioManager {
 
     renderProdutos() {
         // Limpar listas
-        ['comidas', 'bebidas', 'sobremesas', 'outros'].forEach(categoria => {
+        ['comidas', 'bebidas', 'outros'].forEach(categoria => {
             const list = document.getElementById(`${categoria}-list`);
             if (list) list.innerHTML = '';
         });
@@ -257,7 +479,7 @@ class CardapioManager {
         }
 
         // Atualizar mensagens "Nenhum item"
-        ['comidas', 'bebidas', 'sobremesas', 'outros'].forEach(categoria => {
+        ['comidas', 'bebidas', 'outros'].forEach(categoria => {
             this.updateNoItemsMessage(categoria);
         });
 
@@ -272,7 +494,6 @@ class CardapioManager {
         const list = document.getElementById(`${categoria}-list`);
         
         if (!list) {
-            // Fallback para lista de outros
             const otherList = document.getElementById('outros-list');
             if (otherList) {
                 this.renderItemInList(otherList, produto);
@@ -285,7 +506,7 @@ class CardapioManager {
     }
 
     renderItemInList(list, produto) {
-        const img = produto.imagem_url || '../assets/images/placeholder-food.png' || 'https://placehold.co/80x80/cccccc/444444?text=P';
+        const img = produto.imagem_url || 'https://placehold.co/80x80/cccccc/444444?text=P';
         
         const div = document.createElement('div');
         div.className = 'flex items-center bg-gray-50 p-3 rounded-lg border border-gray-100 mb-3';
@@ -343,12 +564,7 @@ class CardapioManager {
                 categoria: this.categoriaInput?.value || 'comidas',
             };
 
-            // Adicionar descrição se existir
-            if (this.descricaoInput && this.descricaoInput.value) {
-                produtoData.descricao_pro = this.descricaoInput.value;
-            }
-
-            // Upload da imagem (se houver nova imagem)
+            // Upload da imagem
             if (this.imagemInput && this.imagemInput.files[0]) {
                 const imagemUrl = await uploadImagemProduto(
                     this.imagemInput.files[0],
@@ -359,7 +575,6 @@ class CardapioManager {
                     produtoData.imagem_url = imagemUrl;
                 }
             } else if (this.editingItemIdInput && this.editingItemIdInput.value) {
-                // Se está editando e não selecionou nova imagem, manter a imagem antiga
                 const produtoAtual = this.produtos.find(p => p.id_produto == this.editingItemIdInput.value);
                 if (produtoAtual && produtoAtual.imagem_url) {
                     produtoData.imagem_url = produtoAtual.imagem_url;
@@ -367,10 +582,8 @@ class CardapioManager {
             }
 
             if (this.editingItemIdInput && this.editingItemIdInput.value) {
-                // Editar produto existente
                 await this.updateProduto(this.editingItemIdInput.value, produtoData);
             } else {
-                // Criar novo produto
                 await this.createProduto(produtoData);
             }
 
@@ -430,14 +643,11 @@ class CardapioManager {
         
         if (!produto) return;
 
-        // Preencher formulário
         if (this.nomeInput) this.nomeInput.value = produto.nome_produto;
         if (this.valorInput) this.valorInput.value = produto.preco.toFixed(2);
         if (this.categoriaInput) this.categoriaInput.value = produto.categoria || 'comidas';
-        if (this.descricaoInput && produto.descricao_pro) this.descricaoInput.value = produto.descricao_pro;
         if (this.editingItemIdInput) this.editingItemIdInput.value = itemId;
 
-        // Atualizar UI do formulário
         if (this.formTitle) {
             this.formTitle.textContent = 'Editar Item';
         }
@@ -452,7 +662,6 @@ class CardapioManager {
             lucide.createIcons();
         }
         
-        // Scroll suave até o formulário
         if (this.itemForm) {
             this.itemForm.scrollIntoView({ behavior: 'smooth' });
         }
@@ -466,9 +675,6 @@ class CardapioManager {
         
         if (this.deleteModal) {
             this.deleteModal.classList.remove('hidden');
-        } else {
-            // Fallback se não houver modal
-            this.confirmDelete();
         }
     }
 
@@ -483,14 +689,6 @@ class CardapioManager {
         if (!this.itemToDelete) return;
 
         const itemId = this.itemToDelete.dataset.id;
-
-        // Se não houver modal, confirmar via confirm()
-        if (!this.deleteModal) {
-            if (!confirm('Tem certeza que deseja excluir este item?')) {
-                this.itemToDelete = null;
-                return;
-            }
-        }
 
         this.showLoading(true);
 
@@ -570,8 +768,7 @@ class CardapioManager {
             }
         }
 
-        // Atualizar mensagens de itens vazios
-        ['comidas', 'bebidas', 'sobremesas', 'outros'].forEach(categoria => {
+        ['comidas', 'bebidas', 'outros'].forEach(categoria => {
             this.updateNoItemsMessage(categoria);
         });
     }
@@ -607,12 +804,10 @@ class CardapioManager {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[cadastroCardapio] DOM carregado');
 
-    // Inicializar ícones
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
 
-    // Inicializar gerenciador
     const manager = new CardapioManager();
     await manager.init();
 });

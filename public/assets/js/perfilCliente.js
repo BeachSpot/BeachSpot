@@ -1,117 +1,112 @@
 import { supabase } from './supabaseClient.js';
 
+console.log('[PERFIL CLIENTE] Módulo carregado');
+
+let isEditMode = false;
+
 // Função para carregar dados do perfil
 async function loadProfileData() {
     try {
-        // 1. Verificar se há sessão ativa
+        console.log('[PERFIL] Carregando dados...');
+
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError || !session) {
-            console.log('[INFO] Usuário não autenticado, redirecionando...');
-            window.location.href = '/entrar.html';
+            console.log('[PERFIL] Usuário não autenticado');
+            window.location.href = '../entrar.html';
             return null;
         }
 
-        console.log('[DEBUG] Carregando perfil do cliente...');
+        const userId = session.user.id;
+        console.log('[PERFIL] User ID:', userId);
 
-        // 2. Buscar dados do usuário (tabela auth)
         const { data: usuario, error: usuarioError } = await supabase
             .from('usuarios')
             .select('id_usuario, email, tipo_conta, data_criacao')
-            .eq('id_usuario', session.user.id)
-            .single();
+            .eq('id_usuario', userId)
+            .maybeSingle();
 
         if (usuarioError || !usuario) {
-            console.error('[ERRO] Usuário não encontrado na tabela "usuarios":', usuarioError);
-            window.location.href = '/entrar.html';
+            console.error('[ERRO] Usuário não encontrado:', usuarioError);
+            window.location.href = '../entrar.html';
             return null;
         }
 
-        // 3. Verificar se é realmente um cliente
         if (usuario.tipo_conta !== 'cliente') {
-            console.log('[INFO] Usuário não é cliente, redirecionando...');
-            window.location.href = usuario.tipo_conta === 'gestor' ? '/Telas Gestor/perfilGestor.html' : '/entrar.html';
+            console.log('[PERFIL] Usuário não é cliente, redirecionando...');
+            window.location.href = usuario.tipo_conta === 'gestor' 
+                ? '../Telas Gestor/perfilGestor.html' 
+                : '../entrar.html';
             return null;
         }
 
-        // 4. Buscar dados do perfil (tabela cliente)
         const { data: cliente, error: clienteError } = await supabase
             .from('cliente')
-            .select('*')
-            .eq('id_cliente', usuario.id_usuario)
-            .single();
+            .select('nome, bio, foto_perfil, avatar_url')
+            .eq('id_cliente', userId)
+            .maybeSingle();
 
         if (clienteError) {
-            console.warn('[AVISO] Perfil "cliente" não encontrado. O usuário precisa completar o cadastro?', clienteError);
+            console.warn('[AVISO] Perfil cliente não encontrado:', clienteError);
         }
 
-        // 5. Mesclar os dados (auth + perfil)
-        const profileData = { ...usuario, ...cliente };
+        const profileData = {
+            id_usuario: usuario.id_usuario,
+            email: usuario.email,
+            tipo_conta: usuario.tipo_conta,
+            data_criacao: usuario.data_criacao,
+            nome: cliente?.nome || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Cliente',
+            bio: cliente?.bio || '',
+            foto_perfil: cliente?.foto_perfil || cliente?.avatar_url || null
+        };
 
-        console.log('[DEBUG] Perfil carregado:', profileData);
+        console.log('[PERFIL] ✅ Dados carregados:', profileData);
         return profileData;
 
     } catch (error) {
-        console.error('[ERRO] Falha crítica ao carregar perfil:', error);
+        console.error('[ERRO] Carregar perfil:', error);
         return null;
     }
 }
 
 // Função para carregar estatísticas
 async function loadStatistics(userId) {
-    console.log('[DEBUG] Carregando estatísticas para:', userId);
     try {
-        let reservasCount = 0;
-        
-        // Tentar contar reservas - testando diferentes nomes de colunas
-        // Tentativa 1: usando id_cliente
-        const { count: count1, error: error1 } = await supabase
+        console.log('[STATS] Carregando estatísticas...');
+
+        const { count: reservasCount, error: reservasError } = await supabase
             .from('reservas')
             .select('*', { count: 'exact', head: true })
             .eq('id_cliente', userId);
 
-        if (!error1) {
-            reservasCount = count1 || 0;
-            console.log('[DEBUG] ✓ Reservas encontradas (coluna: id_cliente):', reservasCount);
-        } else {
-            console.log('[DEBUG] ✗ Coluna id_cliente não existe, tentando cliente_id...');
-            
-            // Tentativa 2: usando cliente_id
-            const { count: count2, error: error2 } = await supabase
-                .from('reservas')
-                .select('*', { count: 'exact', head: true })
-                .eq('cliente_id', userId);
-
-            if (!error2) {
-                reservasCount = count2 || 0;
-                console.log('[DEBUG] ✓ Reservas encontradas (coluna: cliente_id):', reservasCount);
-            } else {
-                console.log('[DEBUG] ✗ Coluna cliente_id também não existe, tentando id_usuario...');
-                
-                // Tentativa 3: usando id_usuario
-                const { count: count3, error: error3 } = await supabase
-                    .from('reservas')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('id_usuario', userId);
-
-                if (!error3) {
-                    reservasCount = count3 || 0;
-                    console.log('[DEBUG] ✓ Reservas encontradas (coluna: id_usuario):', reservasCount);
-                } else {
-                    console.error('[ERRO] Nenhuma coluna FK válida encontrada na tabela reservas');
-                    console.error('[ERRO] Detalhes:', error3);
-                }
-            }
+        if (reservasError) {
+            console.warn('[STATS] Erro ao contar reservas:', reservasError);
         }
 
-        // Contar Avaliações (desabilitado - tabela não existe)
-        const avaliacoesCount = 0;
+        let avaliacoesCount = 0;
+        try {
+            const { count, error } = await supabase
+                .from('avaliacoes')
+                .select('*', { count: 'exact', head: true })
+                .eq('id_usuario', userId);
 
-        console.log('[DEBUG] ✓ Estatísticas carregadas:', { reservasCount, avaliacoesCount });
-        return { reservasCount, avaliacoesCount };
+            if (!error) {
+                avaliacoesCount = count || 0;
+            }
+        } catch (err) {
+            console.warn('[STATS] Tabela avaliacoes não existe');
+        }
+
+        const stats = {
+            reservasCount: reservasCount || 0,
+            avaliacoesCount: avaliacoesCount
+        };
+
+        console.log('[STATS] ✅ Estatísticas:', stats);
+        return stats;
 
     } catch (error) {
-        console.error('[ERRO] Falha ao carregar estatísticas:', error);
+        console.error('[ERRO] Carregar estatísticas:', error);
         return { reservasCount: 0, avaliacoesCount: 0 };
     }
 }
@@ -120,213 +115,514 @@ async function loadStatistics(userId) {
 function displayProfileData(profileData) {
     if (!profileData) return;
 
-    // Preencher Carteirinha ID
-    const carteirinhaIdEl = document.getElementById('carteirinha-id');
-    if (carteirinhaIdEl) {
-        carteirinhaIdEl.textContent = (profileData.id_usuario || '00000000').substring(0, 8).toUpperCase();
+    console.log('[DISPLAY] Exibindo dados...');
+
+    const userName = document.getElementById('user-name');
+    if (userName) {
+        userName.textContent = profileData.nome;
     }
 
-    // Preencher Nome
-    const userNameEl = document.getElementById('user-name');
-    if (userNameEl) {
-        userNameEl.textContent = profileData.nome || 'Usuário';
+    const userBio = document.getElementById('user-bio');
+    if (userBio) {
+        if (profileData.bio && profileData.bio.trim() !== '') {
+            userBio.textContent = profileData.bio;
+            userBio.classList.remove('text-gray-400', 'italic');
+            userBio.classList.add('text-gray-600');
+        } else {
+            userBio.textContent = 'Adicione uma bio...';
+            userBio.classList.add('text-gray-400', 'italic');
+            userBio.classList.remove('text-gray-600');
+        }
     }
 
-    // Preencher Email
-    const userEmailEl = document.getElementById('user-email');
-    if (userEmailEl) {
-        userEmailEl.textContent = profileData.email || 'Sem email';
-    }
-
-    // Preencher Bio
-    const userBioEl = document.getElementById('user-bio');
-    if (userBioEl) {
-        userBioEl.textContent = profileData.bio || 'Adicione uma bio.';
-    }
-
-    // Preencher "Membro desde"
-    const memberSinceEl = document.getElementById('member-since');
-    if (memberSinceEl && profileData.data_criacao) {
-        const dataFormatada = new Date(profileData.data_criacao).toLocaleDateString('pt-BR', {
+    const memberSince = document.getElementById('member-since');
+    if (memberSince && profileData.data_criacao) {
+        const data = new Date(profileData.data_criacao);
+        const dataFormatada = data.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric'
         });
-        memberSinceEl.textContent = `Membro desde: ${dataFormatada}`;
+        memberSince.textContent = `Membro desde: ${dataFormatada}`;
     }
 
-    // FOTO PERFIL - CORRIGIDO
-    const avatarElement = document.getElementById('carteirinha-avatar');
-    if (avatarElement) {
-        if (profileData.foto_perfil) {
-            // Tentar buscar do Storage
+    const avatar = document.getElementById('carteirinha-avatar');
+    const headerAvatar = document.getElementById('header-avatar');
+    
+    let fotoUrl = null;
+    
+    if (profileData.foto_perfil) {
+        if (profileData.foto_perfil.startsWith('http')) {
+            fotoUrl = profileData.foto_perfil;
+        } else {
             const { data } = supabase
                 .storage
-                .from('fotos_perfil')
+                .from('media')
                 .getPublicUrl(profileData.foto_perfil);
             
-            if (data && data.publicUrl) {
-                avatarElement.src = data.publicUrl;
-                console.log('[DEBUG] URL pública da foto:', data.publicUrl);
-            } else {
-                // Usar placeholder com iniciais
-                const initials = (profileData.nome || 'U')
+            fotoUrl = data?.publicUrl;
+        }
+    }
+    
+    if (!fotoUrl) {
+        const iniciais = profileData.nome
+            .split(' ')
+            .filter(word => word.length > 0)
+            .map(word => word[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+        fotoUrl = `https://placehold.co/160x224/0138b4/FFFFFF?text=${iniciais}`;
+    }
+    
+    if (avatar) avatar.src = fotoUrl;
+    if (headerAvatar) {
+        const headerUrl = fotoUrl.includes('placehold.co') 
+            ? fotoUrl.replace('160x224', '40x40')
+            : fotoUrl;
+        headerAvatar.src = headerUrl;
+    }
+
+    console.log('[DISPLAY] ✅ Dados exibidos');
+}
+
+// Função para exibir estatísticas
+function displayStatistics(stats) {
+    if (!stats) return;
+
+    const statsReservas = document.getElementById('stats-reservas');
+    if (statsReservas) {
+        statsReservas.textContent = stats.reservasCount;
+    }
+
+    const statsAvaliacoes = document.getElementById('stats-avaliacoes');
+    if (statsAvaliacoes) {
+        statsAvaliacoes.textContent = stats.avaliacoesCount;
+    }
+
+    console.log('[DISPLAY] ✅ Estatísticas exibidas');
+}
+
+// Função para alternar modo de edição
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+    
+    const editButton = document.getElementById('edit-profile-button');
+    const fotoLabel = document.querySelector('label[for="foto-perfil-input"]');
+    const userName = document.getElementById('user-name');
+    const userBio = document.getElementById('user-bio');
+    const photoOverlay = document.querySelector('.photo-edit-overlay');
+    const photoContainer = document.querySelector('.photo-container');
+    
+    if (isEditMode) {
+        // Entrar em modo de edição
+        editButton.innerHTML = '<i data-lucide="save" class="w-5 h-5"></i>';
+        editButton.title = 'Salvar Perfil';
+        editButton.classList.add('bg-green-500', 'text-white', 'hover:bg-green-600');
+        editButton.classList.remove('bg-white', 'text-gray-700', 'hover:bg-gray-100', 'border', 'border-gray-200');
+        
+        // Habilitar edição de foto
+        if (fotoLabel) {
+            fotoLabel.classList.remove('pointer-events-none');
+        }
+        
+        // Mostrar overlay de edição da foto
+        if (photoOverlay) {
+            photoOverlay.classList.remove('hidden');
+        }
+        
+        // Adicionar borda na foto
+        if (photoContainer) {
+            photoContainer.classList.add('ring-4', 'ring-blue-400', 'ring-offset-2');
+        }
+        
+        // Adicionar indicadores visuais com bordas
+        if (userName) {
+            userName.classList.add('cursor-pointer', 'hover:bg-blue-50', 'rounded', 'px-2', 'py-1', 'border-2', 'border-dashed', 'border-blue-400');
+        }
+        if (userBio) {
+            userBio.classList.add('cursor-pointer', 'hover:bg-blue-50', 'rounded', 'px-2', 'py-1', 'border-2', 'border-dashed', 'border-blue-400', 'min-h-[60px]');
+        }
+        
+    } else {
+        // Sair do modo de edição
+        editButton.innerHTML = '<i data-lucide="pencil" class="w-5 h-5"></i>';
+        editButton.title = 'Editar Perfil';
+        editButton.classList.remove('bg-green-500', 'text-white', 'hover:bg-green-600');
+        editButton.classList.add('bg-white', 'text-gray-700', 'hover:bg-gray-100', 'border', 'border-gray-200');
+        
+        // Desabilitar edição de foto
+        if (fotoLabel) {
+            fotoLabel.classList.add('pointer-events-none');
+        }
+        
+        // Esconder overlay de edição da foto
+        if (photoOverlay) {
+            photoOverlay.classList.add('hidden');
+        }
+        
+        // Remover borda da foto
+        if (photoContainer) {
+            photoContainer.classList.remove('ring-4', 'ring-blue-400', 'ring-offset-2');
+        }
+        
+        // Remover indicadores visuais
+        if (userName) {
+            userName.classList.remove('cursor-pointer', 'hover:bg-blue-50', 'rounded', 'px-2', 'py-1', 'border-2', 'border-dashed', 'border-blue-400');
+            userName.contentEditable = 'false';
+        }
+        if (userBio) {
+            userBio.classList.remove('cursor-pointer', 'hover:bg-blue-50', 'rounded', 'px-2', 'py-1', 'border-2', 'border-dashed', 'border-blue-400', 'min-h-[60px]');
+            userBio.contentEditable = 'false';
+        }
+    }
+    
+    // Reinicializar ícones
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+// Função para configurar upload de foto
+function setupImageUpload(profileData) {
+    const fotoInput = document.getElementById('foto-perfil-input');
+    const fotoLabel = document.querySelector('label[for="foto-perfil-input"]');
+    const avatar = document.getElementById('carteirinha-avatar');
+    const headerAvatar = document.getElementById('header-avatar');
+
+    if (!fotoInput || !avatar || !fotoLabel) return;
+    
+    // Desabilitar por padrão
+    fotoLabel.classList.add('pointer-events-none');
+
+    fotoInput.addEventListener('change', async (e) => {
+        if (!isEditMode) return;
+        
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            alert('Por favor, selecione uma imagem válida.');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('A imagem deve ter no máximo 5MB.');
+            return;
+        }
+
+        console.log('[UPLOAD] Iniciando upload da foto...');
+
+        // Preview imediato
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            avatar.src = event.target.result;
+            if (headerAvatar) headerAvatar.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        try {
+            // Nome do arquivo limpo e único
+            const nomeArquivoLimpo = file.name.replace(/[^a-zA-Z0-9._-]/g, '');
+            const fileName = `clientes/${profileData.id_usuario}/perfil/${Date.now()}_${nomeArquivoLimpo}`;
+            
+            const BUCKET_NAME = 'media';
+
+            // Upload para o Supabase Storage
+            const { error: uploadError } = await supabase
+                .storage
+                .from(BUCKET_NAME)
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                });
+
+            if (uploadError) {
+                console.error('[ERRO] Upload falhou:', uploadError);
+                
+                if (uploadError.message.includes('Bucket not found')) {
+                    alert(`O bucket "${BUCKET_NAME}" não existe no Supabase Storage. Por favor, verifique a configuração.`);
+                } else {
+                    alert('Erro ao salvar a foto. Tente novamente.');
+                }
+                
+                displayProfileData(profileData);
+                return;
+            }
+
+            // Obter URL pública
+            const { data: urlData } = supabase
+                .storage
+                .from(BUCKET_NAME)
+                .getPublicUrl(fileName);
+
+            if (!urlData || !urlData.publicUrl) {
+                console.error('[ERRO] Não foi possível obter URL pública');
+                alert('Erro ao processar a foto.');
+                return;
+            }
+
+            const publicUrl = urlData.publicUrl;
+            console.log('[UPLOAD] URL pública obtida:', publicUrl);
+
+            // Atualizar banco de dados
+            const { error: dbError } = await supabase
+                .from('cliente')
+                .update({ 
+                    foto_perfil: fileName,
+                    avatar_url: publicUrl
+                })
+                .eq('id_cliente', profileData.id_usuario);
+
+            if (dbError) {
+                console.error('[ERRO] Atualizar banco:', dbError);
+                alert('Erro ao atualizar perfil.');
+                return;
+            }
+
+            console.log('[UPLOAD] ✅ Foto atualizada com sucesso!');
+            profileData.foto_perfil = fileName;
+            profileData.avatar_url = publicUrl;
+            alert('Foto atualizada com sucesso!');
+
+        } catch (error) {
+            console.error('[ERRO] Upload geral:', error);
+            alert('Erro ao processar a foto.');
+            displayProfileData(profileData);
+        }
+    });
+}
+
+// Função para configurar edição de nome
+function setupNameEdit(profileData) {
+    const userName = document.getElementById('user-name');
+    if (!userName) return;
+
+    let originalName = userName.textContent.trim();
+
+    const startEditing = () => {
+        if (!isEditMode) return;
+        if (userName.contentEditable === 'true') return;
+
+        originalName = userName.textContent.trim();
+        userName.contentEditable = 'true';
+        userName.focus();
+        userName.classList.add('outline-none', 'bg-blue-50');
+        
+        const range = document.createRange();
+        range.selectNodeContents(userName);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    };
+
+    const saveName = async () => {
+        if (userName.contentEditable === 'false') return;
+
+        userName.contentEditable = 'false';
+        userName.classList.remove('outline-none', 'bg-blue-50');
+
+        const newName = userName.textContent.trim();
+
+        if (newName === '') {
+            userName.textContent = originalName;
+            alert('O nome não pode estar vazio.');
+            return;
+        }
+
+        if (newName.length < 2) {
+            userName.textContent = originalName;
+            alert('O nome deve ter pelo menos 2 caracteres.');
+            return;
+        }
+
+        if (newName === originalName) {
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('cliente')
+                .update({ nome: newName })
+                .eq('id_cliente', profileData.id_usuario);
+
+            if (error) throw error;
+
+            console.log('[NOME] ✅ Nome atualizado');
+            profileData.nome = newName;
+            
+            const avatar = document.getElementById('carteirinha-avatar');
+            if (avatar && avatar.src.includes('placehold.co')) {
+                const iniciais = newName
                     .split(' ')
+                    .filter(word => word.length > 0)
                     .map(word => word[0])
                     .join('')
                     .toUpperCase()
                     .substring(0, 2);
-                avatarElement.src = `https://placehold.co/160x224/0138b4/FFFFFF?text=${initials}`;
+                avatar.src = `https://placehold.co/160x224/0138b4/FFFFFF?text=${iniciais}`;
             }
-        } else {
-            // Usar placeholder com iniciais do nome
-            const initials = (profileData.nome || 'U')
-                .split(' ')
-                .map(word => word[0])
-                .join('')
-                .toUpperCase()
-                .substring(0, 2);
-            avatarElement.src = `https://placehold.co/160x224/0138b4/FFFFFF?text=${initials}`;
+
+            alert('Nome atualizado com sucesso!');
+
+        } catch (error) {
+            console.error('[NOME] Erro ao salvar:', error);
+            userName.textContent = originalName;
+            alert('Erro ao salvar nome.');
         }
-    }
+    };
 
-    // Preencher detalhes (CPF, Fone, etc.)
-    const userCpfEl = document.getElementById('user-cpf');
-    if (userCpfEl) {
-        userCpfEl.textContent = profileData.cpf || 'Não informado';
-    }
+    const cancelEdit = () => {
+        userName.contentEditable = 'false';
+        userName.classList.remove('outline-none', 'bg-blue-50');
+        userName.textContent = originalName;
+    };
 
-    const userPhoneEl = document.getElementById('user-phone');
-    if (userPhoneEl) {
-        userPhoneEl.textContent = profileData.telefone || 'Não informado';
-    }
-
-    const userDobEl = document.getElementById('user-dob');
-    if (userDobEl) {
-        userDobEl.textContent = profileData.data_nascimento 
-            ? new Date(profileData.data_nascimento).toLocaleDateString('pt-BR') 
-            : 'Não informado';
-    }
-
-    console.log('[DEBUG] Perfil exibido na página');
-}
-
-// Função para exibir estatísticas na página
-function displayStatistics(stats) {
-    if (!stats) return;
-
-    // Preencher Reservas
-    const statsReservasEl = document.querySelector('.grid.grid-cols-2 div:nth-child(2) p.font-bold');
-    if (statsReservasEl) {
-        statsReservasEl.textContent = stats.reservasCount || 0;
-    }
-
-    // Preencher Avaliações
-    const statsAvaliacoesEl = document.querySelector('.grid.grid-cols-2 div:nth-child(1) p.font-bold');
-    if (statsAvaliacoesEl) {
-        statsAvaliacoesEl.textContent = stats.avaliacoesCount || 0;
-    }
-
-    console.log('[DEBUG] Estatísticas exibidas');
-}
-
-
-// ============================================
-// INICIALIZAÇÃO
-// ============================================
-
-// Função principal para iniciar
-async function initializeProfile() {
-    console.log('[DEBUG] Inicializando perfil do cliente...');
+    userName.addEventListener('click', startEditing);
+    userName.addEventListener('blur', saveName);
     
-    // 1. Carregar dados
+    userName.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            userName.blur();
+        }
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            cancelEdit();
+        }
+    });
+}
+
+// Função para configurar edição de bio
+function setupBioEdit(profileData) {
+    const userBio = document.getElementById('user-bio');
+    if (!userBio) return;
+
+    let originalBio = userBio.textContent.trim();
+
+    const startEditing = () => {
+        if (!isEditMode) return;
+        if (userBio.contentEditable === 'true') return;
+
+        originalBio = userBio.textContent.trim();
+        
+        // Limpar o placeholder se estiver vazio
+        if (userBio.textContent.includes('Adicione uma bio...')) {
+            userBio.textContent = '';
+        }
+        
+        userBio.contentEditable = 'true';
+        userBio.focus();
+        userBio.classList.add('outline-none', 'bg-blue-50');
+        userBio.classList.remove('text-gray-400', 'italic');
+        userBio.classList.add('text-gray-600');
+        
+        const range = document.createRange();
+        range.selectNodeContents(userBio);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    };
+
+    const saveBio = async () => {
+        if (userBio.contentEditable === 'false') return;
+
+        userBio.contentEditable = 'false';
+        userBio.classList.remove('outline-none', 'bg-blue-50');
+
+        const newBio = userBio.textContent.trim();
+
+        try {
+            const { error } = await supabase
+                .from('cliente')
+                .update({ bio: newBio })
+                .eq('id_cliente', profileData.id_usuario);
+
+            if (error) throw error;
+
+            console.log('[BIO] ✅ Bio atualizada');
+            profileData.bio = newBio;
+            
+            if (newBio === '') {
+                userBio.textContent = 'Adicione uma bio...';
+                userBio.classList.add('text-gray-400', 'italic');
+                userBio.classList.remove('text-gray-600');
+            } else {
+                userBio.classList.remove('text-gray-400', 'italic');
+                userBio.classList.add('text-gray-600');
+            }
+
+            alert('Bio atualizada com sucesso!');
+
+        } catch (error) {
+            console.error('[BIO] Erro ao salvar:', error);
+            userBio.textContent = originalBio || 'Adicione uma bio...';
+            if (!originalBio) {
+                userBio.classList.add('text-gray-400', 'italic');
+                userBio.classList.remove('text-gray-600');
+            }
+            alert('Erro ao salvar bio.');
+        }
+    };
+
+    const cancelEdit = () => {
+        userBio.contentEditable = 'false';
+        userBio.classList.remove('outline-none', 'bg-blue-50');
+        userBio.textContent = originalBio || 'Adicione uma bio...';
+        
+        if (!originalBio) {
+            userBio.classList.add('text-gray-400', 'italic');
+            userBio.classList.remove('text-gray-600');
+        }
+    };
+
+    userBio.addEventListener('click', startEditing);
+    userBio.addEventListener('blur', saveBio);
+    
+    userBio.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            userBio.blur();
+        }
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            cancelEdit();
+        }
+    });
+}
+
+// Função principal de inicialização
+async function initializeProfile() {
+    console.log('[INIT] Inicializando perfil do cliente...');
+    
     const profileData = await loadProfileData();
     if (!profileData) {
-        console.error('[ERRO] Falha ao carregar dados do perfil. Abortando.');
+        console.error('[INIT] Falha ao carregar dados');
         return;
     }
     
-    // 2. Exibir dados na página
     displayProfileData(profileData);
 
-    // 3. Carregar estatísticas
     const stats = await loadStatistics(profileData.id_usuario);
-
-    // 4. Exibir estatísticas
     displayStatistics(stats);
 
-    // Configurar ícones do Lucide
+    setupImageUpload(profileData);
+    setupNameEdit(profileData);
+    setupBioEdit(profileData);
+    
+    // Configurar botão de edição
+    const editButton = document.getElementById('edit-profile-button');
+    if (editButton) {
+        editButton.addEventListener('click', toggleEditMode);
+    }
+
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
 
-    // Configurar outros event listeners (como upload de foto)
-    setupEventListeners(profileData);
+    console.log('[INIT] ✅ Inicialização concluída');
 }
 
-// Função para configurar event listeners
-function setupEventListeners(profileData) {
-    // Configurar upload de foto
-    const fotoInput = document.getElementById('foto-perfil-input');
-    const avatarElement = document.getElementById('carteirinha-avatar');
-
-    if (fotoInput && avatarElement) {
-        fotoInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (!file.type.startsWith('image/')) {
-                alert('Por favor, selecione uma imagem válida.');
-                return;
-            }
-
-            // Mostrar preview imediato
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                avatarElement.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-
-            try {
-                // Fazer upload para o Supabase Storage
-                const fileName = `avatar_${profileData.id_usuario}_${Date.now()}.${file.name.split('.').pop()}`;
-                
-                const { data: uploadData, error: uploadError } = await supabase
-                    .storage
-                    .from('fotos_perfil')
-                    .upload(fileName, file, {
-                        cacheControl: '3600',
-                        upsert: true
-                    });
-
-                if (uploadError) {
-                    console.error('[ERRO] Upload da foto falhou:', uploadError);
-                    alert('Erro ao salvar a foto. Tente novamente.');
-                    displayProfileData(profileData);
-                    return;
-                }
-
-                // Atualizar o nome do arquivo no banco (tabela 'cliente')
-                const { error: dbError } = await supabase
-                    .from('cliente')
-                    .update({ foto_perfil: fileName })
-                    .eq('id_cliente', profileData.id_usuario);
-
-                if (dbError) {
-                    console.error('[ERRO] Ao salvar foto no banco:', dbError);
-                    alert('Erro ao salvar a foto no perfil.');
-                    return;
-                }
-
-                console.log('[DEBUG] Foto de perfil atualizada com sucesso!');
-                alert('Foto atualizada com sucesso!');
-            } catch (error) {
-                console.error('[ERRO] Erro geral no upload:', error);
-                alert('Erro ao processar a foto.');
-            }
-        });
-    }
-}
-
-
-// Iniciar ao carregar o DOM
 document.addEventListener('DOMContentLoaded', initializeProfile);
+
+export { initializeProfile };

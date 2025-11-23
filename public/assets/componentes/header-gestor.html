@@ -1,0 +1,51 @@
+<!-- header-gestor.html -->
+<!-- Salvar em: public/assets/components/header-gestor.html -->
+
+<header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
+    <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
+        <a href="inicioGestor.html" class="flex items-center">
+            <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
+        </a>
+        
+        <div class="flex items-center space-x-6">
+            <a href="inicioGestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+            <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
+            <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
+
+            <a href="configuracoesGestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300">
+                <i data-lucide="settings" class="w-6 h-6"></i>
+            </a>
+
+            <a href="perfilGestor.html" class="hidden md:block">
+                <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+            </a>
+
+            <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-blue-600 transition duration-300">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
+            <a href="inicioGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span>Início</span>
+            </a>
+            <a href="gestaoBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                <span>Gerenciar</span>
+            </a>
+            <a href="cadastroBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                <span>Cadastrar</span>
+            </a>
+            <a href="configuracoesGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <i data-lucide="settings" class="w-5 h-5"></i>
+                <span>Configurações</span>
+            </a>
+            <a href="perfilGestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
+                <i data-lucide="user" class="w-5 h-5"></i>
+                <span>Perfil</span>
+            </a>
+        </div>
+    </nav>
+</header>
