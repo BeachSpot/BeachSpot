@@ -7,3 +7,4 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 // Exporta o cliente Supabase para ser usado em outros arquivos.
 export const supabase = createClient(supabaseUrl, supabaseKey);
+

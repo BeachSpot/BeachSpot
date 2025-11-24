@@ -7,25 +7,183 @@
             display: flex;
             flex-direction: column;
         }
+
         main {
             flex-grow: 1;
         }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
         }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.4);
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.6);
         }
-        
+
         .active-filter {
             background-color: #2563eb !important;
             color: white !important;
+        }
+
+        /* Melhorias para a foto destaque */
+        .barraca-foto-destaque {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Container da foto para manter proporção */
+        .foto-destaque-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 0.75rem;
+        }
+
+        /* Botões de ação melhorados */
+        .btn-action-primary {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.4), 0 8px 10px -6px rgba(14, 165, 233, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-action-primary:hover {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -5px rgba(14, 165, 233, 0.5), 0 10px 15px -6px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-action-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px -3px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-action-secondary {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px -5px rgba(30, 64, 175, 0.4), 0 8px 10px -6px rgba(30, 64, 175, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-action-secondary:hover {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -5px rgba(30, 64, 175, 0.5), 0 10px 15px -6px rgba(30, 64, 175, 0.4);
+        }
+
+        .btn-action-secondary:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px -3px rgba(30, 64, 175, 0.3);
+        }
+
+
+        /* Ícones nos botões */
+        .btn-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-action-primary:hover .btn-icon,
+        .btn-action-secondary:hover .btn-icon {
+            transform: scale(1.1);
+        }
+
+        /* Container dos botões */
+        .actions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        @media (min-width: 640px) {
+            .actions-container {
+                flex-direction: row;
+            }
+        }
+
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
+
+            .barraca-foto-destaque,
+            .foto-destaque-container {
+                height: 220px;
+            }
+
+            .btn-action-primary,
+            .btn-action-secondary {
+                padding: 0.875rem 2rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Garantir que imagens do perfil sejam sempre circulares */
+        .profile-avatar {
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Estado de favorito melhorado */
+        .is-favorited .lucide-heart {
+            fill: #ef4444;
+            color: #ef4444;
+            animation: heartbeat 0.3s ease;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Melhorias no botão de favorito */
+        #favorite-btn {
+            transition: all 0.3s ease;
+        }
+
+        #favorite-btn:hover {
+            transform: scale(1.1);
         }

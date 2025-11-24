@@ -74,8 +74,6 @@
 
     <main class="pt-24 container mx-auto max-w-6xl px-6">
 
-
-
         <section class="text-center py-16 md:py-24">
             <h1 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
                 Encontre seu lugar ao sol
@@ -97,109 +95,47 @@
 
         <div class="space-y-16 mt-8">
 
-            <section>
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-3xl font-bold">Praias Próximas</h2>
-                    <a href="#" class="text-white hover:text-gray-200 font-semibold">Ver todas</a>
+            <!-- Seção de Categorias -->
+            <section id="categorias-section">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold">Categorias</h2>
                 </div>
-                <p class="text-gray-300 mb-6">Com base na sua localização em Salvador, BA</p>
-                <div class="relative praias-swiper-container overflow-hidden px-16">
-                    <div class="swiper-container praias-swiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Porto+da+Barra"
-                                        alt="Imagem da Praia do Porto da Barra" class="w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
-                                        <div>
-                                            <h3 class="text-xl font-bold text-center mb-2">Porto da Barra</h3>
-                                            <p class="text-sm text-gray-600 mb-4 text-center">Águas calmas e
-                                                cristalinas, ideal para famílias e esportes náuticos.</p>
-                                        </div>
-                                        <a href="#"
-                                            class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
-                                            Ver barracas
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Farol+da+Barra"
-                                        alt="Imagem da Praia do Farol da Barra" class="w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
-                                        <div>
-                                            <h3 class="text-xl font-bold text-center mb-2">Farol da Barra</h3>
-                                            <p class="text-sm text-gray-600 mb-4 text-center">Pôr do sol deslumbrante e
-                                                piscinas naturais na maré baixa.</p>
-                                        </div>
-                                        <a href="#"
-                                            class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
-                                            Ver barracas
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Itapuã"
-                                        alt="Imagem da Praia de Itapuã" class="w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
-                                        <div>
-                                            <h3 class="text-xl font-bold text-center mb-2">Itapuã</h3>
-                                            <p class="text-sm text-gray-600 mb-4 text-center">Famosa pela música, com
-                                                coqueiros e um ambiente boêmio.</p>
-                                        </div>
-                                        <a href="#"
-                                            class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
-                                            Ver barracas
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Flamengo"
-                                        alt="Imagem da Praia do Flamengo" class="w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
-                                        <div>
-                                            <h3 class="text-xl font-bold text-center mb-2">Praia do Flamengo</h3>
-                                            <p class="text-sm text-gray-600 mb-4 text-center">Extensa faixa de areia,
-                                                coqueiros e ondas boas para o surf.</p>
-                                        </div>
-                                        <a href="#"
-                                            class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
-                                            Ver barracas
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Stella+Maris"
-                                        alt="Imagem da Praia de Stella Maris" class="w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col justify-between" style="height: 12rem;">
-                                        <div>
-                                            <h3 class="text-xl font-bold text-center mb-2">Stella Maris</h3>
-                                            <p class="text-sm text-gray-600 mb-4 text-center">Resorts de luxo, barracas
-                                                bem estruturadas e mar agitado.</p>
-                                        </div>
-                                        <a href="#"
-                                            class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition">
-                                            Ver barracas
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-button-next"><i data-lucide="chevron-right"></i></div>
-                    <div class="swiper-button-prev"><i data-lucide="chevron-left"></i></div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 text-center">
+                    <button data-categoria="todas"
+                        class="categoria-btn active bg-gradient-to-br from-cyan-500 to-blue-600 p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 hover:from-cyan-400 hover:to-blue-500 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer">
+                        <i data-lucide="grid-3x3" class="w-8 h-8"></i>
+                        <span class="font-semibold text-sm">Todas</span>
+                    </button>
+                    <button data-categoria="familia"
+                        class="categoria-btn bg-white/10 backdrop-blur-sm p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 hover:bg-white/20 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer border border-white/20">
+                        <i data-lucide="users" class="w-8 h-8"></i>
+                        <span class="font-semibold text-sm">Famílias</span>
+                    </button>
+                    <button data-categoria="musica"
+                        class="categoria-btn bg-white/10 backdrop-blur-sm p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 hover:bg-white/20 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer border border-white/20">
+                        <i data-lucide="music" class="w-8 h-8"></i>
+                        <span class="font-semibold text-sm">Música</span>
+                    </button>
+                    <button data-categoria="agitado"
+                        class="categoria-btn bg-white/10 backdrop-blur-sm p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 hover:bg-white/20 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer border border-white/20">
+                        <i data-lucide="party-popper" class="w-8 h-8"></i>
+                        <span class="font-semibold text-sm">Agitado</span>
+                    </button>
+                    <button data-categoria="relax"
+                        class="categoria-btn bg-white/10 backdrop-blur-sm p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 hover:bg-white/20 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer border border-white/20">
+                        <i data-lucide="wind" class="w-8 h-8"></i>
+                        <span class="font-semibold text-sm">Relax</span>
+                    </button>
+                    <button data-categoria="pet"
+                        class="categoria-btn bg-white/10 backdrop-blur-sm p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 hover:bg-white/20 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer border border-white/20">
+                        <i data-lucide="dog" class="w-8 h-8"></i>
+                        <span class="font-semibold text-sm">Pet Friendly</span>
+                    </button>
+                    <button data-categoria="esportes"
+                        class="categoria-btn bg-white/10 backdrop-blur-sm p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 hover:bg-white/20 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer border border-white/20">
+                        <i data-lucide="volleyball" class="w-8 h-8"></i>
+                        <span class="font-semibold text-sm">Esportes</span>
+                    </button>
                 </div>
             </section>
 
@@ -228,106 +164,6 @@
                                         <div class="flex-grow"></div>
                                         <div class="flex justify-between items-center">
                                             <p class="text-lg font-semibold">R$50</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide barraca-card" data-id="recanto-da-onda">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Recanto+da+Onda"
-                                        alt="Imagem da barraca" class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Recanto da Onda</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Música ao vivo e os
-                                            drinks mais tropicais da orla.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$70</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide barraca-card" data-id="mare-alta-lounge">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Maré+Alta"
-                                        alt="Imagem da barraca" class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Maré Alta Lounge</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Espaço VIP com
-                                            conforto e serviço exclusivo.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$65</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide barraca-card" data-id="paraiso-tropical">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Paraíso+Tropical"
-                                        alt="Imagem da barraca" class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Paraíso Tropical</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Ideal para crianças,
-                                            com parquinho e área segura.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$80</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide barraca-card" data-id="cantinho-do-mar">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Cantinho+do+Mar"
-                                        alt="Imagem da barraca" class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Cantinho do Mar</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">O melhor da
-                                            culinária local com vista para o mar.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$55</p>
                                             <a href="infoBarraca.html" title="Mais informações"
                                                 class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
                                                 <i data-lucide="info" class="w-5 h-5"></i>
@@ -401,178 +237,12 @@
 
             <section>
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-bold">Categorias</h2>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 text-center">
-                    <div
-                        class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="users"></i>
-                        <span>Ideal para Famílias</span>
-                    </div>
-                    <div
-                        class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="music"></i>
-                        <span>Música ao Vivo</span>
-                    </div>
-                    <div
-                        class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="party-popper"></i>
-                        <span>Ambiente Agitado</span>
-                    </div>
-                    <div
-                        class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="wind"></i>
-                        <span>Relax & Tranquilo</span>
-                    </div>
-                    <div
-                        class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="dog"></i>
-                        <span>Pet Friendly</span>
-                    </div>
-                    <div
-                        class="bg-white/10 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-white/20 transition-colors cursor-pointer">
-                        <i data-lucide="volleyball"></i>
-                        <span>Esportes</span>
-                    </div>
-                </div>
-            </section>
-
-            <section>
-                <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Mais barracas para você</h2>
                     <a href="#" class="text-white hover:text-gray-200 font-semibold">Ver todas</a>
                 </div>
                 <div class="relative mais-barracas-swiper-container overflow-hidden px-16">
                     <div class="swiper-container mais-barracas-swiper">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide barraca-card" data-id="onda-azul">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Onda+Azul"
-                                        alt="Imagem da barraca Onda Azul" class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Onda Azul</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Petiscos frescos e
-                                            cerveja sempre gelada.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$45</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide barraca-card" data-id="coqueiro-verde">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Coqueiro+Verde"
-                                        alt="Imagem da barraca Coqueiro Verde"
-                                        class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Coqueiro Verde</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Sombra e
-                                            tranquilidade para toda a família.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$60</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide barraca-card" data-id="sol-a-pino">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Sol+a+Pino"
-                                        alt="Imagem da barraca Sol a Pino" class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Sol a Pino</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Agito e música boa
-                                            de frente para o mar.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$75</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide barraca-card" data-id="areia-dourada">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/73bff6/FFFFFF?text=Areia+Dourada"
-                                        alt="Imagem da barraca Areia Dourada"
-                                        class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Areia Dourada</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Porções generosas e
-                                            ambiente descontraído.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$50</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide barraca-card" data-id="pier-do-sabor">
-                                <div
-                                    class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full">
-                                    <button
-                                        class="btn-favorite absolute top-3 right-3 bg-black/30 p-2 rounded-full text-white hover:text-red-500 transition-colors z-10"
-                                        title="Favoritar">
-                                        <i data-lucide="heart" class="w-5 h-5"></i>
-                                    </button>
-                                    <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Pier+do+Sabor"
-                                        alt="Imagem da barraca Pier do Sabor"
-                                        class="barraca-img w-full h-40 object-cover">
-                                    <div class="p-4 flex flex-col" style="height: 10rem;">
-                                        <h3 class="barraca-title text-xl font-bold text-center">Pier do Sabor</h3>
-                                        <p class="barraca-desc text-sm text-gray-600 my-2 truncate">Especialidade em
-                                            moquecas e frutos do mar.</p>
-                                        <div class="flex-grow"></div>
-                                        <div class="flex justify-between items-center">
-                                            <p class="text-lg font-semibold">R$85</p>
-                                            <a href="infoBarraca.html" title="Mais informações"
-                                                class="bg-[#1985d4]/90 hover:bg-[#1985d4] text-white p-2 rounded-full transition-colors">
-                                                <i data-lucide="info" class="w-5 h-5"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="swiper-button-next"><i data-lucide="chevron-right"></i></div>
@@ -622,7 +292,6 @@
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
-    <!-- REMOVA O SCRIPT INLINE E O inicio.js ANTIGO, ADICIONE ESTES: -->
     <script type="module" src="../assets/js/supabaseClient.js"></script>
     <script type="module" src="../assets/js/inicio.js"></script>
 </body>

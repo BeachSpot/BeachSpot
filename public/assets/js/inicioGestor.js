@@ -6,6 +6,29 @@ console.log('[inicioGestor] Script carregado');
 /**
  * Classe para gerenciar a página inicial do gestor
  */
+
+function showNotification(message, type = 'default') {
+    const notification = document.getElementById('notification');
+    if (!notification) return;
+
+    // Remove classes anteriores
+    notification.classList.remove('error', 'success');
+    
+    // Adiciona classe se for erro ou sucesso
+    if (type === 'error') {
+        notification.classList.add('error');
+    } else if (type === 'success') {
+        notification.classList.add('success');
+    }
+
+    notification.textContent = message;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
 class InicioGestorManager {
     constructor() {
         this.idGestor = null;
@@ -25,7 +48,7 @@ class InicioGestorManager {
             this.userData = await getUserProfile();
 
             if (!this.userData) {
-                alert('Erro ao carregar dados do usuário.');
+                showNotification('Erro ao carregar dados do usuário.');
                 window.location.href = '../entrar.html';
                 return;
             }
@@ -40,15 +63,26 @@ class InicioGestorManager {
             this.idGestor = this.userData.id_usuario;
             console.log('[InicioGestor] Gestor ID:', this.idGestor);
 
+            // Dentro do método init() da classe, após definir this.idGestor
+            const { data: gestor } = await supabase
+                .from('gestor')
+                .select('nome, foto_perfil, avatar_url')
+                .eq('id_gestor', this.idGestor)
+                .single();
+
+            if (gestor) {
+                updateHeaderAvatar(gestor);
+            }
             // Atualizar nome do gestor no header
             this.updateGestorName();
 
+            updateHeaderAvatar(this.userData);
             // Carregar barracas
             await this.loadBarracas();
 
         } catch (error) {
             console.error('[InicioGestor] Erro na inicialização:', error);
-            alert('Erro ao carregar a página. Tente novamente.');
+            showNotification('Erro ao carregar a página. Tente novamente.');
         }
     }
 
@@ -113,7 +147,7 @@ class InicioGestorManager {
 
         } catch (error) {
             console.error('[InicioGestor] Erro ao carregar barracas:', error);
-            alert('Erro ao carregar suas barracas.');
+            showNotification('Erro ao carregar suas barracas.');
         }
     }
 
@@ -226,12 +260,43 @@ class InicioGestorManager {
     }
 }
 
+function updateHeaderAvatar(profileData) {
+    const headerAvatar = document.getElementById('header-avatar');
+
+    if (!headerAvatar || !profileData) return;
+
+    let fotoUrl = profileData.foto_perfil || profileData.avatar_url;
+
+    if (fotoUrl && !fotoUrl.startsWith('http')) {
+        const { data } = supabase
+            .storage
+            .from('media')
+            .getPublicUrl(fotoUrl);
+        fotoUrl = data?.publicUrl;
+    }
+
+    if (!fotoUrl) {
+        const iniciais = profileData.nome
+            .split(' ')
+            .filter(w => w.length > 0)
+            .map(w => w[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+
+        fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+    }
+
+    headerAvatar.src = fotoUrl;
+}
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[inicioGestor] DOM carregado');
 
     // Inicializar ícones do Lucide
     lucide.createIcons();
+
 
     // Menu mobile
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');

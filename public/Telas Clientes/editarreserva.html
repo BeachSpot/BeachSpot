@@ -349,7 +349,7 @@
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
                 <a href="perfilCliente.html" class="hidden md:block">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente"
+                    <img id="header-avatar" src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente"
                         class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
 
@@ -420,12 +420,24 @@
                         <label for="reservationDuration">Duração Estimada</label>
                         <div class="input-wrapper">
                             <select id="reservationDuration" class="form-input" required>
-                                <option value="2">2 horas</option>
-                                <option value="3">3 horas</option>
-                                <option value="4" selected>4 horas</option>
-                                <option value="5">5 horas</option>
-                                <option value="6">6 horas</option>
-                                <option value="8">Dia todo (8 horas)</option>
+                                <optgroup label="Menos de 2 horas">
+                                    <option value="0.5">30 minutos</option>
+                                    <option value="0.75">45 minutos</option>
+                                    <option value="1">1 hora</option>
+                                    <option value="1.5">1h 30min</option>
+                                </optgroup>
+                                <optgroup label="2 a 4 horas">
+                                    <option value="2">2 horas</option>
+                                    <option value="2.5">2h 30min</option>
+                                    <option value="3">3 horas</option>
+                                    <option value="3.5">3h 30min</option>
+                                    <option value="4" selected>4 horas</option>
+                                </optgroup>
+                                <optgroup label="Mais de 4 horas">
+                                    <option value="5">5 horas</option>
+                                    <option value="6">6 horas</option>
+                                    <option value="8">Dia todo (8h)</option>
+                                </optgroup>
                             </select>
                             <i data-lucide="timer" class="lucide"></i>
                         </div>

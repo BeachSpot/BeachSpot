@@ -1,4 +1,6 @@
+
 import { supabase } from './supabaseClient.js';
+import { favoritesManager } from './favoritesManager.js';
 import { LocationManager } from './locationManager.js';
 import { WeatherManager } from './weatherManager.js';
 
@@ -14,13 +16,13 @@ class InfoBarracaManager {
         this.weatherManager = null;
         this.currentRating = 0;
         this.userReview = null;
+        this.gestorEmail = null;
     }
 
     async init() {
         try {
             console.log('[InfoBarraca] Inicializando...');
 
-            // Pegar ID da barraca da URL
             const urlParams = new URLSearchParams(window.location.search);
             this.idBarraca = urlParams.get('id');
 
@@ -32,23 +34,80 @@ class InfoBarracaManager {
 
             console.log('[InfoBarraca] ID da barraca:', this.idBarraca);
 
-            // Carregar dados
+            // Carregar foto do perfil do usuário no header
+            await this.loadUserProfilePhoto();
+
             await this.loadBarracaData();
             await this.loadPromocoes();
             await this.loadProdutos();
             await this.loadAvaliacoes();
 
-            // Inicializar funcionalidades
             this.initFavorites();
             this.initTabs();
             this.initGalleryModal();
             this.initReviewSystem();
             this.initLocationManager();
             this.initWeatherManager();
+            this.initContatoModal();
 
         } catch (error) {
             console.error('[InfoBarraca] Erro na inicialização:', error);
             alert('Erro ao carregar informações da barraca.');
+        }
+    }
+
+    async loadUserProfilePhoto() {
+        try {
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+            if (sessionError || !session) {
+                console.log('[InfoBarraca] Usuário não autenticado');
+                return;
+            }
+
+            const userId = session.user.id;
+
+            const { data: cliente, error: clienteError } = await supabase
+                .from('cliente')
+                .select('nome, foto_perfil, avatar_url')
+                .eq('id_cliente', userId)
+                .maybeSingle();
+
+            const headerAvatar = document.getElementById('header-avatar');
+            if (!headerAvatar) return;
+
+            let fotoUrl = null;
+
+            if (cliente?.foto_perfil) {
+                if (cliente.foto_perfil.startsWith('http')) {
+                    fotoUrl = cliente.foto_perfil;
+                } else {
+                    const { data } = supabase
+                        .storage
+                        .from('media')
+                        .getPublicUrl(cliente.foto_perfil);
+
+                    fotoUrl = data?.publicUrl;
+                }
+            }
+
+            if (!fotoUrl) {
+                const nome = cliente?.nome || session.user.email?.split('@')[0] || 'C';
+                const iniciais = nome
+                    .split(' ')
+                    .filter(word => word.length > 0)
+                    .map(word => word[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+                fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+            }
+
+            headerAvatar.src = fotoUrl;
+            console.log('[InfoBarraca] ✅ Foto do perfil carregada no header');
+
+        } catch (error) {
+            console.error('[InfoBarraca] Erro ao carregar foto do perfil:', error);
         }
     }
 
@@ -68,7 +127,6 @@ class InfoBarracaManager {
             this.barracaData = barraca;
             console.log('[InfoBarraca] Dados carregados:', barraca);
 
-            // Atualizar UI
             await this.updateBarracaInfo();
 
         } catch (error) {
@@ -81,11 +139,10 @@ class InfoBarracaManager {
     async updateBarracaInfo() {
         const barraca = this.barracaData;
 
-        // Nome da barraca
         const titleElement = document.querySelector('h1');
         if (titleElement) titleElement.textContent = barraca.nome_barraca;
 
-        // Foto de destaque
+        // Foto destaque com tamanho fixo
         const mainImage = document.querySelector('section img[alt*="Barraca"]');
         if (mainImage) {
             if (barraca.foto_destaque) {
@@ -95,31 +152,31 @@ class InfoBarracaManager {
             mainImage.onerror = () => {
                 mainImage.src = `https://placehold.co/400x300/0138b4/FFFFFF?text=${encodeURIComponent(barraca.nome_barraca)}`;
             };
+
+            // Aplicar estilos para tamanho fixo e object-fit
+            mainImage.style.width = '100%';
+            mainImage.style.height = '300px';
+            mainImage.style.objectFit = 'cover';
         }
 
-        // Localização
         const locationText = document.getElementById('location-text');
         if (locationText && barraca.localizacao) {
             locationText.textContent = barraca.localizacao;
         }
 
-        // Descrição
         const descriptionContainer = document.querySelector('#tab-content-geral .space-y-4');
         if (descriptionContainer && barraca.descricao_barraca) {
             descriptionContainer.innerHTML = `<p>${barraca.descricao_barraca}</p>`;
         }
 
-        // Características
         if (barraca.caracteristicas && Array.isArray(barraca.caracteristicas) && barraca.caracteristicas.length > 0) {
             this.updateCategorias(barraca.caracteristicas);
         }
 
-        // Galeria de fotos
         if (barraca.galeria_urls && Array.isArray(barraca.galeria_urls) && barraca.galeria_urls.length > 0) {
             this.updateGallery(barraca.galeria_urls);
         }
 
-        // Horário de funcionamento
         const horarioInfo = document.querySelector('#tab-content-geral .border-t');
         if (horarioInfo && barraca.horario_func) {
             const horarioSection = document.createElement('div');
@@ -135,7 +192,6 @@ class InfoBarracaManager {
             horarioInfo.parentNode.insertBefore(horarioSection, horarioInfo.nextSibling);
         }
 
-        // Preço médio
         const precoContainer = document.querySelector('.flex.items-center.justify-start.mt-2');
         if (precoContainer && barraca.preco_medio) {
             const precoFormatado = barraca.preco_medio.toLocaleString('pt-BR', {
@@ -150,12 +206,10 @@ class InfoBarracaManager {
             precoContainer.style.display = 'none';
         }
 
-        // Calcular ocupação com reservas confirmadas
         if (barraca.capacidade_mesas) {
             await this.calcularOcupacao(barraca.capacidade_mesas);
         }
 
-        // Atualizar links
         const reservarBtn = document.getElementById('reserve-btn');
         if (reservarBtn) {
             reservarBtn.href = `reservar.html?id=${this.idBarraca}`;
@@ -170,11 +224,36 @@ class InfoBarracaManager {
                 cardapioLink.href = `cardapio.html?id=${this.idBarraca}`;
             }
         }
+
+        // Carregar email do gestor para contato
+        if (barraca.id_gestor) {
+            this.loadGestorEmail(barraca.id_gestor);
+        }
+    }
+
+    async loadGestorEmail(gestorId) {
+        try {
+            const { data: usuario, error } = await supabase
+                .from('usuarios')
+                .select('email')
+                .eq('id_usuario', gestorId)
+                .single();
+
+            if (error || !usuario) {
+                console.warn('[InfoBarraca] Email do gestor não encontrado');
+                return;
+            }
+
+            this.gestorEmail = usuario.email;
+            console.log('[InfoBarraca] Email do gestor carregado');
+
+        } catch (error) {
+            console.error('[InfoBarraca] Erro ao carregar email do gestor:', error);
+        }
     }
 
     async calcularOcupacao(capacidadeMesas) {
         try {
-            // Buscar apenas reservas confirmadas para hoje
             const hoje = new Date().toISOString().split('T')[0];
 
             const { data: reservas, error } = await supabase
@@ -189,12 +268,10 @@ class InfoBarracaManager {
                 return;
             }
 
-            // Calcular número de mesas ocupadas (assumindo 4 pessoas por mesa)
             const pessoasReservadas = reservas?.reduce((sum, r) => sum + (r.num_pessoas || 0), 0) || 0;
             const mesasOcupadas = Math.ceil(pessoasReservadas / 4);
             const percentual = Math.round((mesasOcupadas / capacidadeMesas) * 100);
 
-            // Determinar status e cor
             let status = 'Disponível';
             let colorClass = 'text-green-600';
             if (percentual >= 90) {
@@ -205,7 +282,6 @@ class InfoBarracaManager {
                 colorClass = 'text-yellow-600';
             }
 
-            // Formatar data de hoje
             const dataHoje = new Date();
             const dataFormatada = dataHoje.toLocaleDateString('pt-BR', {
                 day: '2-digit',
@@ -213,7 +289,6 @@ class InfoBarracaManager {
                 year: 'numeric'
             });
 
-            // Adicionar card de ocupação
             const ocupacaoHTML = `
                 <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <div class="flex items-center justify-between mb-1">
@@ -233,7 +308,6 @@ class InfoBarracaManager {
                 </div>
             `;
 
-            // Inserir após a seção de preço ou no local apropriado
             const targetSection = document.querySelector('#tab-content-geral .space-y-4');
             if (targetSection) {
                 targetSection.insertAdjacentHTML('beforeend', ocupacaoHTML);
@@ -281,12 +355,12 @@ class InfoBarracaManager {
         const gallery = document.getElementById('gallery');
         if (!gallery) return;
 
-        gallery.innerHTML = urls.map(url => `
-            <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
+        gallery.innerHTML = urls.map((url, index) => `
+            <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden bg-gray-100">
                 <img src="${url}" 
-                     alt="Foto da barraca" 
-                     class="hover:scale-105 transition-transform duration-300"
-                     onerror="this.src='https://placehold.co/600x400/0138b4/FFFFFF?text=Foto'">
+                     alt="Foto ${index + 1} da barraca" 
+                     class="hover:scale-105 transition-transform duration-300 w-full h-full object-cover"
+                     onerror="this.onerror=null; this.src='https://placehold.co/600x400/0138b4/FFFFFF?text=Foto+${index + 1}'; this.classList.add('opacity-75');">
             </div>
         `).join('');
     }
@@ -368,62 +442,19 @@ class InfoBarracaManager {
             const { data: avaliacoes, error } = await supabase
                 .from('avaliacoes')
                 .select('*')
-                .eq('id_barraca', this.idBarraca)
-                .order('data_avaliacao', { ascending: false });
+                .eq('id_barraca', this.idBarraca);
 
             if (error) {
-                if (error.code === '42P01') {
-                    console.warn('[InfoBarraca] Tabela avaliacoes não existe. Usando dados de exemplo.');
-                    this.renderAvaliacoes([]);
-                    return;
-                }
-                throw error;
+                console.error('[InfoBarraca] Erro ao carregar avaliações:', error);
+                this.renderAvaliacoes([]);
+                return;
             }
 
             if (avaliacoes && avaliacoes.length > 0) {
-                const userIds = [...new Set(avaliacoes.map(av => av.id_usuario))];
-
-                const { data: clientes } = await supabase
-                    .from('cliente')
-                    .select('id_cliente, nome')
-                    .in('id_cliente', userIds);
-
-                const { data: gestores } = await supabase
-                    .from('gestor')
-                    .select('id_gestor, nome')
-                    .in('id_gestor', userIds);
-
-                const { data: usuarios } = await supabase
-                    .from('usuarios')
-                    .select('id_usuario, email')
-                    .in('id_usuario', userIds);
-
-                const avaliacoesComUsuarios = avaliacoes.map(av => {
-                    let nome = 'Usuário';
-
-                    const cliente = clientes?.find(c => c.id_cliente === av.id_usuario);
-                    if (cliente?.nome) {
-                        nome = cliente.nome;
-                    } else {
-                        const gestor = gestores?.find(g => g.id_gestor === av.id_usuario);
-                        if (gestor?.nome) {
-                            nome = gestor.nome;
-                        } else {
-                            const usuario = usuarios?.find(u => u.id_usuario === av.id_usuario);
-                            if (usuario?.email) {
-                                nome = usuario.email.split('@')[0];
-                            }
-                        }
-                    }
-
-                    return {
-                        ...av,
-                        usuario_nome: nome
-                    };
-                });
-
-                this.renderAvaliacoes(avaliacoesComUsuarios);
+                console.log('[InfoBarraca] Avaliações encontradas:', avaliacoes.length);
+                this.renderAvaliacoes(avaliacoes);
             } else {
+                console.log('[InfoBarraca] Nenhuma avaliação encontrada');
                 this.renderAvaliacoes([]);
             }
 
@@ -432,22 +463,16 @@ class InfoBarracaManager {
             this.renderAvaliacoes([]);
         }
     }
-
     renderAvaliacoes(avaliacoes) {
-        const reviewsList = document.getElementById('reviews-list');
-        if (!reviewsList) return;
-
         const reviewSummaryText = document.getElementById('review-summary-text');
         const reviewSummaryStars = document.querySelector('#review-summary .flex');
 
         if (avaliacoes.length === 0) {
-            reviewsList.innerHTML = `
-                <div class="text-center py-8 text-gray-500">
-                    <p>Ainda não há avaliações para esta barraca.</p>
-                    <p class="text-sm mt-2">Seja o primeiro a avaliar!</p>
-                </div>
-            `;
             if (reviewSummaryText) reviewSummaryText.textContent = '(0 avaliações)';
+            if (reviewSummaryStars) {
+                const stars = [...reviewSummaryStars.children];
+                stars.forEach(star => star.classList.remove('fill-current'));
+            }
             return;
         }
 
@@ -470,46 +495,56 @@ class InfoBarracaManager {
             });
         }
 
-        reviewsList.innerHTML = avaliacoes.map(av => {
-            const userName = av.usuario_nome || 'Usuário';
-            const userInitial = userName.charAt(0).toUpperCase();
-
-            // Criar HTML das estrelas com preenchimento correto
-            let starsHTML = '';
-            for (let i = 1; i <= 5; i++) {
-                if (i <= av.nota) {
-                    starsHTML += `<i data-lucide="star" class="w-4 h-4 text-yellow-500" fill="currentColor"></i>`;
-                } else {
-                    starsHTML += `<i data-lucide="star" class="w-4 h-4 text-gray-300"></i>`;
-                }
+        // Distribuição de estrelas
+        const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        avaliacoes.forEach(av => {
+            if (distribution[av.nota] !== undefined) {
+                distribution[av.nota]++;
             }
+        });
 
-            const dataFormatada = av.data_avaliacao
-                ? new Date(av.data_avaliacao).toLocaleDateString('pt-BR', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                })
-                : '';
+        const reviewsList = document.getElementById('reviews-list');
+        if (!reviewsList) return;
 
-            return `
-                <div class="review-card p-4 border rounded-lg bg-gray-50" data-rating="${av.nota}">
-                    <div class="flex items-center mb-2">
-                        <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=${userInitial}" 
-                             class="w-10 h-10 rounded-full mr-3" 
-                             alt="Foto de ${userName}">
-                        <div class="flex-1">
-                            <p class="font-bold text-gray-800">${userName}</p>
-                            <div class="flex gap-1 mt-1">${starsHTML}</div>
-                        </div>
+        reviewsList.innerHTML = `
+        <div class="space-y-4">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200">
+                <div class="text-center mb-6">
+                    <div class="text-5xl font-bold text-blue-600 mb-2">${avgRating.toFixed(1)}</div>
+                    <div class="flex justify-center gap-1 mb-2">
+                        ${[1, 2, 3, 4, 5].map(i => `
+                            <i data-lucide="star" class="w-6 h-6 text-yellow-500 ${i <= Math.round(avgRating) ? 'fill-current' : ''}"></i>
+                        `).join('')}
                     </div>
-                    <p class="text-gray-600">${av.comentario}</p>
-                    ${dataFormatada ? `<p class="text-xs text-gray-400 mt-2">${dataFormatada}</p>` : ''}
+                    <p class="text-gray-600 font-semibold">${avaliacoes.length} ${avaliacoes.length === 1 ? 'avaliação' : 'avaliações'}</p>
                 </div>
-            `;
-        }).join('');
 
-        // Re-inicializar os ícones do Lucide
+                <div class="space-y-2">
+                    ${[5, 4, 3, 2, 1].map(stars => {
+            const count = distribution[stars];
+            const percentage = avaliacoes.length > 0 ? (count / avaliacoes.length) * 100 : 0;
+            return `
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-gray-700 w-12">${stars} ${stars === 1 ? 'estrela' : 'estrelas'}</span>
+                                <div class="flex-1 bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-yellow-500 h-2.5 rounded-full transition-all" style="width: ${percentage}%"></div>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-600 w-8">${count}</span>
+                            </div>
+                        `;
+        }).join('')}
+                </div>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <p class="text-sm text-gray-700 text-center">
+                    <i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i>
+                    As avaliações ajudam outros clientes a conhecerem melhor esta barraca
+                </p>
+            </div>
+        </div>
+    `;
+
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
@@ -519,36 +554,26 @@ class InfoBarracaManager {
         const favoriteBtn = document.getElementById('favorite-btn');
         if (!favoriteBtn) return;
 
-        const storageKey = 'beachspotFavorites';
+        const wrapper = document.createElement('div');
+        wrapper.dataset.barracaId = this.idBarraca;
+        wrapper.style.display = 'inline-block';
 
-        const favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
-        const isFavorited = favorites.some(fav => fav.barracaId == this.idBarraca);
+        favoriteBtn.parentNode.insertBefore(wrapper, favoriteBtn);
+        wrapper.appendChild(favoriteBtn);
 
+        favoriteBtn.classList.add('btn-favorite');
+
+        const isFavorited = favoritesManager.isFavorited(this.idBarraca);
         if (isFavorited) {
             favoriteBtn.classList.add('is-favorited');
         }
 
-        favoriteBtn.addEventListener('click', () => {
-            const favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
-            const index = favorites.findIndex(fav => fav.barracaId == this.idBarraca);
-
-            if (index > -1) {
-                favorites.splice(index, 1);
-                favoriteBtn.classList.remove('is-favorited');
-                this.showToast('Removido dos favoritos.');
-            } else {
-                favorites.push({
-                    id: `barraca-${this.idBarraca}`,
-                    barracaId: this.idBarraca,
-                    title: this.barracaData.nome_barraca,
-                    description: this.barracaData.descricao_barraca,
-                    image: this.barracaData.foto_destaque
-                });
+        favoritesManager.initFavoriteButtons('', (barracaId, isFavorited) => {
+            if (isFavorited) {
                 favoriteBtn.classList.add('is-favorited');
-                this.showToast('Adicionado aos favoritos!');
+            } else {
+                favoriteBtn.classList.remove('is-favorited');
             }
-
-            localStorage.setItem(storageKey, JSON.stringify(favorites));
         });
     }
 
@@ -600,11 +625,9 @@ class InfoBarracaManager {
     initReviewSystem() {
         const ratingStarsContainer = document.getElementById('rating-stars');
         const submitReviewBtn = document.getElementById('submit-review-btn');
-        const reviewTextarea = document.getElementById('review-textarea');
 
-        if (!ratingStarsContainer || !submitReviewBtn || !reviewTextarea) return;
+        if (!ratingStarsContainer || !submitReviewBtn) return;
 
-        // Função para atualizar as estrelas visualmente
         const updateStars = (rating) => {
             const stars = ratingStarsContainer.querySelectorAll('[data-lucide="star"]');
             stars.forEach((star, index) => {
@@ -612,18 +635,15 @@ class InfoBarracaManager {
                 if (starValue <= rating) {
                     star.classList.remove('text-gray-300');
                     star.classList.add('text-yellow-400');
-                    // Adicionar preenchimento
                     star.setAttribute('fill', 'currentColor');
                 } else {
                     star.classList.remove('text-yellow-400');
                     star.classList.add('text-gray-300');
-                    // Remover preenchimento
                     star.setAttribute('fill', 'none');
                 }
             });
         };
 
-        // Hover nas estrelas
         ratingStarsContainer.addEventListener('mouseover', (e) => {
             if (e.target.hasAttribute('data-value')) {
                 const starValue = parseInt(e.target.dataset.value);
@@ -631,12 +651,10 @@ class InfoBarracaManager {
             }
         });
 
-        // Sair do hover
         ratingStarsContainer.addEventListener('mouseout', () => {
             updateStars(this.currentRating);
         });
 
-        // Clicar na estrela
         ratingStarsContainer.addEventListener('click', (e) => {
             if (e.target.hasAttribute('data-value')) {
                 this.currentRating = parseInt(e.target.dataset.value);
@@ -645,35 +663,21 @@ class InfoBarracaManager {
             }
         });
 
-        // Enviar avaliação
         submitReviewBtn.addEventListener('click', async () => {
-            console.log('[ReviewSystem] Tentando enviar avaliação...');
-            console.log('[ReviewSystem] Nota atual:', this.currentRating);
-            console.log('[ReviewSystem] Comentário:', reviewTextarea.value.trim());
-
             if (this.currentRating === 0) {
-                this.showToast('Por favor, selecione uma nota.');
-                return;
-            }
-            if (reviewTextarea.value.trim() === '') {
-                this.showToast('Por favor, escreva um comentário.');
+                favoritesManager.showToast('Por favor, selecione uma nota.');
                 return;
             }
 
             try {
-                // Verificar autenticação
                 const { data: { user }, error: authError } = await supabase.auth.getUser();
 
                 if (authError || !user) {
-                    console.log('[ReviewSystem] Usuário não autenticado');
-                    this.showToast('Você precisa estar logado para avaliar.');
-                    setTimeout(() => window.location.href = 'login.html', 1500);
+                    favoritesManager.showToast('Você precisa estar logado para avaliar.');
+                    setTimeout(() => window.location.href = '../entrar.html', 1500);
                     return;
                 }
 
-                console.log('[ReviewSystem] Usuário autenticado:', user.id);
-
-                // Verificar se já avaliou
                 const { data: avaliacaoExistente } = await supabase
                     .from('avaliacoes')
                     .select('id_avaliacao')
@@ -682,99 +686,130 @@ class InfoBarracaManager {
                     .single();
 
                 if (avaliacaoExistente) {
-                    this.showToast('Você já avaliou esta barraca.');
+                    favoritesManager.showToast('Você já avaliou esta barraca.');
                     return;
                 }
 
-                // Inserir avaliação
                 const { data: novaAvaliacao, error: insertError } = await supabase
                     .from('avaliacoes')
                     .insert({
                         id_barraca: parseInt(this.idBarraca),
                         id_usuario: user.id,
-                        nota: this.currentRating,
-                        comentario: reviewTextarea.value.trim()
+                        nota: this.currentRating
                     })
                     .select()
                     .single();
 
-                if (insertError) {
-                    console.error('[ReviewSystem] Erro ao inserir:', insertError);
-                    throw insertError;
-                }
+                if (insertError) throw insertError;
 
-                console.log('[ReviewSystem] Avaliação inserida com sucesso:', novaAvaliacao);
+                favoritesManager.showToast('Avaliação enviada com sucesso!');
 
-                this.showToast('Avaliação enviada com sucesso!');
-
-                // Limpar formulário
                 this.currentRating = 0;
                 updateStars(0);
-                reviewTextarea.value = '';
 
-                // Recarregar avaliações
                 await this.loadAvaliacoes();
 
             } catch (error) {
                 console.error('[ReviewSystem] Erro:', error);
-                this.showToast('Erro ao enviar avaliação: ' + error.message);
+                favoritesManager.showToast('Erro ao enviar avaliação: ' + error.message);
             }
         });
-
-        // Sistema de filtros
-        const filterAllBtn = document.getElementById('filter-all');
-        const filterMediaBtn = document.getElementById('filter-media');
-
-        if (filterAllBtn) {
-            filterAllBtn.addEventListener('click', () => {
-                const allReviews = document.querySelectorAll('#reviews-list .review-card');
-                allReviews.forEach(review => review.style.display = 'block');
-                filterAllBtn.classList.add('bg-blue-500', 'text-white');
-                filterAllBtn.classList.remove('bg-gray-200', 'text-gray-800');
-                if (filterMediaBtn) {
-                    filterMediaBtn.classList.remove('bg-blue-500', 'text-white');
-                    filterMediaBtn.classList.add('bg-gray-200', 'text-gray-800');
-                }
-            });
-        }
-
-        if (filterMediaBtn) {
-            filterMediaBtn.addEventListener('click', () => {
-                const allReviews = document.querySelectorAll('#reviews-list .review-card');
-                allReviews.forEach(review => {
-                    review.style.display = review.classList.contains('has-media') ? 'block' : 'none';
-                });
-                filterMediaBtn.classList.add('bg-blue-500', 'text-white');
-                filterMediaBtn.classList.remove('bg-gray-200', 'text-gray-800');
-                if (filterAllBtn) {
-                    filterAllBtn.classList.remove('bg-blue-500', 'text-white');
-                    filterAllBtn.classList.add('bg-gray-200', 'text-gray-800');
-                }
-            });
-        }
     }
 
     initLocationManager() {
-        // Inicializar o gerenciador de localização
         this.locationManager = new LocationManager(this.barracaData);
         this.locationManager.init();
     }
 
     async initWeatherManager() {
-        // Inicializar o gerenciador de clima
         this.weatherManager = new WeatherManager(this.barracaData);
         await this.weatherManager.init();
     }
+    // Substituir a função initContatoModal() no infoBarraca.js
+    // Substituir a função initContatoModal() no infoBarraca.js
 
-    showToast(message) {
-        const toast = document.getElementById('toast');
-        if (!toast) return;
+    initContatoModal() {
+        const btnContato = document.getElementById('btn-contato-gestor');
+        const contatoModal = document.getElementById('contato-modal');
+        const contatoModalClose = document.getElementById('contato-modal-close');
 
-        toast.textContent = message;
-        toast.classList.remove('opacity-0', 'translate-y-3');
-        setTimeout(() => {
-            toast.classList.add('opacity-0', 'translate-y-3');
-        }, 3000);
+        if (!btnContato || !contatoModal) return;
+
+        // Abrir modal
+        btnContato.addEventListener('click', () => {
+            if (!this.gestorEmail) {
+                alert('Não foi possível carregar as informações de contato do gestor.');
+                return;
+            }
+
+            // Preencher o modal com informações simples
+            const modalContent = contatoModal.querySelector('.p-6');
+            modalContent.innerHTML = `
+            <div class="text-center space-y-6">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                    <i data-lucide="mail" class="w-10 h-10 text-blue-600"></i>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Entre em Contato</h3>
+                    <p class="text-gray-600">Para falar com o gestor de <strong>${this.barracaData.nome_barraca}</strong>, envie um email para:</p>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                    <p class="text-xl font-semibold text-blue-600 break-all">${this.gestorEmail}</p>
+                </div>
+
+                <button id="copy-email-btn"
+                        class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold flex items-center justify-center gap-2">
+                    <i data-lucide="copy" class="w-5 h-5"></i>
+                    <span>Copiar Email</span>
+                </button>
+            </div>
+        `;
+
+            contatoModal.classList.remove('hidden');
+
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // Adicionar funcionalidade de copiar
+            const copyBtn = document.getElementById('copy-email-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(this.gestorEmail).then(() => {
+                        copyBtn.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i><span>Email Copiado!</span>';
+                        copyBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        copyBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+
+                        lucide.createIcons();
+
+                        setTimeout(() => {
+                            copyBtn.innerHTML = '<i data-lucide="copy" class="w-5 h-5"></i><span>Copiar Email</span>';
+                            copyBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                            copyBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                            lucide.createIcons();
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Erro ao copiar:', err);
+                        alert('Não foi possível copiar o email.');
+                    });
+                });
+            }
+        });
+
+        // Fechar modal
+        const closeModal = () => {
+            contatoModal.classList.add('hidden');
+        };
+
+        if (contatoModalClose) {
+            contatoModalClose.addEventListener('click', closeModal);
+        }
+
+        contatoModal.addEventListener('click', (e) => {
+            if (e.target === contatoModal) closeModal();
+        });
     }
 }
 
@@ -782,10 +817,8 @@ class InfoBarracaManager {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[infoBarraca] DOM carregado');
 
-    // Inicializar ícones
     lucide.createIcons();
 
-    // Menu mobile
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -804,7 +837,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Inicializar gerenciador
     const manager = new InfoBarracaManager();
     await manager.init();
 });
+
+export default InfoBarracaManager;

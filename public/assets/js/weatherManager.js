@@ -26,14 +26,14 @@ export class WeatherManager {
         }
 
         await this.loadWeatherData();
-        this.initWeatherToggle();
+        // Removido: this.initWeatherToggle();
     }
 
     /**
      * Busca dados meteorológicos da API
      */
     async loadWeatherData() {
-        const url = `https://api.weatherapi.com/v1/forecast.json?key=${this.apiKey}&q=${this.coords.lat},${this.coords.lng}&days=3&lang=pt`;
+        const url = `https://api.weatherapi.com/v1/current.json?key=${this.apiKey}&q=${this.coords.lat},${this.coords.lng}&lang=pt`;
 
         try {
             const response = await fetch(url);
@@ -42,7 +42,6 @@ export class WeatherManager {
             const data = await response.json();
             
             this.renderCurrentWeather(data.current);
-            this.renderForecast(data.forecast.forecastday);
 
         } catch (error) {
             console.error('[WeatherManager] Erro ao buscar dados:', error);
@@ -73,58 +72,11 @@ export class WeatherManager {
     }
 
     /**
-     * Renderiza a previsão dos próximos dias
-     */
-    renderForecast(forecastDays) {
-        const forecastContainer = document.getElementById('forecast-container');
-        if (!forecastContainer) return;
-
-        forecastContainer.innerHTML = forecastDays.map(day => {
-            const date = new Date(day.date + 'T00:00:00');
-            const dayName = date.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3);
-            const dayNameCapitalized = dayName.charAt(0).toUpperCase() + dayName.slice(1);
-
-            return `
-                <div class="flex flex-col items-center space-y-1">
-                    <p class="font-semibold text-sm">${dayNameCapitalized}</p>
-                    <img src="https:${day.day.condition.icon}" 
-                         alt="${day.day.condition.text}"
-                         class="w-8 h-8">
-                    <p class="text-sm">
-                        <span class="font-bold">${Math.round(day.day.maxtemp_c)}°</span>
-                        <span>${Math.round(day.day.mintemp_c)}°</span>
-                    </p>
-                </div>
-            `;
-        }).join('');
-    }
-
-    /**
-     * Inicializa o toggle para expandir/recolher a previsão
-     */
-    initWeatherToggle() {
-        const weatherSection = document.getElementById('weather-section');
-        const forecastContainer = document.getElementById('forecast-container');
-        const weatherChevron = document.getElementById('weather-chevron');
-
-        if (!weatherSection || !forecastContainer || !weatherChevron) {
-            console.warn('[WeatherManager] Elementos de toggle não encontrados');
-            return;
-        }
-
-        weatherSection.addEventListener('click', () => {
-            forecastContainer.classList.toggle('hidden');
-            weatherChevron.classList.toggle('rotate-180');
-        });
-    }
-
-    /**
      * Exibe mensagem de erro
      */
     showError() {
         const conditionElement = document.getElementById('weather-condition');
         const tempElement = document.getElementById('weather-temp');
-        const forecastContainer = document.getElementById('forecast-container');
 
         if (conditionElement) {
             conditionElement.textContent = 'Erro ao carregar clima';
@@ -132,10 +84,6 @@ export class WeatherManager {
 
         if (tempElement) {
             tempElement.textContent = '--°C';
-        }
-
-        if (forecastContainer) {
-            forecastContainer.innerHTML = '<p class="text-sm text-red-500 w-full">Não foi possível carregar a previsão.</p>';
         }
     }
 

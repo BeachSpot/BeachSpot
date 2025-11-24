@@ -4,6 +4,28 @@ console.log('[PERFIL GESTOR] Módulo carregado');
 
 let isEditMode = false;
 
+function showNotification(message, type = 'default') {
+    const notification = document.getElementById('notification');
+    if (!notification) return;
+
+    // Remove classes anteriores
+    notification.classList.remove('error', 'success');
+    
+    // Adiciona classe se for erro ou sucesso
+    if (type === 'error') {
+        notification.classList.add('error');
+    } else if (type === 'success') {
+        notification.classList.add('success');
+    }
+
+    notification.textContent = message;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
 // Função para carregar dados do perfil
 async function loadProfileData() {
     try {
@@ -69,45 +91,69 @@ async function loadProfileData() {
     }
 }
 
-// Função para carregar estatísticas
+// Função para carregar estatísticas - CORRIGIDA
 async function loadStatistics(userId) {
     try {
-        console.log('[STATS] Carregando estatísticas...');
+        console.log('[STATS] Carregando estatísticas do gestor:', userId);
 
         let barracasCount = 0;
-        let avaliacaoMedia = 0;
+        let avaliacaoMediaGeral = 0;
 
-        try {
-            const { count, error } = await supabase
-                .from('barracas')
-                .select('*', { count: 'exact', head: true })
-                .eq('id_gestor', userId);
+        // 1. Buscar todas as barracas do gestor
+        const { data: barracas, error: barracasError } = await supabase
+            .from('barracas')
+            .select('id_barraca')
+            .eq('id_gestor', userId);
 
-            if (!error) {
-                barracasCount = count || 0;
+        if (barracasError) {
+            console.error('[STATS] Erro ao buscar barracas:', barracasError);
+            return { barracasCount: 0, avaliacaoMedia: 0 };
+        }
 
-                if (barracasCount > 0) {
-                    const { data: barracas, error: barracasError } = await supabase
-                        .from('barracas')
-                        .select('avaliacao_media')
-                        .eq('id_gestor', userId);
+        barracasCount = barracas?.length || 0;
+        console.log('[STATS] Barracas encontradas:', barracasCount);
 
-                    if (!barracasError && barracas && barracas.length > 0) {
-                        const somaAvaliacoes = barracas.reduce((acc, b) => acc + (b.avaliacao_media || 0), 0);
-                        avaliacaoMedia = barracasCount > 0 ? (somaAvaliacoes / barracasCount).toFixed(1) : 0;
-                    }
-                }
-            }
-        } catch (err) {
-            console.warn('[STATS] Tabela barracas não existe');
+        if (barracasCount === 0) {
+            console.log('[STATS] Gestor não possui barracas');
+            return { barracasCount: 0, avaliacaoMedia: 0 };
+        }
+
+        // 2. Buscar TODAS as avaliações de TODAS as barracas do gestor
+        const idsBarracas = barracas.map(b => b.id_barraca);
+        console.log('[STATS] IDs das barracas:', idsBarracas);
+
+        const { data: avaliacoes, error: avaliacoesError } = await supabase
+            .from('avaliacoes')
+            .select('nota, id_barraca')
+            .in('id_barraca', idsBarracas);
+
+        if (avaliacoesError) {
+            console.error('[STATS] Erro ao buscar avaliações:', avaliacoesError);
+            return { barracasCount, avaliacaoMedia: 0 };
+        }
+
+        console.log('[STATS] Avaliações encontradas:', avaliacoes?.length || 0);
+
+        // 3. Calcular média GERAL de todas as avaliações
+        if (avaliacoes && avaliacoes.length > 0) {
+            const somaNotas = avaliacoes.reduce((acc, av) => acc + (av.nota || 0), 0);
+            avaliacaoMediaGeral = (somaNotas / avaliacoes.length).toFixed(1);
+            
+            console.log('[STATS] Cálculo:', {
+                totalAvaliacoes: avaliacoes.length,
+                somaNotas,
+                media: avaliacaoMediaGeral
+            });
+        } else {
+            console.log('[STATS] Nenhuma avaliação encontrada');
         }
 
         const stats = {
             barracasCount: barracasCount,
-            avaliacaoMedia: avaliacaoMedia
+            avaliacaoMedia: avaliacaoMediaGeral
         };
 
-        console.log('[STATS] ✅ Estatísticas:', stats);
+        console.log('[STATS] ✅ Estatísticas calculadas:', stats);
         return stats;
 
     } catch (error) {
@@ -191,18 +237,29 @@ function displayProfileData(profileData) {
     console.log('[DISPLAY] ✅ Dados exibidos');
 }
 
-// Função para exibir estatísticas
+// Função para exibir estatísticas - CORRIGIDA
 function displayStatistics(stats) {
     if (!stats) return;
+
+    console.log('[DISPLAY] Exibindo estatísticas:', stats);
 
     const statsContainer = document.querySelector('.border-t.border-gray-200.mt-auto.pt-6');
     if (statsContainer) {
         const statsValues = statsContainer.querySelectorAll('.font-bold.text-3xl');
         if (statsValues.length >= 2) {
             // Primeiro valor: Avaliação média
-            statsValues[0].textContent = `${stats.avaliacaoMedia || '0.0'} ★`;
+            const avaliacaoTexto = stats.avaliacaoMedia > 0 
+                ? `${stats.avaliacaoMedia} ★` 
+                : '0.0 ★';
+            statsValues[0].textContent = avaliacaoTexto;
+            
             // Segundo valor: Quantidade de barracas
             statsValues[1].textContent = stats.barracasCount || 0;
+            
+            console.log('[DISPLAY] Stats atualizadas:', {
+                avaliacao: avaliacaoTexto,
+                barracas: stats.barracasCount
+            });
         }
     }
 
@@ -308,12 +365,12 @@ function setupImageUpload(profileData) {
         if (!file) return;
 
         if (!file.type.startsWith('image/')) {
-            alert('Por favor, selecione uma imagem válida.');
+            showNotification('Por favor, selecione uma imagem válida.');
             return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            alert('A imagem deve ter no máximo 5MB.');
+            showNotification('A imagem deve ter no máximo 5MB.');
             return;
         }
 
@@ -347,9 +404,9 @@ function setupImageUpload(profileData) {
                 console.error('[ERRO] Upload falhou:', uploadError);
                 
                 if (uploadError.message.includes('Bucket not found')) {
-                    alert(`O bucket "${BUCKET_NAME}" não existe no Supabase Storage. Por favor, verifique a configuração.`);
+                    showNotificationt(`O bucket "${BUCKET_NAME}" não existe no Supabase Storage. Por favor, verifique a configuração.`);
                 } else {
-                    alert('Erro ao salvar a foto. Tente novamente.');
+                    showNotification('Erro ao salvar a foto. Tente novamente.');
                 }
                 
                 displayProfileData(profileData);
@@ -364,7 +421,7 @@ function setupImageUpload(profileData) {
 
             if (!urlData || !urlData.publicUrl) {
                 console.error('[ERRO] Não foi possível obter URL pública');
-                alert('Erro ao processar a foto.');
+                showNotification('Erro ao processar a foto.');
                 return;
             }
 
@@ -382,18 +439,18 @@ function setupImageUpload(profileData) {
 
             if (dbError) {
                 console.error('[ERRO] Atualizar banco:', dbError);
-                alert('Erro ao atualizar perfil.');
+                showNotification('Erro ao atualizar perfil.');
                 return;
             }
 
             console.log('[UPLOAD] ✅ Foto atualizada com sucesso!');
             profileData.foto_perfil = fileName;
             profileData.avatar_url = publicUrl;
-            alert('Foto atualizada com sucesso!');
+            showNotification('Foto atualizada com sucesso!');
 
         } catch (error) {
             console.error('[ERRO] Upload geral:', error);
-            alert('Erro ao processar a foto.');
+            showNotification('Erro ao processar a foto.');
             displayProfileData(profileData);
         }
     });
@@ -432,13 +489,13 @@ function setupNameEdit(profileData) {
 
         if (newName === '') {
             userName.textContent = originalName;
-            alert('O nome não pode estar vazio.');
+            showNotification('O nome não pode estar vazio.');
             return;
         }
 
         if (newName.length < 2) {
             userName.textContent = originalName;
-            alert('O nome deve ter pelo menos 2 caracteres.');
+            showNotification('O nome deve ter pelo menos 2 caracteres.');
             return;
         }
 
@@ -469,12 +526,12 @@ function setupNameEdit(profileData) {
                 avatar.src = `https://placehold.co/160x224/0138b4/FFFFFF?text=${iniciais}`;
             }
 
-            alert('Nome atualizado com sucesso!');
+            showNotification('Nome atualizado com sucesso!');
 
         } catch (error) {
             console.error('[NOME] Erro ao salvar:', error);
             userName.textContent = originalName;
-            alert('Erro ao salvar nome.');
+            showNotification('Erro ao salvar nome.');
         }
     };
 
@@ -558,7 +615,7 @@ function setupBioEdit(profileData) {
                 userBio.classList.add('text-gray-600');
             }
 
-            alert('Bio atualizada com sucesso!');
+            showNotification('Bio atualizada com sucesso!');
 
         } catch (error) {
             console.error('[BIO] Erro ao salvar:', error);
@@ -567,7 +624,7 @@ function setupBioEdit(profileData) {
                 userBio.classList.add('text-gray-400', 'italic');
                 userBio.classList.remove('text-gray-600');
             }
-            alert('Erro ao salvar bio.');
+            showNotification('Erro ao salvar bio.');
         }
     };
 
@@ -603,7 +660,7 @@ async function handleLogout() {
         const { error } = await supabase.auth.signOut();
         if (error) {
             console.error('[ERRO] Logout:', error);
-            alert('Não foi possível sair.');
+            showNotification('Não foi possível sair.');
             return;
         }
         window.location.href = '../entrar.html';

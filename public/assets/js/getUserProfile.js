@@ -109,6 +109,8 @@ export async function checkAuthentication(redirectUrl = '../entrar.html') {
     }
 }
 
+
+
 /**
  * Atualiza os dados do perfil do usuário
  * Atualiza tanto na tabela usuarios quanto na tabela gestor/cliente

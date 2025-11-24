@@ -5,6 +5,29 @@ console.log('[cadastroCardapio] Script Unificado Carregado');
 /**
  * Função para fazer upload da imagem do produto
  */
+
+function showNotification(message, type = 'default') {
+    const notification = document.getElementById('notification');
+    if (!notification) return;
+
+    // Remove classes anteriores
+    notification.classList.remove('error', 'success');
+    
+    // Adiciona classe se for erro ou sucesso
+    if (type === 'error') {
+        notification.classList.add('error');
+    } else if (type === 'success') {
+        notification.classList.add('success');
+    }
+
+    notification.textContent = message;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
 async function uploadImagemProduto(file, id_gestor, id_barraca) {
     if (!file) return null;
 
@@ -46,7 +69,7 @@ class CardapioManager {
         this.editingItemId = null;
         this.itemToDelete = null;
         this.cardapioType = null; // 'custom' ou 'link'
-        
+
         this.initElements();
         this.initEventListeners();
     }
@@ -58,34 +81,34 @@ class CardapioManager {
         this.optionLink = document.getElementById('option-link');
         this.linkSection = document.getElementById('link-section');
         this.customCardapioSection = document.getElementById('custom-cardapio-section');
-        
+
         // Formulário de link
         this.linkForm = document.getElementById('link-form');
         this.linkCardapioInput = document.getElementById('link-cardapio');
         this.cancelLinkBtn = document.getElementById('cancel-link-btn');
         this.changeTypeBtn = document.getElementById('change-type-btn');
-        
+
         // Formulário de produtos
         this.itemForm = document.getElementById('item-form');
         this.formTitle = document.getElementById('form-title');
         this.submitButton = document.getElementById('submit-button');
         this.editingItemIdInput = document.getElementById('editing-item-id');
-        
+
         // Inputs do formulário
         this.nomeInput = document.getElementById('nome-produto');
         this.valorInput = document.getElementById('valor-produto');
         this.categoriaInput = document.getElementById('categoria-produto');
         this.imagemInput = document.getElementById('imagem-produto');
         this.fileNameSpan = document.getElementById('file-name');
-        
+
         // Listas de produtos
         this.itemsList = document.getElementById('items-list');
-        
+
         // Modal de exclusão
         this.deleteModal = document.getElementById('delete-modal');
         this.cancelDeleteBtn = document.getElementById('cancel-delete');
         this.confirmDeleteBtn = document.getElementById('confirm-delete');
-        
+
         // Loading
         this.loadingOverlay = document.getElementById('loading-overlay');
     }
@@ -95,7 +118,7 @@ class CardapioManager {
         if (this.optionCustom) {
             this.optionCustom.addEventListener('click', () => this.selectCardapioType('custom'));
         }
-        
+
         if (this.optionLink) {
             this.optionLink.addEventListener('click', () => this.selectCardapioType('link'));
         }
@@ -151,7 +174,7 @@ class CardapioManager {
         if (this.cancelDeleteBtn) {
             this.cancelDeleteBtn.addEventListener('click', () => this.closeDeleteModal());
         }
-        
+
         if (this.confirmDeleteBtn) {
             this.confirmDeleteBtn.addEventListener('click', () => this.confirmDelete());
         }
@@ -166,7 +189,7 @@ class CardapioManager {
             const { data: { user }, error: authError } = await supabase.auth.getUser();
 
             if (authError || !user) {
-                alert('Você precisa estar logado para gerenciar o cardápio.');
+                showNotification('Você precisa estar logado para gerenciar o cardápio.');
                 window.location.href = '../entrar.html';
                 return;
             }
@@ -174,11 +197,22 @@ class CardapioManager {
             this.idGestor = user.id;
             console.log('[CardapioManager] Gestor ID:', this.idGestor);
 
+            // Dentro do método init() da classe, após definir this.idGestor
+            const { data: gestor } = await supabase
+                .from('gestor')
+                .select('nome, foto_perfil, avatar_url')
+                .eq('id_gestor', this.idGestor)
+                .single();
+
+            if (gestor) {
+                updateHeaderAvatar(gestor);
+            }
+
             // Buscar ID da barraca
             const achouBarraca = await this.buscarBarracaDoGestor();
-            
+
             if (!achouBarraca) {
-                alert('Nenhuma barraca encontrada. Cadastre sua barraca primeiro.');
+                showNotification('Nenhuma barraca encontrada. Cadastre sua barraca primeiro.');
                 window.location.href = 'cadastroBarraca.html';
                 return;
             }
@@ -190,7 +224,7 @@ class CardapioManager {
 
         } catch (error) {
             console.error('[CardapioManager] Erro na inicialização:', error);
-            alert('Erro ao inicializar. Tente novamente.');
+            showNotification('Erro ao inicializar. Tente novamente.');
         } finally {
             this.showLoading(false);
         }
@@ -217,14 +251,14 @@ class CardapioManager {
 
             this.idBarraca = data.id_barraca;
             console.log(`[CardapioManager] Cardápio da barraca: ${data.nome_barraca} (ID: ${this.idBarraca})`);
-            
+
             // Guardar link se existir
             if (data.link_cardapio) {
                 this.existingLink = data.link_cardapio;
             }
-            
+
             this.atualizarTituloPagina(data.nome_barraca);
-            
+
             return true;
 
         } catch (err) {
@@ -235,7 +269,7 @@ class CardapioManager {
 
     atualizarTituloPagina(nomeBarraca) {
         const pageTitle = document.querySelector('main h1');
-        
+
         if (pageTitle) {
             pageTitle.textContent = `Cardápio - ${nomeBarraca}`;
         }
@@ -342,9 +376,9 @@ class CardapioManager {
         e.preventDefault();
 
         const link = this.linkCardapioInput?.value;
-        
+
         if (!link) {
-            alert('Por favor, insira um link válido.');
+            showNotification('Por favor, insira um link válido.');
             return;
         }
 
@@ -360,13 +394,13 @@ class CardapioManager {
             if (error) throw error;
 
             console.log('[handleLinkSubmit] Link salvo com sucesso');
-            alert('Link do cardápio salvo com sucesso!');
-            
+            showNotification('Link do cardápio salvo com sucesso!');
+
             this.existingLink = link;
 
         } catch (error) {
             console.error('[handleLinkSubmit] Erro:', error);
-            alert(`Erro ao salvar link: ${error.message}`);
+            showNotification(`Erro ao salvar link: ${error.message}`);
         } finally {
             this.showLoading(false);
         }
@@ -377,7 +411,7 @@ class CardapioManager {
         const hasLink = this.existingLink;
 
         let confirmMessage = '';
-        
+
         if (hasProducts) {
             confirmMessage = 'Você tem produtos cadastrados. Se trocar para link externo, eles serão removidos. Deseja continuar?';
         } else if (hasLink) {
@@ -403,7 +437,7 @@ class CardapioManager {
                 this.produtos = [];
                 this.cardapioType = 'link';
                 this.showLinkSection();
-                
+
             } else if (this.cardapioType === 'link') {
                 // Trocar de link para custom - remover link
                 const { error: updateError } = await supabase
@@ -417,17 +451,17 @@ class CardapioManager {
                 if (this.linkCardapioInput) {
                     this.linkCardapioInput.value = '';
                 }
-                
+
                 this.cardapioType = 'custom';
                 this.showCustomSection();
                 await this.loadProdutos();
             }
 
-            alert('Tipo de cardápio alterado com sucesso!');
+            showNotification('Tipo de cardápio alterado com sucesso!');
 
         } catch (error) {
             console.error('[confirmChangeType] Erro:', error);
-            alert(`Erro ao trocar tipo de cardápio: ${error.message}`);
+            showNotification(`Erro ao trocar tipo de cardápio: ${error.message}`);
         } finally {
             this.showLoading(false);
         }
@@ -492,7 +526,7 @@ class CardapioManager {
     addProdutoToDOM(produto) {
         const categoria = (produto.categoria || 'outros').toLowerCase();
         const list = document.getElementById(`${categoria}-list`);
-        
+
         if (!list) {
             const otherList = document.getElementById('outros-list');
             if (otherList) {
@@ -507,11 +541,11 @@ class CardapioManager {
 
     renderItemInList(list, produto) {
         const img = produto.imagem_url || 'https://placehold.co/80x80/cccccc/444444?text=P';
-        
+
         const div = document.createElement('div');
         div.className = 'flex items-center bg-gray-50 p-3 rounded-lg border border-gray-100 mb-3';
         div.setAttribute('data-id', produto.id_produto);
-        
+
         div.innerHTML = `
             <img src="${img}" 
                  alt="${produto.nome_produto}" 
@@ -532,7 +566,7 @@ class CardapioManager {
         `;
 
         list.appendChild(div);
-        
+
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
@@ -542,13 +576,13 @@ class CardapioManager {
         e.preventDefault();
 
         if (!this.idBarraca) {
-            alert('Barraca não identificada. Recarregue a página.');
+            showNotification('Barraca não identificada. Recarregue a página.');
             return;
         }
 
         const submitBtn = this.submitButton;
         const originalText = submitBtn ? submitBtn.innerHTML : '';
-        
+
         if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span>Salvando...</span>';
@@ -592,10 +626,10 @@ class CardapioManager {
 
         } catch (error) {
             console.error('[handleSubmit] Erro:', error);
-            alert(`Erro ao salvar produto: ${error.message}`);
+            showNotification(`Erro ao salvar produto: ${error.message}`);
         } finally {
             this.showLoading(false);
-            
+
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
@@ -615,7 +649,7 @@ class CardapioManager {
         if (error) throw error;
 
         console.log('[createProduto] Produto criado:', data);
-        alert('Produto adicionado com sucesso!');
+        showNotification('Produto adicionado com sucesso!');
     }
 
     async updateProduto(id, produtoData) {
@@ -631,16 +665,16 @@ class CardapioManager {
         if (error) throw error;
 
         console.log('[updateProduto] Produto atualizado:', data);
-        alert('Produto atualizado com sucesso!');
+        showNotification('Produto atualizado com sucesso!');
     }
 
     handleEdit(editBtn) {
         const itemElement = editBtn.closest('[data-id]');
         if (!itemElement) return;
-        
+
         const itemId = itemElement.dataset.id;
         const produto = this.produtos.find(p => p.id_produto == itemId);
-        
+
         if (!produto) return;
 
         if (this.nomeInput) this.nomeInput.value = produto.nome_produto;
@@ -651,17 +685,17 @@ class CardapioManager {
         if (this.formTitle) {
             this.formTitle.textContent = 'Editar Item';
         }
-        
+
         if (this.submitButton) {
             this.submitButton.innerHTML = '<i data-lucide="save" class="w-5 h-5"></i><span>Salvar Alteração</span>';
             this.submitButton.classList.remove('bg-green-600', 'hover:bg-green-700');
             this.submitButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
         }
-        
+
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
-        
+
         if (this.itemForm) {
             this.itemForm.scrollIntoView({ behavior: 'smooth' });
         }
@@ -670,9 +704,9 @@ class CardapioManager {
     handleDelete(deleteBtn) {
         const itemElement = deleteBtn.closest('[data-id]');
         if (!itemElement) return;
-        
+
         this.itemToDelete = itemElement;
-        
+
         if (this.deleteModal) {
             this.deleteModal.classList.remove('hidden');
         }
@@ -703,13 +737,13 @@ class CardapioManager {
             if (error) throw error;
 
             console.log('[confirmDelete] Produto deletado');
-            alert('Produto removido com sucesso!');
+            showNotification('Produto removido com sucesso!');
 
             await this.loadProdutos();
 
         } catch (error) {
             console.error('[confirmDelete] Erro:', error);
-            alert(`Erro ao deletar produto: ${error.message}`);
+            showNotification(`Erro ao deletar produto: ${error.message}`);
         } finally {
             this.showLoading(false);
             this.closeDeleteModal();
@@ -720,25 +754,25 @@ class CardapioManager {
         if (this.itemForm) {
             this.itemForm.reset();
         }
-        
+
         if (this.editingItemIdInput) {
             this.editingItemIdInput.value = '';
         }
-        
+
         if (this.fileNameSpan) {
             this.fileNameSpan.textContent = '';
         }
-        
+
         if (this.formTitle) {
             this.formTitle.textContent = 'Adicionar Novo Item';
         }
-        
+
         if (this.submitButton) {
             this.submitButton.innerHTML = '<i data-lucide="plus-circle" class="w-5 h-5"></i><span>Adicionar Item</span>';
             this.submitButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
             this.submitButton.classList.add('bg-green-600', 'hover:bg-green-700');
         }
-        
+
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
@@ -751,15 +785,15 @@ class CardapioManager {
         tabs.forEach(item => {
             item.classList.remove('active');
         });
-        
+
         if (tab) {
             tab.classList.add('active');
         }
-        
+
         tabContents.forEach(content => {
             content.style.display = 'none';
         });
-        
+
         const targetTabId = tab?.dataset?.tab;
         if (targetTabId) {
             const targetContent = document.getElementById(targetTabId);
@@ -776,12 +810,12 @@ class CardapioManager {
     updateNoItemsMessage(category) {
         const list = document.getElementById(`${category}-list`);
         if (!list) return;
-        
+
         const tabContent = document.getElementById(category);
         if (!tabContent) return;
-        
+
         let message = tabContent.querySelector('.no-items-message');
-        
+
         if (list.children.length === 0) {
             if (message) {
                 message.style.display = 'block';
@@ -798,6 +832,36 @@ class CardapioManager {
             this.loadingOverlay.style.display = show ? 'flex' : 'none';
         }
     }
+}
+
+function updateHeaderAvatar(profileData) {
+    const headerAvatar = document.getElementById('header-avatar');
+
+    if (!headerAvatar || !profileData) return;
+
+    let fotoUrl = profileData.foto_perfil || profileData.avatar_url;
+
+    if (fotoUrl && !fotoUrl.startsWith('http')) {
+        const { data } = supabase
+            .storage
+            .from('media')
+            .getPublicUrl(fotoUrl);
+        fotoUrl = data?.publicUrl;
+    }
+
+    if (!fotoUrl) {
+        const iniciais = profileData.nome
+            .split(' ')
+            .filter(w => w.length > 0)
+            .map(w => w[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+
+        fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+    }
+
+    headerAvatar.src = fotoUrl;
 }
 
 // Inicialização

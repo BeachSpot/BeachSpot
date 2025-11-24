@@ -3,6 +3,27 @@ import { checkAuthentication } from './getUserProfile.js';
 
 console.log('[cadastroBarraca] Script Unificado Carregado');
 
+function showNotification(message, type = 'default') {
+    const notification = document.getElementById('notification');
+    if (!notification) return;
+
+    // Remove classes anteriores
+    notification.classList.remove('error', 'success');
+    
+    // Adiciona classe se for erro ou sucesso
+    if (type === 'error') {
+        notification.classList.add('error');
+    } else if (type === 'success') {
+        notification.classList.add('success');
+    }
+
+    notification.textContent = message;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
 /**
  * Função auxiliar para fazer upload de um arquivo para o Supabase Storage.
  * @param {File} file - O arquivo a ser enviado.
@@ -26,11 +47,11 @@ async function uploadArquivo(file, id_gestor, tipo) {
 
     if (uploadError) {
         console.error(`[uploadArquivo] Erro ao enviar arquivo (${tipo}):`, uploadError);
-        
+
         if (uploadError.message.includes('Bucket not found')) {
             throw new Error(`O bucket "${BUCKET_NAME}" não existe no Supabase Storage. Por favor, crie o bucket primeiro.`);
         }
-        
+
         throw new Error(`Falha no upload do arquivo: ${file.name} - ${uploadError.message}`);
     }
 
@@ -56,17 +77,18 @@ class CadastroBarracaManager {
         this.idBarraca = null;
         this.isEditMode = false;
         this.barracaData = null;
-        
+
         this.initElements();
         this.init();
     }
+
 
     initElements() {
         this.form = document.getElementById('formCadastroBarraca');
         this.submitButton = this.form?.querySelector('button[type="submit"]');
         this.pageTitle = document.querySelector('section h1');
         this.pageSubtitle = document.querySelector('section p');
-        
+
         this.nomeInput = document.getElementById('nome-barraca');
         this.enderecoInput = document.getElementById('endereco');
         this.descricaoInput = document.getElementById('descricao');
@@ -77,7 +99,7 @@ class CadastroBarracaManager {
         this.abreFeriadosInput = document.getElementById('abre-feriados');
         this.imagemDestaqueInput = document.getElementById('imagem-destaque');
         this.galeriaFotosInput = document.getElementById('galeria-fotos');
-        
+
         this.previewDestaque = document.getElementById('preview-destaque');
         this.previewGaleria = document.getElementById('preview-galeria');
     }
@@ -93,7 +115,7 @@ class CadastroBarracaManager {
             }
 
             const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-            
+
             if (sessionError || !session || !session.user) {
                 console.error('[CadastroBarraca] Erro ao obter sessão:', sessionError);
                 window.location.href = '../entrar.html';
@@ -102,6 +124,16 @@ class CadastroBarracaManager {
 
             this.idGestor = session.user.id;
             console.log('[CadastroBarraca] Gestor autenticado:', this.idGestor);
+
+            const { data: gestor } = await supabase
+                .from('gestor')
+                .select('nome, foto_perfil, avatar_url')
+                .eq('id_gestor', this.idGestor)
+                .single();
+
+            if (gestor) {
+                updateHeaderAvatar(gestor);
+            }
 
             const urlParams = new URLSearchParams(window.location.search);
             const barracaId = urlParams.get('id');
@@ -116,13 +148,14 @@ class CadastroBarracaManager {
                 this.isEditMode = false;
             }
 
+
             console.log('[CadastroBarraca] Configurando event listeners...');
             this.setupEventListeners();
             console.log('[CadastroBarraca] Inicialização concluída com sucesso!');
 
         } catch (error) {
             console.error('[CadastroBarraca] Erro na inicialização:', error);
-            alert(`Erro ao inicializar: ${error.message}`);
+            showNotification(`Erro ao inicializar: ${error.message}`);
         }
     }
 
@@ -151,7 +184,7 @@ class CadastroBarracaManager {
 
         } catch (error) {
             console.error('[CadastroBarraca] Erro ao carregar barraca:', error);
-            alert('Erro ao carregar dados da barraca.');
+            showNotification('Erro ao carregar dados da barraca.');
             window.location.href = './inicioGestor.html';
         }
     }
@@ -226,7 +259,7 @@ class CadastroBarracaManager {
                     <p class="text-xs text-blue-600">💡 Selecione novas imagens para adicionar ou clique no X para remover</p>
                 </div>
             `;
-            
+
             window.removeGalleryImage = (index) => {
                 if (confirm('Deseja remover esta imagem da galeria?')) {
                     this.barracaData.galeria_urls.splice(index, 1);
@@ -242,11 +275,11 @@ class CadastroBarracaManager {
         if (this.pageTitle) {
             this.pageTitle.textContent = 'Editar Barraca';
         }
-        
+
         if (this.pageSubtitle) {
             this.pageSubtitle.textContent = `Atualize as informações da sua barraca ${this.barracaData?.nome_barraca || ''}`;
         }
-        
+
         if (this.submitButton) {
             this.submitButton.textContent = 'Salvar Alterações';
         }
@@ -280,19 +313,248 @@ class CadastroBarracaManager {
         const coordenadasInfo = document.getElementById('coordenadas-info');
         const coordsDisplay = document.getElementById('coords-display');
         const selectedCoordsText = document.getElementById('selected-coords');
-        
+
+        const searchLocationInput = document.getElementById('search-location-input');
+        const searchLocationBtn = document.getElementById('search-location-btn');
+        const searchResults = document.getElementById('search-results');
+
         const latitudeInput = document.getElementById('latitude');
         const longitudeInput = document.getElementById('longitude');
 
         let locationMap = null;
         let currentMarker = null;
         let selectedCoords = null;
+        let searchDebounceTimer = null;
 
-        const defaultCoords = { lng: -38.5108, lat: -12.9714 };
+        const defaultCoords = { lng: -38.5108, lat: -12.9714 }; // Salvador, Bahia
+
+        // 🏖️ FUNÇÃO DE PESQUISA OTIMIZADA PARA PRAIAS DA BAHIA
+        const searchLocation = async (query) => {
+            try {
+                searchLocationBtn.disabled = true;
+                searchLocationBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Buscando...';
+                lucide.createIcons();
+
+                const searchQuery = `${query}, Bahia, Brazil`;
+
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?` +
+                    `format=json&` +
+                    `q=${encodeURIComponent(searchQuery)}&` +
+                    `limit=10&` +
+                    `addressdetails=1&` +
+                    `countrycodes=br&` +
+                    `dedupe=1&` +
+                    `viewbox=-46.0,-10.0,-37.0,-15.0&` +
+                    `bounded=1`,
+                    {
+                        headers: {
+                            'Accept-Language': 'pt-BR,pt;q=0.9'
+                        }
+                    }
+                );
+
+                if (!response.ok) throw new Error('Erro na pesquisa');
+
+                let results = await response.json();
+
+                // Filtra resultados da Bahia
+                results = results.filter(result => {
+                    const address = result.address || {};
+                    const state = address.state || '';
+                    return state.toLowerCase().includes('bahia') || state.toLowerCase().includes('ba');
+                });
+
+                // Prioriza praias
+                results.sort((a, b) => {
+                    const aIsBeach = a.type === 'beach' || a.class === 'natural' ||
+                        a.display_name.toLowerCase().includes('praia');
+                    const bIsBeach = b.type === 'beach' || b.class === 'natural' ||
+                        b.display_name.toLowerCase().includes('praia');
+
+                    if (aIsBeach && !bIsBeach) return -1;
+                    if (!aIsBeach && bIsBeach) return 1;
+                    return 0;
+                });
+
+                results = results.slice(0, 8);
+
+                if (results.length === 0) {
+                    searchResults.innerHTML = `
+                        <div class="p-4 text-center">
+                            <i data-lucide="search-x" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
+                            <p class="text-sm text-gray-600 font-medium">Nenhuma praia encontrada na Bahia</p>
+                            <p class="text-xs text-gray-500 mt-1">Tente: "Porto da Barra", "Praia do Forte", "Morro de São Paulo"</p>
+                            <div class="mt-3 text-left bg-blue-50 rounded-lg p-3">
+                                <p class="text-xs font-semibold text-blue-800 mb-1">💡 Sugestões de praias populares:</p>
+                                <ul class="text-xs text-blue-700 space-y-1">
+                                    <li>• Praia do Porto da Barra (Salvador)</li>
+                                    <li>• Praia do Forte</li>
+                                    <li>• Morro de São Paulo</li>
+                                    <li>• Praia de Itapuã (Salvador)</li>
+                                    <li>• Praia de Stella Maris (Salvador)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    searchResults.classList.remove('hidden');
+                    return;
+                }
+
+                searchResults.innerHTML = results.map((result) => {
+                    const address = result.address || {};
+                    const locationParts = [];
+
+                    if (address.road) locationParts.push(address.road);
+                    if (address.suburb || address.neighbourhood) locationParts.push(address.suburb || address.neighbourhood);
+                    if (address.city || address.town || address.village) locationParts.push(address.city || address.town || address.village);
+
+                    const locationDesc = locationParts.length > 0 ? locationParts.join(', ') : result.display_name;
+
+                    const isBeach = result.type === 'beach' || result.class === 'natural' ||
+                        result.display_name.toLowerCase().includes('praia');
+
+                    let icon = 'map-pin';
+                    let badge = '';
+
+                    if (isBeach) {
+                        icon = 'waves';
+                        badge = '<span class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded font-semibold"> Praia</span>';
+                    } else if (result.type === 'restaurant' || result.type === 'cafe') {
+                        icon = 'utensils';
+                        badge = '<span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">Restaurante</span>';
+                    } else if (result.type === 'city' || result.type === 'town') {
+                        icon = 'building';
+                        badge = '<span class="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">Cidade</span>';
+                    }
+
+                    return `
+                        <button type="button" 
+                            onclick="window.selectSearchResult(${result.lat}, ${result.lon}, '${locationDesc.replace(/'/g, "\\'")}')" 
+                            class="w-full text-left p-3 hover:bg-blue-50 border-b last:border-b-0 transition group ${isBeach ? 'bg-blue-50/30' : ''}">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="${icon}" class="w-5 h-5 ${isBeach ? 'text-blue-600' : 'text-gray-600'} flex-shrink-0 mt-0.5"></i>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-semibold text-gray-800 group-hover:text-blue-600 transition truncate">
+                                        ${result.name || locationDesc}
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">${locationDesc}</p>
+                                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                        ${badge}
+                                        <span class="text-xs text-gray-400">
+                                             ${parseFloat(result.lat).toFixed(4)}, ${parseFloat(result.lon).toFixed(4)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    `;
+                }).join('');
+
+                lucide.createIcons();
+                searchResults.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('[MapSearch] Erro ao pesquisar:', error);
+                searchResults.innerHTML = `
+                    <div class="p-4 text-center">
+                        <i data-lucide="alert-circle" class="w-8 h-8 text-red-400 mx-auto mb-2"></i>
+                        <p class="text-sm text-red-600 font-medium">Erro ao buscar localização</p>
+                        <p class="text-xs text-gray-500 mt-1">Verifique sua conexão e tente novamente</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                searchResults.classList.remove('hidden');
+            } finally {
+                searchLocationBtn.disabled = false;
+                searchLocationBtn.innerHTML = '<i data-lucide="search" class="w-4 h-4"></i> Buscar';
+                lucide.createIcons();
+            }
+        };
+
+        const autoSearch = (query) => {
+            if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+
+            if (query.length < 2) {
+                searchResults.classList.add('hidden');
+                return;
+            }
+
+            searchResults.innerHTML = `
+                <div class="p-3 text-center">
+                    <i data-lucide="loader" class="w-5 h-5 text-blue-600 animate-spin mx-auto"></i>
+                    <p class="text-xs text-gray-500 mt-2">Buscando praias da Bahia...</p>
+                </div>
+            `;
+            lucide.createIcons();
+            searchResults.classList.remove('hidden');
+
+            searchDebounceTimer = setTimeout(() => {
+                searchLocation(query);
+            }, 600);
+        };
+
+        window.selectSearchResult = (lat, lon, locationName = '') => {
+            selectedCoords = {
+                lat: parseFloat(lat),
+                lng: parseFloat(lon)
+            };
+
+            addMarker(selectedCoords);
+            updateCoordsDisplay(selectedCoords, locationName);
+            confirmLocationBtn.disabled = false;
+            searchResults.classList.add('hidden');
+
+            if (locationName) {
+                searchLocationInput.value = locationName;
+            }
+        };
+
+        if (searchLocationBtn) {
+            searchLocationBtn.addEventListener('click', () => {
+                const query = searchLocationInput.value.trim();
+                if (query) {
+                    searchLocation(query);
+                }
+            });
+        }
+
+        if (searchLocationInput) {
+            searchLocationInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = searchLocationInput.value.trim();
+                    if (query) {
+                        searchLocation(query);
+                    }
+                }
+            });
+
+            searchLocationInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                autoSearch(query);
+            });
+
+            searchLocationInput.addEventListener('focus', () => {
+                if (searchLocationInput.value.trim().length >= 2) {
+                    searchResults.classList.remove('hidden');
+                }
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!searchLocationInput.contains(e.target) &&
+                !searchResults.contains(e.target) &&
+                !searchLocationBtn.contains(e.target)) {
+                searchResults.classList.add('hidden');
+            }
+        });
 
         if (marcarNoMapaBtn) {
             marcarNoMapaBtn.addEventListener('click', () => {
                 mapModal.classList.remove('hidden');
+                document.body.classList.add('modal-open');
                 document.body.style.overflow = 'hidden';
 
                 if (!locationMap) {
@@ -341,10 +603,10 @@ class CadastroBarracaManager {
                 currentMarker.remove();
             }
 
-            currentMarker = new maplibregl.Marker({ 
+            currentMarker = new maplibregl.Marker({
                 color: "#0138b4",
                 scale: 1.2,
-                draggable: true 
+                draggable: true
             })
                 .setLngLat([coords.lng, coords.lat])
                 .setPopup(
@@ -376,11 +638,18 @@ class CadastroBarracaManager {
             });
         };
 
-        const updateCoordsDisplay = (coords) => {
+        const updateCoordsDisplay = (coords, locationName = '') => {
             if (selectedCoordsText) {
                 selectedCoordsText.innerHTML = `
-                    <i data-lucide="map-pin" class="w-4 h-4 inline text-blue-600"></i>
-                    Lat: ${coords.lat.toFixed(6)}, Lng: ${coords.lng.toFixed(6)}
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-blue-600 flex-shrink-0"></i>
+                            <span class="font-medium text-gray-800">
+                                ${locationName || `Lat: ${coords.lat.toFixed(6)}, Lng: ${coords.lng.toFixed(6)}`}
+                            </span>
+                        </div>
+                        ${locationName ? `<span class="text-xs text-gray-500 ml-6">📍 ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}</span>` : ''}
+                    </div>
                 `;
                 lucide.createIcons();
             }
@@ -388,6 +657,7 @@ class CadastroBarracaManager {
 
         const closeMapModal = () => {
             mapModal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
             document.body.style.overflow = '';
         };
 
@@ -407,14 +677,14 @@ class CadastroBarracaManager {
 
                     if (coordenadasInfo) coordenadasInfo.classList.remove('hidden');
                     if (coordsDisplay) coordsDisplay.textContent = `${selectedCoords.lat.toFixed(6)}, ${selectedCoords.lng.toFixed(6)}`;
-                    
+
                     if (typeof lucide !== 'undefined') {
                         lucide.createIcons();
                     }
 
                     closeMapModal();
 
-                    alert('✅ Localização marcada com sucesso!');
+                    showNotification('Localização marcada com sucesso!');
                 }
             });
         }
@@ -448,7 +718,7 @@ class CadastroBarracaManager {
     previewGaleriaFotos(e) {
         if (!this.previewGaleria) return;
 
-        const existingImages = this.isEditMode && this.barracaData?.galeria_urls 
+        const existingImages = this.isEditMode && this.barracaData?.galeria_urls
             ? this.barracaData.galeria_urls.map((url, index) => `
                 <div class="relative">
                     <img src="${url}" class="w-24 h-24 object-cover rounded-lg border-2 border-gray-300">
@@ -459,7 +729,7 @@ class CadastroBarracaManager {
                 </div>
             `).join('')
             : '';
-        
+
         const newImages = Array.from(e.target.files).map(file => {
             const reader = new FileReader();
             return new Promise((resolve) => {
@@ -504,12 +774,12 @@ class CadastroBarracaManager {
 
             const latitudeInput = document.getElementById('latitude');
             const longitudeInput = document.getElementById('longitude');
-            
+
             const latitude = latitudeInput?.value ? parseFloat(latitudeInput.value) : null;
             const longitude = longitudeInput?.value ? parseFloat(longitudeInput.value) : null;
 
             if (!latitude || !longitude) {
-                alert('Por favor, marque a localização exata da barraca no mapa.');
+                showNotification('Por favor, marque a localização exata da barraca no mapa.');
                 if (this.submitButton) {
                     this.submitButton.disabled = false;
                     this.submitButton.textContent = this.isEditMode ? 'Salvar Alterações' : 'Finalizar Cadastro';
@@ -519,8 +789,8 @@ class CadastroBarracaManager {
 
             const horaAbertura = this.horaAberturaInput?.value;
             const horaFechamento = this.horaFechamentoInput?.value;
-            const horario_func = horaAbertura && horaFechamento 
-                ? `${horaAbertura} - ${horaFechamento}` 
+            const horario_func = horaAbertura && horaFechamento
+                ? `${horaAbertura} - ${horaFechamento}`
                 : '';
 
             const diasSelecionados = Array.from(document.querySelectorAll('input[name="dias[]"]:checked'))
@@ -560,15 +830,15 @@ class CadastroBarracaManager {
 
             if (this.galeriaFotosInput?.files && this.galeriaFotosInput.files.length > 0) {
                 console.log(`[CadastroBarraca] Fazendo upload de ${this.galeriaFotosInput.files.length} novas fotos da galeria...`);
-                
-                const uploadPromises = Array.from(this.galeriaFotosInput.files).map(file => 
+
+                const uploadPromises = Array.from(this.galeriaFotosInput.files).map(file =>
                     uploadArquivo(file, this.idGestor, 'galeria')
                 );
-                
+
                 const novasUrls = (await Promise.all(uploadPromises)).filter(url => url !== null);
-                
+
                 galeriaUrls = [...galeriaUrls, ...novasUrls];
-                
+
                 console.log(`[CadastroBarraca] ✅ ${novasUrls.length} fotos adicionadas à galeria`);
             }
 
@@ -595,7 +865,7 @@ class CadastroBarracaManager {
             console.log('[CadastroBarraca] Dados para salvar:', dadosBarraca);
 
             let barracaId = this.idBarraca;
-            
+
             if (this.isEditMode) {
                 const { data: barracaAtualizada, error: updateError } = await supabase
                     .from('barracas')
@@ -611,7 +881,7 @@ class CadastroBarracaManager {
                 }
 
                 console.log('[CadastroBarraca] Barraca atualizada com sucesso!', barracaAtualizada);
-                alert('Barraca atualizada com sucesso!');
+                showNotification('Barraca atualizada com sucesso!');
 
             } else {
                 const { data: novaBarraca, error: insertError } = await supabase
@@ -626,12 +896,12 @@ class CadastroBarracaManager {
                 }
 
                 console.log('[CadastroBarraca] Barraca cadastrada com sucesso!', novaBarraca);
-                alert('Barraca cadastrada com sucesso! Redirecionando...');
-                
+                showNotification('Barraca cadastrada com sucesso! Redirecionando...');
+
                 barracaId = novaBarraca.id_barraca;
-                
+
                 this.form.reset();
-                
+
                 if (this.previewDestaque) this.previewDestaque.innerHTML = '';
                 if (this.previewGaleria) this.previewGaleria.innerHTML = '';
             }
@@ -639,7 +909,7 @@ class CadastroBarracaManager {
             setTimeout(() => {
                 const urlParams = new URLSearchParams(window.location.search);
                 const origem = urlParams.get('origem');
-                
+
                 if (origem === 'gestao' && barracaId) {
                     window.location.href = `gestaoBarraca.html?id=${barracaId}`;
                 } else {
@@ -649,7 +919,7 @@ class CadastroBarracaManager {
 
         } catch (error) {
             console.error('[CadastroBarraca] ERRO GERAL:', error);
-            alert(`Erro ao ${this.isEditMode ? 'atualizar' : 'cadastrar'} barraca: ${error.message}`);
+            showNotification(`Erro ao ${this.isEditMode ? 'atualizar' : 'cadastrar'} barraca: ${error.message}`);
         } finally {
             if (this.submitButton) {
                 this.submitButton.disabled = false;
@@ -657,6 +927,36 @@ class CadastroBarracaManager {
             }
         }
     }
+}
+
+function updateHeaderAvatar(profileData) {
+    const headerAvatar = document.getElementById('header-avatar');
+
+    if (!headerAvatar || !profileData) return;
+
+    let fotoUrl = profileData.foto_perfil || profileData.avatar_url;
+
+    if (fotoUrl && !fotoUrl.startsWith('http')) {
+        const { data } = supabase
+            .storage
+            .from('media')
+            .getPublicUrl(fotoUrl);
+        fotoUrl = data?.publicUrl;
+    }
+
+    if (!fotoUrl) {
+        const iniciais = profileData.nome
+            .split(' ')
+            .filter(w => w.length > 0)
+            .map(w => w[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+
+        fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+    }
+
+    headerAvatar.src = fotoUrl;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

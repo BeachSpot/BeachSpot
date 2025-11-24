@@ -4,6 +4,27 @@ console.log('[CONFIGURAÇÕES] Módulo carregado');
 
 let currentUser = null;
 let currentProfileData = null;
+function showNotification(message, type = 'default') {
+    const notification = document.getElementById('notification');
+    if (!notification) return;
+
+    // Remove classes anteriores
+    notification.classList.remove('error', 'success');
+    
+    // Adiciona classe se for erro ou sucesso
+    if (type === 'error') {
+        notification.classList.add('error');
+    } else if (type === 'success') {
+        notification.classList.add('success');
+    }
+
+    notification.textContent = message;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
 
 // Função para carregar dados do usuário
 async function loadUserData() {
@@ -20,21 +41,61 @@ async function loadUserData() {
         currentUser = session.user;
         console.log('[CONFIG] Usuário autenticado:', currentUser.id);
 
-        // Buscar dados do perfil do cliente
-        const { data: cliente, error: clienteError } = await supabase
-            .from('cliente')
+        // 👇 ADICIONE: Verificar tipo de conta
+        const { data: usuario } = await supabase
+            .from('usuarios')
+            .select('tipo_conta')
+            .eq('id_usuario', currentUser.id)
+            .single();
+
+        const tipoConta = usuario?.tipo_conta || 'cliente';
+        const tabela = tipoConta === 'gestor' ? 'gestor' : 'cliente';
+        const idColuna = tipoConta === 'gestor' ? 'id_gestor' : 'id_cliente';
+        // 👆
+
+        // Buscar dados do perfil (da tabela correta)
+        const { data: perfil, error: perfilError } = await supabase
+            .from(tabela) // 👈 Usa a tabela correta
             .select('nome, bio, foto_perfil, avatar_url')
-            .eq('id_cliente', currentUser.id)
+            .eq(idColuna, currentUser.id) // 👈 Usa a coluna correta
             .maybeSingle();
 
-        if (clienteError) {
-            console.warn('[CONFIG] Erro ao buscar perfil:', clienteError);
+        if (perfilError) {
+            console.warn('[CONFIG] Erro ao buscar perfil:', perfilError);
+        }
+
+        // Buscar preferências de notificação
+        let notifPrefs = null;
+        try {
+            const { data, error: notifError } = await supabase
+                .from('notificacoes_preferencias')
+                .select('*')
+                .eq('id_usuario', currentUser.id)
+                .maybeSingle();
+
+            if (notifError && notifError.code !== 'PGRST116') {
+                console.warn('[CONFIG] ⚠️ Erro ao buscar preferências:', notifError.message);
+                console.warn('[CONFIG] 💡 Dica: Execute o SQL para criar a tabela notificacoes_preferencias');
+            } else {
+                notifPrefs = data;
+            }
+        } catch (error) {
+            console.warn('[CONFIG] ⚠️ Tabela notificacoes_preferencias não encontrada');
+            console.warn('[CONFIG] 💡 Execute o SQL no Supabase para criar a tabela');
         }
 
         currentProfileData = {
             email: currentUser.email,
-            nome: cliente?.nome || currentUser.user_metadata?.full_name || 'Usuário',
-            ...cliente
+            nome: perfil?.nome || currentUser.user_metadata?.full_name || 'Usuário',
+            tipo_conta: tipoConta, // 👈 Adicione isso
+            notificacoes: notifPrefs || {
+                ofertas_promocionais: true,
+                lembretes_reserva: true,
+                novas_reservas: true,
+                cancelamentos: true,
+                avaliacoes_clientes: true
+            },
+            ...perfil
         };
 
         console.log('[CONFIG] ✅ Dados carregados:', currentProfileData);
@@ -56,7 +117,86 @@ function displayUserData(userData) {
         emailElement.textContent = userData.email;
     }
 
+    // Atualizar switches de notificação
+    const promoOffersSwitch = document.getElementById('promotional-offers');
+    const bookingRemindersSwitch = document.getElementById('booking-reminders');
+    const newBookingsSwitch = document.getElementById('new-bookings');
+    const cancellationsSwitch = document.getElementById('cancellations');
+    const customerReviewsSwitch = document.getElementById('customer-reviews');
+
+    if (promoOffersSwitch && userData.notificacoes) {
+        promoOffersSwitch.checked = userData.notificacoes.ofertas_promocionais;
+    }
+    if (bookingRemindersSwitch && userData.notificacoes) {
+        bookingRemindersSwitch.checked = userData.notificacoes.lembretes_reserva;
+    }
+    if (newBookingsSwitch && userData.notificacoes) {
+        newBookingsSwitch.checked = userData.notificacoes.novas_reservas;
+    }
+    if (cancellationsSwitch && userData.notificacoes) {
+        cancellationsSwitch.checked = userData.notificacoes.cancelamentos;
+    }
+    if (customerReviewsSwitch && userData.notificacoes) {
+        customerReviewsSwitch.checked = userData.notificacoes.avaliacoes_clientes;
+    }
+
     console.log('[CONFIG] ✅ Dados exibidos na página');
+}
+
+function updateHeaderAvatar(profileData) {
+    const headerAvatar = document.getElementById('header-avatar');
+
+    if (!headerAvatar || !profileData) return;
+
+    let fotoUrl = profileData.foto_perfil || profileData.avatar_url;
+
+    if (fotoUrl && !fotoUrl.startsWith('http')) {
+        const { data } = supabase
+            .storage
+            .from('media')
+            .getPublicUrl(fotoUrl);
+        fotoUrl = data?.publicUrl;
+    }
+
+    if (!fotoUrl) {
+        const iniciais = profileData.nome
+            .split(' ')
+            .filter(w => w.length > 0)
+            .map(w => w[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+
+        fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+    }
+
+    headerAvatar.src = fotoUrl;
+}
+
+// Função para atualizar preferências de notificação
+async function updateNotificationPreferences(preferences) {
+    try {
+        console.log('[CONFIG] Atualizando preferências de notificação...');
+
+        const { error } = await supabase
+            .from('notificacoes_preferencias')
+            .upsert({
+                id_usuario: currentUser.id,
+                ...preferences,
+                atualizado_em: new Date().toISOString()
+            }, {
+                onConflict: 'id_usuario'
+            });
+
+        if (error) throw error;
+
+        console.log('[CONFIG] ✅ Preferências atualizadas');
+        return { success: true };
+
+    } catch (error) {
+        console.error('[CONFIG] Erro ao atualizar preferências:', error);
+        return { success: false, message: error.message };
+    }
 }
 
 // Função para atualizar email
@@ -161,7 +301,7 @@ async function disconnect() {
 
     } catch (error) {
         console.error('[CONFIG] Erro ao desconectar:', error);
-        alert('Erro ao desconectar. Tente novamente.');
+        showNotification('Erro ao desconectar. Tente novamente.');
     }
 }
 
@@ -190,7 +330,13 @@ async function deleteAccount(password) {
             console.warn('[CONFIG] Erro ao deletar dados do cliente:', deleteClienteError);
         }
 
-        // Deletar conta do Auth (isso também deleta da tabela usuarios devido ao trigger)
+        // Deletar preferências de notificação
+        await supabase
+            .from('notificacoes_preferencias')
+            .delete()
+            .eq('id_usuario', currentUser.id);
+
+        // Deletar conta do Auth
         const { error: deleteAuthError } = await supabase.rpc('delete_user');
 
         if (deleteAuthError) {
@@ -252,6 +398,53 @@ function setupEventListeners() {
             if (result !== false) closeModal();
         };
         document.getElementById('modal-cancel').onclick = closeModal;
+    }
+
+    // Event listeners para switches de notificação
+    const promoOffersSwitch = document.getElementById('promotional-offers');
+    const bookingRemindersSwitch = document.getElementById('booking-reminders');
+    const newBookingsSwitch = document.getElementById('new-bookings');
+    const cancellationsSwitch = document.getElementById('cancellations');
+    const customerReviewsSwitch = document.getElementById('customer-reviews');
+
+    if (promoOffersSwitch) {
+        promoOffersSwitch.addEventListener('change', async (e) => {
+            await updateNotificationPreferences({
+                ofertas_promocionais: e.target.checked
+            });
+        });
+    }
+
+    if (bookingRemindersSwitch) {
+        bookingRemindersSwitch.addEventListener('change', async (e) => {
+            await updateNotificationPreferences({
+                lembretes_reserva: e.target.checked
+            });
+        });
+    }
+
+    if (newBookingsSwitch) {
+        newBookingsSwitch.addEventListener('change', async (e) => {
+            await updateNotificationPreferences({
+                novas_reservas: e.target.checked
+            });
+        });
+    }
+
+    if (cancellationsSwitch) {
+        cancellationsSwitch.addEventListener('change', async (e) => {
+            await updateNotificationPreferences({
+                cancelamentos: e.target.checked
+            });
+        });
+    }
+
+    if (customerReviewsSwitch) {
+        customerReviewsSwitch.addEventListener('change', async (e) => {
+            await updateNotificationPreferences({
+                avaliacoes_clientes: e.target.checked
+            });
+        });
     }
 
     // Botão alterar email
@@ -431,6 +624,7 @@ async function initializeConfig() {
     }
 
     displayUserData(userData);
+    updateHeaderAvatar(userData);
     setupEventListeners();
 
     console.log('[CONFIG] ✅ Inicialização concluída');

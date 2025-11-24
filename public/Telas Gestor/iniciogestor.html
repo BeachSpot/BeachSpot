@@ -17,9 +17,43 @@
 
     <link rel="stylesheet" href="../assets/css/perfilGestor.css">
 
+    <style>
+        /* Adicione no <style> de cada página */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2f3640;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
+            font-size: 15px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .notification.show {
+            top: 90px;
+        }
+
+        .notification.error {
+            background-color: #ef4444;
+        }
+
+        .notification.success {
+            background-color: #10b981;
+        }
+    </style>
+
 </head>
 
 <body class="text-white">
+    <div id="notification" class="notification"></div>
 
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
@@ -30,9 +64,6 @@
             <div class="flex items-center space-x-6">
                 <a href="inicioGestor.html"
                     class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="gestaoBarraca.html"
-                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar
-                    Barracas</a>
                 <a href="cadastroBarraca.html"
                     class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar
                     Barracas</a>
@@ -43,7 +74,7 @@
                 </a>
 
                 <a href="perfilGestor.html" class="hidden md:block">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
+                    <img id="header-avatar" src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
                         class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
 
@@ -58,10 +89,6 @@
                 <a href="iniciogestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="home" class="w-5 h-5"></i>
                     <span>Início</span>
-                </a>
-                <a href="gestaoBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
-                    <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                    <span>Gerenciar</span>
                 </a>
                 <a href="cadastroBarraca.html"
                     class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
@@ -97,40 +124,10 @@
             </div>
             <div class="flex justify-center flex-wrap gap-8">
                 <div class="w-full max-w-sm">
-                    <div
-                        class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full transform transition-transform hover:scale-105">
-                        <img src="https://placehold.co/600x400/0138b4/FFFFFF?text=Axé+Bahia"
-                            alt="Imagem da barraca Axé Bahia" class="w-full h-48 object-cover">
-                        <div class="p-5 flex flex-col justify-between" style="height: 14rem;">
-                            <div>
-                                <h3 class="text-2xl font-bold text-center mb-2">Axé Bahia</h3>
-                                <p class="text-sm text-gray-600 mb-4 text-center">A moqueca mais famosa da orla, com
-                                    música ao vivo e ambiente familiar.</p>
-                            </div>
-                            <a href="gestaoBarraca.html"
-                                class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition text-lg">
-                                Gerenciar Barraca
-                            </a>
-                        </div>
+
                     </div>
                 </div>
                 <div class="w-full max-w-sm">
-                    <div
-                        class="relative bg-white text-gray-800 rounded-xl overflow-hidden group w-full h-full transform transition-transform hover:scale-105">
-                        <img src="https://placehold.co/600x400/cccccc/FFFFFF?text=Adicionar+Nova"
-                            alt="Imagem para cadastrar nova barraca" class="w-full h-48 object-cover">
-                        <div class="p-5 flex flex-col justify-between" style="height: 14rem;">
-                            <div>
-                                <h3 class="text-2xl font-bold text-center mb-2">Gerenciar Outra Barraca</h3>
-                                <p class="text-sm text-gray-600 mb-4 text-center">Adicione e gerencie uma nova barraca
-                                    para expandir seus negócios.</p>
-                            </div>
-                            <a href="cadastroBarraca.html"
-                                class="block w-full text-center bg-[#1985d4] hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition text-lg">
-                                Cadastrar Barraca
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -141,7 +138,7 @@
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-start text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
-                    <a href="inicio.html" class="flex items-center">
+                    <a href="iniciogestor.html" class="flex items-center">
                         <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto"
                             onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
                     </a>
@@ -151,8 +148,6 @@
                     <h3 class="font-bold mb-3">Navegação do Gestor</h3>
                     <ul class="space-y-2">
                         <li><a href="#" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar
-                                Barracas</a></li>
                         <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar
                                 Barracas</a></li>
                         <li><a href="configuracoesgestor.html"

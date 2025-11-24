@@ -2,6 +2,45 @@ import { supabase } from './supabaseClient.js';
 
 console.log('[EditarReserva] Script carregado');
 
+async function updateHeaderAvatar() {
+    const headerAvatar = document.getElementById('header-avatar');
+    if (!headerAvatar) return;
+
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) return;
+
+    const { data: cliente } = await supabase
+        .from('cliente')
+        .select('nome, foto_perfil, avatar_url')
+        .eq('id_cliente', user.id)
+        .single();
+
+    let fotoUrl = cliente?.foto_perfil || cliente?.avatar_url;
+
+    if (fotoUrl && !fotoUrl.startsWith('http')) {
+        const { data } = supabase
+            .storage
+            .from('media')
+            .getPublicUrl(fotoUrl);
+        fotoUrl = data?.publicUrl;
+    }
+
+    if (!fotoUrl) {
+        const iniciais = (cliente?.nome || "U")
+            .split(' ')
+            .filter(t => t.length > 0)
+            .map(t => t[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+
+        fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+    }
+
+    headerAvatar.src = fotoUrl;
+}
+
+
 class EditarReservaManager {
     constructor() {
         this.idReserva = null;
@@ -81,8 +120,8 @@ class EditarReservaManager {
                         localizacao,
                         foto_destaque,
                         dias_funcionamento,
-                        horario_inicio,
-                        horario_fim
+                        horario_func,
+                        capacidade_mesas
                     )
                 `)
                 .eq('id_reserva', this.idReserva)
@@ -113,8 +152,40 @@ class EditarReservaManager {
         }
     }
 
+    // Função auxiliar para converter timestamp ISO ou PostgreSQL para Date
+    parseTimestamp(timestamp) {
+        if (!timestamp) return null;
+        
+        // Remove timezone info se existir e cria Date
+        const cleanTimestamp = timestamp.replace(/\+.*$/, '').replace('T', ' ');
+        return new Date(timestamp);
+    }
+
+    // Função auxiliar para formatar data como DD/MM/YYYY
+    formatDateToBR(date) {
+        if (!date || !(date instanceof Date) || isNaN(date)) return '';
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        
+        return `${day}/${month}/${year}`;
+    }
+
+    // Função auxiliar para formatar horário como HH:MM
+    formatTimeToHHMM(date) {
+        if (!date || !(date instanceof Date) || isNaN(date)) return '';
+        
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${hours}:${minutes}`;
+    }
+
     fillForm() {
         if (!this.reservaData || !this.barracaData) return;
+
+        console.log('[DEBUG] Preenchendo formulário com dados:', this.reservaData);
 
         // Preencher nome da barraca
         const barracaNameInput = document.getElementById('barracaName');
@@ -125,30 +196,38 @@ class EditarReservaManager {
         // Preencher data
         const dateInput = document.getElementById('reservationDate');
         if (dateInput && this.reservaData.data_reserva) {
-            // Converter de YYYY-MM-DD para DD/MM/YYYY
-            const dateParts = this.reservaData.data_reserva.split('-');
-            dateInput.value = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+            const dataReserva = this.parseTimestamp(this.reservaData.data_reserva);
+            dateInput.value = this.formatDateToBR(dataReserva);
+            console.log('[DEBUG] Data preenchida:', dateInput.value);
         }
 
         // Preencher horário
         const timeInput = document.getElementById('reservationTime');
         if (timeInput && this.reservaData.data_inicio) {
-            // Extrair hora do timestamp
-            const time = new Date(this.reservaData.data_inicio).toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            });
-            timeInput.value = time;
+            const dataInicio = this.parseTimestamp(this.reservaData.data_inicio);
+            timeInput.value = this.formatTimeToHHMM(dataInicio);
+            console.log('[DEBUG] Horário preenchido:', timeInput.value);
         }
 
         // Preencher duração (calcular diferença entre data_inicio e data_fim)
         const durationSelect = document.getElementById('reservationDuration');
         if (durationSelect && this.reservaData.data_inicio && this.reservaData.data_fim) {
-            const inicio = new Date(this.reservaData.data_inicio);
-            const fim = new Date(this.reservaData.data_fim);
-            const diffHours = Math.round((fim - inicio) / (1000 * 60 * 60));
-            durationSelect.value = diffHours.toString();
+            const inicio = this.parseTimestamp(this.reservaData.data_inicio);
+            const fim = this.parseTimestamp(this.reservaData.data_fim);
+            
+            const diffMs = fim - inicio;
+            const diffHours = diffMs / (1000 * 60 * 60);
+
+            // Arredondar para .5 ou .25 mais próximo
+            let roundedHours;
+            if (diffHours <= 2) {
+                roundedHours = Math.round(diffHours * 4) / 4; // Intervalos de 15min
+            } else {
+                roundedHours = Math.round(diffHours * 2) / 2; // Intervalos de 30min
+            }
+            
+            durationSelect.value = roundedHours.toString();
+            console.log('[DEBUG] Duração calculada:', roundedHours, 'horas');
         }
 
         // Preencher número de pessoas
@@ -188,10 +267,20 @@ class EditarReservaManager {
         console.log('[EditarReserva] Formulário preenchido com sucesso');
     }
 
-    setupDateTimeValidation() {
-        // Esta função não é mais necessária pois a validação 
-        // agora é feita diretamente no initDatePickers
-        console.log('[EditarReserva] Validações aplicadas durante inicialização dos date pickers');
+    parseHorarioFunc() {
+        // Parsear horario_func (formato: "09:00-16:00" ou "09:00 - 16:00")
+        let horarioInicio = '08:00';
+        let horarioFim = '20:00';
+
+        if (this.barracaData?.horario_func) {
+            const horarios = this.barracaData.horario_func.split('-');
+            if (horarios.length === 2) {
+                horarioInicio = horarios[0].trim();
+                horarioFim = horarios[1].trim();
+            }
+        }
+
+        return { horarioInicio, horarioFim };
     }
 
     parseDiasFuncionamento() {
@@ -286,21 +375,40 @@ class EditarReservaManager {
     displayFuncionamentoInfo() {
         if (!this.barracaData) return;
 
-        const barracaInfo = document.getElementById('barracaInfo');
-        const funcionamentoText = document.getElementById('funcionamentoText');
+        // Criar elemento de info se não existir
+        let barracaInfo = document.getElementById('barracaInfo');
+        if (!barracaInfo) {
+            barracaInfo = document.createElement('div');
+            barracaInfo.id = 'barracaInfo';
+            barracaInfo.style.cssText = `
+                margin-top: 12px;
+                padding: 12px 16px;
+                background-color: #f3f4f6;
+                border-radius: 8px;
+                font-size: 14px;
+                color: #6b7280;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            `;
 
-        if (!barracaInfo || !funcionamentoText) return;
+            const barracaNameInput = document.getElementById('barracaName');
+            if (barracaNameInput && barracaNameInput.parentElement && barracaNameInput.parentElement.parentElement) {
+                barracaNameInput.parentElement.parentElement.appendChild(barracaInfo);
+            }
+        }
 
         const diasFuncionamento = this.parseDiasFuncionamento();
-        const horarioInicio = this.barracaData.horario_inicio || '08:00';
-        const horarioFim = this.barracaData.horario_fim || '20:00';
+        const { horarioInicio, horarioFim } = this.parseHorarioFunc();
 
         // Mapear números para nomes dos dias abreviados
         const diasNomesAbrev = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
         const diasTexto = diasFuncionamento.map(d => diasNomesAbrev[d]).join(', ');
 
-        funcionamentoText.textContent = `Funcionamento: ${diasTexto} | ${horarioInicio} às ${horarioFim}`;
-        barracaInfo.style.display = 'block';
+        barracaInfo.innerHTML = `
+            <i data-lucide="info" style="width:16px; height:16px;"></i>
+            <span>Funcionamento: ${diasTexto} | ${horarioInicio} às ${horarioFim}</span>
+        `;
 
         // Recriar ícones após adicionar conteúdo
         setTimeout(() => lucide.createIcons(), 100);
@@ -314,8 +422,7 @@ class EditarReservaManager {
 
         // Parsear dias e horários de funcionamento
         const diasFuncionamento = this.parseDiasFuncionamento();
-        const horarioInicio = this.barracaData.horario_inicio || '08:00';
-        const horarioFim = this.barracaData.horario_fim || '20:00';
+        const { horarioInicio, horarioFim } = this.parseHorarioFunc();
 
         console.log('[EditarReserva] Configurando validações - Dias:', diasFuncionamento, 'Horário:', horarioInicio, '-', horarioFim);
 
@@ -325,7 +432,7 @@ class EditarReservaManager {
             minDate: "today",
             locale: "pt",
             disable: [
-                function(date) {
+                function (date) {
                     // Desabilitar dias que não estão no funcionamento
                     const dayOfWeek = date.getDay();
                     return !diasFuncionamento.includes(dayOfWeek);
@@ -350,7 +457,6 @@ class EditarReservaManager {
         const decreaseBtn = document.getElementById('decreaseBtn');
         const increaseBtn = document.getElementById('increaseBtn');
         const peopleCountSpan = document.getElementById('peopleCount');
-        const namesContainer = document.getElementById('namesContainer');
 
         decreaseBtn.addEventListener('click', () => {
             if (this.peopleCount > 1) {
@@ -430,7 +536,7 @@ class EditarReservaManager {
             try {
                 // Coletar dados do formulário
                 const reservationData = this.collectFormData();
-                
+
                 // Atualizar no Supabase
                 await this.updateReservation(reservationData);
 
@@ -445,7 +551,7 @@ class EditarReservaManager {
             } catch (error) {
                 console.error('[EditarReserva] Erro ao atualizar reserva:', error);
                 this.showNotification('Erro ao atualizar reserva. Tente novamente.', true);
-                
+
                 // Reabilitar botão
                 submitButton.disabled = false;
                 submitButton.innerHTML = '<i data-lucide="save" style="width:20px; height:20px;"></i> Salvar Alterações';
@@ -459,6 +565,7 @@ class EditarReservaManager {
 
         const dateInput = document.getElementById('reservationDate');
         const timeInput = document.getElementById('reservationTime');
+        const durationSelect = document.getElementById('reservationDuration');
 
         if (!dateInput.value || !timeInput.value) {
             return 'Por favor, selecione a data e horário.';
@@ -466,24 +573,44 @@ class EditarReservaManager {
 
         // Validar dia da semana
         const dateParts = dateInput.value.split('/');
-        const selectedDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]); // ano, mês (0-indexed), dia
+        const selectedDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
         const dayOfWeek = selectedDate.getDay();
-        
-        console.log('[EditarReserva] Data selecionada:', dateInput.value, '| Dia da semana:', dayOfWeek, '| Date object:', selectedDate);
-        
+
         const diasFuncionamento = this.parseDiasFuncionamento();
         if (!diasFuncionamento.includes(dayOfWeek)) {
             const diasNomes = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
             return `A barraca não funciona às ${diasNomes[dayOfWeek]}s. Por favor, escolha outro dia.`;
         }
 
-        // Validar horário
+        // Validar horário de entrada
         const selectedTime = timeInput.value;
-        const horarioInicio = this.barracaData.horario_inicio || '08:00';
-        const horarioFim = this.barracaData.horario_fim || '20:00';
+        const { horarioInicio, horarioFim } = this.parseHorarioFunc();
 
         if (selectedTime < horarioInicio || selectedTime > horarioFim) {
             return `O horário selecionado está fora do horário de funcionamento (${horarioInicio} - ${horarioFim}).`;
+        }
+
+        // Validar se a duração não ultrapassa o horário de fechamento
+        const duration = parseFloat(durationSelect?.value || '4');
+        const [startHour, startMinute] = selectedTime.split(':').map(Number);
+        const [endHour, endMinute] = horarioFim.split(':').map(Number);
+
+        const startTotalMinutes = startHour * 60 + startMinute;
+        const endTotalMinutes = startTotalMinutes + (duration * 60);
+        const closeTotalMinutes = endHour * 60 + endMinute;
+
+        const exitHour = Math.floor(endTotalMinutes / 60);
+        const exitMinute = endTotalMinutes % 60;
+        const exitTime = `${String(exitHour).padStart(2, '0')}:${String(exitMinute).padStart(2, '0')}`;
+
+        const durationHours = Math.floor(duration);
+        const durationMinutes = Math.round((duration - durationHours) * 60);
+        let durationText = '';
+        if (durationHours > 0) durationText += `${durationHours}h`;
+        if (durationMinutes > 0) durationText += `${durationMinutes}min`;
+
+        if (endTotalMinutes > closeTotalMinutes) {
+            return `Com essa duração (${durationText}), você sairia às ${exitTime}, mas a barraca fecha às ${horarioFim}. Por favor, escolha uma duração menor ou um horário de entrada mais cedo.`;
         }
 
         return null;
@@ -499,32 +626,22 @@ class EditarReservaManager {
         const dateParts = dateInput.value.split('/');
         const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
-        // Combinar data e hora para timestamp de início (SEM timezone para evitar conversão)
+        // Combinar data e hora para timestamp de início
         const [hours, minutes] = timeInput.value.split(':');
         const startDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], hours, minutes, 0);
-        
-        // Calcular data_fim (adicionar duração selecionada)
-        const duration = parseInt(durationSelect.value);
-        const endDate = new Date(startDate.getTime() + (duration * 60 * 60 * 1000));
-        
-        // Formatar para PostgreSQL timestamp (formato: YYYY-MM-DD HH:MM:SS) sem conversão UTC
-        const formatDateTime = (date) => {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hour = String(date.getHours()).padStart(2, '0');
-            const minute = String(date.getMinutes()).padStart(2, '0');
-            const second = String(date.getSeconds()).padStart(2, '0');
-            return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-        };
 
-        const startDateString = formatDateTime(startDate);
-        const endDateString = formatDateTime(endDate);
+        // Calcular data_fim (adicionar duração selecionada)
+        const duration = parseFloat(durationSelect.value);
+        const endDate = new Date(startDate.getTime() + (duration * 60 * 60 * 1000));
+
+        // Formatar para PostgreSQL timestamp (ISO 8601)
+        const startDateString = startDate.toISOString();
+        const endDateString = endDate.toISOString();
 
         console.log('[EditarReserva] Horários calculados:', {
             inicio: startDateString,
             fim: endDateString,
-            duracao: `${duration} horas`
+            duracao: duration
         });
 
         // Coletar nomes dos participantes
@@ -600,9 +717,10 @@ class EditarReservaManager {
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[EditarReserva] DOM carregado');
-    
+
     // Inicializar ícones
     lucide.createIcons();
+      updateHeaderAvatar();
 
     // Inicializar gerenciador de edição de reservas
     const manager = new EditarReservaManager();

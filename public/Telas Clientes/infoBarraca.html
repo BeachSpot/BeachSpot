@@ -16,53 +16,105 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
-
     <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
 
     <link rel="stylesheet" href="../assets/css/infoBarraca.css">
 
     <style>
-        /* Estilo apenas para o estado de favorito, sem alterar cores originais */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Foto destaque com tamanho fixo */
+        .foto-destaque-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .barraca-foto-destaque {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Avatar do header */
+        #header-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #2563eb;
+            transition: all 0.3s ease;
+        }
+
+        /* Botões melhorados */
+        .btn-action-primary {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-action-secondary {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px -5px rgba(30, 64, 175, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Estado de favorito */
         .is-favorited .lucide-heart {
             fill: #ef4444;
             color: #ef4444;
         }
 
-        /* Melhora a aparência dos popups do mapa */
-        .maplibregl-popup-content {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .map-directions-link {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 5px 12px;
-            background-color: #0138b4;
-            color: white !important;
-            text-decoration: none;
-            border-radius: 9999px;
-            font-size: 13px;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-
-        .map-directions-link:hover {
-            background-color: #002a8c;
-        }
-
-        /* Para garantir que as imagens da galeria tenham o mesmo tamanho */
+        /* Galeria */
         .gallery-item {
             height: 200px;
+            background-color: #f3f4f6;
         }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+            .foto-destaque-container {
+                height: 220px;
+            }
+
+            .btn-action-primary,
+            .btn-action-secondary {
+                padding: 0.875rem 2rem;
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -88,8 +140,8 @@
                 </a>
 
                 <a href="perfilCliente.html" class="hidden md:block">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=C" alt="Avatar do Cliente"
-                        class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                    <img id="header-avatar" src="https://placehold.co/40x40/0138b4/FFFFFF?text=C"
+                        alt="Avatar do Cliente">
                 </a>
 
                 <button id="mobile-menu-btn"
@@ -97,6 +149,7 @@
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
+
             <div id="mobile-menu"
                 class="hidden md:hidden absolute top-full right-6 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100">
                 <a href="inicio.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
@@ -119,38 +172,39 @@
         </nav>
     </header>
 
-    <main class="pt-28 md:pt-32 container mx-auto max-w-7xl px-6 pb-28">
+    <main class="pt-28 md:pt-32 container mx-auto max-w-6xl px-6 pb-28">
 
         <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
 
             <section class="flex flex-col md:flex-row items-center gap-8 border-b border-gray-200 pb-8">
                 <div class="w-full md:w-1/3 text-center">
-                    <img src="https://placehold.co/400x300/0138b4/FFFFFF?text=Ax%C3%A9" alt="Barraca Axé Bahia"
-                        class="w-full h-auto rounded-xl object-cover shadow-md">
-                    <a href="perfilGestor.html"
-                        class="inline-flex items-center justify-center gap-2 text-gray-500 hover:text-blue-600 text-sm transition-colors mt-2">
-                        <i data-lucide="user-circle" class="w-4 h-4"></i>
-                        <span>Ver perfil do gestor</span>
-                    </a>
+                    <div class="foto-destaque-container">
+                        <img src="" alt="Barraca" class="barraca-foto-destaque">
+                    </div>
+                    <button id="btn-contato-gestor"
+                        class="inline-flex items-center justify-center gap-2 text-gray-500 hover:text-blue-600 text-sm transition-colors mt-3 cursor-pointer">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                        <span>Entrar em contato</span>
+                    </button>
                 </div>
 
                 <div class="flex-1 md:text-left w-full">
                     <div class="flex items-start justify-between">
                         <div>
-                            <h1 class="text-4xl font-bold text-gray-900 text-left">Barraca Axé Bahia</h1>
+                            <h1 class="text-4xl font-bold text-gray-900 text-left"></h1>
                             <div id="review-summary" class="flex items-center justify-start my-2">
                                 <div class="flex text-yellow-500">
-                                    <i data-lucide="star" class="w-5 h-5 fill-current"></i>
-                                    <i data-lucide="star" class="w-5 h-5 fill-current"></i>
-                                    <i data-lucide="star" class="w-5 h-5 fill-current"></i>
-                                    <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5"></i>
+                                    <i data-lucide="star" class="w-5 h-5"></i>
+                                    <i data-lucide="star" class="w-5 h-5"></i>
+                                    <i data-lucide="star" class="w-5 h-5"></i>
                                     <i data-lucide="star" class="w-5 h-5"></i>
                                 </div>
-                                <span id="review-summary-text" class="ml-2 text-gray-600">4.3 (3 avaliações)</span>
+                                <span id="review-summary-text" class="ml-2 text-gray-600">(0 avaliações)</span>
                             </div>
                             <div class="flex items-center justify-start mt-2 text-gray-700 font-semibold">
                                 <i data-lucide="dollar-sign" class="w-5 h-5 mr-2 text-green-600"></i>
-                                <span>Preço médio: R$ 80 por pessoa</span>
+                                <span>Preço médio: --</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -168,7 +222,7 @@
                     </button>
 
                     <section id="weather-section"
-                        class="bg-gray-50 p-4 rounded-lg text-left mt-4 max-w-md mx-auto md:mx-0 cursor-pointer hover:bg-gray-100 transition-colors duration-300">
+                        class="bg-gray-50 p-4 rounded-lg text-left mt-4 max-w-md mx-auto md:mx-0">
                         <div id="current-weather-clickable" class="flex items-center justify-between">
                             <div class="flex items-center gap-4">
                                 <img id="weather-icon" src="https://placehold.co/48x48/ccc/FFFFFF?text=..."
@@ -178,46 +232,31 @@
                                     <p class="text-gray-600" id="weather-condition">Carregando...</p>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <i data-lucide="chevron-down" id="weather-chevron"
-                                    class="w-6 h-6 text-gray-500 transition-transform duration-300"></i>
-                            </div>
-                        </div>
-
-                        <div id="forecast-container"
-                            class="hidden pt-4 mt-4 border-t border-gray-200 flex justify-around text-center">
                         </div>
                     </section>
                 </div>
             </section>
-            
+
             <section class="py-8">
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="reservar.html" id="reserve-btn"
-                        class="flex-1 bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg text-center block">Reservar</a>
-                    <a href="cardapio.html"
-                        class="flex-1 text-center bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-900 transition-all transform hover:scale-105">Cardápio</a>
+                    <a href="reservar.html" id="reserve-btn" class="btn-action-primary flex-1">
+                        <i data-lucide="calendar-check" class="btn-icon"></i>
+                        <span>Fazer Reserva</span>
+                    </a>
+                    <a href="cardapio.html" id="cardapio-btn" class="btn-action-secondary flex-1">
+                        <i data-lucide="utensils" class="btn-icon"></i>
+                        <span>Ver Cardápio</span>
+                    </a>
                 </div>
             </section>
 
             <section class="pt-8 mt-8 border-t border-gray-200">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">Promoções do Dia</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-blue-800 p-3 rounded-xl shadow-lg">
-                        <div>
-                            <h3 class="font-bold text-lg text-white">Happy Hour!</h3>
-                            <p class="text-blue-100">Dose dupla de cerveja long neck das 16h às 18h.</p>
-                        </div>
-                    </div>
-                    <div class="bg-blue-800 p-3 rounded-xl shadow-lg">
-                        <div>
-                            <h3 class="font-bold text-lg text-white">Moqueca Especial</h3>
-                            <p class="text-blue-100">20% de desconto na Moqueca de Peixe para duas pessoas.</p>
-                        </div>
-                    </div>
+                    <!-- Promoções serão carregadas via JavaScript -->
                 </div>
             </section>
-            
+
             <div class="mt-8">
                 <div class="border-b border-gray-200">
                     <nav class="-mb-px flex justify-center md:justify-start space-x-4 md:space-x-8" aria-label="Tabs">
@@ -241,28 +280,12 @@
                         <section>
                             <h2 class="text-2xl font-bold text-gray-800 mb-4">Informações Gerais</h2>
                             <div class="space-y-4 text-gray-600 leading-relaxed">
-                                <p>Uma das barracas mais animadas da Praia do Porto da Barra, oferecendo o melhor do
-                                    acarajé e da música baiana. Ambiente descontraído com vista privilegiada para o mar.
-                                </p>
+                                <!-- Descrição será carregada via JavaScript -->
                             </div>
                             <div class="mt-6 pt-6 border-t border-gray-200">
                                 <h3 class="text-xl font-bold text-gray-800 mb-3">Categorias</h3>
                                 <div class="flex flex-wrap gap-3">
-                                    <span
-                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i
-                                            data-lucide="music" class="w-4 h-4 mr-1.5"></i>Música ao Vivo</span>
-                                    <span
-                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i
-                                            data-lucide="zap" class="w-4 h-4 mr-1.5"></i>Ambiente Agitado</span>
-                                    <span
-                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i
-                                            data-lucide="users" class="w-4 h-4 mr-1.5"></i>Bom para Grupos</span>
-                                    <span
-                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i
-                                            data-lucide="waves" class="w-4 h-4 mr-1.5"></i>Vista para o Mar</span>
-                                    <span
-                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1.5 rounded-full"><i
-                                            data-lucide="accessibility" class="w-4 h-4 mr-1.5"></i>Acessível</span>
+                                    <!-- Categorias serão carregadas via JavaScript -->
                                 </div>
                             </div>
                         </section>
@@ -273,152 +296,53 @@
                             <h2 class="text-2xl font-bold text-gray-800 mb-4">Galeria de Fotos</h2>
                             <div id="gallery"
                                 class="max-h-[600px] overflow-y-auto pr-2 grid grid-cols-2 md:grid-cols-3 gap-4">
-
-                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
-                                    <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg"
-                                        alt="Vista da barraca"
-                                        class="hover:scale-105 transition-transform duration-300">
-                                </div>
-
-                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
-                                    <img src="https://simonde.com.br/wp-content/uploads/2017/12/uxua-quadrado-trancoso-bahia-hoteis-de-luxo-critica-review-1100-36-1024x682.jpg.webp"
-                                        alt="Área de mesas" class="hover:scale-105 transition-transform duration-300">
-                                </div>
-
-                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
-                                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg"
-                                        alt="Pratos servidos" class="hover:scale-105 transition-transform duration-300">
-                                </div>
-
-                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
-                                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/04/32/53/44/barraca-marguerita.jpg"
-                                        alt="Vista do mar" class="hover:scale-105 transition-transform duration-300">
-                                </div>
-
-                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
-                                    <img src="https://images.squarespace-cdn.com/content/v1/5a9860afe2ccd11b71a53b86/1609959600114-1110UXW0CEBF3021575D/Top+10+melhores+barracas+de+praia+em+Trancoso.jpg"
-                                        alt="Detalhe" class="hover:scale-105 transition-transform duration-300">
-                                </div>
-
-                                <div class="gallery-item rounded-lg shadow-md cursor-pointer overflow-hidden">
-                                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/17/5a/09/5c/a-barraca-do-luiz-fica.jpg"
-                                        alt="Comida na praia" class="hover:scale-105 transition-transform duration-300">
-                                </div>
-
+                                <!-- Galeria será carregada via JavaScript -->
                             </div>
                         </section>
                     </div>
 
                     <div id="tab-content-avaliacoes" class="tab-content hidden">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                            <!-- Estatísticas e Distribuição de Avaliações -->
                             <section>
-                                <h2 class="text-2xl font-bold text-gray-800 mb-4">O que dizem os clientes</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-4">O que nossos clientes pensam</h2>
 
-                                <div class="flex justify-center gap-2 mb-4">
-                                    <button id="filter-all"
-                                        class="filter-btn flex-1 bg-blue-500 text-white font-semibold py-2 px-4 rounded-full transition-colors">Todas</button>
-                                    <button id="filter-media"
-                                        class="filter-btn flex-1 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-full hover:bg-gray-300 transition-colors">Com
-                                        Mídia</button>
-                                </div>
-
-                                <div id="reviews-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                                    <div class="review-card has-media p-4 border rounded-lg bg-gray-50" data-rating="5">
-                                        <div class="flex items-center mb-2">
-                                            <img src="https://placehold.co/40x40/FFC107/FFFFFF?text=J"
-                                                class="w-10 h-10 rounded-full mr-3" alt="Foto de João P.">
-                                            <div>
-                                                <p class="font-bold">João P.</p>
-                                                <div class="flex text-yellow-500">
-                                                    <i data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p class="text-gray-600 mb-2">Atendimento sensacional e a comida estava divina!
-                                            Recomendo a moqueca.</p>
-                                        <img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/70/33/4a/melhor-barraca-restaurante.jpg"
-                                            class="rounded-lg w-full h-auto object-cover"
-                                            alt="Foto da avaliação de João P.">
-                                    </div>
-
-                                    <div class="review-card p-4 border rounded-lg bg-gray-50" data-rating="4">
-                                        <div class="flex items-center mb-2">
-                                            <img src="https://placehold.co/40x40/4CAF50/FFFFFF?text=M"
-                                                class="w-10 h-10 rounded-full mr-3" alt="Foto de Maria S.">
-                                            <div>
-                                                <p class="font-bold">Maria S.</p>
-                                                <div class="flex text-yellow-500">
-                                                    <i data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p class="text-gray-600">Lugar muito agradável e cadeiras confortáveis. A
-                                            cerveja estava bem gelada. Voltarei com certeza!</p>
-                                    </div>
-
-                                    <div class="review-card has-media p-4 border rounded-lg bg-gray-50" data-rating="4">
-                                        <div class="flex items-center mb-2">
-                                            <img src="https://placehold.co/40x40/F44336/FFFFFF?text=C"
-                                                class="w-10 h-10 rounded-full mr-3" alt="Foto de Carlos F.">
-                                            <div>
-                                                <p class="font-bold">Carlos F.</p>
-                                                <div class="flex text-yellow-500">
-                                                    <i data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4 fill-current"></i><i
-                                                        data-lucide="star" class="w-4 h-4"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p class="text-gray-600 mb-2">Vista incrível. Ótimo para passar o dia com a
-                                            família.</p>
-                                        <img src="https://www.rodei.com.br/wp-content/uploads/2019/05/Barraca-Rio-da-Barra-50.jpg"
-                                            class="rounded-lg w-full h-auto object-cover"
-                                            alt="Foto da avaliação de Carlos F.">
-                                    </div>
+                                <div id="reviews-list">
+                                    <!-- Avaliações serão carregadas via JavaScript -->
                                 </div>
                             </section>
 
+                            <!-- Formulário de Avaliação Simplificado -->
                             <section id="review-form-section">
                                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Deixe sua Avaliação</h2>
 
-                                <div id="review-form-container">
-                                    <div class="flex items-center justify-center mb-4">
-                                        <span class="mr-4 text-gray-700 font-semibold">Sua nota:</span>
-                                        <div class="flex text-gray-300 space-x-1" id="rating-stars">
+                                <div id="review-form-container"
+                                    class="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-xl border-2 border-gray-200">
+                                    <div class="text-center mb-6">
+                                        <p class="text-gray-700 font-semibold mb-4">Qual sua nota para esta barraca?</p>
+                                        <div class="flex justify-center text-gray-300 space-x-2" id="rating-stars">
                                             <i data-lucide="star" data-value="1"
-                                                class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                                class="w-12 h-12 cursor-pointer hover:text-yellow-400 transition-all hover:scale-110"></i>
                                             <i data-lucide="star" data-value="2"
-                                                class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                                class="w-12 h-12 cursor-pointer hover:text-yellow-400 transition-all hover:scale-110"></i>
                                             <i data-lucide="star" data-value="3"
-                                                class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                                class="w-12 h-12 cursor-pointer hover:text-yellow-400 transition-all hover:scale-110"></i>
                                             <i data-lucide="star" data-value="4"
-                                                class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                                class="w-12 h-12 cursor-pointer hover:text-yellow-400 transition-all hover:scale-110"></i>
                                             <i data-lucide="star" data-value="5"
-                                                class="w-8 h-8 cursor-pointer hover:text-yellow-400 transition-colors"></i>
+                                                class="w-12 h-12 cursor-pointer hover:text-yellow-400 transition-all hover:scale-110"></i>
                                         </div>
                                     </div>
-                                    <textarea id="review-textarea" placeholder="Escreva seu comentário aqui..." rows="3"
-                                        class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
-                                    <button id="submit-review-btn"
-                                        class="mt-4 w-full bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-colors shadow-lg">Enviar
-                                        Avaliação</button>
-                                </div>
 
-                                <div id="user-review-placeholder" class="hidden text-center">
-                                    <p class="text-gray-600 mb-2">Você já enviou sua avaliação.</p>
-                                    <button id="delete-review-btn"
-                                        class="text-sm text-red-500 hover:underline font-semibold">Apagar sua
-                                        avaliação</button>
+                                    <button id="submit-review-btn"
+                                        class="w-full bg-blue-600 text-white font-bold py-4 px-8 rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="star" class="w-5 h-5"></i>
+                                        <span>Enviar Avaliação</span>
+                                    </button>
+
+                                    <p class="text-xs text-gray-500 text-center mt-4">
+                                        Sua avaliação será pública e ajudará outros clientes
+                                    </p>
                                 </div>
                             </section>
                         </div>
@@ -434,8 +358,7 @@
             <div class="flex flex-wrap justify-between items-start text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
                     <a href="inicio.html" class="flex items-center">
-                        <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto"
-                            onerror="this.onerror=null;this.src='https://placehold.co/150x40/000000/FFFFFF?text=beachspot&font=sans';">
+                        <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
                     </a>
                 </div>
                 <div class="w-1/2 md:w-auto mb-8 md:mb-0">
@@ -465,12 +388,10 @@
         </div>
     </footer>
 
-    <!-- Toast de notificações -->
     <div id="toast"
         class="fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-5 rounded-lg shadow-lg opacity-0 translate-y-3 transition-all duration-300 z-50">
     </div>
 
-    <!-- Modal da Galeria -->
     <div id="gallery-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
         <button id="modal-close"
             class="absolute top-4 right-4 text-white text-5xl leading-none hover:text-gray-300">×</button>
@@ -478,7 +399,6 @@
             class="max-w-[90vw] max-h-[90vh] rounded-lg">
     </div>
 
-    <!-- Modal do Mapa -->
     <div id="map-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
         <div
             class="bg-white rounded-2xl shadow-xl w-full max-w-6xl h-[90vh] flex overflow-hidden relative text-gray-800">
@@ -508,7 +428,22 @@
         </div>
     </div>
 
-    <!-- Scripts Modulares -->
+    <!-- Substituir o Modal de Contato no infoBarraca.html -->
+
+    <!-- Modal de Contato -->
+    <div id="contato-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-xl text-gray-800">
+            <div class="flex items-center justify-end p-4 border-b border-gray-200">
+                <button id="contato-modal-close"
+                    class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
+            </div>
+
+            <div class="p-6">
+                <!-- Conteúdo será preenchido dinamicamente pelo JavaScript -->
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="../assets/js/supabaseClient.js"></script>
     <script type="module" src="../assets/js/locationManager.js"></script>
     <script type="module" src="../assets/js/weatherManager.js"></script>

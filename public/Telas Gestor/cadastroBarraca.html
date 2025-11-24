@@ -106,12 +106,76 @@
             height: 100%;
         }
 
+        /* Estilos para resultados de pesquisa */
+        #search-results {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            background: white;
+        }
 
-        /* ESTILOS ANTIGOS DO TOGGLE REMOVIDOS */
+        #search-results::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #search-results::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        /* Forçar o modal a ficar acima de tudo */
+        #map-modal {
+            z-index: 99999 !important;
+            position: fixed !important;
+        }
+
+        /* Garantir que o container interno também tenha prioridade */
+        #map-modal>div {
+            position: relative;
+            z-index: 100000;
+        }
+
+        /* Esconder o overflow do body quando o modal estiver aberto */
+        body.modal-open {
+            overflow: hidden !important;
+        }
+
+        /* Adicione no <style> de cada página */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2f3640;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
+            font-size: 15px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .notification.show {
+            top: 90px;
+        }
+
+        .notification.error {
+            background-color: #ef4444;
+        }
+
+        .notification.success {
+            background-color: #10b981;
+        }
     </style>
 </head>
 
 <body class="text-white">
+    <div id="notification" class="notification"></div>
 
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
@@ -122,9 +186,6 @@
             <div class="flex items-center space-x-6">
                 <a href="iniciogestor.html"
                     class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="gestaoBarraca.html"
-                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar
-                    Barracas</a>
                 <a href="cadastroBarraca.html"
                     class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar
                     Barracas</a>
@@ -135,7 +196,7 @@
                 </a>
 
                 <a href="perfilGestor.html" class="hidden md:block">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
+                    <img id="header-avatar" src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
                         class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
 
@@ -150,10 +211,6 @@
                 <a href="iniciogestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="home" class="w-5 h-5"></i>
                     <span>Início</span>
-                </a>
-                <a href="gestaoBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
-                    <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                    <span>Gerenciar</span>
                 </a>
                 <a href="cadastroBarraca.html"
                     class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
@@ -173,7 +230,7 @@
         </nav>
     </header>
 
-    <main class="pt-28 md:pt-32 container mx-auto max-w-4xl px-6">
+    <main class="pt-28 md:pt-32 container mx-auto max-w-5xl px-6">
 
         <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-10 shadow-lg">
 
@@ -231,21 +288,47 @@
                                 </p>
                             </div>
                         </div>
-
                         <!-- Modal do Mapa -->
                         <div id="map-modal"
-                            class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+                            class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[9999]">
                             <div
-                                class="bg-white rounded-2xl shadow-xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
+                                class="bg-white rounded-2xl shadow-xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
                                 <!-- Header do Modal -->
                                 <div class="bg-blue-600 text-white p-4 flex items-center justify-between">
                                     <div>
                                         <h3 class="text-xl font-bold">Marque a Localização da Barraca</h3>
-                                        <p class="text-sm text-blue-100 mt-1">Clique no mapa para definir a localização
-                                            exata</p>
+                                        <p class="text-sm text-blue-100 mt-1">Pesquise ou clique no mapa para definir a
+                                            localização</p>
                                     </div>
                                     <button id="map-modal-close"
                                         class="text-white hover:text-gray-200 text-3xl leading-none">×</button>
+                                </div>
+
+                                <div class="bg-white p-4 border-b">
+                                    <div class="flex gap-2">
+                                        <div class="flex-1 relative">
+                                            <input type="text" id="search-location-input"
+                                                placeholder="Buscar praia na Bahia... (Ex: Porto da Barra, Praia do Forte)"
+                                                class="w-full p-3 pr-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <i data-lucide="search"
+                                                class="w-5 h-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"></i>
+                                        </div>
+                                        <button type="button" id="search-location-btn"
+                                            class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+                                            <i data-lucide="search" class="w-4 h-4"></i>
+                                            Buscar
+                                        </button>
+                                    </div>
+                                    <div id="search-results" class="mt-2 hidden">
+                                        <!-- Resultados da pesquisa aparecerão aqui -->
+                                    </div>
+
+                                    <!-- 💡 Dica de uso -->
+                                    <div class="mt-2 flex items-start gap-2 text-xs text-gray-500">
+                                        <i data-lucide="info" class="w-4 h-4 flex-shrink-0 mt-0.5 text-blue-500"></i>
+                                        <p>Digite o nome da praia ou clique diretamente no mapa para marcar a
+                                            localização</p>
+                                    </div>
                                 </div>
 
                                 <div id='location-map' class="flex-1 relative"></div>
@@ -478,7 +561,7 @@
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-center text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
-                    <a href="index.html" class="flex items-center">
+                    <a href="iniciogestor.html" class="flex items-center">
                         <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
                     </a>
                 </div>
@@ -487,8 +570,6 @@
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="iniciogestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar
-                                Barracas</a></li>
                         <li><a href="#" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
                         <li><a href="configuracoesgestor.html"
                                 class="hover:text-blue-600 transition-colors">Configurações</a></li>

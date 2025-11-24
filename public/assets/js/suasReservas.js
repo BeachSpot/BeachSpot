@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { favoritesManager } from './favoritesManager.js';
 
 console.log('[SuasReservas] Script carregado');
 
@@ -6,7 +7,6 @@ class ReservasManager {
     constructor() {
         this.userId = null;
         this.reservas = [];
-        this.favorites = [];
         this.currentDeleteCard = null;
     }
 
@@ -14,20 +14,73 @@ class ReservasManager {
         try {
             console.log('[SuasReservas] Inicializando...');
 
-            // Verificar autenticação
             await this.checkAuth();
+            await this.loadUserProfilePhoto();
 
-            // Inicializar componentes
             this.initMobileMenu();
             this.initTabs();
             this.initDeleteModal();
 
-            // Carregar dados
             await this.loadReservas();
             this.loadFavorites();
 
         } catch (error) {
             console.error('[SuasReservas] Erro na inicialização:', error);
+        }
+    }
+
+       async loadUserProfilePhoto() {
+        try {
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            
+            if (sessionError || !session) {
+                console.log('[InicioCliente] Usuário não autenticado');
+                return;
+            }
+
+            const userId = session.user.id;
+
+            const { data: cliente, error: clienteError } = await supabase
+                .from('cliente')
+                .select('nome, foto_perfil, avatar_url')
+                .eq('id_cliente', userId)
+                .maybeSingle();
+
+            const headerAvatar = document.querySelector('header a[href="perfilCliente.html"] img');
+            if (!headerAvatar) return;
+
+            let fotoUrl = null;
+            
+            if (cliente?.foto_perfil) {
+                if (cliente.foto_perfil.startsWith('http')) {
+                    fotoUrl = cliente.foto_perfil;
+                } else {
+                    const { data } = supabase
+                        .storage
+                        .from('media')
+                        .getPublicUrl(cliente.foto_perfil);
+                    
+                    fotoUrl = data?.publicUrl;
+                }
+            }
+            
+            if (!fotoUrl) {
+                const nome = cliente?.nome || session.user.email?.split('@')[0] || 'C';
+                const iniciais = nome
+                    .split(' ')
+                    .filter(word => word.length > 0)
+                    .map(word => word[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+                fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+            }
+            
+            headerAvatar.src = fotoUrl;
+            console.log('[InicioCliente] ✅ Foto do perfil carregada no header');
+
+        } catch (error) {
+            console.error('[InicioCliente] Erro ao carregar foto do perfil:', error);
         }
     }
 
@@ -91,9 +144,11 @@ class ReservasManager {
 
         container.innerHTML = this.reservas.map(reserva => this.createReservaCard(reserva)).join('');
         
-        // Reinicializar ícones e listeners
         lucide.createIcons();
-        this.addFavoriteListeners();
+        
+        // Usar gerenciador de favoritos centralizado
+        favoritesManager.initFavoriteButtons('#reservas');
+        
         this.addDeleteListeners();
     }
 
@@ -122,17 +177,10 @@ class ReservasManager {
             return '';
         }
 
-        // Formatar data e hora
         const dataReserva = this.formatDate(reserva.data_reserva);
         const horaInicio = this.formatTime(reserva.data_inicio);
-        
-        // Status da reserva
         const statusConfig = this.getStatusConfig(reserva.status);
-        
-        // Imagem da barraca
         const imageUrl = barraca.foto_destaque || `https://placehold.co/400x200/0138b4/FFFFFF?text=${encodeURIComponent(barraca.nome_barraca)}`;
-
-        // ID único para o card
         const cardId = `reserva-${reserva.id_reserva}`;
 
         return `
@@ -243,16 +291,16 @@ class ReservasManager {
     // === SISTEMA DE FAVORITOS ===
 
     loadFavorites() {
-        this.favorites = JSON.parse(localStorage.getItem('beachspotFavorites')) || [];
         this.renderFavorites();
-        this.updateFavoriteButtons();
     }
 
     renderFavorites() {
         const container = document.getElementById('favorites-list');
         if (!container) return;
 
-        if (this.favorites.length === 0) {
+        const favorites = favoritesManager.getAllFavorites();
+
+        if (favorites.length === 0) {
             container.innerHTML = `
                 <p class="text-blue-200 text-center py-8 col-span-full">
                     Você ainda não tem locais favoritos. Clique no coração para adicioná-los!
@@ -261,9 +309,14 @@ class ReservasManager {
             return;
         }
 
-        container.innerHTML = this.favorites.map(fav => `
-            <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" data-id="${fav.id}">
-                <img class="w-full h-48 object-cover" src="${fav.image}" alt="${fav.title}">
+        container.innerHTML = favorites.map(fav => `
+            <div class="reserva-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col w-full" 
+                 data-id="${fav.id}" 
+                 data-barraca-id="${fav.barracaId}">
+                <img class="w-full h-48 object-cover" 
+                     src="${fav.image}" 
+                     alt="${fav.title}"
+                     onerror="this.src='https://placehold.co/400x200/0138b4/FFFFFF?text=Barraca'">
                 <div class="p-5 flex flex-col flex-grow">
                     <div class="flex-grow">
                         <h3 class="text-xl font-bold text-gray-900">${fav.title}</h3>
@@ -281,8 +334,7 @@ class ReservasManager {
                         
                         <div class="flex space-x-1">
                             <button title="Remover dos Favoritos" 
-                                    class="remove-favorite-btn text-red-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors" 
-                                    data-id="${fav.id}">
+                                    class="favorite-btn text-red-500 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
                                 <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
                             </button>
                         </div>
@@ -292,76 +344,14 @@ class ReservasManager {
         `).join('');
 
         lucide.createIcons();
-        this.addRemoveFavoriteListeners();
-    }
-
-    addFavoriteListeners() {
-        document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const card = e.currentTarget.closest('.reserva-card');
-                if (!card) return;
-
-                const cardId = card.dataset.id;
-                const barracaId = card.dataset.barracaId;
-                const title = card.querySelector('.reserva-title').textContent.trim();
-                const location = card.dataset.location;
-                const image = card.querySelector('img').src;
-
-                const favoriteIndex = this.favorites.findIndex(fav => fav.id === cardId);
-
-                if (favoriteIndex > -1) {
-                    this.favorites.splice(favoriteIndex, 1);
-                } else {
-                    this.favorites.push({
-                        id: cardId,
-                        barracaId: barracaId,
-                        title: title,
-                        description: location,
-                        location: location,
-                        image: image
-                    });
-                }
-
-                this.saveFavorites();
-                this.updateFavoriteButtons();
+        
+        // Inicializar botões de favorito com callback para recarregar lista
+        favoritesManager.initFavoriteButtons('#favoritos', (barracaId, isFavorited) => {
+            if (!isFavorited) {
+                // Se foi desfavoritado, recarregar a lista
                 this.renderFavorites();
-            });
-        });
-    }
-
-    addRemoveFavoriteListeners() {
-        document.querySelectorAll('#favoritos .remove-favorite-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const idToRemove = e.currentTarget.dataset.id;
-                this.favorites = this.favorites.filter(fav => fav.id !== idToRemove);
-                this.saveFavorites();
-                this.renderFavorites();
-                this.updateFavoriteButtons();
-            });
-        });
-    }
-
-    updateFavoriteButtons() {
-        document.querySelectorAll('#reservas .favorite-btn').forEach(button => {
-            const card = button.closest('.reserva-card');
-            if (!card) return;
-
-            const cardId = card.dataset.id;
-            const isFavorited = this.favorites.some(fav => fav.id === cardId);
-
-            if (isFavorited) {
-                button.classList.add('text-red-500');
-                button.innerHTML = '<i data-lucide="heart" class="w-5 h-5 fill-current"></i>';
-            } else {
-                button.classList.remove('text-red-500');
-                button.innerHTML = '<i data-lucide="heart" class="w-5 h-5"></i>';
             }
         });
-        lucide.createIcons();
-    }
-
-    saveFavorites() {
-        localStorage.setItem('beachspotFavorites', JSON.stringify(this.favorites));
     }
 
     // === MODAL DE EXCLUSÃO ===
@@ -424,7 +414,6 @@ class ReservasManager {
         const reservaId = this.currentDeleteCard.dataset.reservaId;
 
         try {
-            // Atualizar status para "cancelada" ao invés de deletar
             const { error } = await supabase
                 .from('reservas')
                 .update({ status: 'cancelada' })
@@ -434,7 +423,6 @@ class ReservasManager {
 
             console.log('[SuasReservas] Reserva cancelada:', reservaId);
 
-            // Animação de saída
             this.currentDeleteCard.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
             this.currentDeleteCard.style.opacity = '0';
             this.currentDeleteCard.style.transform = 'scale(0.95)';
@@ -442,7 +430,6 @@ class ReservasManager {
             setTimeout(() => {
                 this.currentDeleteCard.remove();
                 
-                // Verificar se ainda há reservas
                 const remainingCards = document.querySelectorAll('#reservas .reserva-card');
                 if (remainingCards.length === 0) {
                     this.renderEmptyReservas();
@@ -463,7 +450,6 @@ class ReservasManager {
         const tabs = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        // Ativar primeira aba
         const firstTab = tabs[0];
         if (firstTab) {
             firstTab.classList.add('active');
@@ -473,16 +459,13 @@ class ReservasManager {
 
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                // Desativar todas as abas
                 tabs.forEach(t => t.classList.remove('active'));
                 tabContents.forEach(content => content.style.display = 'none');
 
-                // Ativar aba clicada
                 tab.classList.add('active');
                 const activeContent = document.getElementById(tab.dataset.tab);
                 if (activeContent) activeContent.style.display = 'block';
 
-                // Recarregar favoritos ao mudar para a aba
                 if (tab.dataset.tab === 'favoritos') {
                     this.renderFavorites();
                 }
@@ -517,10 +500,8 @@ class ReservasManager {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[SuasReservas] DOM carregado');
     
-    // Inicializar ícones
     lucide.createIcons();
 
-    // Inicializar gerenciador
     const manager = new ReservasManager();
     await manager.init();
 });

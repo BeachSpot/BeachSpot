@@ -1,6 +1,45 @@
 import { supabase } from './supabaseClient.js';
+import { reservationPolicies } from './reservationPolicies.js';
 
 console.log('[Reservar] Script carregado');
+
+async function updateHeaderAvatar() {
+    const headerAvatar = document.getElementById('header-avatar');
+    if (!headerAvatar) return;
+
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) return;
+
+    const { data: cliente } = await supabase
+        .from('cliente')
+        .select('nome, foto_perfil, avatar_url')
+        .eq('id_cliente', user.id)
+        .single();
+
+    let fotoUrl = cliente?.foto_perfil || cliente?.avatar_url;
+
+    if (fotoUrl && !fotoUrl.startsWith('http')) {
+        const { data } = supabase
+            .storage
+            .from('media')
+            .getPublicUrl(fotoUrl);
+        fotoUrl = data?.publicUrl;
+    }
+
+    if (!fotoUrl) {
+        const iniciais = (cliente?.nome || "U")
+            .split(' ')
+            .filter(t => t.length > 0)
+            .map(t => t[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+
+        fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+    }
+
+    headerAvatar.src = fotoUrl;
+}
 
 class ReservaManager {
     constructor() {
@@ -62,6 +101,7 @@ class ReservaManager {
             this.showNotification('Erro ao verificar login.', true);
         }
     }
+
 
     async loadBarracaData() {
         try {
@@ -692,6 +732,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Inicializar ícones
     lucide.createIcons();
 
+        updateHeaderAvatar();
     // Inicializar gerenciador de reservas
     const manager = new ReservaManager();
     await manager.init();

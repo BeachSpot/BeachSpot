@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,28 +12,71 @@
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="../assets/css/perfilGestor.css">
-    
+
     <style>
         body {
             font-family: 'Poppins', sans-serif;
         }
+
         .fade-in {
             animation: fadeIn 0.5s ease-in;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Adicione no <style> de cada página */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2f3640;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
+            font-size: 15px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .notification.show {
+            top: 90px;
+        }
+
+        .notification.error {
+            background-color: #ef4444;
+        }
+
+        .notification.success {
+            background-color: #10b981;
         }
     </style>
 </head>
+
 <body class="text-white">
+    <div id="notification" class="notification"></div>
 
     <!-- Header Fixo Branco com Logo e Ícone de Configurações -->
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
@@ -41,22 +85,25 @@
             <a href="inicioGestor.html" class="flex items-center">
                 <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
             </a>
-            
+
             <!-- Navegação e Perfil do Usuário -->
             <div class="flex items-center space-x-6">
                 <!-- Links de Navegação -->
-                <a href="iniciogestor.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="gestaoBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar Barracas</a>
-                <a href="cadastroBarraca.html" class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar Barracas</a>
-    
+                <a href="iniciogestor.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
+                <a href="cadastroBarraca.html"
+                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar
+                    Barracas</a>
+
                 <!-- Ícone de Configurações -->
                 <a href="configuracoesgestor.html" class="text-gray-600 hover:text-blue-600 transition duration-300">
                     <i data-lucide="settings" class="w-6 h-6"></i>
                 </a>
-    
+
                 <!-- Avatar do Gestor -->
                 <a href="perfilGestor.html">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor" class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
+                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
+                        class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
             </div>
         </nav>
@@ -64,10 +111,11 @@
 
     <!-- Conteúdo principal -->
     <main class="pt-28 md:pt-32 container mx-auto max-w-6xl px-6 flex flex-col items-center">
-        
+
         <div class="relative w-full max-w-4xl">
             <!-- Card Maior (Estrutura/Moldura) -->
-            <div class="relative w-full bg-blue-800/80 backdrop-blur-sm border border-white/20 rounded-2xl p-10 shadow-2xl transition-all duration-300 transform hover:scale-105">
+            <div
+                class="relative w-full bg-blue-800/80 backdrop-blur-sm border border-white/20 rounded-2xl p-10 shadow-2xl transition-all duration-300 transform hover:scale-105">
                 <div class="flex items-center justify-center text-white/90">
                     <i data-lucide="waves" class="w-10 h-10 opacity-70"></i>
                     <h2 class="mx-6 text-3xl font-bold tracking-widest uppercase text-center">Carteirinha BeachSpot</h2>
@@ -77,7 +125,9 @@
                 <!-- Card Menor (Conteúdo) -->
                 <div class="relative mt-8 bg-white text-gray-800 rounded-2xl p-12 shadow-lg">
                     <!-- Botão de Edição no Canto Superior Direito -->
-                    <button id="edit-profile-button" class="absolute top-6 right-6 p-3 rounded-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors shadow-md" title="Editar Perfil">
+                    <button id="edit-profile-button"
+                        class="absolute top-6 right-6 p-3 rounded-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors shadow-md"
+                        title="Editar Perfil">
                         <i data-lucide="pencil" class="w-5 h-5"></i>
                     </button>
 
@@ -85,10 +135,14 @@
 
                         <!-- Lado Esquerdo: Foto e ID -->
                         <div class="flex-shrink-0 text-center w-full sm:w-auto">
-                            <label for="foto-perfil-input" class="cursor-pointer group relative block mx-auto w-40 pointer-events-none photo-container rounded-lg transition-all duration-300">
-                                <img id="carteirinha-avatar" src="https://placehold.co/160x224/0138b4/FFFFFF?text=G" alt="Avatar do usuário" class="w-40 h-56 rounded-lg object-cover border-4 border-cyan-300 transition-transform group-hover:scale-105" />
+                            <label for="foto-perfil-input"
+                                class="cursor-pointer group relative block mx-auto w-40 pointer-events-none photo-container rounded-lg transition-all duration-300">
+                                <img id="carteirinha-avatar" src="https://placehold.co/160x224/0138b4/FFFFFF?text=G"
+                                    alt="Avatar do usuário"
+                                    class="w-40 h-56 rounded-lg object-cover border-4 border-cyan-300 transition-transform group-hover:scale-105" />
                                 <!-- Overlay que aparece apenas no modo de edição -->
-                                <div class="photo-edit-overlay hidden absolute inset-0 rounded-lg flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div
+                                    class="photo-edit-overlay hidden absolute inset-0 rounded-lg flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <i data-lucide="camera" class="w-10 h-10 text-white"></i>
                                 </div>
                             </label>
@@ -99,7 +153,7 @@
                         <div class="flex-1 flex flex-col">
                             <!-- Nome -->
                             <h3 id="user-name" class="text-5xl font-bold leading-tight mb-2">Gestor</h3>
-                        
+
                             <!-- Tipo de Usuário -->
                             <div class="flex items-center space-x-2 text-base font-semibold text-cyan-600 mt-2">
                                 <i data-lucide="key" class="w-6 h-6"></i>
@@ -107,7 +161,7 @@
                             </div>
 
                             <p class="text-sm text-gray-500 mt-4">Gestor desde: --/--/----</p>
-                        
+
                             <!-- Bio do Usuário -->
                             <p id="user-bio" class="text-base text-gray-600 mt-6 italic"></p>
 
@@ -129,7 +183,7 @@
                 </div>
             </div>
         </div>
-        
+
     </main>
 
     <!-- Footer Branco -->
@@ -145,17 +199,20 @@
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="iniciogestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="gestaoBarraca.html" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
-                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar Barracas</a></li>
-                        <li><a href="configuracoesgestor.html" class="hover:text-blue-600 transition-colors">Configurações</a></li>
+                        <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar
+                                Barracas</a></li>
+                        <li><a href="configuracoesgestor.html"
+                                class="hover:text-blue-600 transition-colors">Configurações</a></li>
                         <li><a href="perfilGestor.html" class="hover:text-blue-600 transition-colors">Perfil</a></li>
                     </ul>
                 </div>
                 <div class="w-1/2 md:w-auto">
                     <h3 class="font-bold mb-3">Redes Sociais</h3>
                     <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/empresa_beachspot/" class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
-                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i data-lucide="twitter"></i></a>
+                        <a href="https://www.instagram.com/empresa_beachspot/"
+                            class="hover:text-blue-600 transition-colors"><i data-lucide="instagram"></i></a>
+                        <a href="https://x.com/site_beachspot" class="hover:text-blue-600 transition-colors"><i
+                                data-lucide="twitter"></i></a>
                     </div>
                 </div>
             </div>
@@ -170,4 +227,5 @@
     <script type="module" src="../assets/js/getUserProfile.js"></script>
     <script type="module" src="../assets/js/perfilGestor.js"></script>
 </body>
+
 </html>

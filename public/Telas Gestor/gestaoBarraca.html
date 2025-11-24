@@ -16,9 +16,43 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <link rel="stylesheet" href="../assets/css/gestaoBarraca.css">
+
+    <style>
+        /* Adicione no <style> de cada página */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2f3640;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
+            font-size: 15px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .notification.show {
+            top: 90px;
+        }
+
+        .notification.error {
+            background-color: #ef4444;
+        }
+
+        .notification.success {
+            background-color: #10b981;
+        }
+    </style>
 </head>
 
 <body class="text-white">
+    <div id="notification" class="notification"></div>
 
     <header class="bg-white text-gray-800 fixed top-0 left-0 right-0 z-50 shadow-md">
         <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center relative">
@@ -29,9 +63,6 @@
             <div class="flex items-center space-x-6">
                 <a href="iniciogestor.html"
                     class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Início</a>
-                <a href="gestaoBarraca.html"
-                    class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Gerenciar
-                    Barracas</a>
                 <a href="cadastroBarraca.html"
                     class="hidden md:block text-gray-600 hover:text-blue-600 transition duration-300 font-medium">Cadastrar
                     Barracas</a>
@@ -42,7 +73,7 @@
                 </a>
 
                 <a href="perfilGestor.html" class="hidden md:block">
-                    <img src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
+                    <img id="header-avatar" src="https://placehold.co/40x40/0138b4/FFFFFF?text=G" alt="Avatar do Gestor"
                         class="w-10 h-10 rounded-full border-2 border-blue-600 hover:opacity-90 transition-opacity">
                 </a>
 
@@ -57,10 +88,6 @@
                 <a href="iniciogestor.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i data-lucide="home" class="w-5 h-5"></i>
                     <span>Início</span>
-                </a>
-                <a href="gestaoBarraca.html" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
-                    <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                    <span>Gerenciar</span>
                 </a>
                 <a href="cadastroBarraca.html"
                     class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100">
@@ -80,7 +107,7 @@
         </nav>
     </header>
 
-    <main class="pt-28 md:pt-32 container mx-auto max-w-5xl px-6">
+    <main class="pt-28 md:pt-32 container mx-auto max-w-6xl px-6">
 
         <div class="bg-white text-gray-800 rounded-2xl p-6 md:p-8 shadow-lg">
 
@@ -137,7 +164,8 @@
                                 <p class="text-2xl font-bold">0</p>
                             </div>
                         </div>
-                        <div id="ocupacao-card" class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex items-center gap-3">
+                        <div id="ocupacao-card"
+                            class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex items-center gap-3">
                             <div class="bg-green-100 text-green-600 p-2 rounded-full">
                                 <i data-lucide="users" class="w-5 h-5"></i>
                             </div>
@@ -157,7 +185,8 @@
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="text-xl font-bold text-gray-700">Últimas Atividades</h2>
                             <div class="flex gap-2">
-                                <select id="filtro-atividades" class="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <select id="filtro-atividades"
+                                    class="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <option value="todas">Todas</option>
                                     <option value="reservas">Reservas</option>
                                     <option value="cancelamentos">Cancelamentos</option>
@@ -180,54 +209,19 @@
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                                 <tr>
                                     <th scope="col" class="px-6 py-3">Cliente</th>
-                                    <th scope="col" class="px-6 py-3">Data/Hora</th>
+                                    <th scope="col" class="px-6 py-3">Data</th>
+                                    <th scope="col" class="px-6 py-3">Horário</th>
                                     <th scope="col" class="px-6 py-3">Pessoas</th>
                                     <th scope="col" class="px-6 py-3">Status</th>
                                     <th scope="col" class="px-6 py-3 text-center">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="bg-white border-b">
-                                    <td class="px-6 py-4 font-medium text-gray-900">Carlos F.</td>
-                                    <td class="px-6 py-4">22/09/2025 14:00</td>
-                                    <td class="px-6 py-4">4</td>
-                                    <td class="px-6 py-4"><span
-                                            class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Pendente</span>
-                                    </td>
-                                    <td class="px-6 py-4 flex justify-center gap-2">
-                                        <button class="text-green-600 hover:text-green-800"><i
-                                                data-lucide="check-circle"></i></button>
-                                        <button class="text-red-600 hover:text-red-800"><i
-                                                data-lucide="x-circle"></i></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white border-b">
-                                    <td class="px-6 py-4 font-medium text-gray-900">Mariana V.</td>
-                                    <td class="px-6 py-4">22/09/2025 12:30</td>
-                                    <td class="px-6 py-4">2</td>
-                                    <td class="px-6 py-4"><span
-                                            class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Confirmada</span>
-                                    </td>
-                                    <td class="px-6 py-4 flex justify-center gap-2">
-                                        <button class="text-gray-400 cursor-not-allowed"><i
-                                                data-lucide="check-circle"></i></button>
-                                        <button class="text-red-600 hover:text-red-800"><i
-                                                data-lucide="x-circle"></i></button>
-
-                                    </td>
-                                </tr>
-                                <tr class="bg-white border-b">
-                                    <td class="px-6 py-4 font-medium text-gray-900">Roberto A.</td>
-                                    <td class="px-6 py-4">23/09/2025 11:00</td>
-                                    <td class="px-6 py-4">6</td>
-                                    <td class="px-6 py-4"><span
-                                            class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Confirmada</span>
-                                    </td>
-                                    <td class="px-6 py-4 flex justify-center gap-2">
-                                        <button class="text-gray-400 cursor-not-allowed"><i
-                                                data-lucide="check-circle"></i></button>
-                                        <button class="text-red-600 hover:text-red-800"><i
-                                                data-lucide="x-circle"></i></button>
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                        <i data-lucide="loader"
+                                            class="w-8 h-8 mx-auto mb-2 animate-spin text-gray-300"></i>
+                                        <p>Carregando reservas...</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -316,7 +310,7 @@
         <div class="container mx-auto max-w-6xl px-6">
             <div class="flex flex-wrap justify-between items-center text-left">
                 <div class="w-full md:w-auto mb-8 md:mb-0">
-                    <a href="index.html" class="flex items-center">
+                    <a href="iniciogestor.html" class="flex items-center">
                         <img src="../assets/icons/Logo Preta.png" alt="Logo Beachspot" class="h-5 w-auto">
                     </a>
                 </div>
@@ -324,7 +318,6 @@
                     <h3 class="font-bold mb-3">Navegação</h3>
                     <ul class="space-y-2">
                         <li><a href="iniciogestor.html" class="hover:text-blue-600 transition-colors">Início</a></li>
-                        <li><a href="#" class="hover:text-blue-600 transition-colors">Gerenciar Barracas</a></li>
                         <li><a href="cadastroBarraca.html" class="hover:text-blue-600 transition-colors">Cadastrar
                                 Barracas</a></li>
                         <li><a href="configuracoesgestor.html"
@@ -351,6 +344,10 @@
     <script type="module" src="../assets/js/supabaseClient.js"></script>
     <script type="module" src="../assets/js/getUserProfile.js"></script>
     <script type="module" src="../assets/js/gestaoBarraca.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        emailjs.init("yPzks5ebVvJzI0dZp");
+    </script>
 </body>
 
 </html>

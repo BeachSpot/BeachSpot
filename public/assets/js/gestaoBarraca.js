@@ -1,11 +1,34 @@
 import { supabase } from './supabaseClient.js';
 import { checkAuthentication } from './getUserProfile.js';
-
+import { reservationPolicies } from './reservationPolicies.js';
 console.log('[gestaoBarraca] Script Unificado Carregado');
 
 /**
  * Classe para gerenciar a página de gestão da barraca
  */
+
+function showNotification(message, type = 'default') {
+    const notification = document.getElementById('notification');
+    if (!notification) return;
+
+    // Remove classes anteriores
+    notification.classList.remove('error', 'success');
+    
+    // Adiciona classe se for erro ou sucesso
+    if (type === 'error') {
+        notification.classList.add('error');
+    } else if (type === 'success') {
+        notification.classList.add('success');
+    }
+
+    notification.textContent = message;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
 class GestaoBarracaManager {
     constructor() {
         this.idBarraca = null;
@@ -18,7 +41,7 @@ class GestaoBarracaManager {
         this.promotionToDelete = null;
         this.userId = null;
         this.mesasOcupadas = 0;
-        
+
         this.initElements();
         this.initEventListeners();
     }
@@ -27,19 +50,19 @@ class GestaoBarracaManager {
         // Elementos das abas
         this.tabButtons = document.querySelectorAll('.tab-button');
         this.tabContents = document.querySelectorAll('.tab-content');
-        
+
         // Modal de promoção
         this.promotionModal = document.getElementById('promotion-modal');
         this.promotionForm = document.getElementById('promotion-form');
         this.addPromotionBtn = document.getElementById('add-promotion-btn');
         this.closeModalBtn = document.getElementById('close-modal-btn');
         this.cancelModalBtn = document.getElementById('cancel-modal-btn');
-        
+
         // Modal de confirmação de exclusão de promoção
         this.confirmDeleteModal = document.getElementById('confirm-delete-modal');
         this.confirmDeleteBtn = document.getElementById('confirm-delete-btn');
         this.cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-        
+
         // Filtro de atividades
         this.filtroAtividadesSelect = document.getElementById('filtro-atividades');
     }
@@ -54,11 +77,11 @@ class GestaoBarracaManager {
         if (this.addPromotionBtn) {
             this.addPromotionBtn.addEventListener('click', () => this.openPromotionModal());
         }
-        
+
         if (this.closeModalBtn) {
             this.closeModalBtn.addEventListener('click', () => this.closePromotionModal());
         }
-        
+
         if (this.cancelModalBtn) {
             this.cancelModalBtn.addEventListener('click', () => this.closePromotionModal());
         }
@@ -71,7 +94,7 @@ class GestaoBarracaManager {
         if (this.cancelDeleteBtn) {
             this.cancelDeleteBtn.addEventListener('click', () => this.closeDeleteModal());
         }
-        
+
         if (this.confirmDeleteBtn) {
             this.confirmDeleteBtn.addEventListener('click', () => this.confirmDeletePromotion());
         }
@@ -91,7 +114,7 @@ class GestaoBarracaManager {
                 const id = btn.dataset.id;
                 this.editPromotion(id);
             }
-            
+
             if (e.target.closest('.delete-promotion-btn')) {
                 const btn = e.target.closest('.delete-promotion-btn');
                 const id = btn.dataset.id;
@@ -110,7 +133,7 @@ class GestaoBarracaManager {
 
             // Obter sessão atual do Supabase
             const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-            
+
             if (sessionError) {
                 console.error('[GestaoBarraca] Erro ao obter sessão:', sessionError);
                 window.location.href = '../entrar.html';
@@ -126,13 +149,14 @@ class GestaoBarracaManager {
             this.userId = session.user.id;
             console.log('[GestaoBarraca] Usuário autenticado:', this.userId);
 
+
             // Pegar ID da barraca da URL
             const urlParams = new URLSearchParams(window.location.search);
             const barracaIdUrl = urlParams.get('id');
 
             if (!barracaIdUrl) {
                 console.warn('[GestaoBarraca] ID da barraca não especificado. Redirecionando...');
-                alert('ID da barraca não especificado. Redirecionando...');
+                showNotification('ID da barraca não especificado. Redirecionando...');
                 window.location.href = './inicioGestor.html';
                 return;
             }
@@ -140,9 +164,19 @@ class GestaoBarracaManager {
             this.idBarraca = barracaIdUrl;
             console.log('[GestaoBarraca] ID da barraca:', this.idBarraca);
 
+            const { data: gestor } = await supabase
+                .from('gestor')
+                .select('nome, foto_perfil, avatar_url')
+                .eq('id_gestor', this.userId)
+                .single();
+
+            if (gestor) {
+                updateHeaderAvatar(gestor);
+            }
+
             // Carregar dados da barraca
             await this.loadBarracaData();
-            
+
             // Carregar promoções
             await this.loadPromocoes();
 
@@ -154,7 +188,7 @@ class GestaoBarracaManager {
 
         } catch (error) {
             console.error('[GestaoBarraca] Erro na inicialização:', error);
-            alert('Erro ao carregar dados da barraca.');
+            showNotification('Erro ao carregar dados da barraca.');
         }
     }
 
@@ -184,7 +218,7 @@ class GestaoBarracaManager {
 
         } catch (error) {
             console.error('[GestaoBarraca] Erro ao carregar barraca:', error);
-            alert('Erro ao carregar informações da barraca.');
+            showNotification('Erro ao carregar informações da barraca.');
             window.location.href = './inicioGestor.html';
         }
     }
@@ -193,11 +227,11 @@ class GestaoBarracaManager {
         // Atualizar título e subtítulo
         const titleElement = document.querySelector('section h1');
         const subtitleElement = document.querySelector('section p');
-        
+
         if (titleElement) {
             titleElement.textContent = 'Painel de Gestão';
         }
-        
+
         if (subtitleElement) {
             subtitleElement.textContent = `Administre sua barraca ${this.barracaData.nome_barraca}`;
         }
@@ -222,12 +256,12 @@ class GestaoBarracaManager {
         try {
             // MODO DEBUG: Descomente a linha abaixo para testar com outra data
             // const dataTestDebug = '2025-11-28'; // Coloque a data que quiser testar
-            
+
             const hoje = new Date();
             const ano = hoje.getFullYear();
             const mes = String(hoje.getMonth() + 1).padStart(2, '0');
             const dia = String(hoje.getDate()).padStart(2, '0');
-            
+
             // Se tiver data de debug, usa ela, senão usa hoje
             const dataHoje = typeof dataTestDebug !== 'undefined' ? dataTestDebug : `${ano}-${mes}-${dia}`;
 
@@ -258,7 +292,7 @@ class GestaoBarracaManager {
 
             // Contar total de reservas do dia
             const reservasHoje = reservasDoDia.length;
-            
+
             // Filtrar apenas confirmadas para ocupação
             const reservasConfirmadas = reservasDoDia.filter(r => {
                 console.log('[GestaoBarraca] Status da reserva:', r.status, '- É confirmada?', r.status === 'confirmada');
@@ -296,7 +330,7 @@ class GestaoBarracaManager {
 
     async updateOcupacaoAutomatica(reservasConfirmadas) {
         console.log('[updateOcupacaoAutomatica] Iniciando com:', reservasConfirmadas);
-        
+
         if (!this.barracaData?.capacidade_mesas) {
             console.warn('[updateOcupacaoAutomatica] Barraca sem capacidade definida');
             this.renderOcupacaoSemCapacidade();
@@ -309,11 +343,11 @@ class GestaoBarracaManager {
             console.log('[updateOcupacaoAutomatica] Somando pessoas:', r.num_pessoas);
             return sum + (r.num_pessoas || 0);
         }, 0);
-        
+
         const mesasOcupadas = Math.ceil(pessoasTotal / 4);
 
         this.mesasOcupadas = Math.min(mesasOcupadas, this.barracaData.capacidade_mesas);
-        
+
         console.log('[GestaoBarraca] Ocupação automática calculada:', {
             reservasConfirmadas: reservasConfirmadas.length,
             pessoasTotal,
@@ -329,16 +363,16 @@ class GestaoBarracaManager {
     renderOcupacao() {
         const ocupacaoCard = document.getElementById('ocupacao-card');
         if (!ocupacaoCard) return;
-        
+
         const capacidade = this.barracaData.capacidade_mesas;
         const ocupadas = this.mesasOcupadas;
         const percentual = Math.round((ocupadas / capacidade) * 100);
-        
+
         // Determinar cor baseada na ocupação
         let bgColor = 'bg-green-50';
         let textColor = 'text-green-600';
         let iconBg = 'bg-green-100';
-        
+
         if (percentual >= 90) {
             bgColor = 'bg-red-50';
             textColor = 'text-red-600';
@@ -348,9 +382,9 @@ class GestaoBarracaManager {
             textColor = 'text-yellow-600';
             iconBg = 'bg-yellow-100';
         }
-        
+
         ocupacaoCard.className = `${bgColor} p-4 rounded-xl border border-gray-200 flex items-center gap-3`;
-        
+
         ocupacaoCard.innerHTML = `
             <div class="${iconBg} ${textColor} p-2 rounded-full">
                 <i data-lucide="users" class="w-5 h-5"></i>
@@ -361,14 +395,14 @@ class GestaoBarracaManager {
                 <p class="text-xs mt-0.5 text-gray-600">${ocupadas} de ${capacidade} mesas</p>
             </div>
         `;
-        
+
         lucide.createIcons();
     }
 
     renderOcupacaoSemCapacidade() {
         const ocupacaoCard = document.getElementById('ocupacao-card');
         if (!ocupacaoCard) return;
-        
+
         ocupacaoCard.className = 'bg-yellow-50 p-4 rounded-xl border border-gray-200 flex items-center gap-3';
         ocupacaoCard.innerHTML = `
             <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full">
@@ -385,7 +419,7 @@ class GestaoBarracaManager {
     async loadTodasAtividades() {
         try {
             console.log('[GestaoBarraca] Carregando todas as atividades...');
-            
+
             this.atividades = [];
 
             // 1. Carregar reservas (usando data_reserva ao invés de created_at)
@@ -399,7 +433,7 @@ class GestaoBarracaManager {
             if (!errorReservas && reservas) {
                 reservas.forEach(reserva => {
                     const nomeCliente = this.extrairNomeCliente(reserva);
-                    
+
                     if (reserva.status === 'cancelada') {
                         this.atividades.push({
                             tipo: 'cancelamento',
@@ -443,7 +477,7 @@ class GestaoBarracaManager {
                 avaliacoes.forEach(avaliacao => {
                     // Buscar nome do usuário (se precisar, fazer join com tabela usuarios)
                     const nomeCliente = 'Cliente'; // Placeholder, ajuste conforme sua estrutura
-                    
+
                     this.atividades.push({
                         tipo: 'avaliacao',
                         data: avaliacao.data_avaliacao,
@@ -484,7 +518,7 @@ class GestaoBarracaManager {
 
         // Filtrar atividades
         let atividadesFiltradas = this.atividades;
-        
+
         if (this.filtroAtividades !== 'todas') {
             const mapeamentoFiltros = {
                 'reservas': 'reserva',
@@ -492,8 +526,8 @@ class GestaoBarracaManager {
                 'avaliacoes': 'avaliacao',
                 'favoritos': 'favorito'
             };
-            
-            atividadesFiltradas = this.atividades.filter(a => 
+
+            atividadesFiltradas = this.atividades.filter(a =>
                 a.tipo === mapeamentoFiltros[this.filtroAtividades]
             );
         }
@@ -611,9 +645,9 @@ class GestaoBarracaManager {
                 <tr class="bg-white border-b hover:bg-gray-50">
                     <td class="px-6 py-4">
                         <div class="font-medium text-gray-900">${nomeCliente}</div>
-                        ${reserva.participantes && reserva.participantes.length > 1 ? 
-                            `<div class="text-xs text-gray-500 mt-1">+${reserva.participantes.length - 1} acompanhante${reserva.participantes.length > 2 ? 's' : ''}</div>` 
-                            : ''}
+                        ${reserva.participantes && reserva.participantes.length > 1 ?
+                    `<div class="text-xs text-gray-500 mt-1">+${reserva.participantes.length - 1} acompanhante${reserva.participantes.length > 2 ? 's' : ''}</div>`
+                    : ''}
                     </td>
                     <td class="px-6 py-4">${dataFormatada}</td>
                     <td class="px-6 py-4">
@@ -664,17 +698,17 @@ class GestaoBarracaManager {
     formatarDataSimples(dataReserva) {
         // Criar data a partir do formato do Supabase
         let data;
-        
+
         if (dataReserva.includes('T')) {
             data = new Date(dataReserva);
         } else {
             data = new Date(dataReserva + 'T00:00:00');
         }
-        
+
         if (isNaN(data.getTime())) {
             return 'Data inválida';
         }
-        
+
         return data.toLocaleDateString('pt-BR');
     }
 
@@ -684,22 +718,22 @@ class GestaoBarracaManager {
         }
 
         const inicio = new Date(dataInicio);
-        
+
         if (isNaN(inicio.getTime())) {
             return '<span class="text-gray-400">Horário inválido</span>';
         }
-        
+
         const horaInicio = inicio.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        
+
         if (dataFim) {
             const fim = new Date(dataFim);
-            
+
             if (!isNaN(fim.getTime())) {
                 const horaFim = fim.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 return `<span class="font-medium">${horaInicio}</span> <span class="text-gray-400">até</span> <span class="font-medium">${horaFim}</span>`;
             }
         }
-        
+
         return `<span class="font-medium">${horaInicio}</span>`;
     }
 
@@ -713,7 +747,7 @@ class GestaoBarracaManager {
     formatarDataHora(dataReserva, dataInicio) {
         // Criar data a partir do formato do Supabase
         let data;
-        
+
         // Se dataReserva já vier como timestamp completo
         if (dataReserva.includes('T')) {
             data = new Date(dataReserva);
@@ -721,27 +755,27 @@ class GestaoBarracaManager {
             // Se vier apenas como data (YYYY-MM-DD)
             data = new Date(dataReserva + 'T00:00:00');
         }
-        
+
         // Verificar se a data é válida
         if (isNaN(data.getTime())) {
             console.error('[formatarDataHora] Data inválida:', dataReserva);
             return 'Data inválida';
         }
-        
+
         const dataFormatada = data.toLocaleDateString('pt-BR');
-        
+
         if (dataInicio) {
             const inicio = new Date(dataInicio);
-            
+
             // Verificar se dataInicio é válido
             if (isNaN(inicio.getTime())) {
                 return dataFormatada; // Retorna só a data se o horário for inválido
             }
-            
+
             const hora = inicio.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             return `${dataFormatada} ${hora}`;
         }
-        
+
         return dataFormatada;
     }
 
@@ -782,7 +816,7 @@ class GestaoBarracaManager {
         try {
             const { error } = await supabase
                 .from('reservas')
-                .update({ 
+                .update({
                     status: 'confirmada'
                 })
                 .eq('id_reserva', reservaId);
@@ -795,7 +829,7 @@ class GestaoBarracaManager {
 
         } catch (error) {
             console.error('[GestaoBarraca] Erro ao confirmar reserva:', error);
-            alert('Erro ao confirmar reserva.');
+            showNotification('Erro ao confirmar reserva.');
         }
     }
 
@@ -803,7 +837,7 @@ class GestaoBarracaManager {
         try {
             const { error } = await supabase
                 .from('reservas')
-                .update({ 
+                .update({
                     status: 'cancelada'
                 })
                 .eq('id_reserva', reservaId);
@@ -816,7 +850,7 @@ class GestaoBarracaManager {
 
         } catch (error) {
             console.error('[GestaoBarraca] Erro ao cancelar reserva:', error);
-            alert('Erro ao cancelar reserva.');
+            showNotification('Erro ao cancelar reserva.');
         }
     }
 
@@ -828,10 +862,10 @@ class GestaoBarracaManager {
             toast.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 z-50';
             document.body.appendChild(toast);
         }
-        
+
         toast.textContent = message;
         toast.classList.remove('opacity-0');
-        
+
         setTimeout(() => {
             toast.classList.add('opacity-0');
         }, 2000);
@@ -846,24 +880,24 @@ class GestaoBarracaManager {
         console.log('[GestaoBarraca] Atualizando links com ID da barraca:', this.idBarraca);
 
         // 1. Link de "Editar Barraca"
-        const linkEditarBarraca = document.querySelector('a[href*="infoBarraca.html"]') || 
-                                  document.querySelector('a[href*="cadastroBarraca.html"]') ||
-                                  document.getElementById('link-editar-barraca');
-        
+        const linkEditarBarraca = document.querySelector('a[href*="infoBarraca.html"]') ||
+            document.querySelector('a[href*="cadastroBarraca.html"]') ||
+            document.getElementById('link-editar-barraca');
+
         if (linkEditarBarraca) {
             linkEditarBarraca.href = `cadastroBarraca.html?id=${this.idBarraca}&origem=gestao`;
-            
+
             const textElement = linkEditarBarraca.querySelector('span');
             if (textElement) {
                 if (textElement.textContent.includes('Ver Página') || textElement.textContent.includes('Ver página')) {
                     textElement.textContent = 'Editar Barraca';
                 }
             }
-            
+
             if (linkEditarBarraca.textContent.includes('Ver Página') || linkEditarBarraca.textContent.includes('Ver página')) {
                 linkEditarBarraca.innerHTML = linkEditarBarraca.innerHTML.replace(/Ver [Pp]ágina da Barraca/g, 'Editar Barraca');
             }
-            
+
             console.log('[GestaoBarraca] ✅ Link "Editar Barraca" atualizado:', linkEditarBarraca.href);
         }
 
@@ -1041,7 +1075,7 @@ class GestaoBarracaManager {
 
         } catch (error) {
             console.error('[handlePromotionSubmit] Erro:', error);
-            alert(`Erro ao salvar promoção: ${error.message}`);
+            showNotification(`Erro ao salvar promoção: ${error.message}`);
         }
     }
 
@@ -1080,9 +1114,39 @@ class GestaoBarracaManager {
 
         } catch (error) {
             console.error('[confirmDeletePromotion] Erro:', error);
-            alert(`Erro ao excluir promoção: ${error.message}`);
+            showNotification(`Erro ao excluir promoção: ${error.message}`);
         }
     }
+}
+
+function updateHeaderAvatar(profileData) {
+    const headerAvatar = document.getElementById('header-avatar');
+
+    if (!headerAvatar || !profileData) return;
+
+    let fotoUrl = profileData.foto_perfil || profileData.avatar_url;
+
+    if (fotoUrl && !fotoUrl.startsWith('http')) {
+        const { data } = supabase
+            .storage
+            .from('media')
+            .getPublicUrl(fotoUrl);
+        fotoUrl = data?.publicUrl;
+    }
+
+    if (!fotoUrl) {
+        const iniciais = profileData.nome
+            .split(' ')
+            .filter(w => w.length > 0)
+            .map(w => w[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+
+        fotoUrl = `https://placehold.co/40x40/0138b4/FFFFFF?text=${iniciais}`;
+    }
+
+    headerAvatar.src = fotoUrl;
 }
 
 // Inicialização
