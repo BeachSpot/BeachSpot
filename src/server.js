@@ -3,21 +3,23 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import apiRoutes from './routes.js';// Importa as rotas
+import apiRoutes from './routes.js'; // Importa as rotas
 
 // Define o caminho do diretório atual.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3001;
+
+// --- CORREÇÃO PARA O RENDER ---
+// Usa a porta definida pelo Render (process.env.PORT) ou 3001 se estiver local
+const PORT = process.env.PORT || 3001; 
 
 // Middlewares para habilitar CORS e processar JSON.
 app.use(cors());
 app.use(express.json());
 
-// CORREÇÃO: Serve toda a pasta 'public' como raiz
-// Isso permite acessar /assets/js/cadastro.js diretamente
+// Serve toda a pasta 'public' como raiz
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Usa as rotas importadas para os endpoints da API.
@@ -29,7 +31,7 @@ app.get('/', (req, res) => {
 });
 
 // Inicia o servidor.
-app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-console.log(`Pasta public servida em: ${path.join(__dirname, '../public')}`);
+app.listen(PORT, '0.0.0.0', () => { // '0.0.0.0' é importante para acesso externo
+    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Pasta public servida em: ${path.join(__dirname, '../public')}`);
 });
