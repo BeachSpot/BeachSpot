@@ -78,7 +78,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
             
             setTimeout(() => {
                 if (userData.tipo_conta === 'gestor') {
-                    window.location.href = '/Telas Gestor/inicioGestor.html';
+                    window.location.href = '/Telas Gestor/iniciogestor.html';
                 } else {
                     window.location.href = '/Telas Clientes/inicio.html';
                 }
