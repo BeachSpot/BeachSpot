@@ -78,36 +78,76 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// --- NOVA ROTA DE RESERVA (Faltava isso) ---
 router.post('/reservas', async (req, res) => {
-    // Pega os dados enviados pelo frontend (reservar.js)
     const { id_barraca, id_cliente, data_reserva, data_inicio, data_fim, num_pessoas, participantes, status } = req.body;
+
+    // Converte para logar o que está chegando
+    console.log('--- REQUISICAO RECEBIDA ---');
+    console.log('Dados crus:', req.body);
 
     const client = await pool.connect();
 
     try {
+        // Tenta converter, mas se falhar, usa null para vermos o erro do banco
+        const idBarracaInt = id_barraca ? parseInt(id_barraca, 10) : null;
+        const numPessoasInt = num_pessoas ? parseInt(num_pessoas, 10) : 1;
+        
+        // Tratamento especial para participantes
+        // Tente enviar como JSON stringify se o tipo array nativo falhar
+        const participantesFinal = Array.isArray(participantes) ? participantes : []; 
+
+        console.log('Dados processados:', { idBarracaInt, numPessoasInt, participantesFinal });
+
         await client.query('BEGIN');
 
-        // Insere a reserva no banco de dados
         const query = `
-            INSERT INTO reservas (id_barraca, id_cliente, data_reserva, data_inicio, data_fim, num_pessoas, participantes, status)
+            INSERT INTO reservas (
+                id_barraca, 
+                id_cliente, 
+                data_reserva, 
+                data_inicio, 
+                data_fim, 
+                num_pessoas, 
+                participantes, 
+                status
+            )
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING *
         `;
         
-        const values = [id_barraca, id_cliente, data_reserva, data_inicio, data_fim, num_pessoas, participantes, status || 'pendente'];
+        const values = [
+            idBarracaInt, 
+            id_cliente, 
+            data_reserva, 
+            data_inicio, 
+            data_fim, 
+            numPessoasInt, 
+            participantesFinal, 
+            status || 'pendente'
+        ];
         
         const result = await client.query(query, values);
-        
         await client.query('COMMIT');
         
-        // Retorna a reserva criada para o frontend
+        console.log('--- SUCESSO ---');
         res.status(201).json(result.rows[0]);
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Erro ao criar reserva:', error);
-        res.status(500).json({ error: 'Erro ao criar reserva no servidor.', details: error.message });
+        
+        console.error('--- ERRO SQL ---');
+        console.error('Mensagem:', error.message);
+        console.error('Detalhe:', error.detail);
+        console.error('Código:', error.code); // Código do erro Postgres (ex: 23503, 22P02)
+        
+        // AQUI ESTÁ A MÁGICA: Retorna o detalhe técnico para o seu frontend
+        res.status(500).json({ 
+            error: 'Erro no Banco de Dados', 
+            message: error.message,
+            detail: error.detail,
+            code: error.code, 
+            hint: error.hint
+        });
     } finally {
         client.release();
     }
